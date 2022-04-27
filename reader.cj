@@ -10,6 +10,7 @@ public class SimpleReader {
         private var offset!: Int64 = begin
     ) {
         if (begin < 0 || end > buffer.size()) {
+            debug()
             throw IllegalArgumentException("SimpleReader Arguments out of range.")
         }
     }
