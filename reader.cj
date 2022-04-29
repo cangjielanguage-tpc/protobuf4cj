@@ -56,7 +56,7 @@ public class SimpleReader {
     }
 
     /* read length of `s` bytes, return its reader. */
-    public func read(s: Int64) { 
+    public func read(s: Int64) {
         let v = SimpleReader(buffer, begin: offset, end: offset + s)
         offset += s
         v

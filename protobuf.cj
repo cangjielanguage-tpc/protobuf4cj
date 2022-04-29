@@ -23,7 +23,7 @@ public interface Enum <: ToString {
  */
 public enum WireType { VARINT | BIT64 | PREFIXED | BIT32 }
 
-extend WireType <:  Enum {
+extend WireType <: Enum {
     public func value(): Int32 {
         match (this) {
             case VARINT => 0
