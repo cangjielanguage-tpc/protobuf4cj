@@ -339,7 +339,7 @@ public enum MessageField <: ToString {
             case UNIQUE(STRING(v))      => "\"${v}\""
             case REPEAT(STRING(v))      =>
                 var sb = StringBuilder("["); var dot = false
-                for (s in v) { if (dot) { sb.append(", "); () } else { dot = true }; sb.append(v.toString()) }
+                for (s in v) { if (dot) { sb.append(", ") } else { dot = true }; sb.append("\"${s}\"") }
                 sb.append(']').toString()
             case UNIQUE(INT32(v))       => v.toString()
             case UNIQUE(SINT32(v))      => v.toString()
