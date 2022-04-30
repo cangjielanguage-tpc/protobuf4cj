@@ -4,7 +4,7 @@ public enum ReaderSeekBase { SET | CUR | END }
 
 public class SimpleReader {
     public SimpleReader (
-        private let buffer: List<UInt8>,
+        private let buffer: Array<UInt8>,
         private let begin!: Int64 = 0,
         private let end!: Int64 = buffer.size(),
         private var offset!: Int64 = begin
@@ -43,7 +43,7 @@ public class SimpleReader {
     /* all data */
     public func data() { 
         if (offset >= end) {
-            return List<UInt8>()
+            return Array<UInt8>()
         }
         buffer[offset..end]
     }

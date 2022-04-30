@@ -42,7 +42,7 @@ func tagParse(src: SimpleReader): (Tag*WireType) {
     }
 
     var tag = UInt32(byte & 0x7f) >> 3
-    let wireType = WireType.default().parse(Int32(byte & 7))
+    let wireType = (WireType.default().parse(Int32(byte & 7)) as WireType).getOrThrow()
     if ((byte & 0x80) == 0) {
         return (tag, wireType)
     }
@@ -302,5 +302,5 @@ func binParse(src: SimpleReader) {
 }
 
 func strParse(src: SimpleReader): String {
-    StringBuilder().append(Array(binParse(src).data())).toString()
+    StringBuilder().append(binParse(src).data()).toString()
 }

@@ -49,18 +49,18 @@ extend WireType <: Enum {
         }
     }
 
-    public func parse(v: Int32): WireType {
+    public func parse(v: Int32): Enum {
         match (v) {
-            case 0 => VARINT
-            case 1 => BIT64
-            case 2 => PREFIXED
-            case 5 => BIT32
+            case 0 => WireType.VARINT
+            case 1 => WireType.BIT64
+            case 2 => WireType.PREFIXED
+            case 5 => WireType.BIT32
             case e => throw InvalidEnumValueException("WireType", e)
         }
     }
 
     public func repeat() { RepeatEnum<WireType>() }
-    public static func default() { VARINT }
+    public static func default(): Enum { WireType.VARINT }
 }
 
 extend WireType <: Equatable<WireType> {
@@ -104,18 +104,18 @@ extend Label <: Enum {
         }
     }
 
-    public func parse(v: Int32) {
+    public func parse(v: Int32): Enum {
         match (v) {
-            case 0 => NONE
-            case 1 => REQUIRED
-            case 2 => OPTIONAL
-            case 3 => REPEATED
+            case 0 => Label.NONE
+            case 1 => Label.REQUIRED
+            case 2 => Label.OPTIONAL
+            case 3 => Label.REPEATED
             case e => throw InvalidEnumValueException("Label", e)
         }
     }
 
     public func repeat() { RepeatEnum<Label>() }
-    public static func default() { NONE }
+    public static func default(): Enum { Label.NONE }
 }
 
 extend Label <: Equatable<Label> {
@@ -285,7 +285,7 @@ public enum MessageField <: ToString {
             case UNIQUE(FIXED64(v))     => UNIQUE(FIXED64(fixed64Parse(src)))
             case UNIQUE(DOUBLE(v))      => UNIQUE(DOUBLE(floatBits(fixed64Parse(src))))
             case UNIQUE(STRING(v))      => UNIQUE(STRING(strParse(src)))
-            case UNIQUE(BYTES(v))       => UNIQUE(BYTES(Bytes(binParse(src).data())))
+            case UNIQUE(BYTES(v))       => UNIQUE(BYTES(ArrayList(binParse(src).data())))
             case UNIQUE(MESSAGE(v))     => UNIQUE(MESSAGE(v.unpack(binParse(src))))
             case _ => REPEAT(STRING(Buffer()))  // todo
         }
@@ -412,7 +412,7 @@ public class FieldDescriptor {
             case FIXED64(v)     => UNIQUE(FIXED64(fixed64Parse(src)))
             case DOUBLE(v)      => UNIQUE(DOUBLE(floatBits(fixed64Parse(src))))
             case STRING(v)      => UNIQUE(STRING(strParse(src)))
-            case BYTES(v)       => UNIQUE(BYTES(Bytes(binParse(src).data())))
+            case BYTES(v)       => UNIQUE(BYTES(ArrayList(binParse(src).data())))
             case MESSAGE(v)     => UNIQUE(MESSAGE(v.unpack(binParse(src))))
         }
         // todo repeated
@@ -476,7 +476,7 @@ public class MessageUnknownField {
         /** The wire type of the field. */
         let wireType: WireType,
         /** Field data. */
-        let data: List<UInt8>
+        let data: Array<UInt8>
     ) {}
 
     /** Calculate the serialized size of the unknown field with tag. */
@@ -545,7 +545,7 @@ public abstract class MessageLite <: ToString {
     }
 
     public open func unpack(src: Collection<Byte>) {
-        let reader = SimpleReader(List(src))
+        let reader = SimpleReader(Array(src))
         unpack(reader)
     }
 
@@ -768,7 +768,7 @@ public abstract class MessageLite <: ToString {
     }
 
     protected func setBytes(tag: Tag, v: Collection<UInt8>) {
-        fields[tag] = UNIQUE(BYTES(Bytes(v)))
+        fields[tag] = UNIQUE(BYTES(ArrayList(v)))
     }
 
     protected func getMessage(tag: Tag): MessageLite {
