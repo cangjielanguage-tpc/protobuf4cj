@@ -1,7 +1,7 @@
 package protobuf
 
 /* throws */
-func static_case<T>(v: Any): T { (v as T).getOrThrow() }
+func dynamic_cast<T>(v: Any): T { (v as T).getOrThrow() }
 
 // todo getInstance()
 /* access all the message fields */
@@ -9,20 +9,20 @@ public interface Accessor {
     func pack(tag: Tag, val: Any, out: Bytes): Unit
     func unpack(tag: Tag, src: SimpleReader): Any
     func clone(val: Any): Any { val }
-    func toString(val: Any) { static_case<ToString>(val).toString() }
+    func toString(val: Any) { dynamic_cast<ToString>(val).toString() }
 }
 
 /* access all the repeated fields, override the default `clone` and `toString` */
 public interface RepeatAccessor<T> <: Accessor where T <: ToString {
-    func clone(val: Any): Any { static_case<Buffer<T>>(val).clone() }
-    func toString(val: Any) { static_case<Buffer<T>>(val).toString() }
+    func clone(val: Any): Any { dynamic_cast<Buffer<T>>(val).clone() }
+    func toString(val: Any) { dynamic_cast<Buffer<T>>(val).toString() }
 }
 
 public class Int32Accessor <: Accessor {
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(UInt64(static_case<Int32>(val)), out)
+        varintPack(UInt64(dynamic_cast<Int32>(val)), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -33,7 +33,7 @@ public class Int32Accessor <: Accessor {
 public class UInt32Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(UInt64(static_case<UInt32>(val)), out)
+        varintPack(UInt64(dynamic_cast<UInt32>(val)), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -45,7 +45,7 @@ public class Int64Accessor <: Accessor {
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(UInt64(static_case<Int64>(val)), out)
+        varintPack(UInt64(dynamic_cast<Int64>(val)), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -56,7 +56,7 @@ public class Int64Accessor <: Accessor {
 public class UInt64Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(static_case(val), out)
+        varintPack(dynamic_cast(val), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         varintParse(src)
@@ -68,7 +68,7 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(UInt64(static_case<E>(val).value()), out)
+        varintPack(UInt64(dynamic_cast<E>(val).value()), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -80,7 +80,7 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
 public class SInt32Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(UInt64(zigzag(static_case<Int32>(val))), out)
+        varintPack(UInt64(zigzag(dynamic_cast<Int32>(val))), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -92,7 +92,7 @@ public class SInt32Accessor <: Accessor {
 public class SInt64Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(zigzag(static_case<Int64>(val)), out)
+        varintPack(zigzag(dynamic_cast<Int64>(val)), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         unzigzag(varintParse(src))
@@ -103,7 +103,7 @@ public class SInt64Accessor <: Accessor {
 public class BoolAccessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
-        varintPack(if (static_case(val)) { 1 } else { 0 }, out)
+        varintPack(if (dynamic_cast(val)) { 1 } else { 0 }, out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         varintParse(src) != 0
@@ -114,7 +114,7 @@ public class BoolAccessor <: Accessor {
 public class SFiexd32Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT32, out)
-        fixedPack(static_case<Int32>(val), out)
+        fixedPack(dynamic_cast<Int32>(val), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -126,7 +126,7 @@ public class SFiexd32Accessor <: Accessor {
 public class Fixed32Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT32, out)
-        fixedPack(static_case<UInt32>(val), out)
+        fixedPack(dynamic_cast<UInt32>(val), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         fixed32Parse(src)
@@ -137,7 +137,7 @@ public class Fixed32Accessor <: Accessor {
 public class FloatAccessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT32, out)
-        fixedPack(static_case<Float32>(val), out)
+        fixedPack(dynamic_cast<Float32>(val), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         floatBits(fixed32Parse(src))
@@ -148,7 +148,7 @@ public class FloatAccessor <: Accessor {
 public class SFixed64Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT64, out)
-        fixedPack(static_case<Int64>(val), out)
+        fixedPack(dynamic_cast<Int64>(val), out)
     }
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
@@ -160,7 +160,7 @@ public class SFixed64Accessor <: Accessor {
 public class Fixed64Accessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT64, out)
-        fixedPack(static_case<UInt64>(val), out)
+        fixedPack(dynamic_cast<UInt64>(val), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         fixed64Parse(src)
@@ -171,7 +171,7 @@ public class Fixed64Accessor <: Accessor {
 public class DoubleAccessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT64, out)
-        fixedPack(static_case<Float64>(val), out)
+        fixedPack(dynamic_cast<Float64>(val), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         floatBits(fixed64Parse(src))
@@ -182,17 +182,18 @@ public class DoubleAccessor <: Accessor {
 public class StringAccessor <: Accessor {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, PREFIXED, out)
-        strPack(static_case(val), out)
+        strPack(dynamic_cast(val), out)
     }
     public func unpack(tag: Tag, src: SimpleReader): Any {
         strParse(src)
     }
+    public func toString(val: Any) { "\"${dynamic_cast<String>(val)}\"" }
 }
 
 /* bytes */
 public class BytesAccessor <: RepeatAccessor<UInt8> {
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = static_case<Bytes>(val)
+        let val = dynamic_cast<Bytes>(val)
         let len = UInt64(val.size())
         if (len > 0) {
             tagPack(tag, PREFIXED, out)
@@ -200,7 +201,6 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
             out.appendAll(val)
         }
     }
-
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Bytes(binParse(src).data())
     }
@@ -210,7 +210,7 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
 public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> {
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let tmp = ArrayList<UInt8>()
-        static_case<M>(val).pack(tmp)
+        dynamic_cast<M>(val).pack(tmp)
         let len = UInt64(tmp.size())
         if (len > 0) {
             tagPack(tag, PREFIXED, out)
@@ -218,13 +218,11 @@ public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> 
             out.appendAll(tmp)
         }
     }
-
     public func unpack(tag: Tag, src: SimpleReader): Any {
         M.default().unpack(binParse(src))
     }
-
     public func clone(val: Any) {
-        static_case<M>(val).clone()
+        dynamic_cast<M>(val).clone()
     }
 }
 

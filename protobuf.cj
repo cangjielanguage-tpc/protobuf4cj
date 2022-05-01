@@ -137,12 +137,12 @@ public interface Enum<E> <: ToString {
 public abstract class MessageLite <: ToString {
     protected func getAccessors(): HashMap<Tag, Accessor>
     protected func getNames(): HashMap<Tag, String> // 现阶段不完全确定哪些信息必须提供，故单独提供，后期再整合
+    protected open func getDefaultValue(): HashMap<Tag, Any> { HashMap() } // proto3用不到, 故提供默认实现, proto2需覆盖此函数
     public func clone(): MessageLite // 由于需要具体的类型信息，只能交给子类具体实现
 
     public var unknownFields = Buffer<MessageUnknownField>()
     protected var fields = HashMap<Tag, Any>()
     protected var proto2 = true // 默认proto2
-    protected var defaultValue = HashMap<Tag, Any>()
 
     protected func fieldsClone() {
         let result = HashMap<Tag, Any>()
@@ -216,11 +216,13 @@ public abstract class MessageLite <: ToString {
 
     /* 供子类获取指定field的值 */
     protected func get<T>(tag: Tag): T where T <: Default<T> {
-        if (fields.contains(tag)) { return static_case(fields[tag]) }
+        if (fields.contains(tag)) { return dynamic_cast(fields[tag]) }
         /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
         if (proto2) {
-            if (defaultValue.contains(tag)) { return static_case(defaultValue[tag]) }
-            throw GetFieldValueException(getNames()[tag])
+            match (getDefaultValue().get(tag)) {
+                case Some(v) => return dynamic_cast(v)
+                case _ => throw GetFieldValueException(getNames()[tag])
+            }
         }
         /* proto3的缺省值是根据类型来的, 值类型值直接返回, 引用类型值需保存到fields */
         let default = T.default()
