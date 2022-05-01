@@ -72,3 +72,23 @@ func reference(val: Any): Bool {
         case _ => true
     }
 }
+
+public func debug(val: Any, id: String): Unit {
+    print("debug[${id}]: val(")
+    match (val) {
+        case s: ToString => print("${s})")
+        case _ => print("Invalid)")
+    }
+    match (val) {
+        case a: Int32 => println("<Int32>")
+        case a: UInt32 => println("<UInt32>")
+        case a: Int64 => println("<Int64>")
+        case a: UInt64 => println("<UInt64>")
+        case a: Bool => println("<Bool>")
+        case a: Float32 => println("<Float32>")
+        case a: Float64 => println("<Float64>")
+        case a: String => println("<String>")
+        case _ => println("<Others>")
+    }
+    println("debug[${id}]: val is String: ${val is String}, val as String: ${val as String}")
+}
