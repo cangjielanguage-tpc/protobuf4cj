@@ -42,7 +42,7 @@ func tagParse(src: SimpleReader): (Tag*WireType) {
     }
 
     var tag = UInt32(byte & 0x7f) >> 3
-    let wireType = (WireType.default().parse(Int32(byte & 7)) as WireType).getOrThrow()
+    let wireType = WireType.parse(Int32(byte & 7))
     if ((byte & 0x80) == 0) {
         return (tag, wireType)
     }
@@ -169,20 +169,6 @@ func unzigzag(v: UInt64) {
     Int64((v >> 1) ^ -(v & 1))
 }
 
-/* the number of bytes required to store binary data */
-func binSize(v: Collection<UInt8>) {
-    varintSize(UInt64(v.size())) + v.size()
-}
-
-func strSize(v: String) {
-    binSize(v.toUtf8Array())
-}
-
-func msgSize(v: MessageLite) {
-    let ps = v.packedSize()
-    varintSize(UInt64(ps)) + ps
-}
-
 /**
  * Pack a 32-bit quantity in little-endian byte order. Used for protobuf wire
  * types fixed32, sfixed32, float. Similar to "htole32".
@@ -246,14 +232,6 @@ func binPack(value: Collection<UInt8>, out: Bytes) {
 /* Pack string */
 func strPack(v: String, out: Bytes) {
     binPack(v.toUtf8Array(), out)
-}
-
-/**
- * Pack a message.
- */
-func msgPack(value: MessageLite, out: Bytes) {
-    varintPack(UInt64(value.packedSize()), out)
-    value.pack(out)
 }
 
 // ffi
