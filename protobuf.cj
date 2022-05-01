@@ -127,9 +127,12 @@ public class MessageUnknownField {
     }
 }
 
-/* base of protobuf enum */
-public interface Enum<E> <: ToString {
+public interface ValuedEnum {
     func value(): Int32
+}
+
+/* base of protobuf enum */
+public interface Enum<E> <: ValuedEnum & ToString {
     static func parse(v: Int32): E
 }
 

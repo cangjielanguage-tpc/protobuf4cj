@@ -51,7 +51,7 @@ func zeroish(val: Any): Bool {
         case a: Bool => a == false
         case a: Float32 => a == .0
         case a: Float64 => a == .0
-        // todo enum
+        case a: ValuedEnum => a.value() == 0
         case a: String => a.isEmpty()
         case _ => false
     }
@@ -67,7 +67,7 @@ func reference(val: Any): Bool {
         case _: Bool => false
         case _: Float32 => false
         case _: Float64 => false
-        // todo enum
+        case _: ValuedEnum => false
         case _: String => false
         case _ => true
     }
@@ -87,6 +87,7 @@ public func debug(val: Any, id: String): Unit {
         case a: Bool => println("<Bool>")
         case a: Float32 => println("<Float32>")
         case a: Float64 => println("<Float64>")
+        case a: ValuedEnum => println("<Enum>")
         case a: String => println("<String>")
         case _ => println("<Others>")
     }
