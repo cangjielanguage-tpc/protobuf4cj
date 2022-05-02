@@ -221,17 +221,16 @@ public abstract class MessageLite <: ToString {
     /* 供子类获取指定field的值 */
     protected func get<T>(tag: Tag): T where T <: Default<T> {
         if (fields.contains(tag)) { return dynamic_cast(fields[tag]) }
-        /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
-        if (proto2) {
-            match (getDefaultValue().get(tag)) {
-                case Some(v) => return dynamic_cast(v)
-                case _ => throw GetFieldValueException(getNames()[tag])
-            }
-        }
-        /* proto3的缺省值是根据类型来的, 值类型值直接返回, 引用类型值需保存到fields */
         let default = T.default()
-        if (reference(default)) { fields[tag] = default }
-        default
+        /* 引用类型保存到fields并返回 */
+        if (reference(default)) { fields[tag] = default; return default }
+        /* proto3直接返回类型的缺省值 */
+        if (!proto2) { default }
+        /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
+        match (getDefaultValue().get(tag)) {
+            case Some(v) => return dynamic_cast(v)
+            case _ => throw GetFieldValueException(getNames()[tag])
+        }
     }
 
     /* 供子类设置指定field的值 */
