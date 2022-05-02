@@ -871,6 +871,10 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
         }
         rv
     }
+    public func clone(val: Any) {
+        let val = dynamic_cast<Buffer<Bytes>>(val)
+        Buffer<Bytes>(val.size(), { i => val[i].clone() })
+    }
 }
 /* repeated message */
 public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLite & Default<M> {
@@ -895,5 +899,9 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
             if (next != tag) { src.seek(-tagSize(next)); break }
         }
         rv
+    }
+    public func clone(val: Any) {
+        let val = dynamic_cast<Buffer<M>>(val)
+        Buffer<M>(val.size(), { i => dynamic_cast<M>(val[i].clone()) })
     }
 }
