@@ -41,6 +41,46 @@ extend Buffer<T> <: Default<Buffer<T>> {
     public static func default(): Buffer<T> { Buffer() }
 }
 
+/** 
+ * 兼容cangjie 0.28.4部分场景下通过Any传参后无法通过as操作符复原
+ * 目前仅发现内置的数值类型、String类型存在该问题, enum、class并未发现此问题
+ */
+public interface Self<T> {
+    func self(): T { (this as T).getOrThrow() }
+}
+
+extend Int32 <: Self<Int32> {
+    public func self() { this }
+}
+
+extend UInt32 <: Self<UInt32> {
+    public func self() { this }
+}
+
+extend Int64 <: Self<Int64> {
+    public func self() { this }
+}
+
+extend UInt64 <: Self<UInt64> {
+    public func self() { this }
+}
+
+extend Bool <: Self<Bool> {
+    public func self() { this }
+}
+
+extend Float32 <: Self<Float32> {
+    public func self() { this }
+}
+
+extend Float64 <: Self<Float64> {
+    public func self() { this }
+}
+
+extend String <: Self<String> {
+    public func self() { this }
+}
+
 /* 是否是值類型的`0`值 */
 func zeroish(val: Any): Bool {
     match (val) {
@@ -51,13 +91,21 @@ func zeroish(val: Any): Bool {
         case a: Bool => a == false
         case a: Float32 => a == .0
         case a: Float64 => a == .0
-        case a: ValuedEnum => a.value() == 0
         case a: String => a.isEmpty()
+        case a: ValuedEnum => a.value() == 0
+        case a: Self<Int32> => a.self() == 0
+        case a: Self<UInt32> => a.self() == 0
+        case a: Self<Int64> => a.self() == 0
+        case a: Self<UInt64> => a.self() == 0
+        case a: Self<Bool> => a.self() == false
+        case a: Self<Float32> => a.self() == .0
+        case a: Self<Float64> => a.self() == .0
+        case a: Self<String> => a.self().isEmpty()
         case _ => false
     }
 }
 
-/* 是否在引用類型的值 */
+/* 是否是引用類型的值 */
 func reference(val: Any): Bool {
     match (val) {
         case _: Int32 => false
@@ -67,29 +115,49 @@ func reference(val: Any): Bool {
         case _: Bool => false
         case _: Float32 => false
         case _: Float64 => false
-        case _: ValuedEnum => false
         case _: String => false
+        case _: ValuedEnum => false
+        case _: Self<Int32> => false
+        case _: Self<UInt32> => false
+        case _: Self<Int64> => false
+        case _: Self<UInt64> => false
+        case _: Self<Bool> => false
+        case _: Self<Float32> => false
+        case _: Self<Float64> => false
+        case _: Self<String> => false
         case _ => true
     }
 }
 
+/* 调试Any传参类型退化规律 */
 public func debug(val: Any, id: String): Unit {
     print("debug[${id}]: val(")
     match (val) {
+        case s: Buffer<ToString> => print("${s})") // 没有效果
         case s: ToString => print("${s})")
         case _ => print("Invalid)")
     }
+    print("(zeroish: ${zeroish(val)}, reference: ${reference(val)})")
     match (val) {
-        case a: Int32 => println("<Int32>")
-        case a: UInt32 => println("<UInt32>")
-        case a: Int64 => println("<Int64>")
-        case a: UInt64 => println("<UInt64>")
-        case a: Bool => println("<Bool>")
-        case a: Float32 => println("<Float32>")
-        case a: Float64 => println("<Float64>")
-        case a: ValuedEnum => println("<Enum>")
-        case a: String => println("<String>")
+        case _: Int32 => println("<Int32>")
+        case _: UInt32 => println("<UInt32>")
+        case _: Int64 => println("<Int64>")
+        case _: UInt64 => println("<UInt64>")
+        case _: Bool => println("<Bool>")
+        case _: Float32 => println("<Float32>")
+        case _: Float64 => println("<Float64>")
+        case _: String => println("<String>")
+        case _: Bytes => println("<Byes>")
+        case _: ValuedEnum => println("<Enum>")
+        case _: MessageLite => println("<Message>")
+        case _: Self<Int32> => println("<Self<Int32>>")
+        case _: Self<UInt32> => println("<Self<UInt32>>")
+        case _: Self<Int64> => println("<Self<Int64>>")
+        case _: Self<UInt64> => println("<Self<UInt64>>")
+        case _: Self<Bool> => println("<Self<Bool>>")
+        case _: Self<Float32> => println("<Self<Float32>>")
+        case _: Self<Float64> => println("<Self<Float64>>")
+        case _: Self<String> => println("<Self<String>>")
         case _ => println("<Others>")
     }
-    println("debug[${id}]: val is String: ${val is String}, val as String: ${val as String}")
 }

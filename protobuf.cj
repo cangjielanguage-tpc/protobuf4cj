@@ -166,6 +166,7 @@ public abstract class MessageLite <: ToString {
         let iter = fields.iterator()
         while (true) {
             match (iter.next()) {
+                // todo: 引用类型bytes, message, 为`空`时, proto3不打包, proto2打包
                 case Some((tag, val: Any)) => accessors[tag].pack(tag, val, out)
                 case _ => break
             }
@@ -209,7 +210,7 @@ public abstract class MessageLite <: ToString {
         while (true) {
             match (iter.next()) {
                 case Some((tag, val: Any)) =>
-                    debug(val, "val by iter")
+                    // debug(val, "toString(${names[tag]})")
                     if (dot) { sb.append(", ") } else { dot = true }
                     sb.append(names[tag]).append(": ").append(accessors[tag].toString(val))
                 case _ => break
@@ -235,8 +236,8 @@ public abstract class MessageLite <: ToString {
 
     /* 供子类设置指定field的值 */
     protected func set(tag: Tag, val: Any): Unit {
-        debug(val, "set(${tag})");
-        /* proto2会保存设置的所以值, proto3不保存值类型的`0`值 */
+        // debug(val, "set(${getNames()[tag]})")
+        /* proto2会保存设置的所有值, proto3不保存值类型的`0`值 */
         if (proto2 || !zeroish(val)) { return fields[tag] = val }
         fields.remove(tag); ()
     }

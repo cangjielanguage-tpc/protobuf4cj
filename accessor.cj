@@ -1,7 +1,12 @@
 package protobuf
 
 /* throws */
-func dynamic_cast<T>(v: Any): T { (v as T).getOrThrow() }
+func dynamic_cast<T>(v: Any): T {
+    match (v) {
+        case a: Self<T> => a.self()
+        case _ => (v as T).getOrThrow()
+    }
+}
 
 /* access all the message fields */
 public interface Accessor {
