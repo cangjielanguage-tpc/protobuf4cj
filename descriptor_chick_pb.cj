@@ -302,12 +302,111 @@ extend ExtensionRangeOptions <: Default<ExtensionRangeOptions> {
     public static func default() { ExtensionRangeOptions() }
 }
 
+// add enum support by handwriting
+
+public enum FieldDescriptorProto_Type {
+    | TYPE_DOUBLE
+    | TYPE_FLOAT
+    | TYPE_INT64
+    | TYPE_UINT64
+    | TYPE_INT32
+    | TYPE_FIXED64
+    | TYPE_FIXED32
+    | TYPE_BOOL
+    | TYPE_STRING
+    | TYPE_GROUP
+    | TYPE_MESSAGE
+    | TYPE_BYTES
+    | TYPE_UINT32
+    | TYPE_ENUM
+    | TYPE_SFIXED32
+    | TYPE_SFIXED64
+    | TYPE_SINT32
+    | TYPE_SINT64
+}
+
+extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
+    public func value(): Int32 {
+        match (this) {
+            case TYPE_DOUBLE => 1
+            case TYPE_FLOAT => 2
+            case TYPE_INT64 => 3
+            case TYPE_UINT64 => 4
+            case TYPE_INT32 => 5
+            case TYPE_FIXED64 => 6
+            case TYPE_FIXED32 => 7
+            case TYPE_BOOL => 8
+            case TYPE_STRING => 9
+            case TYPE_GROUP => 10
+            case TYPE_MESSAGE => 11
+            case TYPE_BYTES => 12
+            case TYPE_UINT32 => 13
+            case TYPE_ENUM => 14
+            case TYPE_SFIXED32 => 15
+            case TYPE_SFIXED64 => 16
+            case TYPE_SINT32 => 17
+            case TYPE_SINT64 => 18
+        }
+    }
+
+    public func toString(): String {
+        match (this) {
+            case TYPE_DOUBLE => "TYPE_DOUBLE"
+            case TYPE_FLOAT => "TYPE_FLOAT"
+            case TYPE_INT64 => "TYPE_INT64"
+            case TYPE_UINT64 => "TYPE_UINT64"
+            case TYPE_INT32 => "TYPE_INT32"
+            case TYPE_FIXED64 => "TYPE_FIXED64"
+            case TYPE_FIXED32 => "TYPE_FIXED32"
+            case TYPE_BOOL => "TYPE_BOOL"
+            case TYPE_STRING => "TYPE_STRING"
+            case TYPE_GROUP => "TYPE_GROUP"
+            case TYPE_MESSAGE => "TYPE_MESSAGE"
+            case TYPE_BYTES => "TYPE_BYTES"
+            case TYPE_UINT32 => "TYPE_UINT32"
+            case TYPE_ENUM => "TYPE_ENUM"
+            case TYPE_SFIXED32 => "TYPE_SFIXED32"
+            case TYPE_SFIXED64 => "TYPE_SFIXED64"
+            case TYPE_SINT32 => "TYPE_SINT32"
+            case TYPE_SINT64 => "TYPE_SINT64"
+        }
+    }
+
+    public static func parse(value: Int32): FieldDescriptorProto_Type {
+        match (value) {
+            case 1 => TYPE_DOUBLE
+            case 2 => TYPE_FLOAT
+            case 3 => TYPE_INT64
+            case 4 => TYPE_UINT64
+            case 5 => TYPE_INT32
+            case 6 => TYPE_FIXED64
+            case 7 => TYPE_FIXED32
+            case 8 => TYPE_BOOL
+            case 9 => TYPE_STRING
+            case 10 => TYPE_GROUP
+            case 11 => TYPE_MESSAGE
+            case 12 => TYPE_BYTES
+            case 13 => TYPE_UINT32
+            case 14 => TYPE_ENUM
+            case 15 => TYPE_SFIXED32
+            case 16 => TYPE_SFIXED64
+            case 17 => TYPE_SINT32
+            case 18 => TYPE_SINT64
+            case e => throw InvalidEnumValueException("FieldDescriptorProto_Type", e)
+        }
+    }
+}
+
+extend FieldDescriptorProto_Type <: Default<FieldDescriptorProto_Type> {
+    public static func default() { TYPE_DOUBLE }
+}
+
 public class FieldDescriptorProto <: MessageLite {
     static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (3, Int32Accessor()),
-        // (4, MessageAccessor<Label>()),
-        // (5, MessageAccessor<Type>()),
+        (4, EnumAccessor<Label>()),
+        (5, EnumAccessor<FieldDescriptorProto_Type>()),
         (6, StringAccessor()),
         (2, StringAccessor()),
         (7, StringAccessor()),
@@ -321,8 +420,8 @@ public class FieldDescriptorProto <: MessageLite {
     static let names = HashMap<Tag, String>([
         (1, "name"),
         (3, "number"),
-        // (4, "label"),
-        // (5, "type"),
+        (4, "label"),
+        (5, "type"),
         (6, "type_name"),
         (2, "extendee"),
         (7, "default_value"),
@@ -345,15 +444,15 @@ public class FieldDescriptorProto <: MessageLite {
         set(v) { set(3, v) }
     }
 
-    // public prop var label: Label {
-    //     get() { get<Label>(4) }
-    //     set(v) { set(4, v) }
-    // }
+    public prop var label: Label {
+        get() { get<Label>(4) }
+        set(v) { set(4, v) }
+    }
 
-    // public prop var type: Type {
-    //     get() { get<Type>(5) }
-    //     set(v) { set(5, v) }
-    // }
+    public prop var type_: FieldDescriptorProto_Type {
+        get() { get<FieldDescriptorProto_Type>(5) }
+        set(v) { set(5, v) }
+    }
 
     public prop var type_name: String {
         get() { get<String>(6) }
