@@ -78,6 +78,7 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         E.parse(Int32(varintParse(src)))
     }
+    public func toString(val: Any) { "\"${dynamic_cast<E>(val)}\"" }
 }
 
 /* zigzag-encoding 128-base int32 */
@@ -427,6 +428,16 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         }
         rv
     }
+    public func toString(val: Any) {
+        let sb = StringBuilder("[")
+        var dot = false
+        let ss = dynamic_cast<Buffer<E>>(val)
+        for (s in ss) {
+            if (dot) { sb.append(", ") } else { dot = true }
+            sb.append('"').append(s).append('"')
+        }
+        sb.append(']').toString()
+    }
 }
 
 /* repeated enum with `packed` flag */
@@ -447,6 +458,16 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(E.parse(Int32(varintParse(tmp)))) }
         rv
+    }
+    public func toString(val: Any) {
+        let sb = StringBuilder("[")
+        var dot = false
+        let ss = dynamic_cast<Buffer<E>>(val)
+        for (s in ss) {
+            if (dot) { sb.append(", ") } else { dot = true }
+            sb.append('"').append(s).append('"')
+        }
+        sb.append(']').toString()
     }
 }
 
