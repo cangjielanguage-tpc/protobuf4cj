@@ -214,7 +214,7 @@ public abstract class MessageLite <: ToString {
                 case Some((tag, val: Any)) =>
                     // debug(val, "toString(${names[tag]})")
                     if (dot) { sb.append(", ") } else { dot = true }
-                    sb.append(names[tag]).append(": ").append(accessors[tag].toString(val))
+                    sb.append("\"${names[tag]}\"").append(": ").append(accessors[tag].toString(val))
                 case _ => break
             }
         }
