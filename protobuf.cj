@@ -99,7 +99,7 @@ extend Label <: Equatable<Label> {
 }
 
 /* An unknown message field. */
-public class MessageUnknownField {
+public class MessageUnknownField <: ToString {
     public MessageUnknownField(
         /** The tag number. */
         let tag: Tag,
@@ -120,11 +120,13 @@ public class MessageUnknownField {
         match (wt) {
             case BIT32 => len = 4
             case BIT64 => len = 8
-            case VARINT => len = varintSize(varintParse(src.read(min(src.size(), 10))))
-            case PREFIXED => let p = varintParse(src.read(min(src.size(), 10))); len = Int64(p) + varintSize(p)
+            case VARINT => len = varintSize(varintParse(src)); src.seek(-len)
+            case PREFIXED => let p = varintParse(src); let v = varintSize(p); len = Int64(p) + v; src.seek(-v)
         }
         MessageUnknownField(tag, wt, src.read(len).data())
     }
+
+    public func toString() { "tag: ${tag}, wireType: ${wireType}, data: ${data}" }
 }
 
 public interface ValuedEnum {
