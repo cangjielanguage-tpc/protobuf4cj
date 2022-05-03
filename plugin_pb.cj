@@ -127,8 +127,8 @@ public class CodeGeneratorResponse <: MessageLite {
         set(v) { set(2, v) }
     }
 
-    public prop var file: CodeGeneratorResponse_File {
-        get() { get<CodeGeneratorResponse_File>(15) }
+    public prop var file: Buffer<CodeGeneratorResponse_File> {
+        get() { get<Buffer<CodeGeneratorResponse_File>>(15) }
         set(v) { set(15, v) }
     }
 }
