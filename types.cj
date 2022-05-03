@@ -41,6 +41,21 @@ extend Buffer<T> <: Default<Buffer<T>> {
     public static func default(): Buffer<T> { Buffer() }
 }
 
+/* 给repeated bytes, repeated message增加add()接口 */
+public interface Reference {}
+extend Buffer<T> <: Reference { }
+extend MessageLite <: Reference { }
+/* 当前extend导出规则不允许此形式导出, 暂时使用AddReference<T>进行兼容 */
+// extend Buffer<T> where T <: Reference & Default<T> {
+//     public func add() { let rv = T.default(); this.add(rv); rv }
+// }
+public interface AddReference<T> {
+    func add(): T
+}
+extend Buffer<T> <: AddReference<T> where T <: Reference & Default<T> {
+    public func add() { let rv = T.default(); this.add(rv); rv }
+}
+
 /** 
  * 兼容cangjie 0.28.4部分场景下通过Any传参后无法通过as操作符复原
  * 目前仅发现内置的数值类型、String类型存在该问题, enum、class并未发现此问题
@@ -108,6 +123,8 @@ func zeroish(val: Any): Bool {
 /* 是否是引用類型的值 */
 func reference(val: Any): Bool {
     match (val) {
+        case _: Reference => true
+        /* 兼容部分场景下Reference无法识别 */
         case _: Int32 => false
         case _: UInt32 => false
         case _: Int64 => false
@@ -133,11 +150,11 @@ func reference(val: Any): Bool {
 public func debug(val: Any, id: String): Unit {
     print("debug[${id}]: val(")
     match (val) {
-        case s: Buffer<ToString> => print("${s})") // 没有效果
+        // case s: Buffer<ToString> => print("${s})") // 没有效果
         case s: ToString => print("${s})")
         case _ => print("Invalid)")
     }
-    print("(zeroish: ${zeroish(val)}, reference: ${reference(val)})")
+    print("(zeroish: ${zeroish(val)}, reference: ${reference(val)}), val is Reference: ${val is Reference}")
     match (val) {
         case _: Int32 => println("<Int32>")
         case _: UInt32 => println("<UInt32>")
