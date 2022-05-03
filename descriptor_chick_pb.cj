@@ -66,7 +66,7 @@ public class FileDescriptorProto <: MessageLite {
         set(v) { set(1, v) }
     }
 
-    public prop var package: String {
+    public prop var package_: String {
         get() { get<String>(2) }
         set(v) { set(2, v) }
     }
@@ -306,8 +306,8 @@ public class FieldDescriptorProto <: MessageLite {
     static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (3, Int32Accessor()),
-        (4, MessageAccessor<Label>()),
-        (5, MessageAccessor<Type>()),
+        // (4, MessageAccessor<Label>()),
+        // (5, MessageAccessor<Type>()),
         (6, StringAccessor()),
         (2, StringAccessor()),
         (7, StringAccessor()),
@@ -321,8 +321,8 @@ public class FieldDescriptorProto <: MessageLite {
     static let names = HashMap<Tag, String>([
         (1, "name"),
         (3, "number"),
-        (4, "label"),
-        (5, "type"),
+        // (4, "label"),
+        // (5, "type"),
         (6, "type_name"),
         (2, "extendee"),
         (7, "default_value"),
@@ -345,15 +345,15 @@ public class FieldDescriptorProto <: MessageLite {
         set(v) { set(3, v) }
     }
 
-    public prop var label: Label {
-        get() { get<Label>(4) }
-        set(v) { set(4, v) }
-    }
+    // public prop var label: Label {
+    //     get() { get<Label>(4) }
+    //     set(v) { set(4, v) }
+    // }
 
-    public prop var type: Type {
-        get() { get<Type>(5) }
-        set(v) { set(5, v) }
-    }
+    // public prop var type: Type {
+    //     get() { get<Type>(5) }
+    //     set(v) { set(5, v) }
+    // }
 
     public prop var type_name: String {
         get() { get<String>(6) }
@@ -645,7 +645,7 @@ public class FileOptions <: MessageLite {
         (10, BoolAccessor()),
         (20, BoolAccessor()),
         (27, BoolAccessor()),
-        (9, MessageAccessor<OptimizeMode>()),
+        // (9, MessageAccessor<OptimizeMode>()),
         (11, StringAccessor()),
         (16, BoolAccessor()),
         (17, BoolAccessor()),
@@ -716,10 +716,10 @@ public class FileOptions <: MessageLite {
         set(v) { set(27, v) }
     }
 
-    public prop var optimize_for: OptimizeMode {
-        get() { get<OptimizeMode>(9) }
-        set(v) { set(9, v) }
-    }
+    // public prop var optimize_for: OptimizeMode {
+    //     get() { get<OptimizeMode>(9) }
+    //     set(v) { set(9, v) }
+    // }
 
     public prop var go_package: String {
         get() { get<String>(11) }
@@ -854,9 +854,9 @@ extend MessageOptions <: Default<MessageOptions> {
 
 public class FieldOptions <: MessageLite {
     static let accessors = HashMap<Tag, Accessor>([
-        (1, MessageAccessor<CType>()),
+        // (1, MessageAccessor<CType>()),
         (2, BoolAccessor()),
-        (6, MessageAccessor<JSType>()),
+        // (6, MessageAccessor<JSType>()),
         (5, BoolAccessor()),
         (15, BoolAccessor()),
         (3, BoolAccessor()),
@@ -879,20 +879,20 @@ public class FieldOptions <: MessageLite {
 
     public func clone() { let rv = FieldOptions(); rv.fields = fieldsClone(); rv }
 
-    public prop var ctype: CType {
-        get() { get<CType>(1) }
-        set(v) { set(1, v) }
-    }
+    // public prop var ctype: CType {
+    //     get() { get<CType>(1) }
+    //     set(v) { set(1, v) }
+    // }
 
     public prop var packed: Bool {
         get() { get<Bool>(2) }
         set(v) { set(2, v) }
     }
 
-    public prop var jstype: JSType {
-        get() { get<JSType>(6) }
-        set(v) { set(6, v) }
-    }
+    // public prop var jstype: JSType {
+    //     get() { get<JSType>(6) }
+    //     set(v) { set(6, v) }
+    // }
 
     public prop var lazy: Bool {
         get() { get<Bool>(5) }
@@ -1047,7 +1047,7 @@ extend ServiceOptions <: Default<ServiceOptions> {
 public class MethodOptions <: MessageLite {
     static let accessors = HashMap<Tag, Accessor>([
         (33, BoolAccessor()),
-        (34, MessageAccessor<IdempotencyLevel>()),
+        // (34, MessageAccessor<IdempotencyLevel>()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
@@ -1066,10 +1066,10 @@ public class MethodOptions <: MessageLite {
         set(v) { set(33, v) }
     }
 
-    public prop var idempotency_level: IdempotencyLevel {
-        get() { get<IdempotencyLevel>(34) }
-        set(v) { set(34, v) }
-    }
+    // public prop var idempotency_level: IdempotencyLevel {
+    //     get() { get<IdempotencyLevel>(34) }
+    //     set(v) { set(34, v) }
+    // }
 
     public prop var uninterpreted_option: Buffer<UninterpretedOption> {
         get() { get<Buffer<UninterpretedOption>>(999) }
@@ -1117,7 +1117,7 @@ public class UninterpretedOption <: MessageLite {
         (3, StringAccessor()),
         (4, UInt64Accessor()),
         (5, Int64Accessor()),
-        (6, Float64Accessor()),
+        (6, DoubleAccessor()),
         (7, BytesAccessor()),
         (8, StringAccessor())
     ])
