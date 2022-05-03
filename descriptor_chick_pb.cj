@@ -1178,8 +1178,8 @@ extend UninterpretedOption <: Default<UninterpretedOption> {
 
 public class Location <: MessageLite {
     static let accessors = HashMap<Tag, Accessor>([
-        (1, RepeatInt32Accessor()),
-        (2, RepeatInt32Accessor()),
+        (1, PackedInt32Accessor()),
+        (2, PackedInt32Accessor()),
         (3, StringAccessor()),
         (4, StringAccessor()),
         (6, RepeatStringAccessor())
@@ -1252,7 +1252,7 @@ extend SourceCodeInfo <: Default<SourceCodeInfo> {
 
 public class Annotation <: MessageLite {
     static let accessors = HashMap<Tag, Accessor>([
-        (1, RepeatInt32Accessor()),
+        (1, PackedInt32Accessor()),
         (2, StringAccessor()),
         (3, Int32Accessor()),
         (4, Int32Accessor())
