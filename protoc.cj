@@ -9,15 +9,36 @@ public func cj_generator(inbuf: Bytes, outbuf: Bytes): Unit {
     req.unpack(inbuf)
 
     let resp = CodeGeneratorResponse()
-    for (i in 0..req.file_to_generate.size()) {
-        // 只取文件名
-        let sp = req.file_to_generate[i].split('/')
-        fileProcess(sp[sp.size() - 1], req.proto_file[i], resp.file.add())
+    // debug, 保存req为json
+    for (desc in req.proto_file) {
+        desc.source_code_info.clear() // todo 暂时屏蔽
+    }
+    let dbgFile = resp.file.add()
+    dbgFile.name = "req.raw.json"
+    dbgFile.content = req.toString()
+
+    // 需要生成代码的文件集合
+    let genfiles = HashSet<String>()
+    for (path in req.file_to_generate) {
+        genfiles.put(getFileName(path))
+    }
+    // 处理需要生成代码的文件
+    for (desc in req.proto_file) {
+        if (genfiles.contains(getFileName(desc.name))) {
+            fileProcess(desc, resp.file.add())
+        }
     }
     resp.pack(outbuf)
 }
 
+/* 获取文件名 */
+func getFileName(path: String): String {
+    let sp = path.split('/')
+    sp[sp.size() - 1]
+}
+
 class GenCodeHelper {
+    /* 根据嵌套层级获取类型名 */
     let nested = Buffer<String>()
     func getTypeName(name: String) {
         if (nested.isEmpty()) { return name }
@@ -29,13 +50,11 @@ class GenCodeHelper {
     }
 
     let outbuf = StringBuilder()
-
-    // todo cangjie关键字、protobuf保留字检查
 }
 
-func fileProcess(name: String, desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
+func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // 目标文件路径
-    file.name = desc.package_.replace('.', '/') + '/' + name.replace(".proto", "_pb.cj")
+    file.name = desc.package_.replace('.', '/') + '/' + getFileName(desc.name).replace(".proto", "_pb.cj")
     let helper = GenCodeHelper()
     // 头部信息
     genCodeHeader(desc, helper)
@@ -140,11 +159,12 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     }
     outbuf.append("    ])\n    protected func getAccessors() { accessors }\n")
 
-    // names // todo 保留字
+    // names
     outbuf.append("\n    static let names = HashMap<Tag, String>([\n")
     i = 0
     for (f in fields) {
-        outbuf.append("        (${f.number}, \"${f.json_name}\")")
+        f.name = getMessagePropName(f.json_name)
+        outbuf.append("        (${f.number}, \"${f.name}\")")
         i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
     }
     outbuf.append("    ])\n    protected func getNames() { names }\n")
@@ -209,6 +229,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     // todo 换行
     var sp = false
     for (v in values) {
+        v.name = getEnumItemName(v.name)
         if (sp) { outbuf.append('|') } else { sp = true }
         outbuf.append(" ${v.name} ")
     }
@@ -254,4 +275,44 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
     // todo
+}
+
+/* 定义保留字 */
+let cangjieKeyWords = HashSet<String>([
+    "abstract", "as", "break", "case", "catch", "class", "continue", "do",
+    "else", "enum", "extend", "false", "finally", "for", "foreign", "from",
+    "func", "if", "import", "in", "init", "interface", "is", "let", "macro",
+    "match", "mut", "open", "operator", "override", "package", "private",
+    "prop", "protected", "public", "quote", "record", "redef", "return",
+    "spawn", "static", "super", "synchronized", "this", "throw", "true", "try",
+    "type", "This", "unsafe", "var", "where", "while"
+])
+let protobufRsvdWords = HashSet<String>([
+    "protobuf", "protoc", "default", "toString"
+])
+let messageRsvdWords = HashSet<String>([ /* todo 优化命名, 减少与保留字的碰撞 */
+    "getAccessors", "getNames", "getDefaultValue", "unknownFields", "fields",
+    "proto2", "fieldsClone", "pack", "unpack", "has", "clear", "accessors",
+    "names"
+])
+let enumRsvdWords = HashSet<String>([
+    "value", "parse"
+])
+
+func getEnumItemName(name: String) {
+    if (cangjieKeyWords.contains(name) ||
+        protobufRsvdWords.contains(name) ||
+        enumRsvdWords.contains(name)) {
+        name + '_'
+    }
+    name
+}
+
+func getMessagePropName(name: String) {
+    if (cangjieKeyWords.contains(name) ||
+        protobufRsvdWords.contains(name) ||
+        messageRsvdWords.contains(name)) {
+        name + '_'
+    }
+    name
 }
