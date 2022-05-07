@@ -9,13 +9,13 @@ public func cj_generator(inbuf: Bytes, outbuf: Bytes): Unit {
     req.unpack(inbuf)
 
     let resp = CodeGeneratorResponse()
-    // // debug, 保存req为json
-    // for (desc in req.proto_file) {
-    //     desc.source_code_info.clear() // todo 暂时屏蔽
-    // }
-    // let dbgFile = resp.file.add()
-    // dbgFile.name = "req.raw.json"
-    // dbgFile.content = req.toString()
+    // debug, 保存req为json
+    for (desc in req.proto_file) {
+        desc.source_code_info.clear() // todo 暂时屏蔽
+    }
+    let dbgFile = resp.file.add()
+    dbgFile.name = "req.raw.json"
+    dbgFile.content = req.toString()
 
     // 需要生成代码的文件集合
     let genfiles = HashSet<String>()
@@ -52,7 +52,7 @@ class GenCodeHelper {
     let pkgPrefix: String
     init (pkg: String) { pkgPrefix = ".${pkg}." }
 
-    let packages = Buffer<String>()
+    let packages = Buffer<String>([pkgPrefix])
     /* 获取所有依赖的package */
     func getDependencyPackages(deps: Buffer<String>) {
         let pkgs = HashSet<String>()
@@ -62,7 +62,6 @@ class GenCodeHelper {
                 case Some(i) => pkgs.put(dep.substring(0, i).replace('/', '.'))
             }
         }
-        packages.clear()
         for (p in pkgs) { packages.append(".${p}.") }
         packages.appendAll(pkgs)
         packages.sortBy(pkgCmp)
@@ -71,13 +70,12 @@ class GenCodeHelper {
 
     func getTypeName(typeName: String) {
         for (p in packages) {
-            // 外部类型
             if (typeName.startsWith(p)) {
+                if (p == pkgPrefix) {
+                    return String.join(typeName.substring(p.size()).split('.'), delimiter: "_")
+                }
                 return p.substring(1) + String.join(typeName.substring(p.size()).split('.'), delimiter: "_")
             }
-        }
-        if (typeName.startsWith(pkgPrefix)) {
-            return String.join(typeName.substring(pkgPrefix.size()).split('.'), delimiter: "_")
         }
         throw Exception() // todo
     }
@@ -122,7 +120,7 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("package ${desc.package_}\n")
     // import
     outbuf.append("\nfrom std import collection.*\n")
-    outbuf.append("import protobuf.*")
+    outbuf.append("import protobuf.*\n")
     for (pkg in helper.getDependencyPackages(desc.dependency)) {
         // todo public imports
         outbuf.append("import ${pkg}.*\n")
@@ -287,7 +285,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     }
     outbuf.append("        }\n    }\n")
     // parse
-    outbuf.append("\n    public static func parse(value: Int32): ${typeName} {\n        match(this) {\n")
+    outbuf.append("\n    public static func parse(value: Int32): ${typeName} {\n        match(value) {\n")
     for (v in values) {
         outbuf.append("            case ${v.number} => ${v.name}\n")
     }
@@ -337,7 +335,7 @@ func getEnumItemName(name: String) {
     if (cangjieKeyWords.contains(name) ||
         protobufRsvdWords.contains(name) ||
         enumRsvdWords.contains(name)) {
-        name + '_'
+        return name + '_'
     }
     name
 }
@@ -346,7 +344,7 @@ func getMessagePropName(name: String) {
     if (cangjieKeyWords.contains(name) ||
         protobufRsvdWords.contains(name) ||
         messageRsvdWords.contains(name)) {
-        name + '_'
+        return name + '_'
     }
     name
 }
