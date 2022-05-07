@@ -40,7 +40,7 @@ func getFileName(path: String): String {
 class GenCodeHelper {
     /* 根据嵌套层级获取类型名 */
     let nested = Buffer<String>()
-    func getTypeName(name: String) {
+    func getNestedTypeName(name: String) {
         if (nested.isEmpty()) { return name }
         let sb = StringBuilder()
         for (n in nested) {
@@ -49,13 +49,51 @@ class GenCodeHelper {
         sb.append(name).toString()
     }
 
+    let pkgPrefix: String
+    init (pkg: String) { pkgPrefix = ".${pkg}." }
+
+    let packages = Buffer<String>()
+    /* 获取所有依赖的package */
+    func getDependencyPackages(deps: Buffer<String>) {
+        let pkgs = HashSet<String>(packages)
+        for (dep in deps) {
+            match (dep.lastIndexOf('/')) {
+                case None => continue
+                case Some(i) => pkgs.put(dep.substring(0, i).replace('/', '.'))
+            }
+        }
+        packages.clear()
+        for (p in pkgs) { packages.append(".${p}.") }
+        packages.appendAll(pkgs)
+        packages.sortBy(pkgCmp)
+        pkgs
+    }
+
+    func getTypeName(typeName: String) {
+        for (p in packages) {
+            // 外部类型
+            if (typeName.startsWith(p)) {
+                return p.substring(1) + String.join(typeName.substring(p.size()).split('.'), delimiter: "_")
+            }
+        }
+        if (typeName.startsWith(pkgPrefix)) {
+            return String.join(typeName.substring(pkgPrefix.size()).split('.'), delimiter: "_")
+        }
+        throw Exception() // todo
+    }
+
+    // pkg 字典序逆序
+    static func pkgCmp(a: String, b: String) {
+        if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
+    }
+
     let outbuf = StringBuilder()
 }
 
 func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // 目标文件路径
     file.name = desc.package_.replace('.', '/') + '/' + getFileName(desc.name).replace(".proto", "_pb.cj")
-    let helper = GenCodeHelper()
+    let helper = GenCodeHelper(desc.package_)
     // 头部信息
     genCodeHeader(desc, helper)
     // 所有message
@@ -78,32 +116,20 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     file.content = helper.outbuf.toString()
 }
 
-/* 计算需要import的所有package */
-func getDependencyPackages(deps: Buffer<String>) {
-    let pkgs = HashSet<String>(["protobuf"])
-    for (dep in deps) {
-        match (dep.lastIndexOf('/')) {
-            case None => continue
-            case Some(i) => pkgs.put(dep.substring(0, i).replace('/', '.'))
-        }
-    }
-    Buffer<String>(pkgs)
-}
-
 func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     let outbuf = helper.outbuf
     // package
     outbuf.append("package ${desc.package_}\n")
     // import
     outbuf.append("\nfrom std import collection.*\n")
-    for (pkg in getDependencyPackages(desc.dependency)) {
+    outbuf.append("import protobuf.*")
+    for (pkg in helper.getDependencyPackages(desc.dependency)) {
         // todo public imports
         outbuf.append("import ${pkg}.*\n")
     }
 }
 
 func getAccesor(f: FieldDescriptorProto) {
-    // todo 计算message enum对应的typeName
     let ac = match (f.type_) {
         case TYPE_DOUBLE => "DoubleAccessor"
         case TYPE_FLOAT => "FloatAccessor"
@@ -128,7 +154,6 @@ func getAccesor(f: FieldDescriptorProto) {
 }
 
 func getPropType(f: FieldDescriptorProto) {
-    // todo 计算message enum对应的typeName
     let pt = match (f.type_) {
         case TYPE_DOUBLE => "Float64"
         case TYPE_FLOAT => "Float32"
@@ -163,7 +188,6 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("\n    static let names = HashMap<Tag, String>([\n")
     i = 0
     for (f in fields) {
-        f.name = getMessagePropName(f.json_name)
         outbuf.append("        (${f.number}, \"${f.name}\")")
         i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
     }
@@ -193,10 +217,20 @@ func genCodeMessageExtension(typeName: String, extensions: Buffer<FieldDescripto
 }
 
 func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
-    let typeName = helper.getTypeName(msg.name)
+    let typeName = helper.getNestedTypeName(msg.name)
     let fields = msg.field
     let extensions = msg.extension
     let outbuf = helper.outbuf
+
+    for (f in fields) {
+        // 设置typeName
+        match (f.type_) {
+            case TYPE_ENUM | TYPE_MESSAGE => f.type_name = helper.getTypeName(f.type_name)
+            case _ => ()
+        }
+        // 设置propName
+        f.name = getMessagePropName(f.json_name)
+    }
 
     // fields
     genCodeMessageField(typeName, fields, outbuf)
@@ -220,7 +254,7 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
 }
 
 func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
-    let typeName = helper.getTypeName(e.name)
+    let typeName = helper.getNestedTypeName(e.name)
     let values = e.value
     let outbuf = helper.outbuf
 
