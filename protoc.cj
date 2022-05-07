@@ -52,7 +52,7 @@ class GenCodeHelper {
     let pkgPrefix: String
     init (pkg: String) { pkgPrefix = ".${pkg}." }
 
-    let packages = Buffer<String>([pkgPrefix])
+    let packages = Buffer<String>()
     /* 获取所有依赖的package */
     func getDependencyPackages(deps: Buffer<String>) {
         let pkgs = HashSet<String>()
@@ -62,8 +62,8 @@ class GenCodeHelper {
                 case Some(i) => pkgs.put(dep.substring(0, i).replace('/', '.'))
             }
         }
+        packages.append(pkgPrefix)
         for (p in pkgs) { packages.append(".${p}.") }
-        packages.appendAll(pkgs)
         packages.sortBy(pkgCmp)
         pkgs
     }
