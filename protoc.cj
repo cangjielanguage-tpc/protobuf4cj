@@ -9,13 +9,13 @@ public func cj_generator(inbuf: Bytes, outbuf: Bytes): Unit {
     req.unpack(inbuf)
 
     let resp = CodeGeneratorResponse()
-    // debug, 保存req为json
-    for (desc in req.proto_file) {
-        desc.source_code_info.clear() // todo 暂时屏蔽
-    }
-    let dbgFile = resp.file.add()
-    dbgFile.name = "req.raw.json"
-    dbgFile.content = req.toString()
+    // // debug, 保存req为json
+    // for (desc in req.proto_file) {
+    //     desc.source_code_info.clear() // todo 暂时屏蔽
+    // }
+    // let dbgFile = resp.file.add()
+    // dbgFile.name = "req.raw.json"
+    // dbgFile.content = req.toString()
 
     // 需要生成代码的文件集合
     let genfiles = HashSet<String>()
