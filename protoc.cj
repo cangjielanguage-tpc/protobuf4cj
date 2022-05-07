@@ -55,7 +55,7 @@ class GenCodeHelper {
     let packages = Buffer<String>()
     /* 获取所有依赖的package */
     func getDependencyPackages(deps: Buffer<String>) {
-        let pkgs = HashSet<String>(packages)
+        let pkgs = HashSet<String>()
         for (dep in deps) {
             match (dep.lastIndexOf('/')) {
                 case None => continue
