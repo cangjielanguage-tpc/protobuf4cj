@@ -243,4 +243,13 @@ public abstract class MessageLite <: ToString {
         if (proto2 || !zeroish(val)) { return fields[tag] = val }
         fields.remove(tag); ()
     }
+
+    protected func has(tag: Tag): Bool {
+        fields.contains(tag)
+    }
+
+    /* clean all the field's value */
+    public func clear(): Unit {
+        fields.clear()
+    }
 }
