@@ -228,7 +228,7 @@ public abstract class MessageLite <: ToString {
         /* 引用类型保存到fields并返回 */
         if (reference(default)) { fields[tag] = default; return default }
         /* proto3直接返回类型的缺省值 */
-        if (!proto2) { default }
+        if (!proto2) { return default }
         /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
         match (getDefaultValue().get(tag)) {
             case Some(v) => return dynamic_cast(v)
