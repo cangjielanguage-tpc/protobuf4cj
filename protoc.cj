@@ -1,17 +1,17 @@
 package protoc
 
-import egg.*
-import protobuf.*
+import google.protobuf.*
+import google.protobuf.compiler.*
 import collection.*
 
-public func cj_generator(inbuf: Bytes, outbuf: Bytes): Unit {
+public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     let req = CodeGeneratorRequest()
     req.unpack(inbuf)
 
     let resp = CodeGeneratorResponse()
     // debug, 保存req为json
-    // for (desc in req.proto_file) {
-    //     desc.source_code_info.clear() // todo 暂时屏蔽
+    // for (desc in req.protoFile) {
+    //     desc.sourceCodeInfo.clear() // todo 暂时屏蔽
     // }
     // let dbgFile = resp.file.add()
     // dbgFile.name = "req.raw.json"
@@ -19,11 +19,11 @@ public func cj_generator(inbuf: Bytes, outbuf: Bytes): Unit {
 
     // 需要生成代码的文件集合
     let genfiles = HashSet<String>()
-    for (path in req.file_to_generate) {
+    for (path in req.fileToGenerate) {
         genfiles.put(getFileName(path))
     }
     // 处理需要生成代码的文件
-    for (desc in req.proto_file) {
+    for (desc in req.protoFile) {
         if (genfiles.contains(getFileName(desc.name))) {
             fileProcess(desc, resp.file.add())
         }
@@ -95,11 +95,11 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // 头部信息
     genCodeHeader(desc, helper)
     // 所有message
-    for (msg in desc.message_type) {
+    for (msg in desc.messageType) {
         genCodeMessage(msg, helper)
     }
     // 所有enum
-    for (e in desc.enum_type) {
+    for (e in desc.enumType) {
         genCodeEnum(e, helper)
     }
     // 所有service
@@ -138,17 +138,21 @@ func getAccesor(f: FieldDescriptorProto) {
         case TYPE_FIXED32 => "Fixed32Accessor"
         case TYPE_BOOL => "BoolAccessor"
         case TYPE_STRING => "StringAccessor"
-        case TYPE_MESSAGE => "MessageAccessor<${f.type_name}>"
+        case TYPE_MESSAGE => "MessageAccessor<${f.typeName}>"
         case TYPE_BYTES => "BytesAccessor"
         case TYPE_UINT32 => "UInt32Accessor"
-        case TYPE_ENUM => "EnumAccessor<${f.type_name}>"
+        case TYPE_ENUM => "EnumAccessor<${f.typeName}>"
         case TYPE_SFIXED32 => "SFixed32Accessor"
         case TYPE_SFIXED64 => "SFixed64Accessor"
         case TYPE_SINT32 => "SInt32Accessor"
         case TYPE_SINT64 => "SInt64Accessor"
         case _ => throw Exception() // todo
     }
-    if (f.label == REPEATED) { "Repeat${ac}" } else { ac }
+    // 处理 repeated
+    if (f.label.value() != 3) { return ac }
+    try { if (f.options.packed == true) { return "Packed${ac}" } }
+    catch (_) { /* nothing. */ }
+    "Repeat${ac}"
 }
 
 func getPropType(f: FieldDescriptorProto) {
@@ -160,13 +164,13 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_INT32 | TYPE_SFIXED32 | TYPE_SINT32 => "Int32"
         case TYPE_BOOL => "Bool"
         case TYPE_STRING => "String"
-        case TYPE_MESSAGE => f.type_name
+        case TYPE_MESSAGE => f.typeName
         case TYPE_BYTES => "Bytes"
         case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
-        case TYPE_ENUM => f.type_name
+        case TYPE_ENUM => f.typeName
         case _ => throw Exception() // todo
     }
-    if (f.label == REPEATED) { "Buffer<${pt}>" } else { pt }
+    if (f.label.value() == 3) { "Buffer<${pt}>" } else { pt }
 }
 
 func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>, outbuf: StringBuilder): Unit {
@@ -223,11 +227,11 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     for (f in fields) {
         // 设置typeName
         match (f.type_) {
-            case TYPE_ENUM | TYPE_MESSAGE => f.type_name = helper.getTypeName(f.type_name)
+            case TYPE_ENUM | TYPE_MESSAGE => f.typeName = helper.getTypeName(f.typeName)
             case _ => ()
         }
         // 设置propName
-        f.name = getMessagePropName(f.json_name)
+        f.name = getMessagePropName(f.jsonName)
     }
 
     // fields
@@ -237,11 +241,11 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     
     helper.nested.append(msg.name)
     // 内嵌message
-    for (m in msg.nested_type) {
+    for (m in msg.nestedType) {
         genCodeMessage(m, helper)
     }
     // 内嵌enum
-    for (e in msg.enum_type) {
+    for (e in msg.enumType) {
         genCodeEnum(e, helper)
     }
 
