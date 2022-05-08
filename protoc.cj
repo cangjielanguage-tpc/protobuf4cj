@@ -10,9 +10,10 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
 
     let resp = CodeGeneratorResponse()
     // debug, 保存req为json
-    // for (desc in req.protoFile) {
-    //     desc.sourceCodeInfo.clear() // todo 暂时屏蔽
-    // }
+    // todo, 但发生段错误时, 可以尝试注释或取消注释这段代码 (编译器的玄学bug, 请在提交记录中忽略此变更)
+    for (desc in req.protoFile) {
+        desc.sourceCodeInfo.clear() // todo 暂时屏蔽
+    }
     // let dbgFile = resp.file.add()
     // dbgFile.name = "req.raw.json"
     // dbgFile.content = req.toString()
@@ -54,12 +55,16 @@ class GenCodeHelper {
 
     let packages = Buffer<String>()
     /* 获取所有依赖的package */
-    func getDependencyPackages(deps: Buffer<String>) {
+    func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
-        for (dep in deps) {
+        for (dep in desc.dependency) {
             match (dep.lastIndexOf('/')) {
                 case None => continue
-                case Some(i) => pkgs.put(dep.substring(0, i).replace('/', '.'))
+                case Some(i) =>
+                    let pkg = dep.substring(0, i).replace('/', '.')
+                    if (pkg != desc.package_ && pkg != "protobuf") {
+                        pkgs.put(pkg)
+                    }
             }
         }
         packages.append(pkgPrefix)
@@ -120,8 +125,10 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("package ${desc.package_}\n")
     // import
     outbuf.append("\nfrom std import collection.*\n")
-    outbuf.append("import protobuf.*\n")
-    for (pkg in helper.getDependencyPackages(desc.dependency)) {
+    if (desc.package_ != "protobuf") {
+        outbuf.append("import protobuf.*\n")
+    }
+    for (pkg in helper.getDependencyPackages(desc)) {
         // todo public imports
         outbuf.append("import ${pkg}.*\n")
     }
