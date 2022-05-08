@@ -60,7 +60,7 @@ extend Buffer<T> <: AddReference<T> where T <: Reference & Default<T> {
  * 兼容cangjie 0.28.4部分场景下通过Any传参后无法通过as操作符复原
  * 目前仅发现内置的数值类型、String类型存在该问题, enum、class并未发现此问题
  */
-public interface Self<T> {
+interface Self<T> {
     func self(): T { (this as T).getOrThrow() }
 }
 
@@ -147,7 +147,7 @@ func reference(val: Any): Bool {
 }
 
 /* 调试Any传参类型退化规律 */
-public func debug(val: Any, id: String): Unit {
+func debug(val: Any, id: String): Unit {
     print("debug[${id}]: val(")
     match (val) {
         // case s: Buffer<ToString> => print("${s})") // 没有效果
