@@ -213,7 +213,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     // clone
     outbuf.append("\n    public func clone() { let rv = ${typeName}(); rv.fields = fieldsClone(); rv }\n")
     if (!helper.proto2) {
-        outbuf.append("    protected func proto2() { false }\n")
+        outbuf.append("    protected override func proto2() { false }\n")
     }
 
     // props
