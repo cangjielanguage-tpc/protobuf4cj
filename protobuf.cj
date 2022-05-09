@@ -49,7 +49,7 @@ public abstract class MessageLite <: ToString {
 
     public var unknownFields = Buffer<MessageUnknownField>()
     protected var fields = HashMap<Tag, Any>()
-    protected func proto2() { true } // 默认proto2
+    protected open func proto2() { true } // 默认proto2
 
     protected func fieldsClone() {
         let result = HashMap<Tag, Any>()
