@@ -62,7 +62,12 @@ class GenCodeHelper {
                 case None => continue
                 case Some(i) =>
                     let pkg = dep.substring(0, i).replace('/', '.')
+                    if (desc.package_ == "protobuf" && pkg != "protobuf") {
+                        /* protobuf包内不允许依赖外部包, cangjie不允许包循环依赖 */
+                        throw Exception() // todo
+                    }
                     if (pkg != desc.package_ && pkg != "protobuf") {
+                        /* 保存除自己、protobuf以外的包 */
                         pkgs.put(pkg)
                     }
             }
