@@ -49,7 +49,7 @@ public abstract class MessageLite <: ToString {
 
     public var unknownFields = Buffer<MessageUnknownField>()
     protected var fields = HashMap<Tag, Any>()
-    protected var proto2 = true // 默认proto2
+    protected func proto2() { true } // 默认proto2
 
     protected func fieldsClone() {
         let result = HashMap<Tag, Any>()
@@ -130,7 +130,7 @@ public abstract class MessageLite <: ToString {
         /* 引用类型保存到fields并返回 */
         if (reference(default)) { fields[tag] = default; return default }
         /* proto3直接返回类型的缺省值 */
-        if (!proto2) { return default }
+        if (!proto2()) { return default }
         /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
         match (getDefaultValue().get(tag)) {
             case Some(v) => return dynamic_cast(v)
@@ -142,7 +142,7 @@ public abstract class MessageLite <: ToString {
     protected func set(tag: Tag, val: Any): Unit {
         // debug(val, "set(${getNames()[tag]})")
         /* proto2会保存设置的所有值, proto3不保存值类型的`0`值 */
-        if (proto2 || !zeroish(val)) { return fields[tag] = val }
+        if (proto2() || !zeroish(val)) { return fields[tag] = val }
         fields.remove(tag); ()
     }
 
