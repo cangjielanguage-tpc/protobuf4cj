@@ -51,7 +51,7 @@ class GenCodeHelper {
     }
 
     let pkgPrefix: String
-    init (pkg: String) { pkgPrefix = ".${pkg}." }
+    GenCodeHelper (pkg: String, let proto2: Bool) { pkgPrefix = ".${pkg}." }
 
     let packages = Buffer<String>()
     /* 获取所有依赖的package */
@@ -101,7 +101,9 @@ class GenCodeHelper {
 func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // 目标文件路径
     file.name = desc.package_.replace('.', '/') + '/' + getFileName(desc.name).replace(".proto", "_pb.cj")
-    let helper = GenCodeHelper(desc.package_)
+    // todo 暂时没有has接口, 使用try catch代替
+    let proto2 = try { desc.syntax != "proto3" } catch (_) { true }
+    let helper = GenCodeHelper(desc.package_, proto2)
     // 头部信息
     genCodeHeader(desc, helper)
     // 所有message
@@ -185,7 +187,8 @@ func getPropType(f: FieldDescriptorProto) {
     if (f.label.value() == 3) { "Buffer<${pt}>" } else { pt }
 }
 
-func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>, outbuf: StringBuilder): Unit {
+func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    let outbuf = helper.outbuf
     // class
     outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
 
@@ -209,6 +212,9 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
 
     // clone
     outbuf.append("\n    public func clone() { let rv = ${typeName}(); rv.fields = fieldsClone(); rv }\n")
+    if (!helper.proto2) {
+        outbuf.append("    protected func proto2() { false }\n")
+    }
 
     // props
     for (f in fields) {
@@ -226,7 +232,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("}\n")
 }
 
-func genCodeMessageExtension(typeName: String, extensions: Buffer<FieldDescriptorProto>, outbuf: StringBuilder): Unit {
+func genCodeMessageExtension(typeName: String, extensions: Buffer<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     // todo
 }
 
@@ -234,7 +240,6 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     let typeName = helper.getNestedTypeName(msg.name)
     let fields = msg.field
     let extensions = msg.extension
-    let outbuf = helper.outbuf
 
     for (f in fields) {
         // 设置typeName
@@ -247,9 +252,9 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     }
 
     // fields
-    genCodeMessageField(typeName, fields, outbuf)
+    genCodeMessageField(typeName, fields, helper)
     // extensions
-    genCodeMessageExtension(typeName, extensions, outbuf)
+    genCodeMessageExtension(typeName, extensions, helper)
     
     helper.nested.append(msg.name)
     // 内嵌message
