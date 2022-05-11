@@ -14,6 +14,7 @@ public interface Accessor {
     func unpack(tag: Tag, src: SimpleReader): Any
     func clone(val: Any): Any { val }
     func toString(val: Any) { dynamic_cast<ToString>(val).toString() }
+    static func getInstance(): Accessor
 }
 
 /* access all the repeated fields, override the default `clone` and `toString` */
@@ -32,6 +33,8 @@ public class Int32Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int32(varintParse(src))
     }
+    private static let instance = Int32Accessor()
+    public static func getInstance() { instance }
 }
 
 public class UInt32Accessor <: Accessor {
@@ -43,6 +46,8 @@ public class UInt32Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         UInt32(varintParse(src))
     }
+    private static let instance = UInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 public class Int64Accessor <: Accessor {
@@ -55,6 +60,8 @@ public class Int64Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int64(varintParse(src))
     }
+    private static let instance = Int64Accessor()
+    public static func getInstance() { instance }
 }
 
 public class UInt64Accessor <: Accessor {
@@ -65,6 +72,8 @@ public class UInt64Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         varintParse(src)
     }
+    private static let instance = UInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* enum E */
@@ -79,6 +88,8 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
         E.parse(Int32(varintParse(src)))
     }
     public func toString(val: Any) { "\"${dynamic_cast<E>(val)}\"" }
+    private static let instance = EnumAccessor<E>()
+    public static func getInstance() { instance }
 }
 
 /* zigzag-encoding 128-base int32 */
@@ -91,6 +102,8 @@ public class SInt32Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         unzigzag(UInt32(varintParse(src)))
     }
+    private static let instance = SInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* zigzag-encoding 128-base int64 */
@@ -102,6 +115,8 @@ public class SInt64Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         unzigzag(varintParse(src))
     }
+    private static let instance = SInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* bool, varint 0 or 1 */
@@ -113,6 +128,8 @@ public class BoolAccessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         varintParse(src) != 0
     }
+    private static let instance = BoolAccessor()
+    public static func getInstance() { instance }
 }
 
 /* length fixed 4-bytes signed int32 */
@@ -125,6 +142,8 @@ public class SFixed32Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int32(fixed32Parse(src))
     }
+    private static let instance = SFixed32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* length fixed 4-bytes unsigned uint32 */
@@ -136,6 +155,8 @@ public class Fixed32Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         fixed32Parse(src)
     }
+    private static let instance = Fixed32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* length fixed 4-bytes float32 */
@@ -147,6 +168,8 @@ public class FloatAccessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         floatBits(fixed32Parse(src))
     }
+    private static let instance = FloatAccessor()
+    public static func getInstance() { instance }
 }
 
 /* length fixed 8-bytes signed int64 */
@@ -159,6 +182,8 @@ public class SFixed64Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int64(fixed64Parse(src))
     }
+    private static let instance = SFixed64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* length fixed 8-bytes unsigned uint64 */
@@ -170,6 +195,8 @@ public class Fixed64Accessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         fixed64Parse(src)
     }
+    private static let instance = Fixed64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* length fixed 8-bytes float64 */
@@ -181,6 +208,8 @@ public class DoubleAccessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         floatBits(fixed64Parse(src))
     }
+    private static let instance = DoubleAccessor()
+    public static func getInstance() { instance }
 }
 
 /* string */
@@ -193,6 +222,8 @@ public class StringAccessor <: Accessor {
         strParse(src)
     }
     public func toString(val: Any) { "\"${dynamic_cast<String>(val)}\"" }
+    private static let instance = StringAccessor()
+    public static func getInstance() { instance }
 }
 
 /* bytes */
@@ -209,6 +240,8 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Bytes(binParse(src).data())
     }
+    private static let instance = BytesAccessor()
+    public static func getInstance() { instance }
 }
 
 /* message M */
@@ -229,6 +262,8 @@ public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> 
     public func clone(val: Any) {
         dynamic_cast<M>(val).clone()
     }
+    private static let instance = MessageAccessor<M>()
+    public static func getInstance() { instance }
 }
 
 /* repeated int32 without `packed` flag */
@@ -253,6 +288,8 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
         }
         rv
     }
+    private static let instance = RepeatInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated int32 with `packed` flag */
@@ -274,6 +311,8 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
         while (!tmp.isEmpty()) { rv.append(Int32(varintParse(tmp))) }
         rv
     }
+    private static let instance = PackedInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated uint32 without `packed` flag */
@@ -297,6 +336,8 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
         }
         rv
     }
+    private static let instance = RepeatUInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated uint32 with `packed` flag */
@@ -317,6 +358,8 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
         while (!tmp.isEmpty()) { rv.append(UInt32(varintParse(tmp))) }
         rv
     }
+    private static let instance = PackedUInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated int64 without `packed` flag */
@@ -341,6 +384,8 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
         }
         rv
     }
+    private static let instance = RepeatInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated int64 with `packed` flag */
@@ -362,6 +407,8 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
         while (!tmp.isEmpty()) { rv.append(Int64(varintParse(tmp))) }
         rv
     }
+    private static let instance = PackedInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated uint64 without `packed` flag */
@@ -384,6 +431,8 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
         }
         rv
     }
+    private static let instance = RepeatUInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated uint64 with `packed` flag */
@@ -404,6 +453,8 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
         while (!tmp.isEmpty()) { rv.append(varintParse(tmp)) }
         rv
     }
+    private static let instance = PackedUInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated enum without `packed` flag */
@@ -438,6 +489,8 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         }
         sb.append(']').toString()
     }
+    private static let instance = RepeatEnumAccessor<E>()
+    public static func getInstance() { instance }
 }
 
 /* repeated enum with `packed` flag */
@@ -469,6 +522,8 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         }
         sb.append(']').toString()
     }
+    private static let instance = PackedEnumAccessor<E>()
+    public static func getInstance() { instance }
 }
 
 /* repeated sint32 without `packed` flag */
@@ -492,6 +547,8 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
         }
         rv
     }
+    private static let instance = RepeatSInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated sint32 with `packed` flag */
@@ -512,6 +569,8 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
         while (!tmp.isEmpty()) { rv.append(unzigzag(UInt32(varintParse(tmp)))) }
         rv
     }
+    private static let instance = PackedSInt32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated sint64 without `packed` flag */
@@ -534,6 +593,8 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
         }
         rv
     }
+    private static let instance = RepeatSInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated sint64 with `packed` flag */
@@ -554,6 +615,8 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
         while (!tmp.isEmpty()) { rv.append(unzigzag(varintParse(tmp))) }
         rv
     }
+    private static let instance = PackedSInt64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated bool without `packed` flag */
@@ -576,6 +639,8 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
         }
         rv
     }
+    private static let instance = RepeatBoolAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated bool with `packed` flag */
@@ -594,6 +659,8 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
         while (!tmp.isEmpty()) { rv.append(varintParse(tmp) != 0) }
         rv
     }
+    private static let instance = PackedBoolAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes int32 without `packed` flag */
@@ -617,6 +684,8 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
         }
         rv
     }
+    private static let instance = RepeatSFixed32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes int32 with `packed` flag */
@@ -635,6 +704,8 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
         while (!tmp.isEmpty()) { rv.append(Int32(fixed32Parse(tmp))) }
         rv
     }
+    private static let instance = PackedSFixed32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes uint32 without `packed` flag */
@@ -657,6 +728,8 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
         }
         rv
     }
+    private static let instance = RepeatFixed32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes uint32 with `packed` flag */
@@ -675,6 +748,8 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
         while (!tmp.isEmpty()) { rv.append(fixed32Parse(tmp)) }
         rv
     }
+    private static let instance = PackedFixed32Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes float32 without `packed` flag */
@@ -697,6 +772,8 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
         }
         rv
     }
+    private static let instance = RepeatFloatAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes float32 with `packed` flag */
@@ -716,6 +793,8 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
         while (!tmp.isEmpty()) { rv.append(floatBits(fixed32Parse(tmp))) }
         rv
     }
+    private static let instance = PackedFloatAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 8-bytes int64 without `packed` flag */
@@ -739,6 +818,8 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
         }
         rv
     }
+    private static let instance = RepeatSFixed64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 8-bytes int64 with `packed` flag */
@@ -757,6 +838,8 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
         while (!tmp.isEmpty()) { rv.append(Int64(fixed32Parse(tmp))) }
         rv
     }
+    private static let instance = PackedSFixed64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 8-bytes uint64 without `packed` flag */
@@ -779,6 +862,8 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
         }
         rv
     }
+    private static let instance = RepeatFixed64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 8-bytes uint64 with `packed` flag */
@@ -797,6 +882,8 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
         while (!tmp.isEmpty()) { rv.append(fixed64Parse(tmp)) }
         rv
     }
+    private static let instance = PackedFixed64Accessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 8-bytes float64 without `packed` flag */
@@ -819,6 +906,8 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
         }
         rv
     }
+    private static let instance = RepeatDoubleAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated 8-bytes float64 with `packed` flag */
@@ -838,6 +927,8 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
         while (!tmp.isEmpty()) { rv.append(floatBits(fixed64Parse(tmp))) }
         rv
     }
+    private static let instance = PackedDoubleAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated string */
@@ -870,6 +961,8 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
         }
         sb.append(']').toString()
     }
+    private static let instance = RepeatStringAccessor()
+    public static func getInstance() { instance }
 }
 
 /* repeated bytes */
@@ -896,6 +989,8 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
         let val = dynamic_cast<Buffer<Bytes>>(val)
         Buffer<Bytes>(val.size(), { i => val[i].clone() })
     }
+    private static let instance = RepeatBytesAccessor()
+    public static func getInstance() { instance }
 }
 /* repeated message */
 public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLite & Default<M> {
@@ -925,4 +1020,68 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
         let val = dynamic_cast<Buffer<M>>(val)
         Buffer<M>(val.size(), { i => dynamic_cast<M>(val[i].clone()) })
     }
+    private static let instance = RepeatMessageAccessor<M>()
+    public static func getInstance() { instance }
+}
+
+/* map<K, V>, similar to repeated MapEntry */
+public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatable<K> & ToString & Default<K>, V <: Default<V>, KA <: Accessor, VA <: Accessor {
+    public func pack(tag: Tag, val: Any, out: Bytes) {
+        let val = dynamic_cast<HashMap<K, V>>(val)
+        if (val.isEmpty()) { return }
+        let ka = KA.getInstance()
+        let va = VA.getInstance()
+        let tmp = Bytes()
+        for ((k, v) in val) {
+            tagPack(tag, PREFIXED, out)
+            tmp.clear()
+            if (!zeroish(k)) { ka.pack(1, k, tmp) }
+            if (!zeroish(v)) { va.pack(2, v, tmp) }
+            varintPack(UInt64(tmp.size()), out)
+            out.appendAll(tmp)
+        }
+    }
+    public func unpack(tag: Tag, src: SimpleReader) {
+        let rv = HashMap<K, V>()
+        let ka = KA.getInstance()
+        let va = VA.getInstance()
+        var k: K
+        var v: V
+        var tmp: SimpleReader
+        while (true) {
+            tmp = binParse(src)
+            k = K.default()
+            v = V.default()
+            while (!tmp.isEmpty()) {
+                match (tagParse(tmp)) {
+                    case (1, _) => k = dynamic_cast<K>(ka.unpack(1, tmp))
+                    case (2, _) => v = dynamic_cast<V>(va.unpack(2, tmp))
+                    case _ => throw Exception() // todo
+                }
+            }
+            rv[k] = v
+            if (src.isEmpty()) { break }
+            let (next, _) = tagParse(src)
+            if (next != tag) { src.seek(-tagSize(next)); break }
+        }
+        rv
+    }
+    public func clone(val: Any) {
+        let rv = HashMap<K, V>()
+        let va = VA.getInstance()
+        for ((k, v) in dynamic_cast<HashMap<K, V>>(val)) { rv[k] = dynamic_cast<V>(va.clone(v)) }
+        rv
+    }
+    public func toString(val: Any) {
+        let va = VA.getInstance()
+        let sb = StringBuilder("{")
+        var dot = false
+        for ((k, v) in dynamic_cast<HashMap<K, V>>(val)) {
+            if (dot) { sb.append(", ") } else { dot = true }
+            sb.append("\"${k}\"").append(": ").append(va.toString(v))
+        }
+        sb.append('}').toString()
+    }
+    private static let instance = MapAccessor<K, V, KA, VA>()
+    public static func getInstance() { instance }
 }

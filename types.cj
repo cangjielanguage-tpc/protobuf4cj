@@ -45,6 +45,7 @@ extend Buffer<T> <: Default<Buffer<T>> {
 public interface Reference {}
 extend Buffer<T> <: Reference { }
 extend MessageLite <: Reference { }
+extend HashMap<K, V> <: Reference { }
 /* 当前extend导出规则不允许此形式导出, 暂时使用AddReference<T>进行兼容 */
 // extend Buffer<T> where T <: Reference & Default<T> {
 //     public func add() { let rv = T.default(); this.add(rv); rv }
@@ -164,7 +165,7 @@ func debug(val: Any, id: String): Unit {
         case _: Float32 => println("<Float32>")
         case _: Float64 => println("<Float64>")
         case _: String => println("<String>")
-        case _: Bytes => println("<Byes>")
+        case _: Bytes => println("<Bytes>")
         case _: ValuedEnum => println("<Enum>")
         case _: MessageLite => println("<Message>")
         case _: Self<Int32> => println("<Self<Int32>>")
