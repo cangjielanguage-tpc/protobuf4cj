@@ -312,6 +312,11 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     }
     outbuf.append("            case e => throw InvalidEnumValueException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
+    // todo cangjie bug
+    outbuf.append("\n    /* cangjie 0.28.4 bug, xxx should be implemented */\n")
+    outbuf.append("    public func hashCode() { value().hashCode() }\n")
+    outbuf.append("    public operator func ==(right: ${typeName}) { value() == right.value() }\n")
+    outbuf.append("    public operator func !=(right: ${typeName}) { value() != right.value() }\n")
     // extend Enum end
     outbuf.append("}\n")
 
