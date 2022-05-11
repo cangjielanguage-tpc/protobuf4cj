@@ -32,6 +32,11 @@ extend WireType <: Enum<WireType> {
             case e => throw InvalidEnumValueException("WireType", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: WireType) { value() == right.value() }
+    public operator func !=(right: WireType) { value() != right.value() }
 }
 
 extend WireType <: Default<WireType> {

@@ -36,8 +36,11 @@ public interface ValuedEnum {
 }
 
 /* base of protobuf enum */
-public interface Enum<E> <: ValuedEnum & ToString {
+public interface Enum<E> <: ValuedEnum & ToString & Hashable & Equatable<E> where E <: Enum<E> {
     static func parse(v: Int32): E
+    func hashCode() { value().hashCode() }
+    operator func ==(right: E) { value() == right.value() }
+    operator func !=(right: E) { value() != right.value() }
 }
 
 /* base of protobuf message */
