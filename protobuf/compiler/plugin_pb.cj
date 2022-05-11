@@ -197,6 +197,11 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
             case e => throw InvalidEnumValueException("CodeGeneratorResponse_Feature", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: CodeGeneratorResponse_Feature) { value() == right.value() }
+    public operator func !=(right: CodeGeneratorResponse_Feature) { value() != right.value() }
 }
 
 extend CodeGeneratorResponse_Feature <: Default<CodeGeneratorResponse_Feature> {

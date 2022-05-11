@@ -467,6 +467,11 @@ extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
             case e => throw InvalidEnumValueException("FieldDescriptorProto_Type", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: FieldDescriptorProto_Type) { value() == right.value() }
+    public operator func !=(right: FieldDescriptorProto_Type) { value() != right.value() }
 }
 
 extend FieldDescriptorProto_Type <: Default<FieldDescriptorProto_Type> {
@@ -500,6 +505,11 @@ extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case e => throw InvalidEnumValueException("FieldDescriptorProto_Label", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: FieldDescriptorProto_Label) { value() == right.value() }
+    public operator func !=(right: FieldDescriptorProto_Label) { value() != right.value() }
 }
 
 extend FieldDescriptorProto_Label <: Default<FieldDescriptorProto_Label> {
@@ -939,6 +949,11 @@ extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
             case e => throw InvalidEnumValueException("FileOptions_OptimizeMode", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: FileOptions_OptimizeMode) { value() == right.value() }
+    public operator func !=(right: FileOptions_OptimizeMode) { value() != right.value() }
 }
 
 extend FileOptions_OptimizeMode <: Default<FileOptions_OptimizeMode> {
@@ -1095,6 +1110,11 @@ extend FieldOptions_CType <: Enum<FieldOptions_CType> {
             case e => throw InvalidEnumValueException("FieldOptions_CType", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: FieldOptions_CType) { value() == right.value() }
+    public operator func !=(right: FieldOptions_CType) { value() != right.value() }
 }
 
 extend FieldOptions_CType <: Default<FieldOptions_CType> {
@@ -1128,6 +1148,11 @@ extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case e => throw InvalidEnumValueException("FieldOptions_JSType", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: FieldOptions_JSType) { value() == right.value() }
+    public operator func !=(right: FieldOptions_JSType) { value() != right.value() }
 }
 
 extend FieldOptions_JSType <: Default<FieldOptions_JSType> {
@@ -1318,6 +1343,11 @@ extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
             case e => throw InvalidEnumValueException("MethodOptions_IdempotencyLevel", e)
         }
     }
+
+    /* cangjie 0.28.4 bug, xxx should be implemented */
+    public func hashCode() { value().hashCode() }
+    public operator func ==(right: MethodOptions_IdempotencyLevel) { value() == right.value() }
+    public operator func !=(right: MethodOptions_IdempotencyLevel) { value() != right.value() }
 }
 
 extend MethodOptions_IdempotencyLevel <: Default<MethodOptions_IdempotencyLevel> {
