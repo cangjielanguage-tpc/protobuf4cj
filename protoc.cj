@@ -21,11 +21,11 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     // 需要生成代码的文件集合
     let genfiles = HashSet<String>()
     for (path in req.fileToGenerate) {
-        genfiles.put(getFileName(path))
+        genfiles.put(path)
     }
     // 处理需要生成代码的文件
     for (desc in req.protoFile) {
-        if (genfiles.contains(getFileName(desc.name))) {
+        if (genfiles.contains(desc.name)) {
             fileProcess(desc, resp.file.add())
         }
     }
