@@ -47,7 +47,7 @@ public interface Enum<E> <: ValuedEnum & ToString & Hashable & Equatable<E> wher
 public abstract class MessageLite <: ToString {
     protected func getAccessors(): HashMap<Tag, Accessor>
     protected func getNames(): HashMap<Tag, String> // 现阶段不完全确定哪些信息必须提供，故单独提供，后期再整合
-    protected open func getDefaultValue(): HashMap<Tag, Any> { HashMap() } // proto3用不到, 故提供默认实现, proto2需覆盖此函数
+    protected open func getDefaultValue(): ?HashMap<Tag, Any> { None } // proto3用不到, 故提供默认实现, proto2需覆盖此函数
     public func clone(): MessageLite // 由于需要具体的类型信息，只能交给子类具体实现
 
     public var unknownFields = Buffer<MessageUnknownField>()
@@ -135,8 +135,8 @@ public abstract class MessageLite <: ToString {
         /* proto3直接返回类型的缺省值 */
         if (!proto2()) { return default }
         /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
-        match (getDefaultValue().get(tag)) {
-            case Some(v) => return dynamic_cast(v)
+        match (getDefaultValue()?.get(tag)) {
+            case Some(Some(v)) => return dynamic_cast(v)
             case _ => throw GetFieldValueException(getNames()[tag])
         }
     }
