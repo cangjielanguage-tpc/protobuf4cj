@@ -17,11 +17,11 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     // 处理需要生成代码的文件
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
-            fileProcess(desc, resp.file.add())
             // debug, 保存desc为json
             let dbgFile = resp.file.add()
             dbgFile.name = desc.name.replace(".proto", ".raw.json")
             dbgFile.content = desc.toString()
+            fileProcess(desc, resp.file.add())
         }
     }
     resp.pack(outbuf)
