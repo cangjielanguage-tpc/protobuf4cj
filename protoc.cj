@@ -9,15 +9,6 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     req.unpack(inbuf)
 
     let resp = CodeGeneratorResponse()
-    // debug, 保存req为json
-    // todo, 但发生段错误时, 可以尝试注释或取消注释这段代码 (编译器的玄学bug, 请在提交记录中忽略此变更)
-    for (desc in req.protoFile) {
-        desc.sourceCodeInfo.clear() // todo 暂时屏蔽
-    }
-    // let dbgFile = resp.file.add()
-    // dbgFile.name = "req.raw.json"
-    // dbgFile.content = req.toString()
-
     // 需要生成代码的文件集合
     let genfiles = HashSet<String>()
     for (path in req.fileToGenerate) {
@@ -27,6 +18,10 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
             fileProcess(desc, resp.file.add())
+            // debug, 保存desc为json
+            let dbgFile = resp.file.add()
+            dbgFile.name = desc.name.replace(".proto", ".raw.json")
+            dbgFile.content = desc.toString()
         }
     }
     resp.pack(outbuf)
