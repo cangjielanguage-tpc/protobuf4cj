@@ -8,6 +8,10 @@ func dynamic_cast<T>(v: Any): T {
     }
 }
 
+func escape(s: String) {
+    s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\r", "\\r").replace("\n", "\\n")
+}
+
 /* access all the message fields */
 public interface Accessor {
     func pack(tag: Tag, val: Any, out: Bytes): Unit
@@ -221,7 +225,7 @@ public class StringAccessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         strParse(src)
     }
-    public func toString(val: Any) { "\"${dynamic_cast<String>(val).replace("\\", "\\\\").replace("\n", "\\n")}\"" }
+    public func toString(val: Any) { "\"${escape(dynamic_cast<String>(val))}\"" }
     private static let instance = StringAccessor()
     public static func getInstance() { instance }
 }
@@ -957,7 +961,7 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
         let ss = dynamic_cast<Buffer<String>>(val)
         for (s in ss) {
             if (dot) { sb.append(", ") } else { dot = true }
-            sb.append('"').append(s.replace("\\", "\\\\").replace("\n", "\\n")).append('"')
+            sb.append('"').append(escape(s)).append('"')
         }
         sb.append(']').toString()
     }
