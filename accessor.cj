@@ -221,7 +221,7 @@ public class StringAccessor <: Accessor {
     public func unpack(tag: Tag, src: SimpleReader): Any {
         strParse(src)
     }
-    public func toString(val: Any) { "\"${dynamic_cast<String>(val)}\"" }
+    public func toString(val: Any) { "\"${dynamic_cast<String>(val).replace("\n", "\\n")}\"" }
     private static let instance = StringAccessor()
     public static func getInstance() { instance }
 }
@@ -957,7 +957,7 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
         let ss = dynamic_cast<Buffer<String>>(val)
         for (s in ss) {
             if (dot) { sb.append(", ") } else { dot = true }
-            sb.append('"').append(s).append('"')
+            sb.append('"').append(s.replace("\n", "\\n")).append('"')
         }
         sb.append(']').toString()
     }
