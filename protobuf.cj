@@ -54,6 +54,11 @@ public abstract class MessageLite <: ToString {
     protected var fields = HashMap<Tag, Any>()
     protected open func proto2() { true } // 默认proto2
 
+    /* oneof */
+    protected static let UNSETCASE: Tag = 0xffffffff
+    protected open func getOneofCase(): ?Array<Tag> { None }
+    protected open func getOneofIndex(): ?HashMap<Tag, Int64> { None }
+
     protected func fieldsClone() {
         let result = HashMap<Tag, Any>()
         let accessors = getAccessors()
@@ -129,6 +134,13 @@ public abstract class MessageLite <: ToString {
     /* 供子类获取指定field的值 */
     protected func get<T>(tag: Tag): T where T <: Default<T> {
         if (fields.contains(tag)) { return dynamic_cast(fields[tag]) }
+        match (getOneofIndex()?.get(tag)) {
+            /* oneof field, 且当前oneof组case不为该field */
+            case Some(Some(index)) =>
+                let c = getOneofCase().getOrThrow()[index]
+                if (c != tag && c != UNSETCASE) { throw UnmatchedOneofCaseException(getNames()[tag], getNames()[c]) }
+            case _ => ()
+        }
         let default = T.default()
         /* 引用类型保存到fields并返回 */
         if (reference(default)) { fields[tag] = default; return default }
@@ -145,8 +157,15 @@ public abstract class MessageLite <: ToString {
     protected func set(tag: Tag, val: Any): Unit {
         // debug(val, "set(${getNames()[tag]})")
         /* proto2会保存设置的所有值, proto3不保存值类型的`0`值 */
-        if (proto2() || !zeroish(val)) { return fields[tag] = val }
-        fields.remove(tag); ()
+        let cnew = if (proto2() || !zeroish(val)) { fields[tag] = val; tag } else { fields.remove(tag); UNSETCASE }
+        match (getOneofIndex()?.get(tag)) {
+            /* 若之前oneof为其它field, 需要清除它, 并设置case为当前tag */
+            case Some(Some(index)) =>
+                let c = getOneofCase().getOrThrow()[index]
+                if (c != tag && c != UNSETCASE) { fields.remove(c) }
+                if (c != cnew) { getOneofCase().getOrThrow()[index] = cnew }
+            case _ => ()
+        }
     }
 
     protected func has(tag: Tag): Bool {
@@ -156,5 +175,9 @@ public abstract class MessageLite <: ToString {
     /* clean all the field's value */
     public func clear(): Unit {
         fields.clear()
+        match (getOneofCase()) {
+            case Some(a) => for (i in 0..a.size()) { a[i] = UNSETCASE }
+            case _ => ()
+        }
     }
 }
