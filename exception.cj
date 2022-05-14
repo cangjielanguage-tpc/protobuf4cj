@@ -43,3 +43,10 @@ public class UnrecognizedBytesException <: ProtobufException {
         "Failed to unpack `${name}`, unrecognized bytes left `${left}`."
     }
 }
+
+public class UnmatchedOneofCaseException <: ProtobufException {
+    UnmatchedOneofCaseException(let gname: String, let cname: String) {}
+    public override func toString() {
+        "Failed to get oneof case `${gname}`, for case `${cname}` is set."
+    }
+}
