@@ -85,6 +85,24 @@ class GenCodeHelper {
         throw Exception() // todo
     }
 
+    // 对于TYPE_MESSAGE, 如果是map, 需要作特殊处理
+    func getMessageTypeName(f: FieldDescriptorProto, ns: Buffer<DescriptorProto>) {
+        do {
+            try { if (f.label.value() != 3) { break } } catch (_) { break }
+            let sp = f.typeName.split('.')
+            let entry = sp[sp.size() - 1]
+            if (!entry.endsWith("Entry")) { break }
+            // nestedType中寻找entry
+            for (n in ns) {
+                if (n.field.size() != 2 || n.name != entry) { continue }
+                try { if (n.options.mapEntry != true) { break } } catch (_) { break }
+                // 找到netry
+                return "${getPropType(n.field[0])}, ${getPropType(n.field[1])}, ${getAccesor(n.field[0])}, ${getAccesor(n.field[1])}"
+            }
+        } while (false)
+        getTypeName(f.typeName)
+    }
+
     // pkg 字典序逆序
     static func pkgCmp(a: String, b: String) {
         if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
@@ -147,7 +165,9 @@ func getAccesor(f: FieldDescriptorProto) {
         case TYPE_FIXED32 => "Fixed32Accessor"
         case TYPE_BOOL => "BoolAccessor"
         case TYPE_STRING => "StringAccessor"
-        case TYPE_MESSAGE => "MessageAccessor<${f.typeName}>"
+        case TYPE_MESSAGE =>
+            if (f.typeName.contains(',')) { return "MapAccessor<${f.typeName}>" }
+            else { "MessageAccessor<${f.typeName}>" }
         case TYPE_BYTES => "BytesAccessor"
         case TYPE_UINT32 => "UInt32Accessor"
         case TYPE_ENUM => "EnumAccessor<${f.typeName}>"
@@ -159,12 +179,15 @@ func getAccesor(f: FieldDescriptorProto) {
     }
     // 处理 repeated
     if (f.label.value() != 3) { return ac }
-    try { if (f.options.packed == true) { return "Packed${ac}" } }
-    catch (_) { /* nothing. */ }
+    try { if (f.options.packed == true) { return "Packed${ac}" } } catch (_) { /* nothing. */ }
     "Repeat${ac}"
 }
 
 func getPropType(f: FieldDescriptorProto) {
+    if (f.type_ == TYPE_MESSAGE && f.typeName.contains(',')) {
+        let len = f.typeName.indexOf(',', f.typeName.indexOf(',').getOrThrow() + 1).getOrThrow()
+        return "HashMap<${f.typeName.substring(0, len)}>"
+    }
     let pt = match (f.type_) {
         case TYPE_DOUBLE => "Float64"
         case TYPE_FLOAT => "Float32"
@@ -173,10 +196,9 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_INT32 | TYPE_SFIXED32 | TYPE_SINT32 => "Int32"
         case TYPE_BOOL => "Bool"
         case TYPE_STRING => "String"
-        case TYPE_MESSAGE => f.typeName
         case TYPE_BYTES => "Bytes"
         case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
-        case TYPE_ENUM => f.typeName
+        case TYPE_ENUM | TYPE_MESSAGE => f.typeName
         case _ => throw Exception() // todo
     }
     if (f.label.value() == 3) { "Buffer<${pt}>" } else { pt }
@@ -239,7 +261,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     for (f in fields) {
         // 设置typeName
         match (f.type_) {
-            case TYPE_ENUM | TYPE_MESSAGE => f.typeName = helper.getTypeName(f.typeName)
+            case TYPE_ENUM => f.typeName = helper.getTypeName(f.typeName)
+            case TYPE_MESSAGE => f.typeName = helper.getMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
         // 设置propName
@@ -254,6 +277,7 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     helper.nested.append(msg.name)
     // 内嵌message
     for (m in msg.nestedType) {
+        try { if (m.options.mapEntry) { continue } } catch (_) { /* nothing. */ }
         genCodeMessage(m, helper)
     }
     // 内嵌enum
@@ -346,10 +370,10 @@ let protobufRsvdWords = HashSet<String>([
 let messageRsvdWords = HashSet<String>([ /* todo 优化命名, 减少与保留字的碰撞 */
     "getAccessors", "getNames", "getDefaultValue", "unknownFields", "fields",
     "proto2", "fieldsClone", "pack", "unpack", "has", "clear", "accessors",
-    "names"
+    "names", "getOneofCase", "getOneofIndex"
 ])
 let enumRsvdWords = HashSet<String>([
-    "value", "parse"
+    "value", "parse", "hashCode"
 ])
 
 func getEnumItemName(name: String) {
