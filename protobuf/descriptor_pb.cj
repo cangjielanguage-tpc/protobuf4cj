@@ -468,6 +468,30 @@ extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
         }
     }
 
+    public static func parse(value: String): FieldDescriptorProto_Type {
+        match(value) {
+            case "TYPE_DOUBLE" => TYPE_DOUBLE
+            case "TYPE_FLOAT" => TYPE_FLOAT
+            case "TYPE_INT64" => TYPE_INT64
+            case "TYPE_UINT64" => TYPE_UINT64
+            case "TYPE_INT32" => TYPE_INT32
+            case "TYPE_FIXED64" => TYPE_FIXED64
+            case "TYPE_FIXED32" => TYPE_FIXED32
+            case "TYPE_BOOL" => TYPE_BOOL
+            case "TYPE_STRING" => TYPE_STRING
+            case "TYPE_GROUP" => TYPE_GROUP
+            case "TYPE_MESSAGE" => TYPE_MESSAGE
+            case "TYPE_BYTES" => TYPE_BYTES
+            case "TYPE_UINT32" => TYPE_UINT32
+            case "TYPE_ENUM" => TYPE_ENUM
+            case "TYPE_SFIXED32" => TYPE_SFIXED32
+            case "TYPE_SFIXED64" => TYPE_SFIXED64
+            case "TYPE_SINT32" => TYPE_SINT32
+            case "TYPE_SINT64" => TYPE_SINT64
+            case e => throw UnmatchedEnumStringException("FieldDescriptorProto_Type", e)
+        }
+    }
+
     /* cangjie 0.28.4 bug, xxx should be implemented */
     public func hashCode() { value().hashCode() }
     public operator func ==(right: FieldDescriptorProto_Type) { value() == right.value() }
@@ -503,6 +527,15 @@ extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case 2 => LABEL_REQUIRED
             case 3 => LABEL_REPEATED
             case e => throw InvalidEnumValueException("FieldDescriptorProto_Label", e)
+        }
+    }
+
+    public static func parse(value: String): FieldDescriptorProto_Label {
+        match(value) {
+            case "LABEL_OPTIONAL" => LABEL_OPTIONAL
+            case "LABEL_REQUIRED" => LABEL_REQUIRED
+            case "LABEL_REPEATED" => LABEL_REPEATED
+            case e => throw UnmatchedEnumStringException("FieldDescriptorProto_Label", e)
         }
     }
 
@@ -950,6 +983,15 @@ extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
         }
     }
 
+    public static func parse(value: String): FileOptions_OptimizeMode {
+        match(value) {
+            case "SPEED" => SPEED
+            case "CODE_SIZE" => CODE_SIZE
+            case "LITE_RUNTIME" => LITE_RUNTIME
+            case e => throw UnmatchedEnumStringException("FileOptions_OptimizeMode", e)
+        }
+    }
+
     /* cangjie 0.28.4 bug, xxx should be implemented */
     public func hashCode() { value().hashCode() }
     public operator func ==(right: FileOptions_OptimizeMode) { value() == right.value() }
@@ -1111,6 +1153,15 @@ extend FieldOptions_CType <: Enum<FieldOptions_CType> {
         }
     }
 
+    public static func parse(value: String): FieldOptions_CType {
+        match(value) {
+            case "STRING" => STRING
+            case "CORD" => CORD
+            case "STRING_PIECE" => STRING_PIECE
+            case e => throw UnmatchedEnumStringException("FieldOptions_CType", e)
+        }
+    }
+
     /* cangjie 0.28.4 bug, xxx should be implemented */
     public func hashCode() { value().hashCode() }
     public operator func ==(right: FieldOptions_CType) { value() == right.value() }
@@ -1146,6 +1197,15 @@ extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case 1 => JS_STRING
             case 2 => JS_NUMBER
             case e => throw InvalidEnumValueException("FieldOptions_JSType", e)
+        }
+    }
+
+    public static func parse(value: String): FieldOptions_JSType {
+        match(value) {
+            case "JS_NORMAL" => JS_NORMAL
+            case "JS_STRING" => JS_STRING
+            case "JS_NUMBER" => JS_NUMBER
+            case e => throw UnmatchedEnumStringException("FieldOptions_JSType", e)
         }
     }
 
@@ -1341,6 +1401,15 @@ extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
             case 1 => NO_SIDE_EFFECTS
             case 2 => IDEMPOTENT
             case e => throw InvalidEnumValueException("MethodOptions_IdempotencyLevel", e)
+        }
+    }
+
+    public static func parse(value: String): MethodOptions_IdempotencyLevel {
+        match(value) {
+            case "IDEMPOTENCY_UNKNOWN" => IDEMPOTENCY_UNKNOWN
+            case "NO_SIDE_EFFECTS" => NO_SIDE_EFFECTS
+            case "IDEMPOTENT" => IDEMPOTENT
+            case e => throw UnmatchedEnumStringException("MethodOptions_IdempotencyLevel", e)
         }
     }
 

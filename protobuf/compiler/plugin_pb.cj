@@ -198,6 +198,14 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
         }
     }
 
+    public static func parse(value: String): CodeGeneratorResponse_Feature {
+        match(value) {
+            case "FEATURE_NONE" => FEATURE_NONE
+            case "FEATURE_PROTO3_OPTIONAL" => FEATURE_PROTO3_OPTIONAL
+            case e => throw UnmatchedEnumStringException("CodeGeneratorResponse_Feature", e)
+        }
+    }
+
     /* cangjie 0.28.4 bug, xxx should be implemented */
     public func hashCode() { value().hashCode() }
     public operator func ==(right: CodeGeneratorResponse_Feature) { value() == right.value() }
