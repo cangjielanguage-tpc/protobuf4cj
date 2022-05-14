@@ -4,12 +4,12 @@ from std import collection.*
 import protobuf.*
 
 public class FileDescriptorSet <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, RepeatMessageAccessor<FileDescriptorProto>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "file")
     ])
     protected func getNames() { names }
@@ -27,7 +27,7 @@ extend FileDescriptorSet <: Default<FileDescriptorSet> {
 }
 
 public class FileDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, StringAccessor()),
         (3, RepeatStringAccessor()),
@@ -43,7 +43,7 @@ public class FileDescriptorProto <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "package_"),
         (3, "dependency"),
@@ -127,7 +127,7 @@ extend FileDescriptorProto <: Default<FileDescriptorProto> {
 }
 
 public class DescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, RepeatMessageAccessor<FieldDescriptorProto>()),
         (6, RepeatMessageAccessor<FieldDescriptorProto>()),
@@ -141,7 +141,7 @@ public class DescriptorProto <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "field"),
         (6, "extension"),
@@ -213,14 +213,14 @@ extend DescriptorProto <: Default<DescriptorProto> {
 }
 
 public class DescriptorProto_ExtensionRange <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor()),
         (3, MessageAccessor<ExtensionRangeOptions>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "start"),
         (2, "end"),
         (3, "options")
@@ -250,13 +250,13 @@ extend DescriptorProto_ExtensionRange <: Default<DescriptorProto_ExtensionRange>
 }
 
 public class DescriptorProto_ReservedRange <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "start"),
         (2, "end")
     ])
@@ -280,12 +280,12 @@ extend DescriptorProto_ReservedRange <: Default<DescriptorProto_ReservedRange> {
 }
 
 public class ExtensionRangeOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (999, "uninterpretedOption")
     ])
     protected func getNames() { names }
@@ -303,7 +303,7 @@ extend ExtensionRangeOptions <: Default<ExtensionRangeOptions> {
 }
 
 public class FieldDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (3, Int32Accessor()),
         (4, EnumAccessor<FieldDescriptorProto_Label>()),
@@ -318,7 +318,7 @@ public class FieldDescriptorProto <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (3, "number"),
         (4, "label"),
@@ -550,13 +550,13 @@ extend FieldDescriptorProto_Label <: Default<FieldDescriptorProto_Label> {
 }
 
 public class OneofDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, MessageAccessor<OneofOptions>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "options")
     ])
@@ -580,7 +580,7 @@ extend OneofDescriptorProto <: Default<OneofDescriptorProto> {
 }
 
 public class EnumDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, RepeatMessageAccessor<EnumValueDescriptorProto>()),
         (3, MessageAccessor<EnumOptions>()),
@@ -589,7 +589,7 @@ public class EnumDescriptorProto <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "value"),
         (3, "options"),
@@ -631,13 +631,13 @@ extend EnumDescriptorProto <: Default<EnumDescriptorProto> {
 }
 
 public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "start"),
         (2, "end")
     ])
@@ -661,14 +661,14 @@ extend EnumDescriptorProto_EnumReservedRange <: Default<EnumDescriptorProto_Enum
 }
 
 public class EnumValueDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, Int32Accessor()),
         (3, MessageAccessor<EnumValueOptions>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "number"),
         (3, "options")
@@ -698,14 +698,14 @@ extend EnumValueDescriptorProto <: Default<EnumValueDescriptorProto> {
 }
 
 public class ServiceDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, RepeatMessageAccessor<MethodDescriptorProto>()),
         (3, MessageAccessor<ServiceOptions>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "method"),
         (3, "options")
@@ -735,7 +735,7 @@ extend ServiceDescriptorProto <: Default<ServiceDescriptorProto> {
 }
 
 public class MethodDescriptorProto <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, StringAccessor()),
         (3, StringAccessor()),
@@ -745,7 +745,7 @@ public class MethodDescriptorProto <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "inputType"),
         (3, "outputType"),
@@ -793,7 +793,7 @@ extend MethodDescriptorProto <: Default<MethodDescriptorProto> {
 }
 
 public class FileOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (8, StringAccessor()),
         (10, BoolAccessor()),
@@ -818,7 +818,7 @@ public class FileOptions <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "javaPackage"),
         (8, "javaOuterClassname"),
         (10, "javaMultipleFiles"),
@@ -1003,7 +1003,7 @@ extend FileOptions_OptimizeMode <: Default<FileOptions_OptimizeMode> {
 }
 
 public class MessageOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, BoolAccessor()),
         (2, BoolAccessor()),
         (3, BoolAccessor()),
@@ -1012,7 +1012,7 @@ public class MessageOptions <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "messageSetWireFormat"),
         (2, "noStandardDescriptorAccessor"),
         (3, "deprecated"),
@@ -1054,7 +1054,7 @@ extend MessageOptions <: Default<MessageOptions> {
 }
 
 public class FieldOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, EnumAccessor<FieldOptions_CType>()),
         (2, BoolAccessor()),
         (6, EnumAccessor<FieldOptions_JSType>()),
@@ -1066,7 +1066,7 @@ public class FieldOptions <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "ctype"),
         (2, "packed"),
         (6, "jstype"),
@@ -1220,12 +1220,12 @@ extend FieldOptions_JSType <: Default<FieldOptions_JSType> {
 }
 
 public class OneofOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (999, "uninterpretedOption")
     ])
     protected func getNames() { names }
@@ -1243,14 +1243,14 @@ extend OneofOptions <: Default<OneofOptions> {
 }
 
 public class EnumOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (2, BoolAccessor()),
         (3, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (2, "allowAlias"),
         (3, "deprecated"),
         (999, "uninterpretedOption")
@@ -1280,13 +1280,13 @@ extend EnumOptions <: Default<EnumOptions> {
 }
 
 public class EnumValueOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "deprecated"),
         (999, "uninterpretedOption")
     ])
@@ -1310,13 +1310,13 @@ extend EnumValueOptions <: Default<EnumValueOptions> {
 }
 
 public class ServiceOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (33, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (33, "deprecated"),
         (999, "uninterpretedOption")
     ])
@@ -1340,14 +1340,14 @@ extend ServiceOptions <: Default<ServiceOptions> {
 }
 
 public class MethodOptions <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (33, BoolAccessor()),
         (34, EnumAccessor<MethodOptions_IdempotencyLevel>()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (33, "deprecated"),
         (34, "idempotencyLevel"),
         (999, "uninterpretedOption")
@@ -1424,7 +1424,7 @@ extend MethodOptions_IdempotencyLevel <: Default<MethodOptions_IdempotencyLevel>
 }
 
 public class UninterpretedOption <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (2, RepeatMessageAccessor<UninterpretedOption_NamePart>()),
         (3, StringAccessor()),
         (4, UInt64Accessor()),
@@ -1435,7 +1435,7 @@ public class UninterpretedOption <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (2, "name"),
         (3, "identifierValue"),
         (4, "positiveIntValue"),
@@ -1489,13 +1489,13 @@ extend UninterpretedOption <: Default<UninterpretedOption> {
 }
 
 public class UninterpretedOption_NamePart <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, BoolAccessor())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "namePart"),
         (2, "isExtension")
     ])
@@ -1519,12 +1519,12 @@ extend UninterpretedOption_NamePart <: Default<UninterpretedOption_NamePart> {
 }
 
 public class SourceCodeInfo <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, RepeatMessageAccessor<SourceCodeInfo_Location>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "location")
     ])
     protected func getNames() { names }
@@ -1542,7 +1542,7 @@ extend SourceCodeInfo <: Default<SourceCodeInfo> {
 }
 
 public class SourceCodeInfo_Location <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, PackedInt32Accessor()),
         (2, PackedInt32Accessor()),
         (3, StringAccessor()),
@@ -1551,7 +1551,7 @@ public class SourceCodeInfo_Location <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "path"),
         (2, "span"),
         (3, "leadingComments"),
@@ -1593,12 +1593,12 @@ extend SourceCodeInfo_Location <: Default<SourceCodeInfo_Location> {
 }
 
 public class GeneratedCodeInfo <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, RepeatMessageAccessor<GeneratedCodeInfo_Annotation>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "annotation")
     ])
     protected func getNames() { names }
@@ -1616,7 +1616,7 @@ extend GeneratedCodeInfo <: Default<GeneratedCodeInfo> {
 }
 
 public class GeneratedCodeInfo_Annotation <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, PackedInt32Accessor()),
         (2, StringAccessor()),
         (3, Int32Accessor()),
@@ -1624,7 +1624,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "path"),
         (2, "sourceFile"),
         (3, "begin"),

@@ -5,7 +5,7 @@ import protobuf.*
 import google.protobuf.*
 
 public class Version <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor()),
         (3, Int32Accessor()),
@@ -13,7 +13,7 @@ public class Version <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "major"),
         (2, "minor"),
         (3, "patch"),
@@ -49,7 +49,7 @@ extend Version <: Default<Version> {
 }
 
 public class CodeGeneratorRequest <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, RepeatStringAccessor()),
         (2, StringAccessor()),
         (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>()),
@@ -57,7 +57,7 @@ public class CodeGeneratorRequest <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "fileToGenerate"),
         (2, "parameter"),
         (15, "protoFile"),
@@ -93,14 +93,14 @@ extend CodeGeneratorRequest <: Default<CodeGeneratorRequest> {
 }
 
 public class CodeGeneratorResponse <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, UInt64Accessor()),
         (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "error"),
         (2, "supportedFeatures"),
         (15, "file")
@@ -130,7 +130,7 @@ extend CodeGeneratorResponse <: Default<CodeGeneratorResponse> {
 }
 
 public class CodeGeneratorResponse_File <: MessageLite {
-    static let accessors = HashMap<Tag, Accessor>([
+    private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, StringAccessor()),
         (15, StringAccessor()),
@@ -138,7 +138,7 @@ public class CodeGeneratorResponse_File <: MessageLite {
     ])
     protected func getAccessors() { accessors }
 
-    static let names = HashMap<Tag, String>([
+    private static let names = HashMap<Tag, String>([
         (1, "name"),
         (2, "insertionPoint"),
         (15, "content"),
