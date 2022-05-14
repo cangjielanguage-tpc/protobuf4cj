@@ -755,6 +755,11 @@ public class MethodDescriptorProto <: MessageLite {
     ])
     protected func getNames() { names }
 
+    private static let m_dv = HashMap<Tag, Any>([
+        (5, false), (6, false)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+
     public func clone() { let rv = MethodDescriptorProto(); rv.fields = fieldsClone(); rv }
 
     public prop var name: String {
@@ -842,6 +847,11 @@ public class FileOptions <: MessageLite {
         (999, "uninterpretedOption")
     ])
     protected func getNames() { names }
+
+    private static let m_dv = HashMap<Tag, Any>([
+        (10, false), (27, false), (9, FileOptions_OptimizeMode.SPEED), (16, false), (17, false), (18, false), (42, false), (23, false), (31, true)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
     public func clone() { let rv = FileOptions(); rv.fields = fieldsClone(); rv }
 
@@ -1021,6 +1031,11 @@ public class MessageOptions <: MessageLite {
     ])
     protected func getNames() { names }
 
+    private static let m_dv = HashMap<Tag, Any>([
+        (1, false), (2, false), (3, false)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+
     public func clone() { let rv = MessageOptions(); rv.fields = fieldsClone(); rv }
 
     public prop var messageSetWireFormat: Bool {
@@ -1077,6 +1092,11 @@ public class FieldOptions <: MessageLite {
         (999, "uninterpretedOption")
     ])
     protected func getNames() { names }
+
+    private static let m_dv = HashMap<Tag, Any>([
+        (1, FieldOptions_CType.STRING), (6, FieldOptions_JSType.JS_NORMAL), (5, false), (15, false), (3, false), (10, false)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
     public func clone() { let rv = FieldOptions(); rv.fields = fieldsClone(); rv }
 
@@ -1257,6 +1277,11 @@ public class EnumOptions <: MessageLite {
     ])
     protected func getNames() { names }
 
+    private static let m_dv = HashMap<Tag, Any>([
+        (3, false)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+
     public func clone() { let rv = EnumOptions(); rv.fields = fieldsClone(); rv }
 
     public prop var allowAlias: Bool {
@@ -1292,6 +1317,11 @@ public class EnumValueOptions <: MessageLite {
     ])
     protected func getNames() { names }
 
+    private static let m_dv = HashMap<Tag, Any>([
+        (1, false)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+
     public func clone() { let rv = EnumValueOptions(); rv.fields = fieldsClone(); rv }
 
     public prop var deprecated: Bool {
@@ -1321,6 +1351,11 @@ public class ServiceOptions <: MessageLite {
         (999, "uninterpretedOption")
     ])
     protected func getNames() { names }
+
+    private static let m_dv = HashMap<Tag, Any>([
+        (33, false)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
     public func clone() { let rv = ServiceOptions(); rv.fields = fieldsClone(); rv }
 
@@ -1353,6 +1388,11 @@ public class MethodOptions <: MessageLite {
         (999, "uninterpretedOption")
     ])
     protected func getNames() { names }
+
+    private static let m_dv = HashMap<Tag, Any>([
+        (33, false), (34, MethodOptions_IdempotencyLevel.IDEMPOTENCY_UNKNOWN)
+    ])
+    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
     public func clone() { let rv = MethodOptions(); rv.fields = fieldsClone(); rv }
 
