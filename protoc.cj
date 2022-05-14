@@ -109,6 +109,7 @@ class GenCodeHelper {
     }
 
     let outbuf = StringBuilder()
+    var oneofNum = 0
 }
 
 func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
@@ -210,7 +211,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
 
     // accessors
-    outbuf.append("    static let accessors = HashMap<Tag, Accessor>([\n")
+    outbuf.append("    private static let accessors = HashMap<Tag, Accessor>([\n")
     var i = 0
     for (f in fields) {
         outbuf.append("        (${f.number}, ${getAccesor(f)}())")
@@ -219,13 +220,27 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("    ])\n    protected func getAccessors() { accessors }\n")
 
     // names
-    outbuf.append("\n    static let names = HashMap<Tag, String>([\n")
+    outbuf.append("\n    private static let names = HashMap<Tag, String>([\n")
     i = 0
     for (f in fields) {
         outbuf.append("        (${f.number}, \"${f.name}\")")
         i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
     }
     outbuf.append("    ])\n    protected func getNames() { names }\n")
+
+    // oneof
+    if (helper.oneofNum != 0) {
+        outbuf.append("\n    private let oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
+        outbuf.append("    protected override func getOneofCase(): ?Array<Tag> { oneofCase }\n")
+        outbuf.append("    private static let oneofIdx = HashMap<Tag, Int64>([\n        ")
+        var dot = false
+        for (f in fields) {
+            try { f.oneofIndex } catch (_) { continue }
+            if (dot) { outbuf.append(", ") } else { dot = true }
+            outbuf.append("(${f.number}, ${f.oneofIndex})")
+        }
+        outbuf.append("\n    ])\n    protected override func getOneofIndex(): ?HashMap<Tag, Int64> { oneofIdx }\n")
+    }
 
     // clone
     outbuf.append("\n    public func clone() { let rv = ${typeName}(); rv.fields = fieldsClone(); rv }\n")
@@ -269,11 +284,12 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
         f.name = getMessagePropName(f.jsonName)
     }
 
+    helper.oneofNum = msg.oneofDecl.size()
     // fields
     genCodeMessageField(typeName, fields, helper)
     // extensions
     genCodeMessageExtension(typeName, extensions, helper)
-    
+
     helper.nested.append(msg.name)
     // 内嵌message
     for (m in msg.nestedType) {
