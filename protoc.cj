@@ -228,6 +228,28 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     }
     outbuf.append("    ])\n    protected func getNames() { names }\n")
 
+    // default value
+    let dvs = Buffer<String>()
+    for (f in fields) {
+        try { f.defaultValue } catch (_) { continue }
+        let dv = match (f.type_) {
+            case TYPE_STRING => "\"${f.defaultValue}\""
+            case TYPE_BOOL | TYPE_INT64 | TYPE_DOUBLE => f.defaultValue
+            case TYPE_ENUM => "${getPropType(f)}.${f.defaultValue}"
+            case _ => "${getPropType(f)}(${f.defaultValue})"
+        }
+        dvs.append("(${f.number}, ${dv})")
+    }
+    if (!dvs.isEmpty()) {
+        outbuf.append("\n    private static let m_dv = HashMap<Tag, Any>([\n        ")
+        var dot = false
+        for (dv in dvs) {
+            if (dot) { outbuf.append(", ") } else { dot = true }
+            outbuf.append(dv)
+        }
+        outbuf.append("\n    ])\n    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }\n")
+    }
+
     // oneof
     if (helper.oneofNum != 0) {
         outbuf.append("\n    private let oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
