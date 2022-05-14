@@ -33,6 +33,16 @@ extend WireType <: Enum<WireType> {
         }
     }
 
+    public static func parse(value: String): WireType {
+        match(value) {
+            case "VARINT" => VARINT
+            case "BIT64" => BIT64
+            case "PREFIXED" => PREFIXED
+            case "BIT32" => BIT32
+            case e => throw UnmatchedEnumStringException("WireType", e)
+        }
+    }
+
     /* cangjie 0.28.4 bug, xxx should be implemented */
     public func hashCode() { value().hashCode() }
     public operator func ==(right: WireType) { value() == right.value() }

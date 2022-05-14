@@ -38,6 +38,7 @@ public interface ValuedEnum {
 /* base of protobuf enum */
 public interface Enum<E> <: ValuedEnum & ToString & Hashable & Equatable<E> where E <: Enum<E> {
     static func parse(v: Int32): E
+    static func parse(v: String): E
     func hashCode() { value().hashCode() }
     operator func ==(right: E) { value() == right.value() }
     operator func !=(right: E) { value() != right.value() }
@@ -139,6 +140,7 @@ public abstract class MessageLite <: ToString {
             case Some(Some(index)) =>
                 let c = getOneofCase().getOrThrow()[index]
                 if (c != tag && c != UNSETCASE) { throw UnmatchedOneofCaseException(getNames()[tag], getNames()[c]) }
+                else { () } // 偶现warning: Node thunk(id:24678) has type (Enum-Option<Enum-Option<Int64>>) -> Record-String but type (Enum-Option<Int64>) -> Record-String is expected.
             case _ => ()
         }
         let default = T.default()

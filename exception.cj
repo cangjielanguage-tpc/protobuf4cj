@@ -9,6 +9,13 @@ public class InvalidEnumValueException <: ProtobufException {
     }
 }
 
+public class UnmatchedEnumStringException <: ProtobufException {
+    public UnmatchedEnumStringException (let name: String, let value: String) {}
+    public override func getMessage() {
+        "Enum type `${name}` match `${value}` failed."
+    }
+}
+
 public class RequiredFieldNotSetException <: ProtobufException {
     public RequiredFieldNotSetException(let name: String) {}
     public override func getMessage() {
