@@ -41,6 +41,10 @@ extend Buffer<T> <: Default<Buffer<T>> {
     public static func default(): Buffer<T> { Buffer() }
 }
 
+extend HashMap<K, V> <: Default<HashMap<K, V>> {
+    public static func default(): HashMap<K, V> { HashMap<K, V>() }
+}
+
 /* 给repeated bytes, repeated message增加add()接口 */
 public interface Reference {}
 extend Buffer<T> <: Reference { }
