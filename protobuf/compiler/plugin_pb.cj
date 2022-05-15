@@ -92,43 +92,6 @@ extend CodeGeneratorRequest <: Default<CodeGeneratorRequest> {
     public static func default() { CodeGeneratorRequest() }
 }
 
-public class CodeGeneratorResponse <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()),
-        (2, UInt64Accessor()),
-        (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
-    ])
-    protected func getAccessors() { accessors }
-
-    private static let names = HashMap<Tag, String>([
-        (1, "error"),
-        (2, "supportedFeatures"),
-        (15, "file")
-    ])
-    protected func getNames() { names }
-
-    public func clone() { let rv = CodeGeneratorResponse(); rv.fields = fieldsClone(); rv }
-
-    public prop var error: String {
-        get() { get<String>(1) }
-        set(v) { set(1, v) }
-    }
-
-    public prop var supportedFeatures: UInt64 {
-        get() { get<UInt64>(2) }
-        set(v) { set(2, v) }
-    }
-
-    public prop var file: Buffer<CodeGeneratorResponse_File> {
-        get() { get<Buffer<CodeGeneratorResponse_File>>(15) }
-        set(v) { set(15, v) }
-    }
-}
-
-extend CodeGeneratorResponse <: Default<CodeGeneratorResponse> {
-    public static func default() { CodeGeneratorResponse() }
-}
-
 public class CodeGeneratorResponse_File <: MessageLite {
     private static let accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
@@ -214,4 +177,41 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
 
 extend CodeGeneratorResponse_Feature <: Default<CodeGeneratorResponse_Feature> {
     public static func default() { FEATURE_NONE }
+}
+
+public class CodeGeneratorResponse <: MessageLite {
+    private static let accessors = HashMap<Tag, Accessor>([
+        (1, StringAccessor()),
+        (2, UInt64Accessor()),
+        (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
+    ])
+    protected func getAccessors() { accessors }
+
+    private static let names = HashMap<Tag, String>([
+        (1, "error"),
+        (2, "supportedFeatures"),
+        (15, "file")
+    ])
+    protected func getNames() { names }
+
+    public func clone() { let rv = CodeGeneratorResponse(); rv.fields = fieldsClone(); rv }
+
+    public prop var error: String {
+        get() { get<String>(1) }
+        set(v) { set(1, v) }
+    }
+
+    public prop var supportedFeatures: UInt64 {
+        get() { get<UInt64>(2) }
+        set(v) { set(2, v) }
+    }
+
+    public prop var file: Buffer<CodeGeneratorResponse_File> {
+        get() { get<Buffer<CodeGeneratorResponse_File>>(15) }
+        set(v) { set(15, v) }
+    }
+}
+
+extend CodeGeneratorResponse <: Default<CodeGeneratorResponse> {
+    public static func default() { CodeGeneratorResponse() }
 }
