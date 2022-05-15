@@ -295,6 +295,18 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     let fields = msg.field
     let extensions = msg.extension
 
+    helper.nested.append(msg.name)
+    // 内嵌message
+    for (m in msg.nestedType) {
+        try { if (m.options.mapEntry) { continue } } catch (_) { /* nothing. */ }
+        genCodeMessage(m, helper)
+    }
+    // 内嵌enum
+    for (e in msg.enumType) {
+        genCodeEnum(e, helper)
+    }
+    helper.nested.remove(helper.nested.size() - 1)
+
     for (f in fields) {
         // 设置typeName
         match (f.type_) {
@@ -312,21 +324,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     // extensions
     genCodeMessageExtension(typeName, extensions, helper)
 
-    helper.nested.append(msg.name)
-    // 内嵌message
-    for (m in msg.nestedType) {
-        try { if (m.options.mapEntry) { continue } } catch (_) { /* nothing. */ }
-        genCodeMessage(m, helper)
-    }
-    // 内嵌enum
-    for (e in msg.enumType) {
-        genCodeEnum(e, helper)
-    }
-
-    // todo extension
-    // todo oneof
-    // todo reserved
-    helper.nested.remove(helper.nested.size() - 1)
+    // todo extension range
+    // todo reserved range
 }
 
 func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
