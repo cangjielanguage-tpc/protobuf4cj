@@ -298,7 +298,6 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     helper.nested.append(msg.name)
     // 内嵌message
     for (m in msg.nestedType) {
-        try { if (m.options.mapEntry) { continue } } catch (_) { /* nothing. */ }
         genCodeMessage(m, helper)
     }
     // 内嵌enum
@@ -317,6 +316,9 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
         // 设置propName
         f.name = getMessagePropName(f.jsonName)
     }
+
+    // mapEntry设置typeName但不用生成message
+    try { if (msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
 
     helper.oneofNum = msg.oneofDecl.size()
     // fields
