@@ -211,22 +211,22 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
 
     // accessors
-    outbuf.append("    private static let accessors = HashMap<Tag, Accessor>([\n")
+    outbuf.append("    private static let m_accessors = HashMap<Tag, Accessor>([\n")
     var i = 0
     for (f in fields) {
         outbuf.append("        (${f.number}, ${getAccesor(f)}())")
         i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
     }
-    outbuf.append("    ])\n    protected func getAccessors() { accessors }\n")
+    outbuf.append("    ])\n    protected func getAccessors() { m_accessors }\n")
 
     // names
-    outbuf.append("\n    private static let names = HashMap<Tag, String>([\n")
+    outbuf.append("\n    private static let m_names = HashMap<Tag, String>([\n")
     i = 0
     for (f in fields) {
         outbuf.append("        (${f.number}, \"${f.name}\")")
         i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
     }
-    outbuf.append("    ])\n    protected func getNames() { names }\n")
+    outbuf.append("    ])\n    protected func getNames() { m_names }\n")
 
     // default value
     let dvs = Buffer<String>()
@@ -252,22 +252,22 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
 
     // oneof
     if (helper.oneofNum != 0) {
-        outbuf.append("\n    private let oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
-        outbuf.append("    protected override func getOneofCase(): ?Array<Tag> { oneofCase }\n")
-        outbuf.append("    private static let oneofIdx = HashMap<Tag, Int64>([\n        ")
+        outbuf.append("\n    private let m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
+        outbuf.append("    protected override func getOneofCase(): ?Array<Tag> { m_oneofCase }\n")
+        outbuf.append("    private static let m_oneofIdx = HashMap<Tag, Int64>([\n        ")
         var dot = false
         for (f in fields) {
             try { f.oneofIndex } catch (_) { continue }
             if (dot) { outbuf.append(", ") } else { dot = true }
             outbuf.append("(${f.number}, ${f.oneofIndex})")
         }
-        outbuf.append("\n    ])\n    protected override func getOneofIndex(): ?HashMap<Tag, Int64> { oneofIdx }\n")
+        outbuf.append("\n    ])\n    protected override func getOneofIndex(): ?HashMap<Tag, Int64> { m_oneofIdx }\n")
     }
 
     // clone
-    outbuf.append("\n    public func clone() { let rv = ${typeName}(); rv.fields = fieldsClone(); rv }\n")
+    outbuf.append("\n    public func clone() { let rv = ${typeName}(); rv.m_fields = m_fieldsClone(); rv }\n")
     if (!helper.proto2) {
-        outbuf.append("    protected override func proto2() { false }\n")
+        outbuf.append("    protected override func m_proto2() { false }\n")
     }
 
     // props
@@ -413,10 +413,10 @@ let cangjieKeyWords = HashSet<String>([
 let protobufRsvdWords = HashSet<String>([
     "protobuf", "protoc", "default", "toString"
 ])
-let messageRsvdWords = HashSet<String>([ /* todo 优化命名, 减少与保留字的碰撞 */
-    "getAccessors", "getNames", "getDefaultValue", "unknownFields", "fields",
-    "proto2", "fieldsClone", "pack", "unpack", "has", "clear", "accessors",
-    "names", "getOneofCase", "getOneofIndex"
+let messageRsvdWords = HashSet<String>([
+    "getAccessors", "getNames", "getDefaultValue", "unknownFields", "m_fields",
+    "m_proto2", "m_fieldsClone", "pack", "unpack", "has", "clear", "m_accessors",
+    "m_names", "getOneofCase", "getOneofIndex", "m_oneofCase", "m_oneofIndex", "m_dv"
 ])
 let enumRsvdWords = HashSet<String>([
     "value", "parse", "hashCode"
