@@ -52,18 +52,18 @@ public abstract class MessageLite <: ToString {
     public func clone(): MessageLite // 由于需要具体的类型信息，只能交给子类具体实现
 
     public var unknownFields = Buffer<MessageUnknownField>()
-    protected var fields = HashMap<Tag, Any>()
-    protected open func proto2() { true } // 默认proto2
+    protected var m_fields = HashMap<Tag, Any>()
+    protected open func m_proto2() { true } // 默认proto2
 
     /* oneof */
     protected static let UNSETCASE: Tag = 0xffffffff
     protected open func getOneofCase(): ?Array<Tag> { None }
     protected open func getOneofIndex(): ?HashMap<Tag, Int64> { None }
 
-    protected func fieldsClone() {
+    protected func m_fieldsClone() {
         let result = HashMap<Tag, Any>()
         let accessors = getAccessors()
-        let iter = fields.iterator()
+        let iter = m_fields.iterator()
         while (true) {
             match (iter.next()) {
                 case Some((tag, val: Any)) => result[tag] = accessors[tag].clone(val)
@@ -76,7 +76,7 @@ public abstract class MessageLite <: ToString {
     /* 打包接口 */
     public func pack(out: Bytes) {
         let accessors = getAccessors()
-        let iter = fields.iterator()
+        let iter = m_fields.iterator()
         while (true) {
             match (iter.next()) {
                 // todo: 引用类型bytes, message, 为`空`时, proto3不打包, proto2打包
@@ -99,7 +99,7 @@ public abstract class MessageLite <: ToString {
         while (!src.isEmpty()) {
             let (tag, wt) = tagParse(src)
             if (accessors.contains(tag)) {
-                fields[tag] = accessors[tag].unpack(tag, src)
+                m_fields[tag] = accessors[tag].unpack(tag, src)
             } else {
                 unknownFields.add(MessageUnknownField.unpack(tag, wt, src))
             }
@@ -119,7 +119,7 @@ public abstract class MessageLite <: ToString {
         let names = getNames()
         let accessors = getAccessors()
         /* cangjie 0.28.4 bug, 此处不支持for in */
-        let iter = fields.iterator()
+        let iter = m_fields.iterator()
         while (true) {
             match (iter.next()) {
                 case Some((tag, val: Any)) =>
@@ -134,7 +134,7 @@ public abstract class MessageLite <: ToString {
 
     /* 供子类获取指定field的值 */
     protected func get<T>(tag: Tag): T where T <: Default<T> {
-        if (fields.contains(tag)) { return dynamic_cast(fields[tag]) }
+        if (m_fields.contains(tag)) { return dynamic_cast(m_fields[tag]) }
         match (getOneofIndex()?.get(tag)) {
             /* oneof field, 且当前oneof组case不为该field */
             case Some(Some(index)) =>
@@ -145,9 +145,9 @@ public abstract class MessageLite <: ToString {
         }
         let default = T.default()
         /* 引用类型保存到fields并返回 */
-        if (reference(default)) { fields[tag] = default; return default }
+        if (reference(default)) { m_fields[tag] = default; return default }
         /* proto3直接返回类型的缺省值 */
-        if (!proto2()) { return default }
+        if (!m_proto2()) { return default }
         /* 如果是proto2, 有设置缺省值, 返回缺省值, 否则抛出异常 */
         match (getDefaultValue()?.get(tag)) {
             case Some(Some(v)) => return dynamic_cast(v)
@@ -159,24 +159,24 @@ public abstract class MessageLite <: ToString {
     protected func set(tag: Tag, val: Any): Unit {
         // debug(val, "set(${getNames()[tag]})")
         /* proto2会保存设置的所有值, proto3不保存值类型的`0`值 */
-        let cnew = if (proto2() || !zeroish(val)) { fields[tag] = val; tag } else { fields.remove(tag); UNSETCASE }
+        let cnew = if (m_proto2() || !zeroish(val)) { m_fields[tag] = val; tag } else { m_fields.remove(tag); UNSETCASE }
         match (getOneofIndex()?.get(tag)) {
             /* 若之前oneof为其它field, 需要清除它, 并设置case为当前tag */
             case Some(Some(index)) =>
                 let c = getOneofCase().getOrThrow()[index]
-                if (c != tag && c != UNSETCASE) { fields.remove(c) }
+                if (c != tag && c != UNSETCASE) { m_fields.remove(c) }
                 if (c != cnew) { getOneofCase().getOrThrow()[index] = cnew }
             case _ => ()
         }
     }
 
     protected func has(tag: Tag): Bool {
-        fields.contains(tag)
+        m_fields.contains(tag)
     }
 
     /* clean all the field's value */
     public func clear(): Unit {
-        fields.clear()
+        m_fields.clear()
         match (getOneofCase()) {
             case Some(a) => for (i in 0..a.size()) { a[i] = UNSETCASE }
             case _ => ()
