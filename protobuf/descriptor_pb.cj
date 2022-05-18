@@ -4,17 +4,17 @@ from std import collection.*
 import protobuf.*
 
 public class FileDescriptorSet <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, RepeatMessageAccessor<FileDescriptorProto>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "file")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = FileDescriptorSet(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = FileDescriptorSet(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var file: Buffer<FileDescriptorProto> {
         get() { get<Buffer<FileDescriptorProto>>(1) }
@@ -27,7 +27,7 @@ extend FileDescriptorSet <: Default<FileDescriptorSet> {
 }
 
 public class FileDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, StringAccessor()),
         (3, RepeatStringAccessor()),
@@ -41,9 +41,9 @@ public class FileDescriptorProto <: MessageLite {
         (9, MessageAccessor<SourceCodeInfo>()),
         (12, StringAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "package_"),
         (3, "dependency"),
@@ -57,9 +57,9 @@ public class FileDescriptorProto <: MessageLite {
         (9, "sourceCodeInfo"),
         (12, "syntax")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = FileDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = FileDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -127,21 +127,21 @@ extend FileDescriptorProto <: Default<FileDescriptorProto> {
 }
 
 public class DescriptorProto_ExtensionRange <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor()),
         (3, MessageAccessor<ExtensionRangeOptions>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "start"),
         (2, "end"),
         (3, "options")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = DescriptorProto_ExtensionRange(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = DescriptorProto_ExtensionRange(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var start: Int32 {
         get() { get<Int32>(1) }
@@ -164,19 +164,19 @@ extend DescriptorProto_ExtensionRange <: Default<DescriptorProto_ExtensionRange>
 }
 
 public class DescriptorProto_ReservedRange <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "start"),
         (2, "end")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = DescriptorProto_ReservedRange(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = DescriptorProto_ReservedRange(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var start: Int32 {
         get() { get<Int32>(1) }
@@ -194,7 +194,7 @@ extend DescriptorProto_ReservedRange <: Default<DescriptorProto_ReservedRange> {
 }
 
 public class DescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, RepeatMessageAccessor<FieldDescriptorProto>()),
         (6, RepeatMessageAccessor<FieldDescriptorProto>()),
@@ -206,9 +206,9 @@ public class DescriptorProto <: MessageLite {
         (9, RepeatMessageAccessor<DescriptorProto_ReservedRange>()),
         (10, RepeatStringAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "field"),
         (6, "extension"),
@@ -220,9 +220,9 @@ public class DescriptorProto <: MessageLite {
         (9, "reservedRange"),
         (10, "reservedName")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = DescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = DescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -280,17 +280,17 @@ extend DescriptorProto <: Default<DescriptorProto> {
 }
 
 public class ExtensionRangeOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = ExtensionRangeOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = ExtensionRangeOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var uninterpretedOption: Buffer<UninterpretedOption> {
         get() { get<Buffer<UninterpretedOption>>(999) }
@@ -457,7 +457,7 @@ extend FieldDescriptorProto_Label <: Default<FieldDescriptorProto_Label> {
 }
 
 public class FieldDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (3, Int32Accessor()),
         (4, EnumAccessor<FieldDescriptorProto_Label>()),
@@ -470,9 +470,9 @@ public class FieldDescriptorProto <: MessageLite {
         (8, MessageAccessor<FieldOptions>()),
         (17, BoolAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (3, "number"),
         (4, "label"),
@@ -485,9 +485,9 @@ public class FieldDescriptorProto <: MessageLite {
         (8, "options"),
         (17, "proto3Optional")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = FieldDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = FieldDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -550,19 +550,19 @@ extend FieldDescriptorProto <: Default<FieldDescriptorProto> {
 }
 
 public class OneofDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, MessageAccessor<OneofOptions>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "options")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = OneofDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = OneofDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -580,19 +580,19 @@ extend OneofDescriptorProto <: Default<OneofDescriptorProto> {
 }
 
 public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "start"),
         (2, "end")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = EnumDescriptorProto_EnumReservedRange(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = EnumDescriptorProto_EnumReservedRange(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var start: Int32 {
         get() { get<Int32>(1) }
@@ -610,25 +610,25 @@ extend EnumDescriptorProto_EnumReservedRange <: Default<EnumDescriptorProto_Enum
 }
 
 public class EnumDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, RepeatMessageAccessor<EnumValueDescriptorProto>()),
         (3, MessageAccessor<EnumOptions>()),
         (4, RepeatMessageAccessor<EnumDescriptorProto_EnumReservedRange>()),
         (5, RepeatStringAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "value"),
         (3, "options"),
         (4, "reservedRange"),
         (5, "reservedName")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = EnumDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = EnumDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -661,21 +661,21 @@ extend EnumDescriptorProto <: Default<EnumDescriptorProto> {
 }
 
 public class EnumValueDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, Int32Accessor()),
         (3, MessageAccessor<EnumValueOptions>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "number"),
         (3, "options")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = EnumValueDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = EnumValueDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -698,21 +698,21 @@ extend EnumValueDescriptorProto <: Default<EnumValueDescriptorProto> {
 }
 
 public class ServiceDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, RepeatMessageAccessor<MethodDescriptorProto>()),
         (3, MessageAccessor<ServiceOptions>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "method"),
         (3, "options")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = ServiceDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = ServiceDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -735,7 +735,7 @@ extend ServiceDescriptorProto <: Default<ServiceDescriptorProto> {
 }
 
 public class MethodDescriptorProto <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, StringAccessor()),
         (3, StringAccessor()),
@@ -743,9 +743,9 @@ public class MethodDescriptorProto <: MessageLite {
         (5, BoolAccessor()),
         (6, BoolAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "inputType"),
         (3, "outputType"),
@@ -753,14 +753,14 @@ public class MethodDescriptorProto <: MessageLite {
         (5, "clientStreaming"),
         (6, "serverStreaming")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (5, false), (6, false)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = MethodDescriptorProto(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = MethodDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -845,7 +845,7 @@ extend FileOptions_OptimizeMode <: Default<FileOptions_OptimizeMode> {
 }
 
 public class FileOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (8, StringAccessor()),
         (10, BoolAccessor()),
@@ -868,9 +868,9 @@ public class FileOptions <: MessageLite {
         (45, StringAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "javaPackage"),
         (8, "javaOuterClassname"),
         (10, "javaMultipleFiles"),
@@ -893,14 +893,14 @@ public class FileOptions <: MessageLite {
         (45, "rubyPackage"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (10, false), (27, false), (9, FileOptions_OptimizeMode.SPEED), (16, false), (17, false), (18, false), (42, false), (23, false), (31, true)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = FileOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = FileOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var javaPackage: String {
         get() { get<String>(1) }
@@ -1013,30 +1013,30 @@ extend FileOptions <: Default<FileOptions> {
 }
 
 public class MessageOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, BoolAccessor()),
         (2, BoolAccessor()),
         (3, BoolAccessor()),
         (7, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "messageSetWireFormat"),
         (2, "noStandardDescriptorAccessor"),
         (3, "deprecated"),
         (7, "mapEntry"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (1, false), (2, false), (3, false)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = MessageOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = MessageOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var messageSetWireFormat: Bool {
         get() { get<Bool>(1) }
@@ -1163,7 +1163,7 @@ extend FieldOptions_JSType <: Default<FieldOptions_JSType> {
 }
 
 public class FieldOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, EnumAccessor<FieldOptions_CType>()),
         (2, BoolAccessor()),
         (6, EnumAccessor<FieldOptions_JSType>()),
@@ -1173,9 +1173,9 @@ public class FieldOptions <: MessageLite {
         (10, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "ctype"),
         (2, "packed"),
         (6, "jstype"),
@@ -1185,14 +1185,14 @@ public class FieldOptions <: MessageLite {
         (10, "weak"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (1, FieldOptions_CType.STRING), (6, FieldOptions_JSType.JS_NORMAL), (5, false), (15, false), (3, false), (10, false)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = FieldOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = FieldOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var ctype: FieldOptions_CType {
         get() { get<FieldOptions_CType>(1) }
@@ -1240,17 +1240,17 @@ extend FieldOptions <: Default<FieldOptions> {
 }
 
 public class OneofOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = OneofOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = OneofOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var uninterpretedOption: Buffer<UninterpretedOption> {
         get() { get<Buffer<UninterpretedOption>>(999) }
@@ -1263,26 +1263,26 @@ extend OneofOptions <: Default<OneofOptions> {
 }
 
 public class EnumOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (2, BoolAccessor()),
         (3, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (2, "allowAlias"),
         (3, "deprecated"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (3, false)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = EnumOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = EnumOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var allowAlias: Bool {
         get() { get<Bool>(2) }
@@ -1305,24 +1305,24 @@ extend EnumOptions <: Default<EnumOptions> {
 }
 
 public class EnumValueOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "deprecated"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (1, false)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = EnumValueOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = EnumValueOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var deprecated: Bool {
         get() { get<Bool>(1) }
@@ -1340,24 +1340,24 @@ extend EnumValueOptions <: Default<EnumValueOptions> {
 }
 
 public class ServiceOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (33, BoolAccessor()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (33, "deprecated"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (33, false)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = ServiceOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = ServiceOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var deprecated: Bool {
         get() { get<Bool>(33) }
@@ -1422,26 +1422,26 @@ extend MethodOptions_IdempotencyLevel <: Default<MethodOptions_IdempotencyLevel>
 }
 
 public class MethodOptions <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (33, BoolAccessor()),
         (34, EnumAccessor<MethodOptions_IdempotencyLevel>()),
         (999, RepeatMessageAccessor<UninterpretedOption>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (33, "deprecated"),
         (34, "idempotencyLevel"),
         (999, "uninterpretedOption")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
     private static let m_dv = HashMap<Tag, Any>([
         (33, false), (34, MethodOptions_IdempotencyLevel.IDEMPOTENCY_UNKNOWN)
     ])
     protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
 
-    public func clone() { let rv = MethodOptions(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = MethodOptions(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var deprecated: Bool {
         get() { get<Bool>(33) }
@@ -1464,19 +1464,19 @@ extend MethodOptions <: Default<MethodOptions> {
 }
 
 public class UninterpretedOption_NamePart <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, BoolAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "namePart"),
         (2, "isExtension")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = UninterpretedOption_NamePart(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = UninterpretedOption_NamePart(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var namePart: String {
         get() { get<String>(1) }
@@ -1494,7 +1494,7 @@ extend UninterpretedOption_NamePart <: Default<UninterpretedOption_NamePart> {
 }
 
 public class UninterpretedOption <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (2, RepeatMessageAccessor<UninterpretedOption_NamePart>()),
         (3, StringAccessor()),
         (4, UInt64Accessor()),
@@ -1503,9 +1503,9 @@ public class UninterpretedOption <: MessageLite {
         (7, BytesAccessor()),
         (8, StringAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (2, "name"),
         (3, "identifierValue"),
         (4, "positiveIntValue"),
@@ -1514,9 +1514,9 @@ public class UninterpretedOption <: MessageLite {
         (7, "stringValue"),
         (8, "aggregateValue")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = UninterpretedOption(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = UninterpretedOption(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: Buffer<UninterpretedOption_NamePart> {
         get() { get<Buffer<UninterpretedOption_NamePart>>(2) }
@@ -1559,25 +1559,25 @@ extend UninterpretedOption <: Default<UninterpretedOption> {
 }
 
 public class SourceCodeInfo_Location <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, PackedInt32Accessor()),
         (2, PackedInt32Accessor()),
         (3, StringAccessor()),
         (4, StringAccessor()),
         (6, RepeatStringAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "path"),
         (2, "span"),
         (3, "leadingComments"),
         (4, "trailingComments"),
         (6, "leadingDetachedComments")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = SourceCodeInfo_Location(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = SourceCodeInfo_Location(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var path: Buffer<Int32> {
         get() { get<Buffer<Int32>>(1) }
@@ -1610,17 +1610,17 @@ extend SourceCodeInfo_Location <: Default<SourceCodeInfo_Location> {
 }
 
 public class SourceCodeInfo <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, RepeatMessageAccessor<SourceCodeInfo_Location>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "location")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = SourceCodeInfo(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = SourceCodeInfo(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var location: Buffer<SourceCodeInfo_Location> {
         get() { get<Buffer<SourceCodeInfo_Location>>(1) }
@@ -1633,23 +1633,23 @@ extend SourceCodeInfo <: Default<SourceCodeInfo> {
 }
 
 public class GeneratedCodeInfo_Annotation <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, PackedInt32Accessor()),
         (2, StringAccessor()),
         (3, Int32Accessor()),
         (4, Int32Accessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "path"),
         (2, "sourceFile"),
         (3, "begin"),
         (4, "end")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = GeneratedCodeInfo_Annotation(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = GeneratedCodeInfo_Annotation(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var path: Buffer<Int32> {
         get() { get<Buffer<Int32>>(1) }
@@ -1677,17 +1677,17 @@ extend GeneratedCodeInfo_Annotation <: Default<GeneratedCodeInfo_Annotation> {
 }
 
 public class GeneratedCodeInfo <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, RepeatMessageAccessor<GeneratedCodeInfo_Annotation>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "annotation")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = GeneratedCodeInfo(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = GeneratedCodeInfo(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var annotation: Buffer<GeneratedCodeInfo_Annotation> {
         get() { get<Buffer<GeneratedCodeInfo_Annotation>>(1) }

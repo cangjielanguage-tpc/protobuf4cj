@@ -5,23 +5,23 @@ import protobuf.*
 import google.protobuf.*
 
 public class Version <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, Int32Accessor()),
         (2, Int32Accessor()),
         (3, Int32Accessor()),
         (4, StringAccessor())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "major"),
         (2, "minor"),
         (3, "patch"),
         (4, "suffix")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = Version(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = Version(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var major: Int32 {
         get() { get<Int32>(1) }
@@ -49,23 +49,23 @@ extend Version <: Default<Version> {
 }
 
 public class CodeGeneratorRequest <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, RepeatStringAccessor()),
         (2, StringAccessor()),
         (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>()),
         (3, MessageAccessor<Version>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "fileToGenerate"),
         (2, "parameter"),
         (15, "protoFile"),
         (3, "compilerVersion")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = CodeGeneratorRequest(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = CodeGeneratorRequest(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var fileToGenerate: Buffer<String> {
         get() { get<Buffer<String>>(1) }
@@ -93,23 +93,23 @@ extend CodeGeneratorRequest <: Default<CodeGeneratorRequest> {
 }
 
 public class CodeGeneratorResponse_File <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, StringAccessor()),
         (15, StringAccessor()),
         (16, MessageAccessor<google.protobuf.GeneratedCodeInfo>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "name"),
         (2, "insertionPoint"),
         (15, "content"),
         (16, "generatedCodeInfo")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = CodeGeneratorResponse_File(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = CodeGeneratorResponse_File(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var name: String {
         get() { get<String>(1) }
@@ -180,21 +180,21 @@ extend CodeGeneratorResponse_Feature <: Default<CodeGeneratorResponse_Feature> {
 }
 
 public class CodeGeneratorResponse <: MessageLite {
-    private static let accessors = HashMap<Tag, Accessor>([
+    private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor()),
         (2, UInt64Accessor()),
         (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
     ])
-    protected func getAccessors() { accessors }
+    protected func getAccessors() { m_accessors }
 
-    private static let names = HashMap<Tag, String>([
+    private static let m_names = HashMap<Tag, String>([
         (1, "error"),
         (2, "supportedFeatures"),
         (15, "file")
     ])
-    protected func getNames() { names }
+    protected func getNames() { m_names }
 
-    public func clone() { let rv = CodeGeneratorResponse(); rv.fields = fieldsClone(); rv }
+    public func clone() { let rv = CodeGeneratorResponse(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var error: String {
         get() { get<String>(1) }
