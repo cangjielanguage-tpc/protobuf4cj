@@ -6,18 +6,12 @@ import google.protobuf.*
 
 public class Version <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor()),
-        (2, Int32Accessor()),
-        (3, Int32Accessor()),
-        (4, StringAccessor())
+        (1, Int32Accessor()), (2, Int32Accessor()), (3, Int32Accessor()), (4, StringAccessor())
     ])
     protected func getAccessors() { m_accessors }
 
     private static let m_names = HashMap<Tag, String>([
-        (1, "major"),
-        (2, "minor"),
-        (3, "patch"),
-        (4, "suffix")
+        (1, "major"), (2, "minor"), (3, "patch"), (4, "suffix")
     ])
     protected func getNames() { m_names }
 
@@ -50,18 +44,13 @@ extend Version <: Default<Version> {
 
 public class CodeGeneratorRequest <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatStringAccessor()),
-        (2, StringAccessor()),
-        (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>()),
-        (3, MessageAccessor<Version>())
+        (1, RepeatStringAccessor()), (2, StringAccessor()),
+        (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>()), (3, MessageAccessor<Version>())
     ])
     protected func getAccessors() { m_accessors }
 
     private static let m_names = HashMap<Tag, String>([
-        (1, "fileToGenerate"),
-        (2, "parameter"),
-        (15, "protoFile"),
-        (3, "compilerVersion")
+        (1, "fileToGenerate"), (2, "parameter"), (15, "protoFile"), (3, "compilerVersion")
     ])
     protected func getNames() { m_names }
 
@@ -94,18 +83,13 @@ extend CodeGeneratorRequest <: Default<CodeGeneratorRequest> {
 
 public class CodeGeneratorResponse_File <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()),
-        (2, StringAccessor()),
-        (15, StringAccessor()),
+        (1, StringAccessor()), (2, StringAccessor()), (15, StringAccessor()),
         (16, MessageAccessor<google.protobuf.GeneratedCodeInfo>())
     ])
     protected func getAccessors() { m_accessors }
 
     private static let m_names = HashMap<Tag, String>([
-        (1, "name"),
-        (2, "insertionPoint"),
-        (15, "content"),
-        (16, "generatedCodeInfo")
+        (1, "name"), (2, "insertionPoint"), (15, "content"), (16, "generatedCodeInfo")
     ])
     protected func getNames() { m_names }
 
@@ -136,7 +120,9 @@ extend CodeGeneratorResponse_File <: Default<CodeGeneratorResponse_File> {
     public static func default() { CodeGeneratorResponse_File() }
 }
 
-public enum CodeGeneratorResponse_Feature { FEATURE_NONE | FEATURE_PROTO3_OPTIONAL }
+public enum CodeGeneratorResponse_Feature {
+    | FEATURE_NONE | FEATURE_PROTO3_OPTIONAL
+}
 
 extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
     public func value(): Int32 {
@@ -181,16 +167,12 @@ extend CodeGeneratorResponse_Feature <: Default<CodeGeneratorResponse_Feature> {
 
 public class CodeGeneratorResponse <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()),
-        (2, UInt64Accessor()),
-        (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
+        (1, StringAccessor()), (2, UInt64Accessor()), (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
     ])
     protected func getAccessors() { m_accessors }
 
     private static let m_names = HashMap<Tag, String>([
-        (1, "error"),
-        (2, "supportedFeatures"),
-        (15, "file")
+        (1, "error"), (2, "supportedFeatures"), (15, "file")
     ])
     protected func getNames() { m_names }
 
