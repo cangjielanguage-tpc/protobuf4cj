@@ -2,7 +2,9 @@ package protobuf
 
 from std import collection.*
 
-public enum WireType { VARINT | BIT64 | PREFIXED | BIT32 }
+public enum WireType {
+    | VARINT | BIT64 | PREFIXED | BIT32
+}
 
 extend WireType <: Enum<WireType> {
     public func value(): Int32 {
