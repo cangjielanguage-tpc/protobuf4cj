@@ -33,6 +33,49 @@ func getFileName(path: String): String {
     sp[sp.size() - 1]
 }
 
+class LineSepOut {
+    LineSepOut (
+        let outbuf: StringBuilder,
+        let sep!: String = ",",     // 分隔符
+        let sn!: Int64 = 8,         // 新的一行自动补充的空格数
+        let ln!: Int64 = 120 - sep.size()    // 一行限制的字符数
+    ) {
+        ss = " " * sn
+        cn = sn
+    }
+
+    let ss: String
+    var cn: Int64
+    var first = true
+
+    /* 追加s */
+    func append(s: String) {
+        if (first) {
+            cn += s.size()
+            outbuf.append(ss).append(s)
+            first = false
+            return
+        }
+        // 非第一个, 追加分隔符
+        cn += sep.size()
+        outbuf.append(sep)
+        // 判断是否需要换行
+        if (cn + 1 + s.size() > ln) {
+            cn = sn + s.size()
+            outbuf.append('\n').append(ss).append(s)
+        } else {
+            cn += 1 + s.size()
+            outbuf.append(' ').append(s)
+        }
+    }
+
+    /* 重置 */
+    func reset() {
+        cn = sn
+        first = true
+    }
+}
+
 class GenCodeHelper {
     /* 根据嵌套层级获取类型名 */
     let nested = Buffer<String>()
@@ -207,26 +250,25 @@ func getPropType(f: FieldDescriptorProto) {
 
 func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let outbuf = helper.outbuf
+    let sepOut = LineSepOut(outbuf)
+
     // class
     outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
 
     // accessors
     outbuf.append("    private static let m_accessors = HashMap<Tag, Accessor>([\n")
-    var i = 0
     for (f in fields) {
-        outbuf.append("        (${f.number}, ${getAccesor(f)}())")
-        i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
+        sepOut.append("(${f.number}, ${getAccesor(f)}())")
     }
-    outbuf.append("    ])\n    protected func getAccessors() { m_accessors }\n")
+    outbuf.append("\n    ])\n    protected func getAccessors() { m_accessors }\n")
 
     // names
     outbuf.append("\n    private static let m_names = HashMap<Tag, String>([\n")
-    i = 0
+    sepOut.reset()
     for (f in fields) {
-        outbuf.append("        (${f.number}, \"${f.name}\")")
-        i++; outbuf.append(if (i == fields.size()) { '\n' } else { ",\n" } )
+        sepOut.append("(${f.number}, \"${f.name}\")")
     }
-    outbuf.append("    ])\n    protected func getNames() { m_names }\n")
+    outbuf.append("\n    ])\n    protected func getNames() { m_names }\n")
 
     // default value
     let dvs = Buffer<String>()
@@ -241,11 +283,10 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
         dvs.append("(${f.number}, ${dv})")
     }
     if (!dvs.isEmpty()) {
-        outbuf.append("\n    private static let m_dv = HashMap<Tag, Any>([\n        ")
-        var dot = false
+        outbuf.append("\n    private static let m_dv = HashMap<Tag, Any>([\n")
+        sepOut.reset()
         for (dv in dvs) {
-            if (dot) { outbuf.append(", ") } else { dot = true }
-            outbuf.append(dv)
+            sepOut.append(dv)
         }
         outbuf.append("\n    ])\n    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }\n")
     }
@@ -254,12 +295,11 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     if (helper.oneofNum != 0) {
         outbuf.append("\n    private let m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
         outbuf.append("    protected override func getOneofCase(): ?Array<Tag> { m_oneofCase }\n")
-        outbuf.append("    private static let m_oneofIdx = HashMap<Tag, Int64>([\n        ")
-        var dot = false
+        outbuf.append("    private static let m_oneofIdx = HashMap<Tag, Int64>([\n")
+        sepOut.reset()
         for (f in fields) {
             try { f.oneofIndex } catch (_) { continue }
-            if (dot) { outbuf.append(", ") } else { dot = true }
-            outbuf.append("(${f.number}, ${f.oneofIndex})")
+            sepOut.append("(${f.number}, ${f.oneofIndex})")
         }
         outbuf.append("\n    ])\n    protected override func getOneofIndex(): ?HashMap<Tag, Int64> { m_oneofIdx }\n")
     }
@@ -334,17 +374,15 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     let typeName = helper.getNestedTypeName(e.name)
     let values = e.value
     let outbuf = helper.outbuf
+    let sepOut = LineSepOut(outbuf, sep: "", sn: 4)
 
     // enum
-    outbuf.append("\npublic enum ${typeName} {")
-    // todo 换行
-    var sp = false
+    outbuf.append("\npublic enum ${typeName} {\n")
     for (v in values) {
         v.name = getEnumItemName(v.name)
-        if (sp) { outbuf.append('|') } else { sp = true }
-        outbuf.append(" ${v.name} ")
+        sepOut.append("| ${v.name}")
     }
-    outbuf.append("}\n")
+    outbuf.append("\n}\n")
 
     /* enum不得为空 */
     if (values.isEmpty()) { return }
