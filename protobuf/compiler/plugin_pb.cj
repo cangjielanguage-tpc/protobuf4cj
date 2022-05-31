@@ -6,7 +6,8 @@ import google.protobuf.*
 
 public class Version <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor()), (2, Int32Accessor()), (3, Int32Accessor()), (4, StringAccessor())
+        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance()), (3, Int32Accessor.getInstance()),
+        (4, StringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -44,8 +45,9 @@ extend Version <: Default<Version> {
 
 public class CodeGeneratorRequest <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatStringAccessor()), (2, StringAccessor()),
-        (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>()), (3, MessageAccessor<Version>())
+        (1, RepeatStringAccessor.getInstance()), (2, StringAccessor.getInstance()),
+        (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>.getInstance()),
+        (3, MessageAccessor<Version>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -83,8 +85,8 @@ extend CodeGeneratorRequest <: Default<CodeGeneratorRequest> {
 
 public class CodeGeneratorResponse_File <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, StringAccessor()), (15, StringAccessor()),
-        (16, MessageAccessor<google.protobuf.GeneratedCodeInfo>())
+        (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (15, StringAccessor.getInstance()),
+        (16, MessageAccessor<google.protobuf.GeneratedCodeInfo>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -167,7 +169,8 @@ extend CodeGeneratorResponse_Feature <: Default<CodeGeneratorResponse_Feature> {
 
 public class CodeGeneratorResponse <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, UInt64Accessor()), (15, RepeatMessageAccessor<CodeGeneratorResponse_File>())
+        (1, StringAccessor.getInstance()), (2, UInt64Accessor.getInstance()),
+        (15, RepeatMessageAccessor<CodeGeneratorResponse_File>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 

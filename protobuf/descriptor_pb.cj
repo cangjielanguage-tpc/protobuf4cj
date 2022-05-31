@@ -5,7 +5,7 @@ import protobuf.*
 
 public class FileDescriptorSet <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatMessageAccessor<FileDescriptorProto>())
+        (1, RepeatMessageAccessor<FileDescriptorProto>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -28,11 +28,13 @@ extend FileDescriptorSet <: Default<FileDescriptorSet> {
 
 public class FileDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, StringAccessor()), (3, RepeatStringAccessor()), (10, RepeatInt32Accessor()),
-        (11, RepeatInt32Accessor()), (4, RepeatMessageAccessor<DescriptorProto>()),
-        (5, RepeatMessageAccessor<EnumDescriptorProto>()), (6, RepeatMessageAccessor<ServiceDescriptorProto>()),
-        (7, RepeatMessageAccessor<FieldDescriptorProto>()), (8, MessageAccessor<FileOptions>()),
-        (9, MessageAccessor<SourceCodeInfo>()), (12, StringAccessor())
+        (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (3, RepeatStringAccessor.getInstance()),
+        (10, RepeatInt32Accessor.getInstance()), (11, RepeatInt32Accessor.getInstance()),
+        (4, RepeatMessageAccessor<DescriptorProto>.getInstance()),
+        (5, RepeatMessageAccessor<EnumDescriptorProto>.getInstance()),
+        (6, RepeatMessageAccessor<ServiceDescriptorProto>.getInstance()),
+        (7, RepeatMessageAccessor<FieldDescriptorProto>.getInstance()), (8, MessageAccessor<FileOptions>.getInstance()),
+        (9, MessageAccessor<SourceCodeInfo>.getInstance()), (12, StringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -112,7 +114,8 @@ extend FileDescriptorProto <: Default<FileDescriptorProto> {
 
 public class DescriptorProto_ExtensionRange <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor()), (2, Int32Accessor()), (3, MessageAccessor<ExtensionRangeOptions>())
+        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance()),
+        (3, MessageAccessor<ExtensionRangeOptions>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -145,7 +148,7 @@ extend DescriptorProto_ExtensionRange <: Default<DescriptorProto_ExtensionRange>
 
 public class DescriptorProto_ReservedRange <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor()), (2, Int32Accessor())
+        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -173,11 +176,15 @@ extend DescriptorProto_ReservedRange <: Default<DescriptorProto_ReservedRange> {
 
 public class DescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, RepeatMessageAccessor<FieldDescriptorProto>()),
-        (6, RepeatMessageAccessor<FieldDescriptorProto>()), (3, RepeatMessageAccessor<DescriptorProto>()),
-        (4, RepeatMessageAccessor<EnumDescriptorProto>()), (5, RepeatMessageAccessor<DescriptorProto_ExtensionRange>()),
-        (8, RepeatMessageAccessor<OneofDescriptorProto>()), (7, MessageAccessor<MessageOptions>()),
-        (9, RepeatMessageAccessor<DescriptorProto_ReservedRange>()), (10, RepeatStringAccessor())
+        (1, StringAccessor.getInstance()), (2, RepeatMessageAccessor<FieldDescriptorProto>.getInstance()),
+        (6, RepeatMessageAccessor<FieldDescriptorProto>.getInstance()),
+        (3, RepeatMessageAccessor<DescriptorProto>.getInstance()),
+        (4, RepeatMessageAccessor<EnumDescriptorProto>.getInstance()),
+        (5, RepeatMessageAccessor<DescriptorProto_ExtensionRange>.getInstance()),
+        (8, RepeatMessageAccessor<OneofDescriptorProto>.getInstance()),
+        (7, MessageAccessor<MessageOptions>.getInstance()),
+        (9, RepeatMessageAccessor<DescriptorProto_ReservedRange>.getInstance()),
+        (10, RepeatStringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -246,7 +253,7 @@ extend DescriptorProto <: Default<DescriptorProto> {
 
 public class ExtensionRangeOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (999, RepeatMessageAccessor<UninterpretedOption>())
+        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -429,10 +436,12 @@ extend FieldDescriptorProto_Label <: Default<FieldDescriptorProto_Label> {
 
 public class FieldDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (3, Int32Accessor()), (4, EnumAccessor<FieldDescriptorProto_Label>()),
-        (5, EnumAccessor<FieldDescriptorProto_Type>()), (6, StringAccessor()), (2, StringAccessor()),
-        (7, StringAccessor()), (9, Int32Accessor()), (10, StringAccessor()), (8, MessageAccessor<FieldOptions>()),
-        (17, BoolAccessor())
+        (1, StringAccessor.getInstance()), (3, Int32Accessor.getInstance()),
+        (4, EnumAccessor<FieldDescriptorProto_Label>.getInstance()),
+        (5, EnumAccessor<FieldDescriptorProto_Type>.getInstance()), (6, StringAccessor.getInstance()),
+        (2, StringAccessor.getInstance()), (7, StringAccessor.getInstance()), (9, Int32Accessor.getInstance()),
+        (10, StringAccessor.getInstance()), (8, MessageAccessor<FieldOptions>.getInstance()),
+        (17, BoolAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -506,7 +515,7 @@ extend FieldDescriptorProto <: Default<FieldDescriptorProto> {
 
 public class OneofDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, MessageAccessor<OneofOptions>())
+        (1, StringAccessor.getInstance()), (2, MessageAccessor<OneofOptions>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -534,7 +543,7 @@ extend OneofDescriptorProto <: Default<OneofDescriptorProto> {
 
 public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor()), (2, Int32Accessor())
+        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -562,9 +571,10 @@ extend EnumDescriptorProto_EnumReservedRange <: Default<EnumDescriptorProto_Enum
 
 public class EnumDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, RepeatMessageAccessor<EnumValueDescriptorProto>()),
-        (3, MessageAccessor<EnumOptions>()), (4, RepeatMessageAccessor<EnumDescriptorProto_EnumReservedRange>()),
-        (5, RepeatStringAccessor())
+        (1, StringAccessor.getInstance()), (2, RepeatMessageAccessor<EnumValueDescriptorProto>.getInstance()),
+        (3, MessageAccessor<EnumOptions>.getInstance()),
+        (4, RepeatMessageAccessor<EnumDescriptorProto_EnumReservedRange>.getInstance()),
+        (5, RepeatStringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -607,7 +617,8 @@ extend EnumDescriptorProto <: Default<EnumDescriptorProto> {
 
 public class EnumValueDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, Int32Accessor()), (3, MessageAccessor<EnumValueOptions>())
+        (1, StringAccessor.getInstance()), (2, Int32Accessor.getInstance()),
+        (3, MessageAccessor<EnumValueOptions>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -640,8 +651,8 @@ extend EnumValueDescriptorProto <: Default<EnumValueDescriptorProto> {
 
 public class ServiceDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, RepeatMessageAccessor<MethodDescriptorProto>()),
-        (3, MessageAccessor<ServiceOptions>())
+        (1, StringAccessor.getInstance()), (2, RepeatMessageAccessor<MethodDescriptorProto>.getInstance()),
+        (3, MessageAccessor<ServiceOptions>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -674,8 +685,9 @@ extend ServiceDescriptorProto <: Default<ServiceDescriptorProto> {
 
 public class MethodDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, StringAccessor()), (3, StringAccessor()), (4, MessageAccessor<MethodOptions>()),
-        (5, BoolAccessor()), (6, BoolAccessor())
+        (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (3, StringAccessor.getInstance()),
+        (4, MessageAccessor<MethodOptions>.getInstance()), (5, BoolAccessor.getInstance()),
+        (6, BoolAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -778,12 +790,14 @@ extend FileOptions_OptimizeMode <: Default<FileOptions_OptimizeMode> {
 
 public class FileOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (8, StringAccessor()), (10, BoolAccessor()), (20, BoolAccessor()), (27, BoolAccessor()),
-        (9, EnumAccessor<FileOptions_OptimizeMode>()), (11, StringAccessor()), (16, BoolAccessor()),
-        (17, BoolAccessor()), (18, BoolAccessor()), (42, BoolAccessor()), (23, BoolAccessor()), (31, BoolAccessor()),
-        (36, StringAccessor()), (37, StringAccessor()), (39, StringAccessor()), (40, StringAccessor()),
-        (41, StringAccessor()), (44, StringAccessor()), (45, StringAccessor()),
-        (999, RepeatMessageAccessor<UninterpretedOption>())
+        (1, StringAccessor.getInstance()), (8, StringAccessor.getInstance()), (10, BoolAccessor.getInstance()),
+        (20, BoolAccessor.getInstance()), (27, BoolAccessor.getInstance()),
+        (9, EnumAccessor<FileOptions_OptimizeMode>.getInstance()), (11, StringAccessor.getInstance()),
+        (16, BoolAccessor.getInstance()), (17, BoolAccessor.getInstance()), (18, BoolAccessor.getInstance()),
+        (42, BoolAccessor.getInstance()), (23, BoolAccessor.getInstance()), (31, BoolAccessor.getInstance()),
+        (36, StringAccessor.getInstance()), (37, StringAccessor.getInstance()), (39, StringAccessor.getInstance()),
+        (40, StringAccessor.getInstance()), (41, StringAccessor.getInstance()), (44, StringAccessor.getInstance()),
+        (45, StringAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -917,8 +931,8 @@ extend FileOptions <: Default<FileOptions> {
 
 public class MessageOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, BoolAccessor()), (2, BoolAccessor()), (3, BoolAccessor()), (7, BoolAccessor()),
-        (999, RepeatMessageAccessor<UninterpretedOption>())
+        (1, BoolAccessor.getInstance()), (2, BoolAccessor.getInstance()), (3, BoolAccessor.getInstance()),
+        (7, BoolAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1065,9 +1079,10 @@ extend FieldOptions_JSType <: Default<FieldOptions_JSType> {
 
 public class FieldOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, EnumAccessor<FieldOptions_CType>()), (2, BoolAccessor()), (6, EnumAccessor<FieldOptions_JSType>()),
-        (5, BoolAccessor()), (15, BoolAccessor()), (3, BoolAccessor()), (10, BoolAccessor()),
-        (999, RepeatMessageAccessor<UninterpretedOption>())
+        (1, EnumAccessor<FieldOptions_CType>.getInstance()), (2, BoolAccessor.getInstance()),
+        (6, EnumAccessor<FieldOptions_JSType>.getInstance()), (5, BoolAccessor.getInstance()),
+        (15, BoolAccessor.getInstance()), (3, BoolAccessor.getInstance()), (10, BoolAccessor.getInstance()),
+        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1132,7 +1147,7 @@ extend FieldOptions <: Default<FieldOptions> {
 
 public class OneofOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (999, RepeatMessageAccessor<UninterpretedOption>())
+        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1155,7 +1170,8 @@ extend OneofOptions <: Default<OneofOptions> {
 
 public class EnumOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (2, BoolAccessor()), (3, BoolAccessor()), (999, RepeatMessageAccessor<UninterpretedOption>())
+        (2, BoolAccessor.getInstance()), (3, BoolAccessor.getInstance()),
+        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1193,7 +1209,7 @@ extend EnumOptions <: Default<EnumOptions> {
 
 public class EnumValueOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, BoolAccessor()), (999, RepeatMessageAccessor<UninterpretedOption>())
+        (1, BoolAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1226,7 +1242,7 @@ extend EnumValueOptions <: Default<EnumValueOptions> {
 
 public class ServiceOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (33, BoolAccessor()), (999, RepeatMessageAccessor<UninterpretedOption>())
+        (33, BoolAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1308,8 +1324,8 @@ extend MethodOptions_IdempotencyLevel <: Default<MethodOptions_IdempotencyLevel>
 
 public class MethodOptions <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (33, BoolAccessor()), (34, EnumAccessor<MethodOptions_IdempotencyLevel>()),
-        (999, RepeatMessageAccessor<UninterpretedOption>())
+        (33, BoolAccessor.getInstance()), (34, EnumAccessor<MethodOptions_IdempotencyLevel>.getInstance()),
+        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1347,7 +1363,7 @@ extend MethodOptions <: Default<MethodOptions> {
 
 public class UninterpretedOption_NamePart <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor()), (2, BoolAccessor())
+        (1, StringAccessor.getInstance()), (2, BoolAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1375,8 +1391,9 @@ extend UninterpretedOption_NamePart <: Default<UninterpretedOption_NamePart> {
 
 public class UninterpretedOption <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (2, RepeatMessageAccessor<UninterpretedOption_NamePart>()), (3, StringAccessor()), (4, UInt64Accessor()),
-        (5, Int64Accessor()), (6, DoubleAccessor()), (7, BytesAccessor()), (8, StringAccessor())
+        (2, RepeatMessageAccessor<UninterpretedOption_NamePart>.getInstance()), (3, StringAccessor.getInstance()),
+        (4, UInt64Accessor.getInstance()), (5, Int64Accessor.getInstance()), (6, DoubleAccessor.getInstance()),
+        (7, BytesAccessor.getInstance()), (8, StringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1430,8 +1447,8 @@ extend UninterpretedOption <: Default<UninterpretedOption> {
 
 public class SourceCodeInfo_Location <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, PackedInt32Accessor()), (2, PackedInt32Accessor()), (3, StringAccessor()), (4, StringAccessor()),
-        (6, RepeatStringAccessor())
+        (1, PackedInt32Accessor.getInstance()), (2, PackedInt32Accessor.getInstance()),
+        (3, StringAccessor.getInstance()), (4, StringAccessor.getInstance()), (6, RepeatStringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1474,7 +1491,7 @@ extend SourceCodeInfo_Location <: Default<SourceCodeInfo_Location> {
 
 public class SourceCodeInfo <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatMessageAccessor<SourceCodeInfo_Location>())
+        (1, RepeatMessageAccessor<SourceCodeInfo_Location>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1497,7 +1514,8 @@ extend SourceCodeInfo <: Default<SourceCodeInfo> {
 
 public class GeneratedCodeInfo_Annotation <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, PackedInt32Accessor()), (2, StringAccessor()), (3, Int32Accessor()), (4, Int32Accessor())
+        (1, PackedInt32Accessor.getInstance()), (2, StringAccessor.getInstance()), (3, Int32Accessor.getInstance()),
+        (4, Int32Accessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
@@ -1535,7 +1553,7 @@ extend GeneratedCodeInfo_Annotation <: Default<GeneratedCodeInfo_Annotation> {
 
 public class GeneratedCodeInfo <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatMessageAccessor<GeneratedCodeInfo_Annotation>())
+        (1, RepeatMessageAccessor<GeneratedCodeInfo_Annotation>.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
