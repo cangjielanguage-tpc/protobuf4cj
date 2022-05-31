@@ -29,7 +29,7 @@ func tagPack(v: Tag, w: WireType, out: Bytes) {
 }
 
 /* parse a tag(with wire-type). */
-func tagParse(src: SimpleReader): (Tag*WireType) {
+func tagParse(src: SimpleReader): (Tag, WireType) {
     if (src.isEmpty()) {
         throw ParseValueExecption("tag", reason: "empty buffer")
     }
