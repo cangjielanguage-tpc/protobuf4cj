@@ -2,7 +2,7 @@ package protoc
 
 import google.protobuf.*
 import google.protobuf.compiler.*
-import collection.*
+from std import collection.*
 
 public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     let req = CodeGeneratorRequest()
