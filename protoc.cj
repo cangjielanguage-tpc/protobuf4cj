@@ -258,7 +258,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     // accessors
     outbuf.append("    private static let m_accessors = HashMap<Tag, Accessor>([\n")
     for (f in fields) {
-        sepOut.append("(${f.number}, ${getAccesor(f)}())")
+        sepOut.append("(${f.number}, ${getAccesor(f)}.getInstance())")
     }
     outbuf.append("\n    ])\n    protected func getAccessors() { m_accessors }\n")
 
