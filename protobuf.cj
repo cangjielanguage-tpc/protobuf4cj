@@ -63,12 +63,8 @@ public abstract class MessageLite <: ToString {
     protected func m_fieldsClone() {
         let result = HashMap<Tag, Any>()
         let accessors = getAccessors()
-        let iter = m_fields.iterator()
-        while (true) {
-            match (iter.next()) {
-                case Some((tag, val: Any)) => result[tag] = accessors[tag].clone(val)
-                case _ => break
-            }
+        for ((tag, val) in m_fields) {
+            result[tag] = accessors[tag].clone(val)
         }
         result
     }
@@ -76,18 +72,9 @@ public abstract class MessageLite <: ToString {
     /* 打包接口 */
     public func pack(out: Bytes) {
         let accessors = getAccessors()
-        let iter = m_fields.iterator()
-        while (true) {
-            match (iter.next()) {
-                // todo: 引用类型bytes, message, 为`空`时, proto3不打包, proto2打包
-                case Some((tag, val: Any)) => accessors[tag].pack(tag, val, out)
-                case _ => break
-            }
+        for ((tag, val) in m_fields) {
+            accessors[tag].pack(tag, val, out)
         }
-        // // cangjie 0.28.4 bug, 不能使用for in进行遍历
-        // for ((tag, val) in fields) {
-        //     accessors[tag].pack(tag, val, out)
-        // }
         for (field in unknownFields) {
             field.pack(out)
         }
@@ -118,16 +105,9 @@ public abstract class MessageLite <: ToString {
         var dot = false
         let names = getNames()
         let accessors = getAccessors()
-        /* cangjie 0.28.4 bug, 此处不支持for in */
-        let iter = m_fields.iterator()
-        while (true) {
-            match (iter.next()) {
-                case Some((tag, val: Any)) =>
-                    // debug(val, "toString(${names[tag]})")
-                    if (dot) { sb.append(", ") } else { dot = true }
-                    sb.append("\"${names[tag]}\"").append(": ").append(accessors[tag].toString(val))
-                case _ => break
-            }
+        for ((tag, val) in m_fields) {
+            if (dot) { sb.append(", ") } else { dot = true }
+            sb.append("\"${names[tag]}\"").append(": ").append(accessors[tag].toString(val))
         }
         sb.append('}').toString()
     }
