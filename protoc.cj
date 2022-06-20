@@ -1,20 +1,38 @@
+/*
+ * Copyright (c) Cangjie Library Team 2022-2022. All rights resvered.
+ */
+
+/**
+ * @file
+ * This file about: protoc
+ */
 package protoc
 
 import google.protobuf.*
 import google.protobuf.compiler.*
 from std import collection.*
 
+/**
+ * The Function is cj_generator
+ *
+ * @param inbuf of Buffer<UInt8>
+ * @param outbuf of Buffer<UInt8>
+ *
+ * @return Type of Unit
+ * @since 0.29.3
+ */
 public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     let req = CodeGeneratorRequest()
     req.unpack(inbuf)
 
     let resp = CodeGeneratorResponse()
-    // 需要生成代码的文件集合
+
+    // A collection of files that need to generate code
     let genfiles = HashSet<String>()
     for (path in req.fileToGenerate) {
         genfiles.put(path)
     }
-    // 处理需要生成代码的文件
+    // Processing files that require code generation
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
             // debug, 保存desc为json
@@ -27,7 +45,7 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     resp.pack(outbuf)
 }
 
-/* 获取文件名 */
+/* Get file name */
 func getFileName(path: String): String {
     let sp = path.split('/')
     sp[sp.size() - 1]
@@ -36,9 +54,9 @@ func getFileName(path: String): String {
 class LineSepOut {
     LineSepOut (
         let outbuf: StringBuilder,
-        let sep!: String = ",",     // 分隔符
-        let sn!: Int64 = 8,         // 新的一行自动补充的空格数
-        let ln!: Int64 = 120 - sep.size()    // 一行限制的字符数
+        let sep!: String = ",",     // Separator
+        let sn!: Int64 = 8,         // Number of spaces automatically added to a new line
+        let ln!: Int64 = 120 - sep.size()    // One line limit characters
     ) {
         ss = " " * sn
         cn = sn
@@ -48,7 +66,7 @@ class LineSepOut {
     var cn: Int64
     var first = true
 
-    /* 追加s */
+    /* Append s */
     func append(s: String) {
         if (first) {
             cn += s.size()
@@ -56,10 +74,10 @@ class LineSepOut {
             first = false
             return
         }
-        // 非第一个, 追加分隔符
+        // Not the first, append separator
         cn += sep.size()
         outbuf.append(sep)
-        // 判断是否需要换行
+        // Judge whether line feed is required
         if (cn + 1 + s.size() > ln) {
             cn = sn + s.size()
             outbuf.append('\n').append(ss).append(s)
@@ -69,7 +87,7 @@ class LineSepOut {
         }
     }
 
-    /* 重置 */
+    /* Reset */
     func reset() {
         cn = sn
         first = true
@@ -77,7 +95,7 @@ class LineSepOut {
 }
 
 class GenCodeHelper {
-    /* 根据嵌套层级获取类型名 */
+    /* Get type name based on nesting level */
     let nested = Buffer<String>()
     func getNestedTypeName(name: String) {
         if (nested.isEmpty()) { return name }
@@ -92,7 +110,7 @@ class GenCodeHelper {
     GenCodeHelper (pkg: String, let proto2: Bool) { pkgPrefix = ".${pkg}." }
 
     let packages = Buffer<String>()
-    /* 获取所有依赖的package */
+    /* Get all dependent packages */
     func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
         for (dep in desc.dependency) {
@@ -101,11 +119,11 @@ class GenCodeHelper {
                 case Some(i) =>
                     let pkg = dep.substring(0, i).replace('/', '.')
                     if (desc.package_ == "protobuf" && pkg != "protobuf") {
-                        /* protobuf包内不允许依赖外部包, cangjie不允许包循环依赖 */
+                        /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
                         throw Exception() // todo
                     }
                     if (pkg != desc.package_ && pkg != "protobuf") {
-                        /* 保存除自己、protobuf以外的包 */
+                        /* Save packages other than yourself and protobuf */
                         pkgs.put(pkg)
                     }
             }
@@ -128,25 +146,25 @@ class GenCodeHelper {
         throw Exception() // todo
     }
 
-    // 对于TYPE_MESSAGE, 如果是map, 需要作特殊处理
+    // For type_ Message. If it is a map, special processing is required
     func getMessageTypeName(f: FieldDescriptorProto, ns: Buffer<DescriptorProto>) {
         do {
             try { if (f.label.value() != 3) { break } } catch (_) { break }
             let sp = f.typeName.split('.')
             let entry = sp[sp.size() - 1]
             if (!entry.endsWith("Entry")) { break }
-            // nestedType中寻找entry
+            // Looking for entry in nestedtype
             for (n in ns) {
                 if (n.field.size() != 2 || n.name != entry) { continue }
                 try { if (n.options.mapEntry != true) { break } } catch (_) { break }
-                // 找到netry
+                // Find netry
                 return "${getPropType(n.field[0])}, ${getPropType(n.field[1])}, ${getAccesor(n.field[0])}, ${getAccesor(n.field[1])}"
             }
         } while (false)
         getTypeName(f.typeName)
     }
 
-    // pkg 字典序逆序
+    // pkg Dictionary order reverse
     static func pkgCmp(a: String, b: String) {
         if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
     }
@@ -156,30 +174,30 @@ class GenCodeHelper {
 }
 
 func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
-    // 目标文件路径
+    // Destination file path
     file.name = desc.package_.replace('.', '/') + '/' + getFileName(desc.name).replace(".proto", "_pb.cj")
-    // todo 暂时没有has接口, 使用try catch代替
+    // todo There is no has interface for the time being. Use try catch instead
     let proto2 = try { desc.syntax != "proto3" } catch (_) { true }
     let helper = GenCodeHelper(desc.package_, proto2)
-    // 头部信息
+    // Header information
     genCodeHeader(desc, helper)
-    // 所有message
+    // all message
     for (msg in desc.messageType) {
         genCodeMessage(msg, helper)
     }
-    // 所有enum
+    // all enum
     for (e in desc.enumType) {
         genCodeEnum(e, helper)
     }
-    // 所有service
+    // all service
     for (ser in desc.service) {
         genCodeService(ser, helper)
     }
-    // 所有extension
+    // all extension
     for (ext in desc.extension) {
         genCodeExtension(ext, helper)
     }
-    // 目标文件内容
+    // Target file content
     file.content = helper.outbuf.toString()
 }
 
@@ -221,7 +239,7 @@ func getAccesor(f: FieldDescriptorProto) {
         case TYPE_SINT64 => "SInt64Accessor"
         case _ => throw Exception() // todo
     }
-    // 处理 repeated
+    // Process repeated
     if (f.label.value() != 3) { return ac }
     try { if (f.options.packed == true) { return "Packed${ac}" } } catch (_) { /* nothing. */ }
     "Repeat${ac}"
@@ -336,28 +354,28 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     let extensions = msg.extension
 
     helper.nested.append(msg.name)
-    // 内嵌message
+    // Embedded message
     for (m in msg.nestedType) {
         genCodeMessage(m, helper)
     }
-    // 内嵌enum
+    // Embedded enum
     for (e in msg.enumType) {
         genCodeEnum(e, helper)
     }
     helper.nested.remove(helper.nested.size() - 1)
 
     for (f in fields) {
-        // 设置typeName
+        // Set typename
         match (f.type_) {
             case TYPE_ENUM => f.typeName = helper.getTypeName(f.typeName)
             case TYPE_MESSAGE => f.typeName = helper.getMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
-        // 设置propName
+        // Set propname
         f.name = getMessagePropName(f.jsonName)
     }
 
-    // mapEntry设置typeName但不用生成message
+    // Mapentry sets typename without generating message
     try { if (msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
 
     helper.oneofNum = msg.oneofDecl.size()
@@ -438,7 +456,7 @@ func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
     // todo
 }
 
-/* 定义保留字 */
+/* Define reserved words */
 let cangjieKeyWords = HashSet<String>([
     "abstract", "as", "break", "case", "catch", "class", "continue", "do",
     "else", "enum", "extend", "false", "finally", "for", "foreign", "from",
