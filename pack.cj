@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Cangjie Library Team 2022-2022. All rights resvered.
+ */
+
+/**
+ * @file
+ * This file about: Functions that manipulate data.
+ */
 package protobuf
 
 /* encode/decode basic datum */
@@ -5,7 +13,7 @@ from std import collection.*
 public type Tag = UInt32
 public type Bytes = Buffer<UInt8>
 
-/**
+/*
  * the number of bytes required to store the tag for the field. Includes
  * 3 bits for the wire-type, and a single bit that denotes the end-of-tag.
  */

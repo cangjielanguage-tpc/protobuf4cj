@@ -1,59 +1,145 @@
+/*
+ * Copyright (c) Cangjie Library Team 2022-2022. All rights resvered.
+ */
+
+/**
+ * @file
+ * This file about: types.
+ */
 package protobuf
 
-/* 语言不支持通过泛型类型参数构建对象, 通过此接口间接构建泛型对象 */
+/**
+ * The interface is Default<T>
+ * The language does not support building objects through generic type parameters. Generic objects are built indirectly through this interface
+ * @author tutudo
+ * @since 0.29.3
+ */
 public interface Default<T> {
     static func default(): T
 }
 
 extend Int32 <: Default<Int32> {
+    /**
+     * The Function is default
+     *
+     * @return Type of Int32
+     * @since 0.29.3
+     */
     public static func default(): Int32 { 0 }
 }
 
 extend UInt32 <: Default<UInt32> {
+    /**
+     * The Function is default
+     *
+     * @return Type of UInt32
+     * @since 0.29.3
+     */
     public static func default(): UInt32 { 0 }
 }
 
 extend Int64 <: Default<Int64> {
+    /**
+     * The Function is default
+     *
+     * @return Type of Int64
+     * @since 0.29.3
+     */
     public static func default(): Int64 { 0 }
 }
 
 extend UInt64 <: Default<UInt64> {
+    /**
+     * The Function is default
+     *
+     * @return Type of UInt64
+     * @since 0.29.3
+     */
     public static func default(): UInt64 { 0 }
 }
 
 extend Float32 <: Default<Float32> {
+    /**
+     * The Function is default
+     *
+     * @return Type of Float32
+     * @since 0.29.3
+     */
     public static func default(): Float32 { .0 }
 }
 
 extend Float64 <: Default<Float64> {
+    /**
+     * The Function is default
+     *
+     * @return Type of Float64
+     * @since 0.29.3
+     */
     public static func default(): Float64 { .0 }
 }
 
 extend Bool <: Default<Bool> {
+    /**
+     * The Function is default
+     *
+     * @return Type of Bool
+     * @since 0.29.3
+     */
     public static func default(): Bool { false }
 }
 
 extend String <: Default<String> {
+    /**
+     * The Function is default
+     *
+     * @return Type of String
+     * @since 0.29.3
+     */
     public static func default(): String { "" }
 }
 
 extend Buffer<T> <: Default<Buffer<T>> {
+    /**
+     * The Function is default
+     *
+     * @return Type of Buffer<T>
+     * @since 0.29.3
+     */
     public static func default(): Buffer<T> { Buffer() }
 }
 
 extend HashMap<K, V> <: Default<HashMap<K, V>> {
+    /**
+     * The Function is default
+     *
+     * @return Type of HashMap<K, V>
+     * @since 0.29.3
+     */
     public static func default(): HashMap<K, V> { HashMap<K, V>() }
 }
 
-/* 给repeated bytes, repeated message增加add()接口 */
+/* Add() interface to repeated bytes and repeated message */
+
+/**
+ * The interface is Reference
+ * @author tutudo
+ * @since 0.29.3
+ */
 public interface Reference {}
 extend Buffer<T> <: Reference { }
 extend MessageLite <: Reference { }
 extend HashMap<K, V> <: Reference { }
-/* 当前extend导出规则不允许此形式导出, 暂时使用AddReference<T>进行兼容 */
+
+/* The current extend export rule does not allow this form of export. Addreference<t> is temporarily used for compatibility */
 // extend Buffer<T> where T <: Reference & Default<T> {
 //     public func add() { let rv = T.default(); this.add(rv); rv }
 // }
+
+/**
+ * The interface is AddReference<T>
+ * @author tutudo
+ * @since 0.29.3
+ */
 public interface AddReference<T> {
     func add(): T
 }
@@ -62,46 +148,86 @@ extend Buffer<T> <: AddReference<T> where T <: Reference & Default<T> {
 }
 
 /** 
- * 兼容cangjie 0.28.4部分场景下通过Any传参后无法通过as操作符复原
- * 目前仅发现内置的数值类型、String类型存在该问题, enum、class并未发现此问题
+ * In some scenarios that are compatible with Cangjie 0.28.4, parameters can not be restored through the as operator after being passed through any
+ * At present, only the built-in numeric type and string type are found to have this problem, but enum and class have not found this problem
  */
 interface Self<T> {
     func self(): T { (this as T).getOrThrow() }
 }
 
 extend Int32 <: Self<Int32> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend UInt32 <: Self<UInt32> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend Int64 <: Self<Int64> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend UInt64 <: Self<UInt64> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend Bool <: Self<Bool> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend Float32 <: Self<Float32> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend Float64 <: Self<Float64> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
 extend String <: Self<String> {
+    /**
+     * The Function is self
+     *
+     * @since 0.29.3
+     */
     public func self() { this }
 }
 
-/* 是否是值類型的`0`值 */
+/* Whether it is a '0' value of value type */
 func zeroish(val: Any): Bool {
     match (val) {
         case a: Int32 => a == 0
@@ -125,11 +251,11 @@ func zeroish(val: Any): Bool {
     }
 }
 
-/* 是否是引用類型的值 */
+/* Whether it is a value of reference type */
 func reference(val: Any): Bool {
     match (val) {
         case _: Reference => true
-        /* 兼容部分场景下Reference无法识别 */
+        /* Reference is not recognized in some compatible scenarios */
         case _: Int32 => false
         case _: UInt32 => false
         case _: Int64 => false
@@ -151,11 +277,11 @@ func reference(val: Any): Bool {
     }
 }
 
-/* 调试Any传参类型退化规律 */
+/* Debug any parameter transfer type degradation law */
 func debug(val: Any, id: String): Unit {
     print("debug[${id}]: val(")
     match (val) {
-        // case s: Buffer<ToString> => print("${s})") // 没有效果
+        // case s: Buffer<ToString> => print("${s})") // No effect
         case s: ToString => print("${s})")
         case _ => print("Invalid)")
     }

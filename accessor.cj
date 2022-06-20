@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Cangjie Library Team 2022-2022. All rights resvered.
+ */
+
+/**
+ * @file
+ * This file about: Use the accessors provided by the subclass messages to access (get set pack unpack, etc.) specific data (fields).
+ */
 package protobuf
 
 /* throws */
@@ -12,7 +20,11 @@ func escape(s: String) {
     s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\r", "\\r").replace("\n", "\\n")
 }
 
-/* access all the message fields */
+/**
+ * The interface is Accessor, access all the message fields
+ * @author tutudo
+ * @since 0.29.3
+ */
 public interface Accessor {
     func pack(tag: Tag, val: Any, out: Bytes): Unit
     func unpack(tag: Tag, src: SimpleReader): Any
@@ -21,217 +33,695 @@ public interface Accessor {
     static func getInstance(): Accessor
 }
 
-/* access all the repeated fields, override the default `clone` and `toString` */
+/**
+ * The interface is RepeatAccessor<T> inherited from Accessor where T <: ToString
+ * access all the repeated fields, override the default `clone` and `toString`
+ * @author tutudo
+ * @since 0.29.3
+ */
 public interface RepeatAccessor<T> <: Accessor where T <: ToString {
     func clone(val: Any): Any { dynamic_cast<Buffer<T>>(val).clone() }
     func toString(val: Any) { dynamic_cast<Buffer<T>>(val).toString() }
 }
 
+/**
+ * The class is Int32Accessor inherited from Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class Int32Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<Int32>(val)), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int32(varintParse(src))
     }
     private static let instance = Int32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
+/**
+ * The class is UInt32Accessor inherited from Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class UInt32Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<UInt32>(val)), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         UInt32(varintParse(src))
     }
     private static let instance = UInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
+/**
+ * The class is Int64Accessor inherited from Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class Int64Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<Int64>(val)), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int64(varintParse(src))
     }
     private static let instance = Int64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
+/**
+ * The class is UInt64Accessor inherited from Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class UInt64Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(dynamic_cast(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         varintParse(src)
     }
     private static let instance = UInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* enum E */
+/**
+ * The class is EnumAccessor<E> inherited from Accessor where E <: Enum<E>,enum E
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<E>(val).value()), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         E.parse(Int32(varintParse(src)))
     }
+
+    /**
+     * The Function is toString
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func toString(val: Any) { "\"${dynamic_cast<E>(val)}\"" }
     private static let instance = EnumAccessor<E>()
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* zigzag-encoding 128-base int32 */
+/**
+ * zigzag-encoding 128-base int32
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class SInt32Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(zigzag(dynamic_cast<Int32>(val))), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         unzigzag(UInt32(varintParse(src)))
     }
     private static let instance = SInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* zigzag-encoding 128-base int64 */
+/**
+ * zigzag-encoding 128-base int64
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class SInt64Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(zigzag(dynamic_cast<Int64>(val)), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         unzigzag(varintParse(src))
     }
     private static let instance = SInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* bool, varint 0 or 1 */
+/**
+ * bool, varint 0 or 1
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class BoolAccessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, VARINT, out)
         varintPack(if (dynamic_cast(val)) { 1 } else { 0 }, out)
     }
+    
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         varintParse(src) != 0
     }
     private static let instance = BoolAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
 /* length fixed 4-bytes signed int32 */
+
+/**
+ * The class is SFixed32Accessor inherited from Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class SFixed32Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT32, out)
         fixedPack(dynamic_cast<Int32>(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int32(fixed32Parse(src))
     }
     private static let instance = SFixed32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
 /* length fixed 4-bytes unsigned uint32 */
+
+/**
+ * The class is Fixed32Accessor inherited from Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class Fixed32Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT32, out)
         fixedPack(dynamic_cast<UInt32>(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         fixed32Parse(src)
     }
     private static let instance = Fixed32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* length fixed 4-bytes float32 */
+/**
+ * length fixed 4-bytes float32
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class FloatAccessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT32, out)
         fixedPack(dynamic_cast<Float32>(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         floatBits(fixed32Parse(src))
     }
     private static let instance = FloatAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* length fixed 8-bytes signed int64 */
+/**
+ * length fixed 8-bytes signed int64
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class SFixed64Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT64, out)
         fixedPack(dynamic_cast<Int64>(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Int64(fixed64Parse(src))
     }
+
     private static let instance = SFixed64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* length fixed 8-bytes unsigned uint64 */
+/**
+ * length fixed 8-bytes unsigned uint64
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class Fixed64Accessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT64, out)
         fixedPack(dynamic_cast<UInt64>(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         fixed64Parse(src)
     }
+
     private static let instance = Fixed64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* length fixed 8-bytes float64 */
+/**
+ * Length fixed 8-bytes float64
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class DoubleAccessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, BIT64, out)
         fixedPack(dynamic_cast<Float64>(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         floatBits(fixed64Parse(src))
     }
     private static let instance = DoubleAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* string */
+/**
+ * string
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class StringAccessor <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         tagPack(tag, PREFIXED, out)
         strPack(dynamic_cast(val), out)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         strParse(src)
     }
+
+    /**
+     * The Function is toString
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func toString(val: Any) { "\"${escape(dynamic_cast<String>(val))}\"" }
     private static let instance = StringAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* bytes */
+/**
+ * Bytes
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class BytesAccessor <: RepeatAccessor<UInt8> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Bytes>(val)
         let len = UInt64(val.size())
@@ -241,15 +731,44 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
             out.appendAll(val)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         Bytes(binParse(src).data())
     }
     private static let instance = BytesAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* message M */
+/**
+ * message M 
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let tmp = Bytes()
         dynamic_cast<M>(val).pack(tmp)
@@ -260,18 +779,56 @@ public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> 
             out.appendAll(tmp)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @return Type of Any
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader): Any {
         M.default().unpack(binParse(src)) // unpack return MessageLite, if M needed, use dynamic_cast<M>
     }
+
+    /**
+     * The Function is clone
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func clone(val: Any) {
         dynamic_cast<M>(val).clone()
     }
+
     private static let instance = MessageAccessor<M>()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated int32 without `packed` flag */
+/**
+ * repeated int32 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int32>>(val)
@@ -281,6 +838,15 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
             varintPack(UInt64(v), out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int32>()
@@ -293,11 +859,30 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
         rv
     }
     private static let instance = RepeatInt32Accessor()
+    
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated int32 with `packed` flag */
+/**
+ * repeated int32 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedInt32Accessor <: RepeatAccessor<Int32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int32>>(val)
@@ -308,6 +893,15 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int32>()
@@ -316,11 +910,30 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
         rv
     }
     private static let instance = PackedInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated uint32 without `packed` flag */
+/**
+ * repeated uint32 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt32>>(val)
         if (val.isEmpty()) { return }
@@ -329,6 +942,14 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
             varintPack(UInt64(v), out)
         }
     }
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt32>()
@@ -341,11 +962,30 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
         rv
     }
     private static let instance = RepeatUInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated uint32 with `packed` flag */
+/**
+ * repeated uint32 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt32>>(val)
         if (val.isEmpty()) { return }
@@ -355,6 +995,14 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt32>()
@@ -363,11 +1011,30 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
         rv
     }
     private static let instance = PackedUInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated int64 without `packed` flag */
+/**
+ * repeated int64 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int64>>(val)
@@ -377,6 +1044,15 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
             varintPack(UInt64(v), out)
         }
     }
+    
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int64>()
@@ -389,11 +1065,31 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
         rv
     }
     private static let instance = RepeatInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated int64 with `packed` flag */
+
+/**
+ * repeated int64 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedInt64Accessor <: RepeatAccessor<Int64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int64>>(val)
@@ -404,6 +1100,15 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int64>()
@@ -412,11 +1117,30 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
         rv
     }
     private static let instance = PackedInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated uint64 without `packed` flag */
+/**
+ * repeated uint64 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt64>>(val)
         if (val.isEmpty()) { return }
@@ -425,6 +1149,15 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
             varintPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt64>()
         while (true) {
@@ -436,11 +1169,30 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
         rv
     }
     private static let instance = RepeatUInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated uint64 with `packed` flag */
+/**
+ * repeated uint64 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt64>>(val)
         if (val.isEmpty()) { return }
@@ -450,6 +1202,15 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt64>()
@@ -458,11 +1219,30 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
         rv
     }
     private static let instance = PackedUInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated enum without `packed` flag */
+/**
+ * repeated enum without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<E>>(val)
@@ -472,6 +1252,15 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
             varintPack(UInt64(v.value()), out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<E>()
@@ -483,6 +1272,14 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         }
         rv
     }
+
+    /**
+     * The Function is toString
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func toString(val: Any) {
         let sb = StringBuilder("[")
         var dot = false
@@ -494,11 +1291,30 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         sb.append(']').toString()
     }
     private static let instance = RepeatEnumAccessor<E>()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated enum with `packed` flag */
+/**
+ * repeated enum with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<E>>(val)
@@ -509,6 +1325,15 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<E>()
@@ -516,6 +1341,14 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         while (!tmp.isEmpty()) { rv.append(E.parse(Int32(varintParse(tmp)))) }
         rv
     }
+
+    /**
+     * The Function is toString
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func toString(val: Any) {
         let sb = StringBuilder("[")
         var dot = false
@@ -527,11 +1360,30 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
         sb.append(']').toString()
     }
     private static let instance = PackedEnumAccessor<E>()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated sint32 without `packed` flag */
+/**
+ * repeated sint32 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int32>>(val)
         if (val.isEmpty()) { return }
@@ -540,6 +1392,15 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
             varintPack(UInt64(zigzag(v)), out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int32>()
@@ -552,11 +1413,30 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
         rv
     }
     private static let instance = RepeatSInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated sint32 with `packed` flag */
+/**
+ * repeated sint32 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int32>>(val)
         if (val.isEmpty()) { return }
@@ -566,6 +1446,15 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int32>()
@@ -574,11 +1463,30 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
         rv
     }
     private static let instance = PackedSInt32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated sint64 without `packed` flag */
+/**
+ * repeated sint64 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int64>>(val)
         if (val.isEmpty()) { return }
@@ -587,6 +1495,15 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
             varintPack(zigzag(v), out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int64>()
         while (true) {
@@ -598,11 +1515,30 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
         rv
     }
     private static let instance = RepeatSInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated sint64 with `packed` flag */
+/**
+ * repeated sint64 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int64>>(val)
         if (val.isEmpty()) { return }
@@ -612,6 +1548,15 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
         varintPack(UInt64(tmp.size()), out)
         out.appendAll(tmp)
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int64>()
@@ -620,11 +1565,30 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
         rv
     }
     private static let instance = PackedSInt64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated bool without `packed` flag */
+/**
+ * repeated bool without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Bool>>(val)
         if (val.isEmpty()) { return }
@@ -633,6 +1597,15 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
             varintPack(if (v) { 1 } else { 0 }, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Bool>()
         while (true) {
@@ -643,12 +1616,31 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
         }
         rv
     }
+
     private static let instance = RepeatBoolAccessor()
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated bool with `packed` flag */
+/**
+ * repeated bool with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedBoolAccessor <: RepeatAccessor<Bool> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Bool>>(val)
         if (val.isEmpty()) { return }
@@ -656,6 +1648,15 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
         varintPack(UInt64(val.size()), out)
         for (v in val) { varintPack(if (v) { 1 } else { 0 }, out) }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Bool>()
@@ -664,11 +1665,30 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
         rv
     }
     private static let instance = PackedBoolAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 4-bytes int32 without `packed` flag */
+/**
+ * repeated 4-bytes int32 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int32>>(val)
         if (val.isEmpty()) { return }
@@ -677,6 +1697,15 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
             fixedPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int32>()
@@ -689,11 +1718,30 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
         rv
     }
     private static let instance = RepeatSFixed32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 4-bytes int32 with `packed` flag */
+/**
+ * repeated 4-bytes int32 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int32>>(val)
         if (val.isEmpty()) { return }
@@ -701,6 +1749,15 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
         varintPack(UInt64(val.size()) * 4, out)
         for (v in val) { fixedPack(v, out) }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int32>()
@@ -709,11 +1766,30 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
         rv
     }
     private static let instance = PackedSFixed32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 4-bytes uint32 without `packed` flag */
+/**
+ * repeated 4-bytes uint32 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt32>>(val)
         if (val.isEmpty()) { return }
@@ -722,6 +1798,15 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
             fixedPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt32>()
         while (true) {
@@ -733,11 +1818,32 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
         rv
     }
     private static let instance = RepeatFixed32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
 /* repeated 4-bytes uint32 with `packed` flag */
+
+/**
+ * The class is PackedFixed32Accessor inherited from RepeatAccessor<UInt32>
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt32>>(val)
         if (val.isEmpty()) { return }
@@ -745,6 +1851,15 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
         varintPack(UInt64(val.size()) * 4, out)
         for (v in val) { fixedPack(v, out) }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt32>()
@@ -753,11 +1868,30 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
         rv
     }
     private static let instance = PackedFixed32Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 4-bytes float32 without `packed` flag */
+/**
+ * repeated 4-bytes float32 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Float32>>(val)
         if (val.isEmpty()) { return }
@@ -766,6 +1900,15 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
             fixedPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Float32>()
         while (true) {
@@ -777,11 +1920,30 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
         rv
     }
     private static let instance = RepeatFloatAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 4-bytes float32 with `packed` flag */
+/**
+ * repeated 4-bytes float32 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedFloatAccessor <: RepeatAccessor<Float32> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Float32>>(val)
@@ -790,6 +1952,15 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
         varintPack(UInt64(val.size()) * 4, out)
         for (v in val) { fixedPack(v, out) }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Float32>()
@@ -798,11 +1969,30 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
         rv
     }
     private static let instance = PackedFloatAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 8-bytes int64 without `packed` flag */
+/**
+ * repeated 8-bytes int64 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int64>>(val)
         if (val.isEmpty()) { return }
@@ -811,6 +2001,15 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
             fixedPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int64>()
@@ -823,11 +2022,30 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
         rv
     }
     private static let instance = RepeatSFixed64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 8-bytes int64 with `packed` flag */
+/**
+ * repeated 8-bytes int64 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Int64>>(val)
         if (val.isEmpty()) { return }
@@ -835,6 +2053,15 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
         varintPack(UInt64(val.size()) * 8, out)
         for (v in val) { fixedPack(v, out) }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Int64>()
@@ -843,11 +2070,30 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
         rv
     }
     private static let instance = PackedSFixed64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 8-bytes uint64 without `packed` flag */
+/**
+ * repeated 8-bytes uint64 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt64>>(val)
         if (val.isEmpty()) { return }
@@ -856,6 +2102,15 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
             fixedPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt64>()
         while (true) {
@@ -867,11 +2122,30 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
         rv
     }
     private static let instance = RepeatFixed64Accessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 8-bytes uint64 with `packed` flag */
+/**
+ * repeated 8-bytes uint64 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<UInt64>>(val)
         if (val.isEmpty()) { return }
@@ -879,6 +2153,15 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
         varintPack(UInt64(val.size()) * 8, out)
         for (v in val) { fixedPack(v, out) }
     }
+    
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<UInt64>()
@@ -887,11 +2170,30 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
         rv
     }
     private static let instance = PackedFixed64Accessor()
+    
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 8-bytes float64 without `packed` flag */
+/**
+ * repeated 8-bytes float64 without `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Float64>>(val)
         if (val.isEmpty()) { return }
@@ -900,6 +2202,15 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
             fixedPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Float64>()
         while (true) {
@@ -911,11 +2222,30 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
         rv
     }
     private static let instance = RepeatDoubleAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated 8-bytes float64 with `packed` flag */
+/**
+ * repeated 8-bytes float64 with `packed` flag
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Float64>>(val)
@@ -924,6 +2254,15 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
         varintPack(UInt64(val.size()) * 8, out)
         for (v in val) { fixedPack(v, out) }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Float64>()
@@ -932,11 +2271,30 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
         rv
     }
     private static let instance = PackedDoubleAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated string */
+/**
+ * repeated string
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatStringAccessor <: RepeatAccessor<String> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<String>>(val)
         if (val.isEmpty()) { return }
@@ -945,6 +2303,15 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
             strPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<String>()
         while (true) {
@@ -966,11 +2333,30 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
         sb.append(']').toString()
     }
     private static let instance = RepeatStringAccessor()
+    /**
+     * The Function is getInstance
+     *
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
-/* repeated bytes */
+/**
+ * repeated bytes
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<Bytes>>(val)
         if (val.isEmpty()) { return }
@@ -979,6 +2365,15 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
             binPack(v, out)
         }
     }
+
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<Bytes>()
         while (true) {
@@ -989,15 +2384,43 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
         }
         rv
     }
+
+    /**
+     * The Function is clone
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func clone(val: Any) {
         let val = dynamic_cast<Buffer<Bytes>>(val)
         Buffer<Bytes>(val.size(), { i => val[i].clone() })
     }
     private static let instance = RepeatBytesAccessor()
+
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
-/* repeated message */
+
+/**
+ * repeated message
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLite & Default<M> {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<Buffer<M>>(val)
         if (val.isEmpty()) { return }
@@ -1010,6 +2433,14 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
             out.appendAll(tmp)
         }
     }
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<M>()
         while (true) {
@@ -1020,16 +2451,43 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
         }
         rv
     }
+    /**
+     * The Function is clone
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func clone(val: Any) {
         let val = dynamic_cast<Buffer<M>>(val)
         Buffer<M>(val.size(), { i => dynamic_cast<M>(val[i].clone()) })
     }
     private static let instance = RepeatMessageAccessor<M>()
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
 
 /* map<K, V>, similar to repeated MapEntry */
+
+/**
+ * The class is MapAccessor<K, V, KA, VA> inherited from Accessor where K <: Hashable & Equatable<K> & ToString & Default<K>, V <: Default<V>, KA <: Accessor, VA <: Accessor
+ * @author tutudo
+ * @since 0.29.3
+ */
 public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatable<K> & ToString & Default<K>, V <: Default<V>, KA <: Accessor, VA <: Accessor {
+    /**
+     * The Function is pack
+     *
+     * @param tag of Tag
+     * @param val of Any
+     * @param out of Bytes
+     *
+     * @since 0.29.3
+     */
     public func pack(tag: Tag, val: Any, out: Bytes) {
         let val = dynamic_cast<HashMap<K, V>>(val)
         if (val.isEmpty()) { return }
@@ -1045,6 +2503,14 @@ public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatab
             out.appendAll(tmp)
         }
     }
+    /**
+     * The Function is unpack
+     *
+     * @param tag of Tag
+     * @param src of SimpleReader
+     *
+     * @since 0.29.3
+     */
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = HashMap<K, V>()
         let ka = KA.getInstance()
@@ -1070,6 +2536,13 @@ public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatab
         }
         rv
     }
+    /**
+     * The Function is clone
+     *
+     * @param val of Any
+     *
+     * @since 0.29.3
+     */
     public func clone(val: Any) {
         let rv = HashMap<K, V>()
         let va = VA.getInstance()
@@ -1087,5 +2560,10 @@ public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatab
         sb.append('}').toString()
     }
     private static let instance = MapAccessor<K, V, KA, VA>()
+    /**
+     * The Function is getInstance
+     *
+     * @since 0.29.3
+     */
     public static func getInstance() { instance }
 }
