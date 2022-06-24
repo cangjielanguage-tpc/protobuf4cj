@@ -48,7 +48,12 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
 /* Get file name */
 func getFileName(path: String): String {
     let sp = path.split('/')
-    sp[sp.size() - 1]
+    sp[sp.size() - 1].replace(".proto", "_pb.cj")
+}
+
+/* Get dest path by package name */
+func getDestPath(package_: String): String {
+    if (package_ == "") { "" } else { package_.replace('.', '/') + '/' }
 }
 
 class LineSepOut {
@@ -107,7 +112,9 @@ class GenCodeHelper {
     }
 
     let pkgPrefix: String
-    GenCodeHelper (pkg: String, let proto2: Bool) { pkgPrefix = ".${pkg}." }
+    GenCodeHelper (package_: String, let proto2: Bool) {
+        pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
+    }
 
     let packages = Buffer<String>()
     /* Get all dependent packages */
@@ -175,7 +182,8 @@ class GenCodeHelper {
 
 func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // Destination file path
-    file.name = desc.package_.replace('.', '/') + '/' + getFileName(desc.name).replace(".proto", "_pb.cj")
+    desc.package_ = try { desc.package_ } catch (_) { "" }
+    file.name = getDestPath(desc.package_) + getFileName(desc.name)
     // todo There is no has interface for the time being. Use try catch instead
     let proto2 = try { desc.syntax != "proto3" } catch (_) { true }
     let helper = GenCodeHelper(desc.package_, proto2)
@@ -204,9 +212,9 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
 func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     let outbuf = helper.outbuf
     // package
-    outbuf.append("package ${desc.package_}\n")
+    if (desc.package_ != "") { outbuf.append("package ${desc.package_}\n\n") }
     // import
-    outbuf.append("\nfrom std import collection.*\n")
+    outbuf.append("from std import collection.*\n")
     if (desc.package_ != "protobuf") {
         outbuf.append("import protobuf.*\n")
     }
