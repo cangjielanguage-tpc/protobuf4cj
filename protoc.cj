@@ -156,7 +156,7 @@ class GenCodeHelper {
     // For type_ Message. If it is a map, special processing is required
     func getMessageTypeName(f: FieldDescriptorProto, ns: Buffer<DescriptorProto>) {
         do {
-            try { if (f.label.value() != 3) { break } } catch (_) { break }
+            if (f.label != LABEL_REPEATED) { break }
             let sp = f.typeName.split('.')
             let entry = sp[sp.size() - 1]
             if (!entry.endsWith("Entry")) { break }
@@ -247,7 +247,7 @@ func getAccesor(f: FieldDescriptorProto) {
         case _ => throw Exception() // todo
     }
     // Process repeated
-    if (f.label.value() != 3) { return ac }
+    if (f.label != LABEL_REPEATED) { return ac }
     try { if (f.options.packed == true) { return "Packed${ac}" } } catch (_) { /* nothing. */ }
     "Repeat${ac}"
 }
@@ -270,7 +270,7 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_ENUM | TYPE_MESSAGE => f.typeName
         case _ => throw Exception() // todo
     }
-    if (f.label.value() == 3) { "Buffer<${pt}>" } else { pt }
+    if (f.label == LABEL_REPEATED) { "Buffer<${pt}>" } else { pt }
 }
 
 func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
