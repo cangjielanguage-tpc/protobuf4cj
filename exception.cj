@@ -74,11 +74,11 @@ public class RequiredFieldNotSetException <: ProtobufException {
 public class GetFieldValueException <: ProtobufException {
     public GetFieldValueException(let name: String) {}
     /**
-     * The Function is toString
+     * The Function is getMessage
      *
      * @since 0.29.3
      */
-    public override func toString () {
+    public override func getMessage() {
         "The failed `${name}` without a default value is not allow read before set."
     }
 }
@@ -125,11 +125,11 @@ public class ValueTypeUnmatchException <: ProtobufException {
 public class UnrecognizedBytesException <: ProtobufException {
     public UnrecognizedBytesException(let name: String, let left: Int64) {}
     /**
-     * The Function is toString
+     * The Function is getMessage
      *
      * @since 0.29.3
      */
-    public override func toString() {
+    public override func getMessage() {
         "Failed to unpack `${name}`, unrecognized bytes left `${left}`."
     }
 }
@@ -142,11 +142,11 @@ public class UnrecognizedBytesException <: ProtobufException {
 public class UnmatchedOneofCaseException <: ProtobufException {
     UnmatchedOneofCaseException(let gname: String, let cname: String) {}
     /**
-     * The Function is toString
+     * The Function is getMessage()
      *
      * @since 0.29.3
      */
-    public override func toString() {
+    public override func getMessage() {
         "Failed to get oneof case `${gname}`, for case `${cname}` is set."
     }
 }
