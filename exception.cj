@@ -4,7 +4,7 @@
 
 /**
  * @file
- * This file about: protobuf error handling.
+ * This file about: define protobuf exception.
  */
 package protobuf
 
