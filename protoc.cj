@@ -35,7 +35,7 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
     // Processing files that require code generation
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
-            // debug, 保存desc为json
+            // save `desc` as json, for developing.
             let dbgFile = resp.file.add()
             dbgFile.name = desc.name.replace(".proto", ".raw.json")
             dbgFile.content = desc.toString()
@@ -130,7 +130,7 @@ class GenCodeHelper {
                         throw Exception() // todo
                     }
                     if (pkg != desc.package_ && pkg != "protobuf") {
-                        /* Save packages other than yourself and protobuf */
+                        /* Save packages other than `desc` itself and protobuf */
                         pkgs.put(pkg)
                     }
             }
@@ -184,7 +184,6 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // Destination file path
     desc.package_ = try { desc.package_ } catch (_) { "" }
     file.name = getDestPath(desc.package_) + getFileName(desc.name)
-    // todo There is no has interface for the time being. Use try catch instead
     let proto2 = try { desc.syntax != "proto3" } catch (_) { true }
     let helper = GenCodeHelper(desc.package_, proto2)
     // Header information
