@@ -10,10 +10,7 @@ package protobuf
 
 /* throws */
 func dynamic_cast<T>(v: Any): T {
-    match (v) {
-        case a: Self<T> => a.self()
-        case _ => (v as T).getOrThrow()
-    }
+    (v as T).getOrThrow()
 }
 
 func escape(s: String) {
