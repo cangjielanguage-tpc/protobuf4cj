@@ -189,7 +189,6 @@ public abstract class MessageLite <: ToString {
             case Some(Some(index)) =>
                 let c = getOneofCase().getOrThrow()[index]
                 if (c != tag && c != UNSETCASE) { throw UnmatchedOneofCaseException(getNames()[tag], getNames()[c]) }
-                else { () } // Occasional occurrence warning: Node thunk(id:24678) has type (Enum-Option<Enum-Option<Int64>>) -> Record-String but type (Enum-Option<Int64>) -> Record-String is expected.
             case _ => ()
         }
         let default = T.default()
@@ -209,8 +208,6 @@ public abstract class MessageLite <: ToString {
 
     /* The value of the specified field for subclass settings */
     protected func set(tag: Tag, val: Any): Unit {
-        // debug(val, "set(${getNames()[tag]})")
-
         /* Proto2 will save all the set values, while proto3 will not save the '0' value of the value type */
         let cnew = if (m_proto2() || !zeroish(val)) { m_fields[tag] = val; tag } else { m_fields.remove(tag); UNSETCASE }
         match (getOneofIndex()?.get(tag)) {

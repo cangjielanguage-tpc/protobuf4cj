@@ -43,7 +43,6 @@ func tagParse(src: SimpleReader): (Tag, WireType) {
     }
 
     var byte = src.read()
-    // v.debug()
     if ((byte & 0xf8) == 0) {
         src.seek(-1)
         throw ParseValueExecption("tag", reason: "invalid tag value")

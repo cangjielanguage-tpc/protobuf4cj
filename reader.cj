@@ -4,7 +4,7 @@
 
 /**
  * @file
- * This file about: ReaderSeekBase
+ * This file about: SimpleReader
  */
 package protobuf
 
@@ -23,7 +23,6 @@ public class SimpleReader {
         private var offset!: Int64 = begin
     ) {
         if (begin < 0 || end > buffer.size()) {
-            debug()
             throw IllegalArgumentException("SimpleReader Arguments out of range.")
         }
     }
@@ -148,14 +147,5 @@ public class SimpleReader {
 
         offset = s
         true
-    }
-
-    /**
-     * The Function is debug
-     *
-     * @since 0.29.3
-     */
-    public func debug() {
-        println("begin: ${begin}, end: ${end}, offset: ${offset}")
     }
 }
