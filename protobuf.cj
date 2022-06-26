@@ -78,12 +78,7 @@ public interface Enum<E> <: ValuedEnum & ToString & Hashable & Equatable<E> wher
  */
 public abstract class MessageLite <: ToString {
     protected func getAccessors(): HashMap<Tag, Accessor>
-
-    /* At this stage, it is not completely determined which information must be provided, so it is provided separately and will be integrated later */
-    protected func getNames(): HashMap<Tag, String> 
-
-    /* Proto3 is not available, so a default implementation is provided. Proto2 needs to override this function */
-    protected open func getDefaultValue(): ?HashMap<Tag, Any> { None }
+    protected func getNames(): HashMap<Tag, String>
 
     /**
      * The Function is clone
@@ -92,13 +87,19 @@ public abstract class MessageLite <: ToString {
      * @return Type of MessageLite
      * @since 0.29.3
      */
-    public func clone(): MessageLite 
+    public func clone(): MessageLite
 
     public var unknownFields = Buffer<MessageUnknownField>()
     protected var m_fields = HashMap<Tag, Any>()
 
     /* default proto2*/
     protected open func m_proto2() { true }
+
+    /* proto2 default value */
+    protected open func getDefaultValue(): ?HashMap<Tag, Any> { None }
+
+    /* proto2 required fields */
+    protected open func getRequiredFields(): ?Array<Tag> { None }
 
     /* oneof */
     protected static let UNSETCASE: Tag = 0xffffffff
@@ -114,6 +115,15 @@ public abstract class MessageLite <: ToString {
         result
     }
 
+    protected func m_requiredFieldsCheck() {
+        if (!m_proto2()) { return () }
+        for (tag in getRequiredFields() ?? []) {
+            if (!m_fields.contains(tag) && getDefaultValue()?.contains(tag) != true) {
+                throw RequiredFieldNotSetException(getNames()[tag])
+            }
+        }
+    }
+
     /**
      * Packaging interface
      *
@@ -122,6 +132,7 @@ public abstract class MessageLite <: ToString {
      * @since 0.29.3
      */
     public func pack(out: Bytes) {
+        m_requiredFieldsCheck()
         let accessors = getAccessors()
         for ((tag, val) in m_fields) {
             accessors[tag].pack(tag, val, out)
@@ -170,6 +181,7 @@ public abstract class MessageLite <: ToString {
      * @since 0.29.3
      */
     public func toString() {
+        m_requiredFieldsCheck()
         let sb = StringBuilder("{")
         var dot = false
         let names = getNames()
