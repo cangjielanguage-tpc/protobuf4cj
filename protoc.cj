@@ -316,6 +316,22 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
         outbuf.append("\n    ])\n    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }\n")
     }
 
+    // required fields
+    let reqs = Buffer<Int32>()
+    for (f in fields) {
+        if (f.label == LABEL_REQUIRED) {
+            reqs.append(f.number)
+        }
+    }
+    if (!reqs.isEmpty()) {
+        outbuf.append("\n    protected static let m_reqs = Array<Tag>([\n")
+        sepOut.reset()
+        for (req in reqs) {
+            sepOut.append("${req}")
+        }
+        outbuf.append("\n    ])\n    protected override func getRequiredFields(): ?Array<Tag> { m_reqs }\n")
+    }
+
     // oneof
     if (helper.oneofNum != 0) {
         outbuf.append("\n    private let m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
