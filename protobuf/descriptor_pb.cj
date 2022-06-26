@@ -1372,6 +1372,11 @@ public class UninterpretedOption_NamePart <: MessageLite {
     ])
     protected func getNames() { m_names }
 
+    protected static let m_reqs = Array<Tag>([
+        1, 2
+    ])
+    protected override func getRequiredFields(): ?Array<Tag> { m_reqs }
+
     public func clone() { let rv = UninterpretedOption_NamePart(); rv.m_fields = m_fieldsClone(); rv }
 
     public prop var namePart: String {
