@@ -48,7 +48,7 @@ public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
 /* Get file name */
 func getFileName(path: String): String {
     let sp = path.split('/')
-    sp[sp.size() - 1].replace(".proto", "_pb.cj")
+    sp[sp.size() - 1].replace(".proto", ".pb.cj")
 }
 
 /* Get dest path by package name */
