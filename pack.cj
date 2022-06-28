@@ -285,7 +285,3 @@ func fixed64Parse(src: SimpleReader) {
 func binParse(src: SimpleReader) {
     src.read(Int64(varintParse(src)))
 }
-
-func strParse(src: SimpleReader): String {
-    StringBuilder().append(binParse(src).data()).toString()
-}

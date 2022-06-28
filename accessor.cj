@@ -14,7 +14,20 @@ func dynamic_cast<T>(v: Any): T {
 }
 
 func escape(s: String) {
-    s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\r", "\\r").replace("\n", "\\n")
+    let sb = StringBuilder()
+    for (c in s) {
+        match (c) {
+            case '"' => sb.append("\\\"")
+            case '\\' => sb.append("\\\\")
+            case '\b' => sb.append("\\b")
+            case '\f' => sb.append("\\f")
+            case '\t' => sb.append("\\t")
+            case '\n' => sb.append("\\n")
+            case '\r' => sb.append("\\r")
+            case _ => sb.append(c)
+        }
+    }
+    sb.toString()
 }
 
 /**
@@ -683,7 +696,7 @@ public class StringAccessor <: Accessor {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader): Any {
-        strParse(src)
+        String.fromUtf8(binParse(src).data())
     }
 
     /**
@@ -2312,7 +2325,7 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
     public func unpack(tag: Tag, src: SimpleReader) {
         let rv = Buffer<String>()
         while (true) {
-            rv.append(strParse(src))
+            rv.append(String.fromUtf8(binParse(src).data()))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
             if (next != tag) { src.seek(-tagSize(next)); break }
