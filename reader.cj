@@ -8,7 +8,7 @@
  */
 package protobuf
 
-public enum ReaderSeekBase { SET | CUR | END }
+public from std import io.SeekOrigin
 
 /**
  * The class is SimpleReader
@@ -49,15 +49,15 @@ public class SimpleReader {
      * seek the offset
      *
      * @param offset of Int64
-     * @param base of ReaderSeekBase, and the Default value is CUR
+     * @param origin of seek base offset, and the Default value is CurPos
      *
      * @since 0.29.3
      */
-    public func seek(offset: Int64, base!: ReaderSeekBase = CUR) {
-        match(base) {
-            case SET => this.offset = begin + offset
-            case CUR => this.offset += offset
-            case END => this.offset = end - offset
+    public func seek(offset: Int64, origin!: SeekOrigin = CurPos) {
+        match(origin) {
+            case BeginPos => this.offset = begin + offset
+            case CurPos => this.offset += offset
+            case EenPos => this.offset = end - offset
         }
         this.offset
     }
