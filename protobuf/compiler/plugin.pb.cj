@@ -58,8 +58,8 @@ public class CodeGeneratorRequest <: MessageLite {
 
     public func clone() { let rv = CodeGeneratorRequest(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var fileToGenerate: Buffer<String> {
-        get() { get<Buffer<String>>(1) }
+    public prop var fileToGenerate: ArrayList<String> {
+        get() { get<ArrayList<String>>(1) }
         set(v) { set(1, v) }
     }
 
@@ -68,8 +68,8 @@ public class CodeGeneratorRequest <: MessageLite {
         set(v) { set(2, v) }
     }
 
-    public prop var protoFile: Buffer<google.protobuf.FileDescriptorProto> {
-        get() { get<Buffer<google.protobuf.FileDescriptorProto>>(15) }
+    public prop var protoFile: ArrayList<google.protobuf.FileDescriptorProto> {
+        get() { get<ArrayList<google.protobuf.FileDescriptorProto>>(15) }
         set(v) { set(15, v) }
     }
 
@@ -191,8 +191,8 @@ public class CodeGeneratorResponse <: MessageLite {
         set(v) { set(2, v) }
     }
 
-    public prop var file: Buffer<CodeGeneratorResponse_File> {
-        get() { get<Buffer<CodeGeneratorResponse_File>>(15) }
+    public prop var file: ArrayList<CodeGeneratorResponse_File> {
+        get() { get<ArrayList<CodeGeneratorResponse_File>>(15) }
         set(v) { set(15, v) }
     }
 }

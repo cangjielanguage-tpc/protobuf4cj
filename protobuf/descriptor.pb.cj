@@ -16,8 +16,8 @@ public class FileDescriptorSet <: MessageLite {
 
     public func clone() { let rv = FileDescriptorSet(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var file: Buffer<FileDescriptorProto> {
-        get() { get<Buffer<FileDescriptorProto>>(1) }
+    public prop var file: ArrayList<FileDescriptorProto> {
+        get() { get<ArrayList<FileDescriptorProto>>(1) }
         set(v) { set(1, v) }
     }
 }
@@ -57,38 +57,38 @@ public class FileDescriptorProto <: MessageLite {
         set(v) { set(2, v) }
     }
 
-    public prop var dependency: Buffer<String> {
-        get() { get<Buffer<String>>(3) }
+    public prop var dependency: ArrayList<String> {
+        get() { get<ArrayList<String>>(3) }
         set(v) { set(3, v) }
     }
 
-    public prop var publicDependency: Buffer<Int32> {
-        get() { get<Buffer<Int32>>(10) }
+    public prop var publicDependency: ArrayList<Int32> {
+        get() { get<ArrayList<Int32>>(10) }
         set(v) { set(10, v) }
     }
 
-    public prop var weakDependency: Buffer<Int32> {
-        get() { get<Buffer<Int32>>(11) }
+    public prop var weakDependency: ArrayList<Int32> {
+        get() { get<ArrayList<Int32>>(11) }
         set(v) { set(11, v) }
     }
 
-    public prop var messageType: Buffer<DescriptorProto> {
-        get() { get<Buffer<DescriptorProto>>(4) }
+    public prop var messageType: ArrayList<DescriptorProto> {
+        get() { get<ArrayList<DescriptorProto>>(4) }
         set(v) { set(4, v) }
     }
 
-    public prop var enumType: Buffer<EnumDescriptorProto> {
-        get() { get<Buffer<EnumDescriptorProto>>(5) }
+    public prop var enumType: ArrayList<EnumDescriptorProto> {
+        get() { get<ArrayList<EnumDescriptorProto>>(5) }
         set(v) { set(5, v) }
     }
 
-    public prop var service: Buffer<ServiceDescriptorProto> {
-        get() { get<Buffer<ServiceDescriptorProto>>(6) }
+    public prop var service: ArrayList<ServiceDescriptorProto> {
+        get() { get<ArrayList<ServiceDescriptorProto>>(6) }
         set(v) { set(6, v) }
     }
 
-    public prop var extension: Buffer<FieldDescriptorProto> {
-        get() { get<Buffer<FieldDescriptorProto>>(7) }
+    public prop var extension: ArrayList<FieldDescriptorProto> {
+        get() { get<ArrayList<FieldDescriptorProto>>(7) }
         set(v) { set(7, v) }
     }
 
@@ -201,33 +201,33 @@ public class DescriptorProto <: MessageLite {
         set(v) { set(1, v) }
     }
 
-    public prop var field: Buffer<FieldDescriptorProto> {
-        get() { get<Buffer<FieldDescriptorProto>>(2) }
+    public prop var field: ArrayList<FieldDescriptorProto> {
+        get() { get<ArrayList<FieldDescriptorProto>>(2) }
         set(v) { set(2, v) }
     }
 
-    public prop var extension: Buffer<FieldDescriptorProto> {
-        get() { get<Buffer<FieldDescriptorProto>>(6) }
+    public prop var extension: ArrayList<FieldDescriptorProto> {
+        get() { get<ArrayList<FieldDescriptorProto>>(6) }
         set(v) { set(6, v) }
     }
 
-    public prop var nestedType: Buffer<DescriptorProto> {
-        get() { get<Buffer<DescriptorProto>>(3) }
+    public prop var nestedType: ArrayList<DescriptorProto> {
+        get() { get<ArrayList<DescriptorProto>>(3) }
         set(v) { set(3, v) }
     }
 
-    public prop var enumType: Buffer<EnumDescriptorProto> {
-        get() { get<Buffer<EnumDescriptorProto>>(4) }
+    public prop var enumType: ArrayList<EnumDescriptorProto> {
+        get() { get<ArrayList<EnumDescriptorProto>>(4) }
         set(v) { set(4, v) }
     }
 
-    public prop var extensionRange: Buffer<DescriptorProto_ExtensionRange> {
-        get() { get<Buffer<DescriptorProto_ExtensionRange>>(5) }
+    public prop var extensionRange: ArrayList<DescriptorProto_ExtensionRange> {
+        get() { get<ArrayList<DescriptorProto_ExtensionRange>>(5) }
         set(v) { set(5, v) }
     }
 
-    public prop var oneofDecl: Buffer<OneofDescriptorProto> {
-        get() { get<Buffer<OneofDescriptorProto>>(8) }
+    public prop var oneofDecl: ArrayList<OneofDescriptorProto> {
+        get() { get<ArrayList<OneofDescriptorProto>>(8) }
         set(v) { set(8, v) }
     }
 
@@ -236,13 +236,13 @@ public class DescriptorProto <: MessageLite {
         set(v) { set(7, v) }
     }
 
-    public prop var reservedRange: Buffer<DescriptorProto_ReservedRange> {
-        get() { get<Buffer<DescriptorProto_ReservedRange>>(9) }
+    public prop var reservedRange: ArrayList<DescriptorProto_ReservedRange> {
+        get() { get<ArrayList<DescriptorProto_ReservedRange>>(9) }
         set(v) { set(9, v) }
     }
 
-    public prop var reservedName: Buffer<String> {
-        get() { get<Buffer<String>>(10) }
+    public prop var reservedName: ArrayList<String> {
+        get() { get<ArrayList<String>>(10) }
         set(v) { set(10, v) }
     }
 }
@@ -264,8 +264,8 @@ public class ExtensionRangeOptions <: MessageLite {
 
     public func clone() { let rv = ExtensionRangeOptions(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -590,8 +590,8 @@ public class EnumDescriptorProto <: MessageLite {
         set(v) { set(1, v) }
     }
 
-    public prop var value: Buffer<EnumValueDescriptorProto> {
-        get() { get<Buffer<EnumValueDescriptorProto>>(2) }
+    public prop var value: ArrayList<EnumValueDescriptorProto> {
+        get() { get<ArrayList<EnumValueDescriptorProto>>(2) }
         set(v) { set(2, v) }
     }
 
@@ -600,13 +600,13 @@ public class EnumDescriptorProto <: MessageLite {
         set(v) { set(3, v) }
     }
 
-    public prop var reservedRange: Buffer<EnumDescriptorProto_EnumReservedRange> {
-        get() { get<Buffer<EnumDescriptorProto_EnumReservedRange>>(4) }
+    public prop var reservedRange: ArrayList<EnumDescriptorProto_EnumReservedRange> {
+        get() { get<ArrayList<EnumDescriptorProto_EnumReservedRange>>(4) }
         set(v) { set(4, v) }
     }
 
-    public prop var reservedName: Buffer<String> {
-        get() { get<Buffer<String>>(5) }
+    public prop var reservedName: ArrayList<String> {
+        get() { get<ArrayList<String>>(5) }
         set(v) { set(5, v) }
     }
 }
@@ -668,8 +668,8 @@ public class ServiceDescriptorProto <: MessageLite {
         set(v) { set(1, v) }
     }
 
-    public prop var method: Buffer<MethodDescriptorProto> {
-        get() { get<Buffer<MethodDescriptorProto>>(2) }
+    public prop var method: ArrayList<MethodDescriptorProto> {
+        get() { get<ArrayList<MethodDescriptorProto>>(2) }
         set(v) { set(2, v) }
     }
 
@@ -919,8 +919,8 @@ public class FileOptions <: MessageLite {
         set(v) { set(45, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -969,8 +969,8 @@ public class MessageOptions <: MessageLite {
         set(v) { set(7, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1135,8 +1135,8 @@ public class FieldOptions <: MessageLite {
         set(v) { set(10, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1158,8 +1158,8 @@ public class OneofOptions <: MessageLite {
 
     public func clone() { let rv = OneofOptions(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1197,8 +1197,8 @@ public class EnumOptions <: MessageLite {
         set(v) { set(3, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1230,8 +1230,8 @@ public class EnumValueOptions <: MessageLite {
         set(v) { set(1, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1263,8 +1263,8 @@ public class ServiceOptions <: MessageLite {
         set(v) { set(33, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1351,8 +1351,8 @@ public class MethodOptions <: MessageLite {
         set(v) { set(34, v) }
     }
 
-    public prop var uninterpretedOption: Buffer<UninterpretedOption> {
-        get() { get<Buffer<UninterpretedOption>>(999) }
+    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
+        get() { get<ArrayList<UninterpretedOption>>(999) }
         set(v) { set(999, v) }
     }
 }
@@ -1410,8 +1410,8 @@ public class UninterpretedOption <: MessageLite {
 
     public func clone() { let rv = UninterpretedOption(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var name: Buffer<UninterpretedOption_NamePart> {
-        get() { get<Buffer<UninterpretedOption_NamePart>>(2) }
+    public prop var name: ArrayList<UninterpretedOption_NamePart> {
+        get() { get<ArrayList<UninterpretedOption_NamePart>>(2) }
         set(v) { set(2, v) }
     }
 
@@ -1464,13 +1464,13 @@ public class SourceCodeInfo_Location <: MessageLite {
 
     public func clone() { let rv = SourceCodeInfo_Location(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var path: Buffer<Int32> {
-        get() { get<Buffer<Int32>>(1) }
+    public prop var path: ArrayList<Int32> {
+        get() { get<ArrayList<Int32>>(1) }
         set(v) { set(1, v) }
     }
 
-    public prop var span: Buffer<Int32> {
-        get() { get<Buffer<Int32>>(2) }
+    public prop var span: ArrayList<Int32> {
+        get() { get<ArrayList<Int32>>(2) }
         set(v) { set(2, v) }
     }
 
@@ -1484,8 +1484,8 @@ public class SourceCodeInfo_Location <: MessageLite {
         set(v) { set(4, v) }
     }
 
-    public prop var leadingDetachedComments: Buffer<String> {
-        get() { get<Buffer<String>>(6) }
+    public prop var leadingDetachedComments: ArrayList<String> {
+        get() { get<ArrayList<String>>(6) }
         set(v) { set(6, v) }
     }
 }
@@ -1507,8 +1507,8 @@ public class SourceCodeInfo <: MessageLite {
 
     public func clone() { let rv = SourceCodeInfo(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var location: Buffer<SourceCodeInfo_Location> {
-        get() { get<Buffer<SourceCodeInfo_Location>>(1) }
+    public prop var location: ArrayList<SourceCodeInfo_Location> {
+        get() { get<ArrayList<SourceCodeInfo_Location>>(1) }
         set(v) { set(1, v) }
     }
 }
@@ -1531,8 +1531,8 @@ public class GeneratedCodeInfo_Annotation <: MessageLite {
 
     public func clone() { let rv = GeneratedCodeInfo_Annotation(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var path: Buffer<Int32> {
-        get() { get<Buffer<Int32>>(1) }
+    public prop var path: ArrayList<Int32> {
+        get() { get<ArrayList<Int32>>(1) }
         set(v) { set(1, v) }
     }
 
@@ -1569,8 +1569,8 @@ public class GeneratedCodeInfo <: MessageLite {
 
     public func clone() { let rv = GeneratedCodeInfo(); rv.m_fields = m_fieldsClone(); rv }
 
-    public prop var annotation: Buffer<GeneratedCodeInfo_Annotation> {
-        get() { get<Buffer<GeneratedCodeInfo_Annotation>>(1) }
+    public prop var annotation: ArrayList<GeneratedCodeInfo_Annotation> {
+        get() { get<ArrayList<GeneratedCodeInfo_Annotation>>(1) }
         set(v) { set(1, v) }
     }
 }
