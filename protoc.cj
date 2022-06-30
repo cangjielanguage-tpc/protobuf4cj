@@ -15,13 +15,13 @@ from std import collection.*
 /**
  * The Function is cj_generator
  *
- * @param inbuf of Buffer<UInt8>
- * @param outbuf of Buffer<UInt8>
+ * @param inbuf of ArrayList<UInt8>
+ * @param outbuf of ArrayList<UInt8>
  *
  * @return Type of Unit
  * @since 0.29.3
  */
-public func cj_generator(inbuf: Buffer<UInt8>, outbuf: Buffer<UInt8>): Unit {
+public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Unit {
     let req = CodeGeneratorRequest()
     req.unpack(inbuf)
 
@@ -101,7 +101,7 @@ class LineSepOut {
 
 class GenCodeHelper {
     /* Get type name based on nesting level */
-    let nested = Buffer<String>()
+    let nested = ArrayList<String>()
     func getNestedTypeName(name: String) {
         if (nested.isEmpty()) { return name }
         let sb = StringBuilder()
@@ -116,7 +116,7 @@ class GenCodeHelper {
         pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
     }
 
-    let packages = Buffer<String>()
+    let packages = ArrayList<String>()
     /* Get all dependent packages */
     func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
@@ -154,7 +154,7 @@ class GenCodeHelper {
     }
 
     // For type_ Message. If it is a map, special processing is required
-    func getMessageTypeName(f: FieldDescriptorProto, ns: Buffer<DescriptorProto>) {
+    func getMessageTypeName(f: FieldDescriptorProto, ns: ArrayList<DescriptorProto>) {
         do {
             if (f.label != LABEL_REPEATED) { break }
             let sp = f.typeName.split('.')
@@ -270,10 +270,10 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_ENUM | TYPE_MESSAGE => f.typeName
         case _ => throw Exception() // todo
     }
-    if (f.label == LABEL_REPEATED) { "Buffer<${pt}>" } else { pt }
+    if (f.label == LABEL_REPEATED) { "ArrayList<${pt}>" } else { pt }
 }
 
-func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let outbuf = helper.outbuf
     let sepOut = LineSepOut(outbuf)
 
@@ -296,7 +296,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("\n    ])\n    protected func getNames() { m_names }\n")
 
     // default value
-    let dvs = Buffer<String>()
+    let dvs = ArrayList<String>()
     for (f in fields) {
         try { f.defaultValue } catch (_) { continue }
         let dv = match (f.type_) {
@@ -317,7 +317,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     }
 
     // required fields
-    let reqs = Buffer<Int32>()
+    let reqs = ArrayList<Int32>()
     for (f in fields) {
         if (f.label == LABEL_REQUIRED) {
             reqs.append(f.number)
@@ -367,7 +367,7 @@ func genCodeMessageField(typeName: String, fields: Buffer<FieldDescriptorProto>,
     outbuf.append("}\n")
 }
 
-func genCodeMessageExtension(typeName: String, extensions: Buffer<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+func genCodeMessageExtension(typeName: String, extensions: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     // todo
 }
 
