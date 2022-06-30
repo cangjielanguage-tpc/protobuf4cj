@@ -50,8 +50,8 @@ public interface Accessor {
  * @since 0.29.3
  */
 public interface RepeatAccessor<T> <: Accessor where T <: ToString {
-    func clone(val: Any): Any { dynamic_cast<Buffer<T>>(val).clone() }
-    func toString(val: Any) { dynamic_cast<Buffer<T>>(val).toString() }
+    func clone(val: Any): Any { dynamic_cast<ArrayList<T>>(val).clone() }
+    func toString(val: Any) { dynamic_cast<ArrayList<T>>(val).toString() }
 }
 
 /**
@@ -841,7 +841,7 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int32>>(val)
+        let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -859,7 +859,7 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int32>()
+        let rv = ArrayList<Int32>()
         while (true) {
             rv.append(Int32(varintParse(src)))
             if (src.isEmpty()) { break }
@@ -895,7 +895,7 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int32>>(val)
+        let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(UInt64(v), tmp) }
@@ -914,7 +914,7 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int32>()
+        let rv = ArrayList<Int32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int32(varintParse(tmp))) }
         rv
@@ -945,7 +945,7 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt32>>(val)
+        let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -962,7 +962,7 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt32>()
+        let rv = ArrayList<UInt32>()
         while (true) {
             rv.append(UInt32(varintParse(src)))
             if (src.isEmpty()) { break }
@@ -997,7 +997,7 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt32>>(val)
+        let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(UInt64(v), tmp) }
@@ -1015,7 +1015,7 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt32>()
+        let rv = ArrayList<UInt32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(UInt32(varintParse(tmp))) }
         rv
@@ -1047,7 +1047,7 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int64>>(val)
+        let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -1065,7 +1065,7 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int64>()
+        let rv = ArrayList<Int64>()
         while (true) {
             rv.append(Int64(varintParse(src)))
             if (src.isEmpty()) { break }
@@ -1102,7 +1102,7 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int64>>(val)
+        let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(UInt64(v), tmp) }
@@ -1121,7 +1121,7 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int64>()
+        let rv = ArrayList<Int64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int64(varintParse(tmp))) }
         rv
@@ -1152,7 +1152,7 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt64>>(val)
+        let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -1169,7 +1169,7 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt64>()
+        let rv = ArrayList<UInt64>()
         while (true) {
             rv.append(varintParse(src))
             if (src.isEmpty()) { break }
@@ -1204,7 +1204,7 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt64>>(val)
+        let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(v, tmp) }
@@ -1223,7 +1223,7 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt64>()
+        let rv = ArrayList<UInt64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(varintParse(tmp)) }
         rv
@@ -1255,7 +1255,7 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<E>>(val)
+        let val = dynamic_cast<ArrayList<E>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -1273,7 +1273,7 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<E>()
+        let rv = ArrayList<E>()
         while (true) {
             rv.append(E.parse(Int32(varintParse(src))))
             if (src.isEmpty()) { break }
@@ -1293,7 +1293,7 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
     public func toString(val: Any) {
         let sb = StringBuilder("[")
         var dot = false
-        let ss = dynamic_cast<Buffer<E>>(val)
+        let ss = dynamic_cast<ArrayList<E>>(val)
         for (s in ss) {
             if (dot) { sb.append(", ") } else { dot = true }
             sb.append('"').append(s).append('"')
@@ -1327,7 +1327,7 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<E>>(val)
+        let val = dynamic_cast<ArrayList<E>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(UInt64(v.value()), tmp) }
@@ -1346,7 +1346,7 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<E>()
+        let rv = ArrayList<E>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(E.parse(Int32(varintParse(tmp)))) }
         rv
@@ -1362,7 +1362,7 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
     public func toString(val: Any) {
         let sb = StringBuilder("[")
         var dot = false
-        let ss = dynamic_cast<Buffer<E>>(val)
+        let ss = dynamic_cast<ArrayList<E>>(val)
         for (s in ss) {
             if (dot) { sb.append(", ") } else { dot = true }
             sb.append('"').append(s).append('"')
@@ -1395,7 +1395,7 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int32>>(val)
+        let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -1413,7 +1413,7 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int32>()
+        let rv = ArrayList<Int32>()
         while (true) {
             rv.append(unzigzag(UInt32(varintParse(src))))
             if (src.isEmpty()) { break }
@@ -1448,7 +1448,7 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int32>>(val)
+        let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(UInt64(zigzag(v)), tmp) }
@@ -1467,7 +1467,7 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int32>()
+        let rv = ArrayList<Int32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(unzigzag(UInt32(varintParse(tmp)))) }
         rv
@@ -1498,7 +1498,7 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int64>>(val)
+        let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -1515,7 +1515,7 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int64>()
+        let rv = ArrayList<Int64>()
         while (true) {
             rv.append(unzigzag(varintParse(src)))
             if (src.isEmpty()) { break }
@@ -1550,7 +1550,7 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int64>>(val)
+        let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) { varintPack(zigzag(v), tmp) }
@@ -1569,7 +1569,7 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int64>()
+        let rv = ArrayList<Int64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(unzigzag(varintParse(tmp))) }
         rv
@@ -1600,7 +1600,7 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Bool>>(val)
+        let val = dynamic_cast<ArrayList<Bool>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, VARINT, out)
@@ -1617,7 +1617,7 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Bool>()
+        let rv = ArrayList<Bool>()
         while (true) {
             rv.append(varintParse(src) != 0)
             if (src.isEmpty()) { break }
@@ -1652,7 +1652,7 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Bool>>(val)
+        let val = dynamic_cast<ArrayList<Bool>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()), out)
@@ -1669,7 +1669,7 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Bool>()
+        let rv = ArrayList<Bool>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(varintParse(tmp) != 0) }
         rv
@@ -1700,7 +1700,7 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int32>>(val)
+        let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, BIT32, out)
@@ -1718,7 +1718,7 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int32>()
+        let rv = ArrayList<Int32>()
         while (true) {
             rv.append(Int32(fixed32Parse(src)))
             if (src.isEmpty()) { break }
@@ -1753,7 +1753,7 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int32>>(val)
+        let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()) * 4, out)
@@ -1770,7 +1770,7 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int32>()
+        let rv = ArrayList<Int32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int32(fixed32Parse(tmp))) }
         rv
@@ -1801,7 +1801,7 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt32>>(val)
+        let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, BIT32, out)
@@ -1818,7 +1818,7 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt32>()
+        let rv = ArrayList<UInt32>()
         while (true) {
             rv.append(fixed32Parse(src))
             if (src.isEmpty()) { break }
@@ -1855,7 +1855,7 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt32>>(val)
+        let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()) * 4, out)
@@ -1872,7 +1872,7 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt32>()
+        let rv = ArrayList<UInt32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(fixed32Parse(tmp)) }
         rv
@@ -1903,7 +1903,7 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Float32>>(val)
+        let val = dynamic_cast<ArrayList<Float32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, BIT32, out)
@@ -1920,7 +1920,7 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Float32>()
+        let rv = ArrayList<Float32>()
         while (true) {
             rv.append(floatBits(fixed32Parse(src)))
             if (src.isEmpty()) { break }
@@ -1956,7 +1956,7 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Float32>>(val)
+        let val = dynamic_cast<ArrayList<Float32>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()) * 4, out)
@@ -1973,7 +1973,7 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Float32>()
+        let rv = ArrayList<Float32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(floatBits(fixed32Parse(tmp))) }
         rv
@@ -2004,7 +2004,7 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int64>>(val)
+        let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, BIT64, out)
@@ -2022,7 +2022,7 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int64>()
+        let rv = ArrayList<Int64>()
         while (true) {
             rv.append(Int64(fixed64Parse(src)))
             if (src.isEmpty()) { break }
@@ -2057,7 +2057,7 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Int64>>(val)
+        let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()) * 8, out)
@@ -2074,7 +2074,7 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Int64>()
+        let rv = ArrayList<Int64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int64(fixed32Parse(tmp))) }
         rv
@@ -2105,7 +2105,7 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt64>>(val)
+        let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, BIT64, out)
@@ -2122,7 +2122,7 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt64>()
+        let rv = ArrayList<UInt64>()
         while (true) {
             rv.append(fixed64Parse(src))
             if (src.isEmpty()) { break }
@@ -2157,7 +2157,7 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<UInt64>>(val)
+        let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()) * 8, out)
@@ -2174,7 +2174,7 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<UInt64>()
+        let rv = ArrayList<UInt64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(fixed64Parse(tmp)) }
         rv
@@ -2205,7 +2205,7 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Float64>>(val)
+        let val = dynamic_cast<ArrayList<Float64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, BIT64, out)
@@ -2222,7 +2222,7 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Float64>()
+        let rv = ArrayList<Float64>()
         while (true) {
             rv.append(floatBits(fixed64Parse(src)))
             if (src.isEmpty()) { break }
@@ -2258,7 +2258,7 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
      */
     @overflowWrapping
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Float64>>(val)
+        let val = dynamic_cast<ArrayList<Float64>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
         varintPack(UInt64(val.size()) * 8, out)
@@ -2275,7 +2275,7 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
      */
     @overflowWrapping
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Float64>()
+        let rv = ArrayList<Float64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(floatBits(fixed64Parse(tmp))) }
         rv
@@ -2306,7 +2306,7 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<String>>(val)
+        let val = dynamic_cast<ArrayList<String>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, PREFIXED, out)
@@ -2323,7 +2323,7 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<String>()
+        let rv = ArrayList<String>()
         while (true) {
             rv.append(String.fromUtf8(binParse(src).data()))
             if (src.isEmpty()) { break }
@@ -2335,7 +2335,7 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
     public func toString(val: Any) {
         let sb = StringBuilder("[")
         var dot = false
-        let ss = dynamic_cast<Buffer<String>>(val)
+        let ss = dynamic_cast<ArrayList<String>>(val)
         for (s in ss) {
             if (dot) { sb.append(", ") } else { dot = true }
             sb.append('"').append(escape(s)).append('"')
@@ -2368,7 +2368,7 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<Bytes>>(val)
+        let val = dynamic_cast<ArrayList<Bytes>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
             tagPack(tag, PREFIXED, out)
@@ -2385,7 +2385,7 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<Bytes>()
+        let rv = ArrayList<Bytes>()
         while (true) {
             rv.append(Bytes(binParse(src).data()))
             if (src.isEmpty()) { break }
@@ -2403,8 +2403,8 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
      * @since 0.29.3
      */
     public func clone(val: Any) {
-        let val = dynamic_cast<Buffer<Bytes>>(val)
-        Buffer<Bytes>(val.size(), { i => val[i].clone() })
+        let val = dynamic_cast<ArrayList<Bytes>>(val)
+        ArrayList<Bytes>(val.size(), { i => val[i].clone() })
     }
     private static let instance = RepeatBytesAccessor()
 
@@ -2432,7 +2432,7 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
      * @since 0.29.3
      */
     public func pack(tag: Tag, val: Any, out: Bytes) {
-        let val = dynamic_cast<Buffer<M>>(val)
+        let val = dynamic_cast<ArrayList<M>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
         for (v in val) {
@@ -2452,7 +2452,7 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
      * @since 0.29.3
      */
     public func unpack(tag: Tag, src: SimpleReader) {
-        let rv = Buffer<M>()
+        let rv = ArrayList<M>()
         while (true) {
             rv.append(dynamic_cast<M>(M.default().unpack(binParse(src))))
             if (src.isEmpty()) { break }
@@ -2469,8 +2469,8 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
      * @since 0.29.3
      */
     public func clone(val: Any) {
-        let val = dynamic_cast<Buffer<M>>(val)
-        Buffer<M>(val.size(), { i => dynamic_cast<M>(val[i].clone()) })
+        let val = dynamic_cast<ArrayList<M>>(val)
+        ArrayList<M>(val.size(), { i => dynamic_cast<M>(val[i].clone()) })
     }
     private static let instance = RepeatMessageAccessor<M>()
     /**

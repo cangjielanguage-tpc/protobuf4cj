@@ -98,14 +98,14 @@ extend String <: Default<String> {
     public static func default(): String { "" }
 }
 
-extend Buffer<T> <: Default<Buffer<T>> {
+extend ArrayList<T> <: Default<ArrayList<T>> {
     /**
      * The Function is default
      *
-     * @return Type of Buffer<T>
+     * @return Type of ArrayList<T>
      * @since 0.29.3
      */
-    public static func default(): Buffer<T> { Buffer() }
+    public static func default(): ArrayList<T> { ArrayList() }
 }
 
 extend HashMap<K, V> <: Default<HashMap<K, V>> {
@@ -126,12 +126,12 @@ extend HashMap<K, V> <: Default<HashMap<K, V>> {
  * @since 0.29.3
  */
 public interface Reference {}
-extend Buffer<T> <: Reference { }
+extend ArrayList<T> <: Reference { }
 extend MessageLite <: Reference { }
 extend HashMap<K, V> <: Reference { }
 
 /* The current extend export rule does not allow this form of export. Addreference<t> is temporarily used for compatibility */
-// extend Buffer<T> where T <: Reference & Default<T> {
+// extend ArrayList<T> where T <: Reference & Default<T> {
 //     public func add() { let rv = T.default(); this.add(rv); rv }
 // }
 
@@ -143,8 +143,8 @@ extend HashMap<K, V> <: Reference { }
 public interface AddReference<T> {
     func add(): T
 }
-extend Buffer<T> <: AddReference<T> where T <: Reference & Default<T> {
-    public func add() { let rv = T.default(); this.add(rv); rv }
+extend ArrayList<T> <: AddReference<T> where T <: Reference & Default<T> {
+    public func add() { let rv = T.default(); this.append(rv); rv }
 }
 
 /* Whether it is a '0' value of value type */

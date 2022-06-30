@@ -89,7 +89,7 @@ public abstract class MessageLite <: ToString {
      */
     public func clone(): MessageLite
 
-    public var unknownFields = Buffer<MessageUnknownField>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
     protected var m_fields = HashMap<Tag, Any>()
 
     /* default proto2*/
@@ -156,7 +156,7 @@ public abstract class MessageLite <: ToString {
             if (accessors.contains(tag)) {
                 m_fields[tag] = accessors[tag].unpack(tag, src)
             } else {
-                unknownFields.add(MessageUnknownField.unpack(tag, wt, src))
+                unknownFields.append(MessageUnknownField.unpack(tag, wt, src))
             }
         }
         this

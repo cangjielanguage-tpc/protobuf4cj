@@ -11,7 +11,7 @@ package protobuf
 /* encode/decode basic datum */
 from std import collection.*
 public type Tag = UInt32
-public type Bytes = Buffer<UInt8>
+public type Bytes = ArrayList<UInt8>
 
 /*
  * the number of bytes required to store the tag for the field. Includes
@@ -105,10 +105,10 @@ func varintSize(v: UInt64) {
 func varintPack(v: UInt64, out: Bytes) {
     var v = v
     while (v >= 0x80) {
-        out.add(UInt8(v | 0x80))
+        out.append(UInt8(v | 0x80))
         v >>= 7
     }
-    out.add(UInt8(v))
+    out.append(UInt8(v))
 }
 
 /* parse a varint. */
@@ -182,17 +182,17 @@ func unzigzag(v: UInt64) {
  */
 @overflowWrapping
 func fixedPack(value: UInt32, out: Bytes) {
-    out.add(UInt8(value))
-    out.add(UInt8(value >> 8))
-    out.add(UInt8(value >> 16))
-    out.add(UInt8(value >> 24))
+    out.append(UInt8(value))
+    out.append(UInt8(value >> 8))
+    out.append(UInt8(value >> 16))
+    out.append(UInt8(value >> 24))
 }
 @overflowWrapping
 func fixedPack(value: Int32, out: Bytes) {
-    out.add(UInt8(value))
-    out.add(UInt8(value >> 8))
-    out.add(UInt8(value >> 16))
-    out.add(UInt8(value >> 24))
+    out.append(UInt8(value))
+    out.append(UInt8(value >> 8))
+    out.append(UInt8(value >> 16))
+    out.append(UInt8(value >> 24))
 }
 func fixedPack(value: Float32, out: Bytes) {
     fixedPack(floatBits(value), out)
@@ -204,25 +204,25 @@ func fixedPack(value: Float32, out: Bytes) {
  */
 @overflowWrapping
 func fixedPack(value: UInt64, out: Bytes) {
-    out.add(UInt8(value))
-    out.add(UInt8(value >> 8))
-    out.add(UInt8(value >> 16))
-    out.add(UInt8(value >> 24))
-    out.add(UInt8(value >> 32))
-    out.add(UInt8(value >> 40))
-    out.add(UInt8(value >> 48))
-    out.add(UInt8(value >> 56))
+    out.append(UInt8(value))
+    out.append(UInt8(value >> 8))
+    out.append(UInt8(value >> 16))
+    out.append(UInt8(value >> 24))
+    out.append(UInt8(value >> 32))
+    out.append(UInt8(value >> 40))
+    out.append(UInt8(value >> 48))
+    out.append(UInt8(value >> 56))
 }
 @overflowWrapping
 func fixedPack(value: Int64, out: Bytes) {
-    out.add(UInt8(value))
-    out.add(UInt8(value >> 8))
-    out.add(UInt8(value >> 16))
-    out.add(UInt8(value >> 24))
-    out.add(UInt8(value >> 32))
-    out.add(UInt8(value >> 40))
-    out.add(UInt8(value >> 48))
-    out.add(UInt8(value >> 56))
+    out.append(UInt8(value))
+    out.append(UInt8(value >> 8))
+    out.append(UInt8(value >> 16))
+    out.append(UInt8(value >> 24))
+    out.append(UInt8(value >> 32))
+    out.append(UInt8(value >> 40))
+    out.append(UInt8(value >> 48))
+    out.append(UInt8(value >> 56))
 }
 func fixedPack(value: Float64, out: Bytes) {
     fixedPack(floatBits(value), out)
@@ -233,7 +233,7 @@ func fixedPack(value: Float64, out: Bytes) {
  */
 func binPack(value: Collection<UInt8>, out: Bytes) {
     varintPack(UInt64(value.size()), out)
-	out.addAll(value)
+	out.appendAll(value)
 }
 
 /* Pack string */
