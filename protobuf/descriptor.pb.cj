@@ -1,7 +1,7 @@
 package google.protobuf
 
 from std import collection.*
-import protobuf.*
+from protobuf import protobuf.*
 
 public class FileDescriptorSet <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
