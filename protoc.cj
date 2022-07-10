@@ -215,10 +215,9 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     // import
     outbuf.append("from std import collection.*\n")
     if (desc.package_ != "protobuf") {
-        outbuf.append("import protobuf.*\n")
+        outbuf.append("from protobuf import protobuf.*\n")
     }
     for (pkg in helper.getDependencyPackages(desc)) {
-        // todo public imports
         outbuf.append("import ${pkg}.*\n")
     }
 }
