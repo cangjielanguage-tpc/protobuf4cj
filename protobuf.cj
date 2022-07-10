@@ -170,7 +170,12 @@ public abstract class MessageLite <: ToString {
      * @since 0.29.3
      */
     public func unpack(src: Collection<Byte>) {
-        unpack(SimpleReader(Array<UInt8>(src)))
+        unpack(SimpleReader(
+            match (src) {
+                case arr: Array<UInt8> => arr
+                case _ => Array(src)
+            }
+        ))
     }
 
     /**
