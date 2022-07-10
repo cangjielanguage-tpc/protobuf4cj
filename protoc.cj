@@ -217,6 +217,9 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     if (desc.package_ != "protobuf") {
         outbuf.append("from protobuf import protobuf.*\n")
     }
+    if (!desc.service.isEmpty() && desc.package_ != "grpc") {
+        outbuf.append("from protobuf import grpc.*\n")
+    }
     for (pkg in helper.getDependencyPackages(desc)) {
         outbuf.append("import ${pkg}.*\n")
     }
@@ -424,7 +427,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     }
     outbuf.append("\n}\n")
 
-    /* enum不得为空 */
+    // enum不得为空
     if (values.isEmpty()) { return }
 
     // extend Enum
@@ -471,7 +474,46 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
 }
 
 func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
-    // todo
+    let outbuf = helper.outbuf
+
+    // calc names
+    for (m in ser.method) {
+        m.inputType = helper.getTypeName(m.inputType)
+        m.outputType = helper.getTypeName(m.outputType)
+        m.funcName = getServiceFuncName(m.name)
+    }
+
+    // service
+    outbuf.append("\npublic abstract class ${ser.name}_Service <: Service {\n")
+    outbuf.append("    protected func getServiceName() { \"${helper.pkgPrefix}${ser.name}\" }\n")
+    outbuf.append("    protected func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
+    for (m in ser.method) {
+        outbuf.append("            case \"${m.name}\" => let req = ${m.inputType}(); getRequest(req); ")
+        outbuf.append("setResponse(${m.funcName}(ctx, req))\n")
+    }
+    outbuf.append("            case _ => throw Exception() // todo\n        }\n    }\n\n")
+
+    // service abstract functions
+    for (m in ser.method) {
+        outbuf.append("    protected func ${m.funcName}(ctx: ServerContext, req: ${m.inputType}): (${m.outputType}, Status)\n")
+    }
+
+    // service end
+    outbuf.append("}\n")
+
+    // client
+    outbuf.append("\npublic class ${ser.name}_Client <: Stub {\n    public init(chan: Channel) { super(chan) }\n")
+
+    // client functions
+    for (m in ser.method) {
+        outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}, resp: ${m.outputType}) {\n")
+        outbuf.append("        m_ctxBind(ctx, \"${m.name}\"); setRequest(ctx, req); getResponse(ctx, resp)\n    }\n")
+        outbuf.append("    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {\n")
+        outbuf.append("        let resp = ${m.outputType}(); m_ctxBind(ctx, \"${m.name}\"); setRequest(ctx, req); (resp, getResponse(ctx, resp))\n    }\n")
+    }
+
+    // client end
+    outbuf.append("}\n")
 }
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
@@ -488,31 +530,35 @@ let cangjieKeyWords = HashSet<String>([
     "spawn", "static", "super", "synchronized", "this", "throw", "true", "try",
     "type", "This", "unsafe", "var", "where", "while"
 ])
-let protobufRsvdWords = HashSet<String>([
-    "protobuf", "protoc", "default", "toString"
-])
 let messageRsvdWords = HashSet<String>([
-    "getAccessors", "getNames", "getDefaultValue", "unknownFields", "m_fields",
+    "default", "toString", "getAccessors", "getNames", "getDefaultValue", "unknownFields", "m_fields",
     "m_proto2", "m_fieldsClone", "pack", "unpack", "has", "clear", "m_accessors",
     "m_names", "getOneofCase", "getOneofIndex", "m_oneofCase", "m_oneofIndex", "m_dv"
 ])
 let enumRsvdWords = HashSet<String>([
-    "value", "parse", "hashCode"
+    "default", "toString", "value", "parse", "hashCode"
+])
+let grpcRsvdWords = HashSet<String>([
+    "getServiceName", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_ctxBind",
+    "setRequest", "getRequest", "getRequest", "setRequest"
 ])
 
 func getEnumItemName(name: String) {
-    if (cangjieKeyWords.contains(name) ||
-        protobufRsvdWords.contains(name) ||
-        enumRsvdWords.contains(name)) {
+    if (cangjieKeyWords.contains(name) || enumRsvdWords.contains(name)) {
         return name + '_'
     }
     name
 }
 
 func getMessagePropName(name: String) {
-    if (cangjieKeyWords.contains(name) ||
-        protobufRsvdWords.contains(name) ||
-        messageRsvdWords.contains(name)) {
+    if (cangjieKeyWords.contains(name) || messageRsvdWords.contains(name)) {
+        return name + '_'
+    }
+    name
+}
+
+func getServiceFuncName(name: String) {
+    if (cangjieKeyWords.contains(name) || grpcRsvdWords.contains(name)) {
         return name + '_'
     }
     name
