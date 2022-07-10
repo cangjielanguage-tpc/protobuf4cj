@@ -303,6 +303,9 @@ message MethodDescriptorProto {
   optional bool client_streaming = 5 [default = false];
   // Identifies if server streams multiple server messages
   optional bool server_streaming = 6 [default = false];
+
+  // Func name in cangjie
+  optional string func_name = 15;
 }
 
 

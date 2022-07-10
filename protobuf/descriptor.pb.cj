@@ -687,13 +687,13 @@ public class MethodDescriptorProto <: MessageLite {
     private static let m_accessors = HashMap<Tag, Accessor>([
         (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (3, StringAccessor.getInstance()),
         (4, MessageAccessor<MethodOptions>.getInstance()), (5, BoolAccessor.getInstance()),
-        (6, BoolAccessor.getInstance())
+        (6, BoolAccessor.getInstance()), (15, StringAccessor.getInstance())
     ])
     protected func getAccessors() { m_accessors }
 
     private static let m_names = HashMap<Tag, String>([
         (1, "name"), (2, "inputType"), (3, "outputType"), (4, "options"), (5, "clientStreaming"),
-        (6, "serverStreaming")
+        (6, "serverStreaming"), (15, "funcName")
     ])
     protected func getNames() { m_names }
 
@@ -732,6 +732,11 @@ public class MethodDescriptorProto <: MessageLite {
     public prop var serverStreaming: Bool {
         get() { get<Bool>(6) }
         set(v) { set(6, v) }
+    }
+
+    public prop var funcName: String {
+        get() { get<String>(15) }
+        set(v) { set(15, v) }
     }
 }
 
