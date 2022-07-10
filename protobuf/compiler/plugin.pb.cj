@@ -1,7 +1,7 @@
 package google.protobuf.compiler
 
 from std import collection.*
-import protobuf.*
+from protobuf import protobuf.*
 import google.protobuf.*
 
 public class Version <: MessageLite {
