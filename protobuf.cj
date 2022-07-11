@@ -24,7 +24,7 @@ public class MessageUnknownField <: ToString {
     ) {}
 
     /* Pack out the unknown field with tag. */
-    func pack(out: Bytes) {
+    func pack(out: BytesWriter) {
         tagPack(tag, wireType, out)
         binPack(data, out)
     }
@@ -131,7 +131,7 @@ public abstract class MessageLite <: ToString {
      *
      * @since 0.29.3
      */
-    public func pack(out: Bytes) {
+    public func pack(out: BytesWriter) {
         m_requiredFieldsCheck()
         let accessors = getAccessors()
         for ((tag, val) in m_fields) {

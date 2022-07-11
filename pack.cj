@@ -32,7 +32,7 @@ func tagSize(tagID: Tag) {
 }
 
 /* pack a tag(with wire-type). */
-func tagPack(v: Tag, w: WireType, out: Bytes) {
+func tagPack(v: Tag, w: WireType, out: BytesWriter) {
     varintPack(UInt64(v) << 3 | UInt64(w.value()), out)
 }
 
@@ -102,7 +102,7 @@ func varintSize(v: UInt64) {
 
 /* pack a varint. */
 @overflowWrapping
-func varintPack(v: UInt64, out: Bytes) {
+func varintPack(v: UInt64, out: BytesWriter) {
     var v = v
     while (v >= 0x80) {
         out.append(UInt8(v | 0x80))
@@ -181,20 +181,20 @@ func unzigzag(v: UInt64) {
  * types fixed32, sfixed32, float. Similar to "htole32".
  */
 @overflowWrapping
-func fixedPack(value: UInt32, out: Bytes) {
+func fixedPack(value: UInt32, out: BytesWriter) {
     out.append(UInt8(value))
     out.append(UInt8(value >> 8))
     out.append(UInt8(value >> 16))
     out.append(UInt8(value >> 24))
 }
 @overflowWrapping
-func fixedPack(value: Int32, out: Bytes) {
+func fixedPack(value: Int32, out: BytesWriter) {
     out.append(UInt8(value))
     out.append(UInt8(value >> 8))
     out.append(UInt8(value >> 16))
     out.append(UInt8(value >> 24))
 }
-func fixedPack(value: Float32, out: Bytes) {
+func fixedPack(value: Float32, out: BytesWriter) {
     fixedPack(floatBits(value), out)
 }
 
@@ -203,7 +203,7 @@ func fixedPack(value: Float32, out: Bytes) {
  * types fixed64, sfixed64, double. Similar to "htole64".
  */
 @overflowWrapping
-func fixedPack(value: UInt64, out: Bytes) {
+func fixedPack(value: UInt64, out: BytesWriter) {
     out.append(UInt8(value))
     out.append(UInt8(value >> 8))
     out.append(UInt8(value >> 16))
@@ -214,7 +214,7 @@ func fixedPack(value: UInt64, out: Bytes) {
     out.append(UInt8(value >> 56))
 }
 @overflowWrapping
-func fixedPack(value: Int64, out: Bytes) {
+func fixedPack(value: Int64, out: BytesWriter) {
     out.append(UInt8(value))
     out.append(UInt8(value >> 8))
     out.append(UInt8(value >> 16))
@@ -224,20 +224,20 @@ func fixedPack(value: Int64, out: Bytes) {
     out.append(UInt8(value >> 48))
     out.append(UInt8(value >> 56))
 }
-func fixedPack(value: Float64, out: Bytes) {
+func fixedPack(value: Float64, out: BytesWriter) {
     fixedPack(floatBits(value), out)
 }
 
 /**
  * Pack bytes.
  */
-func binPack(value: Collection<UInt8>, out: Bytes) {
+func binPack(value: Collection<UInt8>, out: BytesWriter) {
     varintPack(UInt64(value.size()), out)
 	out.appendAll(value)
 }
 
 /* Pack string */
-func strPack(v: String, out: Bytes) {
+func strPack(v: String, out: BytesWriter) {
     binPack(v.toUtf8Array(), out)
 }
 

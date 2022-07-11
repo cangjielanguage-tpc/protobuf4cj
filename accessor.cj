@@ -36,7 +36,7 @@ func escape(s: String) {
  * @since 0.29.3
  */
 public interface Accessor {
-    func pack(tag: Tag, val: Any, out: Bytes): Unit
+    func pack(tag: Tag, val: Any, out: BytesWriter): Unit
     func unpack(tag: Tag, src: BytesReader): Any
     func clone(val: Any): Any { val }
     func toString(val: Any) { dynamic_cast<ToString>(val).toString() }
@@ -65,12 +65,12 @@ public class Int32Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<Int32>(val)), out)
     }
@@ -109,11 +109,11 @@ public class UInt32Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<UInt32>(val)), out)
     }
@@ -152,12 +152,12 @@ public class Int64Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<Int64>(val)), out)
     }
@@ -196,11 +196,11 @@ public class UInt64Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(dynamic_cast(val), out)
     }
@@ -238,12 +238,12 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(dynamic_cast<E>(val).value()), out)
     }
@@ -290,11 +290,11 @@ public class SInt32Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(UInt64(zigzag(dynamic_cast<Int32>(val))), out)
     }
@@ -333,11 +333,11 @@ public class SInt64Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(zigzag(dynamic_cast<Int64>(val)), out)
     }
@@ -375,11 +375,11 @@ public class BoolAccessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, VARINT, out)
         varintPack(if (dynamic_cast(val)) { 1 } else { 0 }, out)
     }
@@ -419,11 +419,11 @@ public class SFixed32Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, BIT32, out)
         fixedPack(dynamic_cast<Int32>(val), out)
     }
@@ -464,11 +464,11 @@ public class Fixed32Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, BIT32, out)
         fixedPack(dynamic_cast<UInt32>(val), out)
     }
@@ -506,11 +506,11 @@ public class FloatAccessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, BIT32, out)
         fixedPack(dynamic_cast<Float32>(val), out)
     }
@@ -548,11 +548,11 @@ public class SFixed64Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, BIT64, out)
         fixedPack(dynamic_cast<Int64>(val), out)
     }
@@ -592,11 +592,11 @@ public class Fixed64Accessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, BIT64, out)
         fixedPack(dynamic_cast<UInt64>(val), out)
     }
@@ -635,11 +635,11 @@ public class DoubleAccessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, BIT64, out)
         fixedPack(dynamic_cast<Float64>(val), out)
     }
@@ -677,11 +677,11 @@ public class StringAccessor <: Accessor {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         tagPack(tag, PREFIXED, out)
         strPack(dynamic_cast(val), out)
     }
@@ -728,11 +728,11 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<Bytes>(val)
         let len = UInt64(val.size())
         if (len > 0) {
@@ -775,11 +775,11 @@ public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> 
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let tmp = Bytes()
         dynamic_cast<M>(val).pack(tmp)
         let len = UInt64(tmp.size())
@@ -835,12 +835,12 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -889,12 +889,12 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -940,11 +940,11 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -992,11 +992,11 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -1041,12 +1041,12 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1096,12 +1096,12 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -1147,11 +1147,11 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1199,11 +1199,11 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -1249,12 +1249,12 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<E>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1321,12 +1321,12 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<E>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -1390,11 +1390,11 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1443,11 +1443,11 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -1493,11 +1493,11 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1545,11 +1545,11 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -1595,11 +1595,11 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Bool>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1647,11 +1647,11 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Bool>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -1695,11 +1695,11 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1748,11 +1748,11 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int32>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -1796,11 +1796,11 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1850,11 +1850,11 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt32>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -1898,11 +1898,11 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Float32>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -1950,12 +1950,12 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Float32>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -1999,11 +1999,11 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -2052,11 +2052,11 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Int64>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -2100,11 +2100,11 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -2152,11 +2152,11 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<UInt64>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -2200,11 +2200,11 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Float64>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -2252,12 +2252,12 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Float64>>(val)
         if (val.isEmpty()) { return }
         tagPack(tag, PREFIXED, out)
@@ -2301,11 +2301,11 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<String>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -2363,11 +2363,11 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<Bytes>>(val)
         if (val.isEmpty()) { return }
         for (v in val) {
@@ -2427,11 +2427,11 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<ArrayList<M>>(val)
         if (val.isEmpty()) { return }
         let tmp = Bytes()
@@ -2494,11 +2494,11 @@ public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatab
      *
      * @param tag of Tag
      * @param val of Any
-     * @param out of Bytes
+     * @param out of BytesWriter
      *
      * @since 0.29.3
      */
-    public func pack(tag: Tag, val: Any, out: Bytes) {
+    public func pack(tag: Tag, val: Any, out: BytesWriter) {
         let val = dynamic_cast<HashMap<K, V>>(val)
         if (val.isEmpty()) { return }
         let ka = KA.getInstance()
