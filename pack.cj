@@ -37,14 +37,14 @@ func tagPack(v: Tag, w: WireType, out: Bytes) {
 }
 
 /* parse a tag(with wire-type). */
-func tagParse(src: SimpleReader): (Tag, WireType) {
+func tagParse(src: BytesReader): (Tag, WireType) {
     if (src.isEmpty()) {
         throw ParseValueExecption("tag", reason: "empty buffer")
     }
 
     var byte = src.read()
     if ((byte & 0xf8) == 0) {
-        src.seek(-1)
+        src.seek(-1, CurPos)
         throw ParseValueExecption("tag", reason: "invalid tag value")
     }
 
@@ -57,7 +57,7 @@ func tagParse(src: SimpleReader): (Tag, WireType) {
     var shift: UInt8 = 4
     for (i in 1..5) {
         if (src.isEmpty()) {
-            src.seek(-i)
+            src.seek(-i, CurPos)
             throw ParseValueExecption("tag", reason: "incomplete buffer")
         }
 
@@ -71,7 +71,7 @@ func tagParse(src: SimpleReader): (Tag, WireType) {
         shift += 7
     }
 
-    src.seek(-5)
+    src.seek(-5, CurPos)
     throw ParseValueExecption("tag", reason: "invalid tag value")
 }
 
@@ -112,7 +112,7 @@ func varintPack(v: UInt64, out: Bytes) {
 }
 
 /* parse a varint. */
-func varintParse(src: SimpleReader) { 
+func varintParse(src: BytesReader) {
     if (src.isEmpty()) {
         throw ParseValueExecption("varint", reason: "empty buffer")
     }
@@ -126,7 +126,7 @@ func varintParse(src: SimpleReader) {
     var shift: UInt8 = 7
     for (i in 1..10) {
         if (src.isEmpty()) {
-            src.seek(-i)
+            src.seek(-i, CurPos)
             throw ParseValueExecption("varint", reason: "incomplete buffer")
         }
 
@@ -139,7 +139,7 @@ func varintParse(src: SimpleReader) {
         shift += 7
     }
 
-    src.seek(-10)
+    src.seek(-10, CurPos)
     throw ParseValueExecption("varint", reason: "invalid tag value")
 }
 
@@ -264,7 +264,7 @@ func floatBits(v: Float64) {
 }
 
 /* parse a 32-bits value. */
-func fixed32Parse(src: SimpleReader) { 
+func fixed32Parse(src: BytesReader) {
     if (src.size() < 4) {
         throw ParseValueExecption("fixed32", reason: "incomplete buffer")
     }
@@ -273,7 +273,7 @@ func fixed32Parse(src: SimpleReader) {
 }
 
 /* parse a 64-bits value. */
-func fixed64Parse(src: SimpleReader) { 
+func fixed64Parse(src: BytesReader) {
     if (src.size() < 8) {
         throw ParseValueExecption("fixed32", reason: "incomplete buffer")
     }
@@ -282,6 +282,6 @@ func fixed64Parse(src: SimpleReader) {
     (UInt64(src.read()) << 32) | (UInt64(src.read()) << 40) | (UInt64(src.read()) << 48) | (UInt64(src.read()) << 56)
 }
 
-func binParse(src: SimpleReader) {
+func binParse(src: BytesReader) {
     src.read(Int64(varintParse(src)))
 }

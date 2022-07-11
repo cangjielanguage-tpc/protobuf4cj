@@ -37,7 +37,7 @@ func escape(s: String) {
  */
 public interface Accessor {
     func pack(tag: Tag, val: Any, out: Bytes): Unit
-    func unpack(tag: Tag, src: SimpleReader): Any
+    func unpack(tag: Tag, src: BytesReader): Any
     func clone(val: Any): Any { val }
     func toString(val: Any) { dynamic_cast<ToString>(val).toString() }
     static func getInstance(): Accessor
@@ -79,13 +79,13 @@ public class Int32Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         Int32(varintParse(src))
     }
     private static let instance = Int32Accessor()
@@ -122,13 +122,13 @@ public class UInt32Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         UInt32(varintParse(src))
     }
     private static let instance = UInt32Accessor()
@@ -166,13 +166,13 @@ public class Int64Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         Int64(varintParse(src))
     }
     private static let instance = Int64Accessor()
@@ -209,12 +209,12 @@ public class UInt64Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         varintParse(src)
     }
     private static let instance = UInt64Accessor()
@@ -252,13 +252,13 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         E.parse(Int32(varintParse(src)))
     }
 
@@ -303,13 +303,13 @@ public class SInt32Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         unzigzag(UInt32(varintParse(src)))
     }
     private static let instance = SInt32Accessor()
@@ -346,12 +346,12 @@ public class SInt64Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         unzigzag(varintParse(src))
     }
     private static let instance = SInt64Accessor()
@@ -388,12 +388,12 @@ public class BoolAccessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         varintParse(src) != 0
     }
     private static let instance = BoolAccessor()
@@ -432,13 +432,13 @@ public class SFixed32Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         Int32(fixed32Parse(src))
     }
     private static let instance = SFixed32Accessor()
@@ -477,12 +477,12 @@ public class Fixed32Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         fixed32Parse(src)
     }
     private static let instance = Fixed32Accessor()
@@ -519,12 +519,12 @@ public class FloatAccessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         floatBits(fixed32Parse(src))
     }
     private static let instance = FloatAccessor()
@@ -561,13 +561,13 @@ public class SFixed64Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         Int64(fixed64Parse(src))
     }
 
@@ -605,12 +605,12 @@ public class Fixed64Accessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         fixed64Parse(src)
     }
 
@@ -648,12 +648,12 @@ public class DoubleAccessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         floatBits(fixed64Parse(src))
     }
     private static let instance = DoubleAccessor()
@@ -690,12 +690,12 @@ public class StringAccessor <: Accessor {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         String.fromUtf8(binParse(src).data())
     }
 
@@ -746,12 +746,12 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         Bytes(binParse(src).data())
     }
     private static let instance = BytesAccessor()
@@ -794,12 +794,12 @@ public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> 
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @return Type of Any
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader): Any {
+    public func unpack(tag: Tag, src: BytesReader): Any {
         M.default().unpack(binParse(src)) // unpack return MessageLite, if M needed, use dynamic_cast<M>
     }
 
@@ -853,18 +853,18 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int32>()
         while (true) {
             rv.append(Int32(varintParse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -908,12 +908,12 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int32(varintParse(tmp))) }
@@ -956,18 +956,18 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt32>()
         while (true) {
             rv.append(UInt32(varintParse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1009,12 +1009,12 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(UInt32(varintParse(tmp))) }
@@ -1059,18 +1059,18 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int64>()
         while (true) {
             rv.append(Int64(varintParse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1115,12 +1115,12 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int64(varintParse(tmp))) }
@@ -1164,17 +1164,17 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt64>()
         while (true) {
             rv.append(varintParse(src))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1217,12 +1217,12 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(varintParse(tmp)) }
@@ -1267,18 +1267,18 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<E>()
         while (true) {
             rv.append(E.parse(Int32(varintParse(src))))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1340,12 +1340,12 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<E>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(E.parse(Int32(varintParse(tmp)))) }
@@ -1407,18 +1407,18 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int32>()
         while (true) {
             rv.append(unzigzag(UInt32(varintParse(src))))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1461,12 +1461,12 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(unzigzag(UInt32(varintParse(tmp)))) }
@@ -1510,17 +1510,17 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int64>()
         while (true) {
             rv.append(unzigzag(varintParse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1563,12 +1563,12 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(unzigzag(varintParse(tmp))) }
@@ -1612,17 +1612,17 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Bool>()
         while (true) {
             rv.append(varintParse(src) != 0)
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1663,12 +1663,12 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Bool>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(varintParse(tmp) != 0) }
@@ -1712,18 +1712,18 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int32>()
         while (true) {
             rv.append(Int32(fixed32Parse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1764,12 +1764,12 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int32(fixed32Parse(tmp))) }
@@ -1813,17 +1813,17 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt32>()
         while (true) {
             rv.append(fixed32Parse(src))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1866,12 +1866,12 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(fixed32Parse(tmp)) }
@@ -1915,17 +1915,17 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Float32>()
         while (true) {
             rv.append(floatBits(fixed32Parse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -1967,12 +1967,12 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Float32>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(floatBits(fixed32Parse(tmp))) }
@@ -2016,18 +2016,18 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int64>()
         while (true) {
             rv.append(Int64(fixed64Parse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -2068,12 +2068,12 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Int64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(Int64(fixed32Parse(tmp))) }
@@ -2117,17 +2117,17 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt64>()
         while (true) {
             rv.append(fixed64Parse(src))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -2168,12 +2168,12 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<UInt64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(fixed64Parse(tmp)) }
@@ -2217,17 +2217,17 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Float64>()
         while (true) {
             rv.append(floatBits(fixed64Parse(src)))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -2269,12 +2269,12 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
     @overflowWrapping
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Float64>()
         let tmp = src.read(Int64(varintParse(src)))
         while (!tmp.isEmpty()) { rv.append(floatBits(fixed64Parse(tmp))) }
@@ -2318,17 +2318,17 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<String>()
         while (true) {
             rv.append(String.fromUtf8(binParse(src).data()))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -2380,17 +2380,17 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<Bytes>()
         while (true) {
             rv.append(Bytes(binParse(src).data()))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -2447,17 +2447,17 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = ArrayList<M>()
         while (true) {
             rv.append(dynamic_cast<M>(M.default().unpack(binParse(src))))
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }
@@ -2517,17 +2517,17 @@ public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatab
      * The Function is unpack
      *
      * @param tag of Tag
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(tag: Tag, src: SimpleReader) {
+    public func unpack(tag: Tag, src: BytesReader) {
         let rv = HashMap<K, V>()
         let ka = KA.getInstance()
         let va = VA.getInstance()
         var k: K
         var v: V
-        var tmp: SimpleReader
+        var tmp: BytesReader
         while (true) {
             tmp = binParse(src)
             k = K.default()
@@ -2542,7 +2542,7 @@ public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatab
             rv[k] = v
             if (src.isEmpty()) { break }
             let (next, _) = tagParse(src)
-            if (next != tag) { src.seek(-tagSize(next)); break }
+            if (next != tag) { src.seek(-tagSize(next), CurPos); break }
         }
         rv
     }

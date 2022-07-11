@@ -4,18 +4,39 @@
 
 /**
  * @file
- * This file about: SimpleReader
+ * This file about: BytesReader
  */
 package protobuf
 
 public from std import io.SeekOrigin
+
+/* Bytes Reader. */
+public type BytesReader = Reader<Byte>
+
+/* public interface of `generic-T` reader. */
+public interface Reader<T> {
+    /* any data unread */
+    func isEmpty(): Bool
+    /* unread bytes size */
+    func size(): Int64
+    /* seek the offset */
+    func seek(offset: Int64, origin: SeekOrigin): Int64
+    /* peek the current position with `offset` */
+    func peek(offset: Int64): T
+    /* read and increase the offset */
+    func read(): T
+    /* read a sub reader with length of `len` and increase the offset */
+    func read(len: Int64): Reader<T>
+    /* all the unread data */
+    func data(): Array<T>
+}
 
 /**
  * The class is SimpleReader
  * @author tutudo
  * @since 0.29.3
  */
-public class SimpleReader {
+public class SimpleReader <: BytesReader {
     public SimpleReader (
         private let buffer: Array<UInt8>,
         private let begin!: Int64 = 0,
@@ -53,7 +74,7 @@ public class SimpleReader {
      *
      * @since 0.29.3
      */
-    public func seek(offset: Int64, origin!: SeekOrigin = CurPos) {
+    public func seek(offset: Int64, origin: SeekOrigin) {
         match(origin) {
             case BeginPos => this.offset = begin + offset
             case CurPos => this.offset += offset
@@ -92,9 +113,8 @@ public class SimpleReader {
      * @since 0.29.3
      */
     public func read() { 
-        let v = buffer[offset]
         offset++
-        v
+        buffer[offset - 1]
     }
 
     /**
@@ -105,47 +125,7 @@ public class SimpleReader {
      * @since 0.29.3
      */
     public func read(s: Int64) {
-        let v = SimpleReader(buffer, begin: offset, end: offset + s)
         offset += s
-        v
-    }
-
-    /**
-     * read `v`, if succeed, increase the offset
-     *
-     * @param v of UInt8
-     *
-     * @since 0.29.3
-     */
-    public func read(v: UInt8) {
-        if (offset < begin || offset >= end || buffer[offset] != v) {
-            return false
-        }
-        offset++
-        true
-    }
-
-    /**
-     * read `a`, if succeed, increase the offset
-     *
-     * @param a of Collection<UInt8>
-     *
-     * @since 0.29.3
-     */
-    public func read(a: Collection<UInt8>) {
-        if (offset < begin || offset + a.size() > end) {
-            return false
-        }
-
-        var s = offset
-        for (u in a) {
-            if (buffer[s] != u) {
-                return false
-            }
-            s++
-        }
-
-        offset = s
-        true
+        SimpleReader(buffer, begin: offset - s, end: offset)
     }
 }

@@ -29,13 +29,13 @@ public class MessageUnknownField <: ToString {
         binPack(data, out)
     }
 
-    static func unpack(tag: Tag, wt: WireType, src: SimpleReader) {
+    static func unpack(tag: Tag, wt: WireType, src: BytesReader) {
         let len: Int64
         match (wt) {
             case BIT32 => len = 4
             case BIT64 => len = 8
-            case VARINT => len = varintSize(varintParse(src)); src.seek(-len)
-            case PREFIXED => let p = varintParse(src); let v = varintSize(p); len = Int64(p) + v; src.seek(-v)
+            case VARINT => len = varintSize(varintParse(src)); src.seek(-len, CurPos)
+            case PREFIXED => let p = varintParse(src); let v = varintSize(p); len = Int64(p) + v; src.seek(-v, CurPos)
         }
         MessageUnknownField(tag, wt, src.read(len).data())
     }
@@ -145,11 +145,11 @@ public abstract class MessageLite <: ToString {
     /**
      * Unpacking interface
      *
-     * @param src of SimpleReader
+     * @param src of BytesReader
      *
      * @since 0.29.3
      */
-    public func unpack(src: SimpleReader) {
+    public func unpack(src: BytesReader) {
         let accessors = getAccessors()
         while (!src.isEmpty()) {
             let (tag, wt) = tagParse(src)
