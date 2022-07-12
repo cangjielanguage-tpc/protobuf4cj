@@ -227,14 +227,13 @@ public abstract class MessageLite <: ToString {
     protected func set(tag: Tag, val: Any): Unit {
         /* Proto2 will save all the set values, while proto3 will not save the '0' value of the value type */
         let cnew = if (m_proto2() || !zeroish(val)) { m_fields[tag] = val; tag } else { m_fields.remove(tag); UNSETCASE }
-        match (getOneofIndex()?.get(tag)) {
 
-            /* If the previous oneof is another field, you need to clear it and set the case to the current tag */
-            case Some(Some(index)) =>
-                let c = getOneofCase().getOrThrow()[index]
-                if (c != tag && c != UNSETCASE) { m_fields.remove(c) }
-                if (c != cnew) { getOneofCase().getOrThrow()[index] = cnew }
-            case _ => ()
+        /* If the previous oneof is another field, clear it and set the case to the current tag */
+        if (let Some(Some(index)) = getOneofIndex()?.get(tag)) {
+            let cc = getOneofCase().getOrThrow()
+            let c = cc[index]
+            if (c != tag && c != UNSETCASE) { m_fields.remove(c) }
+            if (c != cnew) { cc[index] = cnew }
         }
     }
 
@@ -250,9 +249,8 @@ public abstract class MessageLite <: ToString {
      */
     public func clear(): Unit {
         m_fields.clear()
-        match (getOneofCase()) {
-            case Some(a) => for (i in 0..a.size()) { a[i] = UNSETCASE }
-            case _ => ()
+        if (let Some(a) = getOneofCase()) {
+            for (i in 0..a.size()) { a[i] = UNSETCASE }
         }
     }
 }
