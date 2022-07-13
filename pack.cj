@@ -241,6 +241,13 @@ func strPack(v: String, out: BytesWriter) {
     binPack(v.toUtf8Array(), out)
 }
 
+/* Packed size of string */
+func strPackSize(v: String) {
+    // todo if v is ascii string, no need convert to Array<UInt8>
+    let len = v.toUtf8Array().size()
+    varintSize(UInt64(len)) + len
+}
+
 // ffi
 foreign func itof(v: UInt32): Float32
 foreign func ltod(v: UInt64): Float64

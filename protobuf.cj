@@ -23,10 +23,14 @@ public class MessageUnknownField <: ToString {
         let data: Array<UInt8>
     ) {}
 
+    func packSize() {
+        tagSize(tag) + data.size()
+    }
+
     /* Pack out the unknown field with tag. */
     func pack(out: BytesWriter) {
         tagPack(tag, wireType, out)
-        binPack(data, out)
+        out.appendAll(data)
     }
 
     static func unpack(tag: Tag, wt: WireType, src: BytesReader) {
@@ -122,6 +126,18 @@ public abstract class MessageLite <: ToString {
                 throw RequiredFieldNotSetException(getNames()[tag])
             }
         }
+    }
+
+    public func packSize() {
+        let accessors = getAccessors()
+        var ret = 0
+        for ((tag, val) in m_fields) {
+            ret += accessors[tag].packSize(tag, val)
+        }
+        for (field in unknownFields) {
+            ret += field.packSize()
+        }
+        ret
     }
 
     /**

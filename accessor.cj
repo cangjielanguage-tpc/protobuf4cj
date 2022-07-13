@@ -36,6 +36,9 @@ func escape(s: String) {
  * @since 0.29.3
  */
 public interface Accessor {
+    /* calc the pack size of the pair of tag and val. */
+    func packSize(tag: Tag, val: Any): Int64
+    /* pack the pair of tag and val out. */
     func pack(tag: Tag, val: Any, out: BytesWriter): Unit
     func unpack(tag: Tag, src: BytesReader): Any
     func clone(val: Any): Any { val }
@@ -60,6 +63,9 @@ public interface RepeatAccessor<T> <: Accessor where T <: ToString {
  * @since 0.29.3
  */
 public class Int32Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(UInt64(dynamic_cast<Int32>(val)))
+    }
     /**
      * The Function is pack
      *
@@ -104,6 +110,9 @@ public class Int32Accessor <: Accessor {
  * @since 0.29.3
  */
 public class UInt32Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(UInt64(dynamic_cast<UInt32>(val)))
+    }
     /**
      * The Function is pack
      *
@@ -147,6 +156,9 @@ public class UInt32Accessor <: Accessor {
  * @since 0.29.3
  */
 public class Int64Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(UInt64(dynamic_cast<Int64>(val)))
+    }
     /**
      * The Function is pack
      *
@@ -191,6 +203,9 @@ public class Int64Accessor <: Accessor {
  * @since 0.29.3
  */
 public class UInt64Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(dynamic_cast(val))
+    }
     /**
      * The Function is pack
      *
@@ -233,6 +248,9 @@ public class UInt64Accessor <: Accessor {
  * @since 0.29.3
  */
 public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(UInt64(dynamic_cast<E>(val).value()))
+    }
     /**
      * The Function is pack
      *
@@ -285,6 +303,9 @@ public class EnumAccessor<E> <: Accessor where E <: Enum<E> {
  * @since 0.29.3
  */
 public class SInt32Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(UInt64(zigzag(dynamic_cast<Int32>(val))))
+    }
     /**
      * The Function is pack
      *
@@ -328,6 +349,9 @@ public class SInt32Accessor <: Accessor {
  * @since 0.29.3
  */
 public class SInt64Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + varintSize(zigzag(dynamic_cast<Int64>(val)))
+    }
     /**
      * The Function is pack
      *
@@ -370,6 +394,9 @@ public class SInt64Accessor <: Accessor {
  * @since 0.29.3
  */
 public class BoolAccessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 1
+    }
     /**
      * The Function is pack
      *
@@ -383,7 +410,7 @@ public class BoolAccessor <: Accessor {
         tagPack(tag, VARINT, out)
         varintPack(if (dynamic_cast(val)) { 1 } else { 0 }, out)
     }
-    
+
     /**
      * The Function is unpack
      *
@@ -414,6 +441,9 @@ public class BoolAccessor <: Accessor {
  * @since 0.29.3
  */
 public class SFixed32Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 4
+    }
     /**
      * The Function is pack
      *
@@ -459,6 +489,9 @@ public class SFixed32Accessor <: Accessor {
  * @since 0.29.3
  */
 public class Fixed32Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 4
+    }
     /**
      * The Function is pack
      *
@@ -501,6 +534,9 @@ public class Fixed32Accessor <: Accessor {
  * @since 0.29.3
  */
 public class FloatAccessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 4
+    }
     /**
      * The Function is pack
      *
@@ -543,6 +579,9 @@ public class FloatAccessor <: Accessor {
  * @since 0.29.3
  */
 public class SFixed64Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 8
+    }
     /**
      * The Function is pack
      *
@@ -587,6 +626,9 @@ public class SFixed64Accessor <: Accessor {
  * @since 0.29.3
  */
 public class Fixed64Accessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 8
+    }
     /**
      * The Function is pack
      *
@@ -630,6 +672,9 @@ public class Fixed64Accessor <: Accessor {
  * @since 0.29.3
  */
 public class DoubleAccessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + 8
+    }
     /**
      * The Function is pack
      *
@@ -672,6 +717,9 @@ public class DoubleAccessor <: Accessor {
  * @since 0.29.3
  */
 public class StringAccessor <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        tagSize(tag) + strPackSize(dynamic_cast(val))
+    }
     /**
      * The Function is pack
      *
@@ -723,6 +771,13 @@ public class StringAccessor <: Accessor {
  * @since 0.29.3
  */
 public class BytesAccessor <: RepeatAccessor<UInt8> {
+    public func packSize(tag: Tag, val: Any) {
+        let v = dynamic_cast<Bytes>(val).size()
+        if (v == 0) {
+            return 0
+        }
+        tagSize(tag) + varintSize(UInt64(v)) + v
+    }
     /**
      * The Function is pack
      *
@@ -770,6 +825,13 @@ public class BytesAccessor <: RepeatAccessor<UInt8> {
  * @since 0.29.3
  */
 public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> {
+    public func packSize(tag: Tag, val: Any) {
+        let v = dynamic_cast<M>(val).packSize()
+        if (v == 0) {
+            return 0
+        }
+        tagSize(tag) + varintSize(UInt64(v)) + v
+    }
     /**
      * The Function is pack
      *
@@ -830,6 +892,15 @@ public class MessageAccessor<M> <: Accessor where M <: MessageLite & Default<M> 
  * @since 0.29.3
  */
 public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
+    public func packSize(tag: Tag, val: Any) {
+        let val = dynamic_cast<ArrayList<Int32>>(val)
+        if (val.isEmpty()) { return 0 }
+        var ret = 0
+        for (v in val) {
+            ret += tagSize(tag) + varintSize(UInt64(v))
+        }
+        ret
+    }
     /**
      * The Function is pack
      *
@@ -884,6 +955,14 @@ public class RepeatInt32Accessor <: RepeatAccessor<Int32> {
  * @since 0.29.3
  */
 public class PackedInt32Accessor <: RepeatAccessor<Int32> {
+    public func packSize(tag: Tag, val: Any) {
+        let val = dynamic_cast<ArrayList<Int32>>(val)
+        var len = 0
+        for (v in val) {
+            len += varintSize(UInt64(v))
+        }
+        tagSize(tag) + varintSize(UInt64(len)) + len
+    }
     /**
      * The Function is pack
      *
@@ -935,6 +1014,9 @@ public class PackedInt32Accessor <: RepeatAccessor<Int32> {
  * @since 0.29.3
  */
 public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -987,6 +1069,9 @@ public class RepeatUInt32Accessor <: RepeatAccessor<UInt32> {
  * @since 0.29.3
  */
 public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1036,6 +1121,9 @@ public class PackedUInt32Accessor <: RepeatAccessor<UInt32> {
  * @since 0.29.3
  */
 public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1091,6 +1179,9 @@ public class RepeatInt64Accessor <: RepeatAccessor<Int64> {
  * @since 0.29.3
  */
 public class PackedInt64Accessor <: RepeatAccessor<Int64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1142,6 +1233,9 @@ public class PackedInt64Accessor <: RepeatAccessor<Int64> {
  * @since 0.29.3
  */
 public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1194,6 +1288,9 @@ public class RepeatUInt64Accessor <: RepeatAccessor<UInt64> {
  * @since 0.29.3
  */
 public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1244,6 +1341,9 @@ public class PackedUInt64Accessor <: RepeatAccessor<UInt64> {
  * @since 0.29.3
  */
 public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1316,6 +1416,9 @@ public class RepeatEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
  * @since 0.29.3
  */
 public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1385,6 +1488,9 @@ public class PackedEnumAccessor<E> <: RepeatAccessor<E> where E <: Enum<E> {
  * @since 0.29.3
  */
 public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1438,6 +1544,9 @@ public class RepeatSInt32Accessor <: RepeatAccessor<Int32> {
  * @since 0.29.3
  */
 public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1488,6 +1597,9 @@ public class PackedSInt32Accessor <: RepeatAccessor<Int32> {
  * @since 0.29.3
  */
 public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1540,6 +1652,9 @@ public class RepeatSInt64Accessor <: RepeatAccessor<Int64> {
  * @since 0.29.3
  */
 public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1590,6 +1705,9 @@ public class PackedSInt64Accessor <: RepeatAccessor<Int64> {
  * @since 0.29.3
  */
 public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1642,6 +1760,9 @@ public class RepeatBoolAccessor <: RepeatAccessor<Bool> {
  * @since 0.29.3
  */
 public class PackedBoolAccessor <: RepeatAccessor<Bool> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1690,6 +1811,9 @@ public class PackedBoolAccessor <: RepeatAccessor<Bool> {
  * @since 0.29.3
  */
 public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1743,6 +1867,9 @@ public class RepeatSFixed32Accessor <: RepeatAccessor<Int32> {
  * @since 0.29.3
  */
 public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1791,6 +1918,9 @@ public class PackedSFixed32Accessor <: RepeatAccessor<Int32> {
  * @since 0.29.3
  */
 public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1845,6 +1975,9 @@ public class RepeatFixed32Accessor <: RepeatAccessor<UInt32> {
  * @since 0.29.3
  */
 public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1893,6 +2026,9 @@ public class PackedFixed32Accessor <: RepeatAccessor<UInt32> {
  * @since 0.29.3
  */
 public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1945,6 +2081,9 @@ public class RepeatFloatAccessor <: RepeatAccessor<Float32> {
  * @since 0.29.3
  */
 public class PackedFloatAccessor <: RepeatAccessor<Float32> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -1994,6 +2133,9 @@ public class PackedFloatAccessor <: RepeatAccessor<Float32> {
  * @since 0.29.3
  */
 public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2047,6 +2189,9 @@ public class RepeatSFixed64Accessor <: RepeatAccessor<Int64> {
  * @since 0.29.3
  */
 public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2095,6 +2240,9 @@ public class PackedSFixed64Accessor <: RepeatAccessor<Int64> {
  * @since 0.29.3
  */
 public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2147,6 +2295,9 @@ public class RepeatFixed64Accessor <: RepeatAccessor<UInt64> {
  * @since 0.29.3
  */
 public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2195,6 +2346,9 @@ public class PackedFixed64Accessor <: RepeatAccessor<UInt64> {
  * @since 0.29.3
  */
 public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2247,6 +2401,9 @@ public class RepeatDoubleAccessor <: RepeatAccessor<Float64> {
  * @since 0.29.3
  */
 public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2296,6 +2453,9 @@ public class PackedDoubleAccessor <: RepeatAccessor<Float64> {
  * @since 0.29.3
  */
 public class RepeatStringAccessor <: RepeatAccessor<String> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2358,6 +2518,9 @@ public class RepeatStringAccessor <: RepeatAccessor<String> {
  * @since 0.29.3
  */
 public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2422,6 +2585,9 @@ public class RepeatBytesAccessor <: RepeatAccessor<Bytes> {
  * @since 0.29.3
  */
 public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLite & Default<M> {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
@@ -2489,6 +2655,9 @@ public class RepeatMessageAccessor<M> <: RepeatAccessor<M> where M <: MessageLit
  * @since 0.29.3
  */
 public class MapAccessor<K, V, KA, VA> <: Accessor where K <: Hashable & Equatable<K> & ToString & Default<K>, V <: Default<V>, KA <: Accessor, VA <: Accessor {
+    public func packSize(tag: Tag, val: Any) {
+        0 // todo
+    }
     /**
      * The Function is pack
      *
