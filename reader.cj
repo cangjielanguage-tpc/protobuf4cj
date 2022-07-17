@@ -37,14 +37,20 @@ public interface Reader<T> {
  * @since 0.29.3
  */
 public class SimpleReader <: BytesReader {
+    private let buffer: Array<UInt8>
     public SimpleReader (
-        private let buffer: Array<UInt8>,
+        buffer: Collection<UInt8>,
         private let begin!: Int64 = 0,
         private let end!: Int64 = buffer.size(),
         private var offset!: Int64 = begin
     ) {
         if (begin < 0 || end > buffer.size()) {
             throw IllegalArgumentException("SimpleReader Arguments out of range.")
+        }
+
+        this.buffer = match (buffer) {
+            case arr: Array<UInt8> => arr
+            case _ => Array(buffer)
         }
     }
 
@@ -70,7 +76,7 @@ public class SimpleReader <: BytesReader {
      * seek the offset
      *
      * @param offset of Int64
-     * @param origin of seek base offset, and the Default value is CurPos
+     * @param origin of seek base offset
      *
      * @since 0.29.3
      */

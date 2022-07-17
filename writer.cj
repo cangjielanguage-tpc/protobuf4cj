@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Cangjie Library Team 2022-2022. All rights resvered.
+ */
+
 package protobuf
 
 /* Bytes Reader. */
