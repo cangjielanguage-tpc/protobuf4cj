@@ -4,275 +4,373 @@ from std import collection.*
 from protobuf import protobuf.*
 
 public class FileDescriptorSet <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatMessageAccessor<FileDescriptorProto>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "file")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, MessageUnpacker<FileDescriptorProto>.repeatInstance(1))
+        ])
 
-    public func clone() { let rv = FileDescriptorSet(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "file")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("file", 1)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { FileDescriptorSet().m_fieldsClone(this) }
 
     public prop var file: ArrayList<FileDescriptorProto> {
-        get() { get<ArrayList<FileDescriptorProto>>(1) }
-        set(v) { set(1, v) }
+        get() { get(1) }
+        set(v) { set(1, RepeatField<FileDescriptorProto>(1, v)) }
     }
 }
 
-extend FileDescriptorSet <: Default<FileDescriptorSet> {
-    public static func default() { FileDescriptorSet() }
-}
+extend FileDescriptorSet <: MessageParser<FileDescriptorSet> {
+    public static func fromJson(src: JsonReader) { FileDescriptorSet() }
+    public static func fromBytes(src: BytesReader) { let m = FileDescriptorSet(); m.unpack(src); m }}
 
 public class FileDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (3, RepeatStringAccessor.getInstance()),
-        (10, RepeatInt32Accessor.getInstance()), (11, RepeatInt32Accessor.getInstance()),
-        (4, RepeatMessageAccessor<DescriptorProto>.getInstance()),
-        (5, RepeatMessageAccessor<EnumDescriptorProto>.getInstance()),
-        (6, RepeatMessageAccessor<ServiceDescriptorProto>.getInstance()),
-        (7, RepeatMessageAccessor<FieldDescriptorProto>.getInstance()), (8, MessageAccessor<FileOptions>.getInstance()),
-        (9, MessageAccessor<SourceCodeInfo>.getInstance()), (12, StringAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "package_"), (3, "dependency"), (10, "publicDependency"), (11, "weakDependency"),
-        (4, "messageType"), (5, "enumType"), (6, "service"), (7, "extension"), (8, "options"), (9, "sourceCodeInfo"),
-        (12, "syntax")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, StringUnpacker.instance), (3, StringUnpacker.repeatInstance(3)),
+            (10, Int32Unpacker.repeatInstance(10)), (11, Int32Unpacker.repeatInstance(11)),
+            (4, MessageUnpacker<DescriptorProto>.repeatInstance(4)),
+            (5, MessageUnpacker<EnumDescriptorProto>.repeatInstance(5)),
+            (6, MessageUnpacker<ServiceDescriptorProto>.repeatInstance(6)),
+            (7, MessageUnpacker<FieldDescriptorProto>.repeatInstance(7)), (8, MessageUnpacker<FileOptions>.instance),
+            (9, MessageUnpacker<SourceCodeInfo>.instance), (12, StringUnpacker.instance)
+        ])
 
-    public func clone() { let rv = FileDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "package_"), (3, "dependency"), (10, "publicDependency"), (11, "weakDependency"),
+            (4, "messageType"), (5, "enumType"), (6, "service"), (7, "extension"), (8, "options"),
+            (9, "sourceCodeInfo"), (12, "syntax")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("package_", 2), ("dependency", 3), ("publicDependency", 10), ("weakDependency", 11),
+            ("messageType", 4), ("enumType", 5), ("service", 6), ("extension", 7), ("options", 8),
+            ("sourceCodeInfo", 9), ("syntax", 12)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { FileDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var package_: String {
-        get() { get<String>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var dependency: ArrayList<String> {
-        get() { get<ArrayList<String>>(3) }
-        set(v) { set(3, v) }
+        get() { get(3) }
+        set(v) { set(3, RepeatField<String>(3, v)) }
     }
 
     public prop var publicDependency: ArrayList<Int32> {
-        get() { get<ArrayList<Int32>>(10) }
-        set(v) { set(10, v) }
+        get() { get(10) }
+        set(v) { set(10, RepeatField<Int32>(10, v)) }
     }
 
     public prop var weakDependency: ArrayList<Int32> {
-        get() { get<ArrayList<Int32>>(11) }
-        set(v) { set(11, v) }
+        get() { get(11) }
+        set(v) { set(11, RepeatField<Int32>(11, v)) }
     }
 
     public prop var messageType: ArrayList<DescriptorProto> {
-        get() { get<ArrayList<DescriptorProto>>(4) }
-        set(v) { set(4, v) }
+        get() { get(4) }
+        set(v) { set(4, RepeatField<DescriptorProto>(4, v)) }
     }
 
     public prop var enumType: ArrayList<EnumDescriptorProto> {
-        get() { get<ArrayList<EnumDescriptorProto>>(5) }
-        set(v) { set(5, v) }
+        get() { get(5) }
+        set(v) { set(5, RepeatField<EnumDescriptorProto>(5, v)) }
     }
 
     public prop var service: ArrayList<ServiceDescriptorProto> {
-        get() { get<ArrayList<ServiceDescriptorProto>>(6) }
-        set(v) { set(6, v) }
+        get() { get(6) }
+        set(v) { set(6, RepeatField<ServiceDescriptorProto>(6, v)) }
     }
 
     public prop var extension: ArrayList<FieldDescriptorProto> {
-        get() { get<ArrayList<FieldDescriptorProto>>(7) }
-        set(v) { set(7, v) }
+        get() { get(7) }
+        set(v) { set(7, RepeatField<FieldDescriptorProto>(7, v)) }
     }
 
     public prop var options: FileOptions {
-        get() { get<FileOptions>(8) }
+        get() { get(8) }
         set(v) { set(8, v) }
     }
 
     public prop var sourceCodeInfo: SourceCodeInfo {
-        get() { get<SourceCodeInfo>(9) }
+        get() { get(9) }
         set(v) { set(9, v) }
     }
 
     public prop var syntax: String {
-        get() { get<String>(12) }
+        get() { get(12) }
         set(v) { set(12, v) }
     }
 }
 
-extend FileDescriptorProto <: Default<FileDescriptorProto> {
-    public static func default() { FileDescriptorProto() }
-}
+extend FileDescriptorProto <: MessageParser<FileDescriptorProto> {
+    public static func fromJson(src: JsonReader) { FileDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = FileDescriptorProto(); m.unpack(src); m }}
 
 public class DescriptorProto_ExtensionRange <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance()),
-        (3, MessageAccessor<ExtensionRangeOptions>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "start"), (2, "end"), (3, "options")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance),
+            (3, MessageUnpacker<ExtensionRangeOptions>.instance)
+        ])
 
-    public func clone() { let rv = DescriptorProto_ExtensionRange(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "start"), (2, "end"), (3, "options")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("start", 1), ("end", 2), ("options", 3)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { DescriptorProto_ExtensionRange().m_fieldsClone(this) }
 
     public prop var start: Int32 {
-        get() { get<Int32>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var end: Int32 {
-        get() { get<Int32>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var options: ExtensionRangeOptions {
-        get() { get<ExtensionRangeOptions>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 }
 
-extend DescriptorProto_ExtensionRange <: Default<DescriptorProto_ExtensionRange> {
-    public static func default() { DescriptorProto_ExtensionRange() }
-}
+extend DescriptorProto_ExtensionRange <: MessageParser<DescriptorProto_ExtensionRange> {
+    public static func fromJson(src: JsonReader) { DescriptorProto_ExtensionRange() }
+    public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ExtensionRange(); m.unpack(src); m }}
 
 public class DescriptorProto_ReservedRange <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "start"), (2, "end")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance)
+        ])
 
-    public func clone() { let rv = DescriptorProto_ReservedRange(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "start"), (2, "end")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("start", 1), ("end", 2)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { DescriptorProto_ReservedRange().m_fieldsClone(this) }
 
     public prop var start: Int32 {
-        get() { get<Int32>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var end: Int32 {
-        get() { get<Int32>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 }
 
-extend DescriptorProto_ReservedRange <: Default<DescriptorProto_ReservedRange> {
-    public static func default() { DescriptorProto_ReservedRange() }
-}
+extend DescriptorProto_ReservedRange <: MessageParser<DescriptorProto_ReservedRange> {
+    public static func fromJson(src: JsonReader) { DescriptorProto_ReservedRange() }
+    public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ReservedRange(); m.unpack(src); m }}
 
 public class DescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, RepeatMessageAccessor<FieldDescriptorProto>.getInstance()),
-        (6, RepeatMessageAccessor<FieldDescriptorProto>.getInstance()),
-        (3, RepeatMessageAccessor<DescriptorProto>.getInstance()),
-        (4, RepeatMessageAccessor<EnumDescriptorProto>.getInstance()),
-        (5, RepeatMessageAccessor<DescriptorProto_ExtensionRange>.getInstance()),
-        (8, RepeatMessageAccessor<OneofDescriptorProto>.getInstance()),
-        (7, MessageAccessor<MessageOptions>.getInstance()),
-        (9, RepeatMessageAccessor<DescriptorProto_ReservedRange>.getInstance()),
-        (10, RepeatStringAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "field"), (6, "extension"), (3, "nestedType"), (4, "enumType"), (5, "extensionRange"),
-        (8, "oneofDecl"), (7, "options"), (9, "reservedRange"), (10, "reservedName")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, MessageUnpacker<FieldDescriptorProto>.repeatInstance(2)),
+            (6, MessageUnpacker<FieldDescriptorProto>.repeatInstance(6)),
+            (3, MessageUnpacker<DescriptorProto>.repeatInstance(3)),
+            (4, MessageUnpacker<EnumDescriptorProto>.repeatInstance(4)),
+            (5, MessageUnpacker<DescriptorProto_ExtensionRange>.repeatInstance(5)),
+            (8, MessageUnpacker<OneofDescriptorProto>.repeatInstance(8)), (7, MessageUnpacker<MessageOptions>.instance),
+            (9, MessageUnpacker<DescriptorProto_ReservedRange>.repeatInstance(9)),
+            (10, StringUnpacker.repeatInstance(10))
+        ])
 
-    public func clone() { let rv = DescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "field"), (6, "extension"), (3, "nestedType"), (4, "enumType"), (5, "extensionRange"),
+            (8, "oneofDecl"), (7, "options"), (9, "reservedRange"), (10, "reservedName")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("field", 2), ("extension", 6), ("nestedType", 3), ("enumType", 4), ("extensionRange", 5),
+            ("oneofDecl", 8), ("options", 7), ("reservedRange", 9), ("reservedName", 10)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { DescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var field: ArrayList<FieldDescriptorProto> {
-        get() { get<ArrayList<FieldDescriptorProto>>(2) }
-        set(v) { set(2, v) }
+        get() { get(2) }
+        set(v) { set(2, RepeatField<FieldDescriptorProto>(2, v)) }
     }
 
     public prop var extension: ArrayList<FieldDescriptorProto> {
-        get() { get<ArrayList<FieldDescriptorProto>>(6) }
-        set(v) { set(6, v) }
+        get() { get(6) }
+        set(v) { set(6, RepeatField<FieldDescriptorProto>(6, v)) }
     }
 
     public prop var nestedType: ArrayList<DescriptorProto> {
-        get() { get<ArrayList<DescriptorProto>>(3) }
-        set(v) { set(3, v) }
+        get() { get(3) }
+        set(v) { set(3, RepeatField<DescriptorProto>(3, v)) }
     }
 
     public prop var enumType: ArrayList<EnumDescriptorProto> {
-        get() { get<ArrayList<EnumDescriptorProto>>(4) }
-        set(v) { set(4, v) }
+        get() { get(4) }
+        set(v) { set(4, RepeatField<EnumDescriptorProto>(4, v)) }
     }
 
     public prop var extensionRange: ArrayList<DescriptorProto_ExtensionRange> {
-        get() { get<ArrayList<DescriptorProto_ExtensionRange>>(5) }
-        set(v) { set(5, v) }
+        get() { get(5) }
+        set(v) { set(5, RepeatField<DescriptorProto_ExtensionRange>(5, v)) }
     }
 
     public prop var oneofDecl: ArrayList<OneofDescriptorProto> {
-        get() { get<ArrayList<OneofDescriptorProto>>(8) }
-        set(v) { set(8, v) }
+        get() { get(8) }
+        set(v) { set(8, RepeatField<OneofDescriptorProto>(8, v)) }
     }
 
     public prop var options: MessageOptions {
-        get() { get<MessageOptions>(7) }
+        get() { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var reservedRange: ArrayList<DescriptorProto_ReservedRange> {
-        get() { get<ArrayList<DescriptorProto_ReservedRange>>(9) }
-        set(v) { set(9, v) }
+        get() { get(9) }
+        set(v) { set(9, RepeatField<DescriptorProto_ReservedRange>(9, v)) }
     }
 
     public prop var reservedName: ArrayList<String> {
-        get() { get<ArrayList<String>>(10) }
-        set(v) { set(10, v) }
+        get() { get(10) }
+        set(v) { set(10, RepeatField<String>(10, v)) }
     }
 }
 
-extend DescriptorProto <: Default<DescriptorProto> {
-    public static func default() { DescriptorProto() }
-}
+extend DescriptorProto <: MessageParser<DescriptorProto> {
+    public static func fromJson(src: JsonReader) { DescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = DescriptorProto(); m.unpack(src); m }}
 
 public class ExtensionRangeOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    public func clone() { let rv = ExtensionRangeOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (999, "uninterpretedOption")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("uninterpretedOption", 999)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { ExtensionRangeOptions().m_fieldsClone(this) }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend ExtensionRangeOptions <: Default<ExtensionRangeOptions> {
-    public static func default() { ExtensionRangeOptions() }
-}
+extend ExtensionRangeOptions <: MessageParser<ExtensionRangeOptions> {
+    public static func fromJson(src: JsonReader) { ExtensionRangeOptions() }
+    public static func fromBytes(src: BytesReader) { let m = ExtensionRangeOptions(); m.unpack(src); m }}
 
 public enum FieldDescriptorProto_Type {
     | TYPE_DOUBLE | TYPE_FLOAT | TYPE_INT64 | TYPE_UINT64 | TYPE_INT32 | TYPE_FIXED64 | TYPE_FIXED32 | TYPE_BOOL
@@ -375,14 +473,11 @@ extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: FieldDescriptorProto_Type) { value() == right.value() }
-    public operator func !=(right: FieldDescriptorProto_Type) { value() != right.value() }
-}
-
-extend FieldDescriptorProto_Type <: Default<FieldDescriptorProto_Type> {
-    public static func default() { TYPE_DOUBLE }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
+    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public enum FieldDescriptorProto_Label {
@@ -424,320 +519,429 @@ extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: FieldDescriptorProto_Label) { value() == right.value() }
-    public operator func !=(right: FieldDescriptorProto_Label) { value() != right.value() }
-}
-
-extend FieldDescriptorProto_Label <: Default<FieldDescriptorProto_Label> {
-    public static func default() { LABEL_OPTIONAL }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
+    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class FieldDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (3, Int32Accessor.getInstance()),
-        (4, EnumAccessor<FieldDescriptorProto_Label>.getInstance()),
-        (5, EnumAccessor<FieldDescriptorProto_Type>.getInstance()), (6, StringAccessor.getInstance()),
-        (2, StringAccessor.getInstance()), (7, StringAccessor.getInstance()), (9, Int32Accessor.getInstance()),
-        (10, StringAccessor.getInstance()), (8, MessageAccessor<FieldOptions>.getInstance()),
-        (17, BoolAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (3, "number"), (4, "label"), (5, "type_"), (6, "typeName"), (2, "extendee"), (7, "defaultValue"),
-        (9, "oneofIndex"), (10, "jsonName"), (8, "options"), (17, "proto3Optional")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (3, Int32Unpacker.instance),
+            (4, EnumUnpacker<FieldDescriptorProto_Label>.instance),
+            (5, EnumUnpacker<FieldDescriptorProto_Type>.instance), (6, StringUnpacker.instance),
+            (2, StringUnpacker.instance), (7, StringUnpacker.instance), (9, Int32Unpacker.instance),
+            (10, StringUnpacker.instance), (8, MessageUnpacker<FieldOptions>.instance), (17, BoolUnpacker.instance)
+        ])
 
-    public func clone() { let rv = FieldDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (3, "number"), (4, "label"), (5, "type_"), (6, "typeName"), (2, "extendee"),
+            (7, "defaultValue"), (9, "oneofIndex"), (10, "jsonName"), (8, "options"), (17, "proto3Optional")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("number", 3), ("label", 4), ("type_", 5), ("typeName", 6), ("extendee", 2),
+            ("defaultValue", 7), ("oneofIndex", 9), ("jsonName", 10), ("options", 8), ("proto3Optional", 17)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { FieldDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var number: Int32 {
-        get() { get<Int32>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var label: FieldDescriptorProto_Label {
-        get() { get<FieldDescriptorProto_Label>(4) }
+        get() { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var type_: FieldDescriptorProto_Type {
-        get() { get<FieldDescriptorProto_Type>(5) }
+        get() { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var typeName: String {
-        get() { get<String>(6) }
+        get() { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var extendee: String {
-        get() { get<String>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var defaultValue: String {
-        get() { get<String>(7) }
+        get() { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var oneofIndex: Int32 {
-        get() { get<Int32>(9) }
+        get() { get(9) }
         set(v) { set(9, v) }
     }
 
     public prop var jsonName: String {
-        get() { get<String>(10) }
+        get() { get(10) }
         set(v) { set(10, v) }
     }
 
     public prop var options: FieldOptions {
-        get() { get<FieldOptions>(8) }
+        get() { get(8) }
         set(v) { set(8, v) }
     }
 
     public prop var proto3Optional: Bool {
-        get() { get<Bool>(17) }
+        get() { get(17) }
         set(v) { set(17, v) }
     }
 }
 
-extend FieldDescriptorProto <: Default<FieldDescriptorProto> {
-    public static func default() { FieldDescriptorProto() }
-}
+extend FieldDescriptorProto <: MessageParser<FieldDescriptorProto> {
+    public static func fromJson(src: JsonReader) { FieldDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = FieldDescriptorProto(); m.unpack(src); m }}
 
 public class OneofDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, MessageAccessor<OneofOptions>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "options")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, MessageUnpacker<OneofOptions>.instance)
+        ])
 
-    public func clone() { let rv = OneofDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "options")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("options", 2)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { OneofDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var options: OneofOptions {
-        get() { get<OneofOptions>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 }
 
-extend OneofDescriptorProto <: Default<OneofDescriptorProto> {
-    public static func default() { OneofDescriptorProto() }
-}
+extend OneofDescriptorProto <: MessageParser<OneofDescriptorProto> {
+    public static func fromJson(src: JsonReader) { OneofDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = OneofDescriptorProto(); m.unpack(src); m }}
 
 public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "start"), (2, "end")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance)
+        ])
 
-    public func clone() { let rv = EnumDescriptorProto_EnumReservedRange(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "start"), (2, "end")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("start", 1), ("end", 2)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { EnumDescriptorProto_EnumReservedRange().m_fieldsClone(this) }
 
     public prop var start: Int32 {
-        get() { get<Int32>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var end: Int32 {
-        get() { get<Int32>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 }
 
-extend EnumDescriptorProto_EnumReservedRange <: Default<EnumDescriptorProto_EnumReservedRange> {
-    public static func default() { EnumDescriptorProto_EnumReservedRange() }
-}
+extend EnumDescriptorProto_EnumReservedRange <: MessageParser<EnumDescriptorProto_EnumReservedRange> {
+    public static func fromJson(src: JsonReader) { EnumDescriptorProto_EnumReservedRange() }
+    public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto_EnumReservedRange(); m.unpack(src); m }}
 
 public class EnumDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, RepeatMessageAccessor<EnumValueDescriptorProto>.getInstance()),
-        (3, MessageAccessor<EnumOptions>.getInstance()),
-        (4, RepeatMessageAccessor<EnumDescriptorProto_EnumReservedRange>.getInstance()),
-        (5, RepeatStringAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "value"), (3, "options"), (4, "reservedRange"), (5, "reservedName")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, MessageUnpacker<EnumValueDescriptorProto>.repeatInstance(2)),
+            (3, MessageUnpacker<EnumOptions>.instance),
+            (4, MessageUnpacker<EnumDescriptorProto_EnumReservedRange>.repeatInstance(4)),
+            (5, StringUnpacker.repeatInstance(5))
+        ])
 
-    public func clone() { let rv = EnumDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "value"), (3, "options"), (4, "reservedRange"), (5, "reservedName")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("value", 2), ("options", 3), ("reservedRange", 4), ("reservedName", 5)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { EnumDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var value: ArrayList<EnumValueDescriptorProto> {
-        get() { get<ArrayList<EnumValueDescriptorProto>>(2) }
-        set(v) { set(2, v) }
+        get() { get(2) }
+        set(v) { set(2, RepeatField<EnumValueDescriptorProto>(2, v)) }
     }
 
     public prop var options: EnumOptions {
-        get() { get<EnumOptions>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var reservedRange: ArrayList<EnumDescriptorProto_EnumReservedRange> {
-        get() { get<ArrayList<EnumDescriptorProto_EnumReservedRange>>(4) }
-        set(v) { set(4, v) }
+        get() { get(4) }
+        set(v) { set(4, RepeatField<EnumDescriptorProto_EnumReservedRange>(4, v)) }
     }
 
     public prop var reservedName: ArrayList<String> {
-        get() { get<ArrayList<String>>(5) }
-        set(v) { set(5, v) }
+        get() { get(5) }
+        set(v) { set(5, RepeatField<String>(5, v)) }
     }
 }
 
-extend EnumDescriptorProto <: Default<EnumDescriptorProto> {
-    public static func default() { EnumDescriptorProto() }
-}
+extend EnumDescriptorProto <: MessageParser<EnumDescriptorProto> {
+    public static func fromJson(src: JsonReader) { EnumDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto(); m.unpack(src); m }}
 
 public class EnumValueDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, Int32Accessor.getInstance()),
-        (3, MessageAccessor<EnumValueOptions>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "number"), (3, "options")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, Int32Unpacker.instance), (3, MessageUnpacker<EnumValueOptions>.instance)
+        ])
 
-    public func clone() { let rv = EnumValueDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "number"), (3, "options")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("number", 2), ("options", 3)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { EnumValueDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var number: Int32 {
-        get() { get<Int32>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var options: EnumValueOptions {
-        get() { get<EnumValueOptions>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 }
 
-extend EnumValueDescriptorProto <: Default<EnumValueDescriptorProto> {
-    public static func default() { EnumValueDescriptorProto() }
-}
+extend EnumValueDescriptorProto <: MessageParser<EnumValueDescriptorProto> {
+    public static func fromJson(src: JsonReader) { EnumValueDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = EnumValueDescriptorProto(); m.unpack(src); m }}
 
 public class ServiceDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, RepeatMessageAccessor<MethodDescriptorProto>.getInstance()),
-        (3, MessageAccessor<ServiceOptions>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "method"), (3, "options")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, MessageUnpacker<MethodDescriptorProto>.repeatInstance(2)),
+            (3, MessageUnpacker<ServiceOptions>.instance)
+        ])
 
-    public func clone() { let rv = ServiceDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "method"), (3, "options")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("method", 2), ("options", 3)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { ServiceDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var method: ArrayList<MethodDescriptorProto> {
-        get() { get<ArrayList<MethodDescriptorProto>>(2) }
-        set(v) { set(2, v) }
+        get() { get(2) }
+        set(v) { set(2, RepeatField<MethodDescriptorProto>(2, v)) }
     }
 
     public prop var options: ServiceOptions {
-        get() { get<ServiceOptions>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 }
 
-extend ServiceDescriptorProto <: Default<ServiceDescriptorProto> {
-    public static func default() { ServiceDescriptorProto() }
-}
+extend ServiceDescriptorProto <: MessageParser<ServiceDescriptorProto> {
+    public static func fromJson(src: JsonReader) { ServiceDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = ServiceDescriptorProto(); m.unpack(src); m }}
 
 public class MethodDescriptorProto <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (3, StringAccessor.getInstance()),
-        (4, MessageAccessor<MethodOptions>.getInstance()), (5, BoolAccessor.getInstance()),
-        (6, BoolAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "inputType"), (3, "outputType"), (4, "options"), (5, "clientStreaming"),
-        (6, "serverStreaming")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, StringUnpacker.instance), (3, StringUnpacker.instance),
+            (4, MessageUnpacker<MethodOptions>.instance), (5, BoolUnpacker.instance), (6, BoolUnpacker.instance)
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (5, false), (6, false)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "inputType"), (3, "outputType"), (4, "options"), (5, "clientStreaming"),
+            (6, "serverStreaming")
+        ])
 
-    public func clone() { let rv = MethodDescriptorProto(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("inputType", 2), ("outputType", 3), ("options", 4), ("clientStreaming", 5),
+            ("serverStreaming", 6)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (5, false), (6, false)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { MethodDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var inputType: String {
-        get() { get<String>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var outputType: String {
-        get() { get<String>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var options: MethodOptions {
-        get() { get<MethodOptions>(4) }
+        get() { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var clientStreaming: Bool {
-        get() { get<Bool>(5) }
+        get() { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var serverStreaming: Bool {
-        get() { get<Bool>(6) }
+        get() { get(6) }
         set(v) { set(6, v) }
     }
 }
 
-extend MethodDescriptorProto <: Default<MethodDescriptorProto> {
-    public static func default() { MethodDescriptorProto() }
-}
+extend MethodDescriptorProto <: MessageParser<MethodDescriptorProto> {
+    public static func fromJson(src: JsonReader) { MethodDescriptorProto() }
+    public static func fromBytes(src: BytesReader) { let m = MethodDescriptorProto(); m.unpack(src); m }}
 
 public enum FileOptions_OptimizeMode {
     | SPEED | CODE_SIZE | LITE_RUNTIME
@@ -778,206 +982,243 @@ extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: FileOptions_OptimizeMode) { value() == right.value() }
-    public operator func !=(right: FileOptions_OptimizeMode) { value() != right.value() }
-}
-
-extend FileOptions_OptimizeMode <: Default<FileOptions_OptimizeMode> {
-    public static func default() { SPEED }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
+    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class FileOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (8, StringAccessor.getInstance()), (10, BoolAccessor.getInstance()),
-        (20, BoolAccessor.getInstance()), (27, BoolAccessor.getInstance()),
-        (9, EnumAccessor<FileOptions_OptimizeMode>.getInstance()), (11, StringAccessor.getInstance()),
-        (16, BoolAccessor.getInstance()), (17, BoolAccessor.getInstance()), (18, BoolAccessor.getInstance()),
-        (42, BoolAccessor.getInstance()), (23, BoolAccessor.getInstance()), (31, BoolAccessor.getInstance()),
-        (36, StringAccessor.getInstance()), (37, StringAccessor.getInstance()), (39, StringAccessor.getInstance()),
-        (40, StringAccessor.getInstance()), (41, StringAccessor.getInstance()), (44, StringAccessor.getInstance()),
-        (45, StringAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "javaPackage"), (8, "javaOuterClassname"), (10, "javaMultipleFiles"), (20, "javaGenerateEqualsAndHash"),
-        (27, "javaStringCheckUtf8"), (9, "optimizeFor"), (11, "goPackage"), (16, "ccGenericServices"),
-        (17, "javaGenericServices"), (18, "pyGenericServices"), (42, "phpGenericServices"), (23, "deprecated"),
-        (31, "ccEnableArenas"), (36, "objcClassPrefix"), (37, "csharpNamespace"), (39, "swiftPrefix"),
-        (40, "phpClassPrefix"), (41, "phpNamespace"), (44, "phpMetadataNamespace"), (45, "rubyPackage"),
-        (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (8, StringUnpacker.instance), (10, BoolUnpacker.instance),
+            (20, BoolUnpacker.instance), (27, BoolUnpacker.instance),
+            (9, EnumUnpacker<FileOptions_OptimizeMode>.instance), (11, StringUnpacker.instance),
+            (16, BoolUnpacker.instance), (17, BoolUnpacker.instance), (18, BoolUnpacker.instance),
+            (42, BoolUnpacker.instance), (23, BoolUnpacker.instance), (31, BoolUnpacker.instance),
+            (36, StringUnpacker.instance), (37, StringUnpacker.instance), (39, StringUnpacker.instance),
+            (40, StringUnpacker.instance), (41, StringUnpacker.instance), (44, StringUnpacker.instance),
+            (45, StringUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (10, false), (27, false), (9, FileOptions_OptimizeMode.SPEED), (16, false), (17, false), (18, false),
-        (42, false), (23, false), (31, true)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (1, "javaPackage"), (8, "javaOuterClassname"), (10, "javaMultipleFiles"), (20, "javaGenerateEqualsAndHash"),
+            (27, "javaStringCheckUtf8"), (9, "optimizeFor"), (11, "goPackage"), (16, "ccGenericServices"),
+            (17, "javaGenericServices"), (18, "pyGenericServices"), (42, "phpGenericServices"), (23, "deprecated"),
+            (31, "ccEnableArenas"), (36, "objcClassPrefix"), (37, "csharpNamespace"), (39, "swiftPrefix"),
+            (40, "phpClassPrefix"), (41, "phpNamespace"), (44, "phpMetadataNamespace"), (45, "rubyPackage"),
+            (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = FileOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("javaPackage", 1), ("javaOuterClassname", 8), ("javaMultipleFiles", 10), ("javaGenerateEqualsAndHash", 20),
+            ("javaStringCheckUtf8", 27), ("optimizeFor", 9), ("goPackage", 11), ("ccGenericServices", 16),
+            ("javaGenericServices", 17), ("pyGenericServices", 18), ("phpGenericServices", 42), ("deprecated", 23),
+            ("ccEnableArenas", 31), ("objcClassPrefix", 36), ("csharpNamespace", 37), ("swiftPrefix", 39),
+            ("phpClassPrefix", 40), ("phpNamespace", 41), ("phpMetadataNamespace", 44), ("rubyPackage", 45),
+            ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (10, false), (27, false), (9, FileOptions_OptimizeMode.SPEED), (16, false), (17, false), (18, false),
+            (42, false), (23, false), (31, true)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { FileOptions().m_fieldsClone(this) }
 
     public prop var javaPackage: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var javaOuterClassname: String {
-        get() { get<String>(8) }
+        get() { get(8) }
         set(v) { set(8, v) }
     }
 
     public prop var javaMultipleFiles: Bool {
-        get() { get<Bool>(10) }
+        get() { get(10) }
         set(v) { set(10, v) }
     }
 
     public prop var javaGenerateEqualsAndHash: Bool {
-        get() { get<Bool>(20) }
+        get() { get(20) }
         set(v) { set(20, v) }
     }
 
     public prop var javaStringCheckUtf8: Bool {
-        get() { get<Bool>(27) }
+        get() { get(27) }
         set(v) { set(27, v) }
     }
 
     public prop var optimizeFor: FileOptions_OptimizeMode {
-        get() { get<FileOptions_OptimizeMode>(9) }
+        get() { get(9) }
         set(v) { set(9, v) }
     }
 
     public prop var goPackage: String {
-        get() { get<String>(11) }
+        get() { get(11) }
         set(v) { set(11, v) }
     }
 
     public prop var ccGenericServices: Bool {
-        get() { get<Bool>(16) }
+        get() { get(16) }
         set(v) { set(16, v) }
     }
 
     public prop var javaGenericServices: Bool {
-        get() { get<Bool>(17) }
+        get() { get(17) }
         set(v) { set(17, v) }
     }
 
     public prop var pyGenericServices: Bool {
-        get() { get<Bool>(18) }
+        get() { get(18) }
         set(v) { set(18, v) }
     }
 
     public prop var phpGenericServices: Bool {
-        get() { get<Bool>(42) }
+        get() { get(42) }
         set(v) { set(42, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(23) }
+        get() { get(23) }
         set(v) { set(23, v) }
     }
 
     public prop var ccEnableArenas: Bool {
-        get() { get<Bool>(31) }
+        get() { get(31) }
         set(v) { set(31, v) }
     }
 
     public prop var objcClassPrefix: String {
-        get() { get<String>(36) }
+        get() { get(36) }
         set(v) { set(36, v) }
     }
 
     public prop var csharpNamespace: String {
-        get() { get<String>(37) }
+        get() { get(37) }
         set(v) { set(37, v) }
     }
 
     public prop var swiftPrefix: String {
-        get() { get<String>(39) }
+        get() { get(39) }
         set(v) { set(39, v) }
     }
 
     public prop var phpClassPrefix: String {
-        get() { get<String>(40) }
+        get() { get(40) }
         set(v) { set(40, v) }
     }
 
     public prop var phpNamespace: String {
-        get() { get<String>(41) }
+        get() { get(41) }
         set(v) { set(41, v) }
     }
 
     public prop var phpMetadataNamespace: String {
-        get() { get<String>(44) }
+        get() { get(44) }
         set(v) { set(44, v) }
     }
 
     public prop var rubyPackage: String {
-        get() { get<String>(45) }
+        get() { get(45) }
         set(v) { set(45, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend FileOptions <: Default<FileOptions> {
-    public static func default() { FileOptions() }
-}
+extend FileOptions <: MessageParser<FileOptions> {
+    public static func fromJson(src: JsonReader) { FileOptions() }
+    public static func fromBytes(src: BytesReader) { let m = FileOptions(); m.unpack(src); m }}
 
 public class MessageOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, BoolAccessor.getInstance()), (2, BoolAccessor.getInstance()), (3, BoolAccessor.getInstance()),
-        (7, BoolAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "messageSetWireFormat"), (2, "noStandardDescriptorAccessor"), (3, "deprecated"), (7, "mapEntry"),
-        (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, BoolUnpacker.instance), (2, BoolUnpacker.instance), (3, BoolUnpacker.instance),
+            (7, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (1, false), (2, false), (3, false)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (1, "messageSetWireFormat"), (2, "noStandardDescriptorAccessor"), (3, "deprecated"), (7, "mapEntry"),
+            (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = MessageOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("messageSetWireFormat", 1), ("noStandardDescriptorAccessor", 2), ("deprecated", 3), ("mapEntry", 7),
+            ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (1, false), (2, false), (3, false)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { MessageOptions().m_fieldsClone(this) }
 
     public prop var messageSetWireFormat: Bool {
-        get() { get<Bool>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var noStandardDescriptorAccessor: Bool {
-        get() { get<Bool>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var mapEntry: Bool {
-        get() { get<Bool>(7) }
+        get() { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend MessageOptions <: Default<MessageOptions> {
-    public static func default() { MessageOptions() }
-}
+extend MessageOptions <: MessageParser<MessageOptions> {
+    public static func fromJson(src: JsonReader) { MessageOptions() }
+    public static func fromBytes(src: BytesReader) { let m = MessageOptions(); m.unpack(src); m }}
 
 public enum FieldOptions_CType {
     | STRING | CORD | STRING_PIECE
@@ -1018,14 +1259,11 @@ extend FieldOptions_CType <: Enum<FieldOptions_CType> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: FieldOptions_CType) { value() == right.value() }
-    public operator func !=(right: FieldOptions_CType) { value() != right.value() }
-}
-
-extend FieldOptions_CType <: Default<FieldOptions_CType> {
-    public static func default() { STRING }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
+    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public enum FieldOptions_JSType {
@@ -1067,211 +1305,293 @@ extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: FieldOptions_JSType) { value() == right.value() }
-    public operator func !=(right: FieldOptions_JSType) { value() != right.value() }
-}
-
-extend FieldOptions_JSType <: Default<FieldOptions_JSType> {
-    public static func default() { JS_NORMAL }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
+    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class FieldOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, EnumAccessor<FieldOptions_CType>.getInstance()), (2, BoolAccessor.getInstance()),
-        (6, EnumAccessor<FieldOptions_JSType>.getInstance()), (5, BoolAccessor.getInstance()),
-        (15, BoolAccessor.getInstance()), (3, BoolAccessor.getInstance()), (10, BoolAccessor.getInstance()),
-        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "ctype"), (2, "packed"), (6, "jstype"), (5, "lazy"), (15, "unverifiedLazy"), (3, "deprecated"),
-        (10, "weak"), (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, EnumUnpacker<FieldOptions_CType>.instance), (2, BoolUnpacker.instance),
+            (6, EnumUnpacker<FieldOptions_JSType>.instance), (5, BoolUnpacker.instance), (15, BoolUnpacker.instance),
+            (3, BoolUnpacker.instance), (10, BoolUnpacker.instance),
+            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (1, FieldOptions_CType.STRING), (6, FieldOptions_JSType.JS_NORMAL), (5, false), (15, false), (3, false),
-        (10, false)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (1, "ctype"), (2, "packed"), (6, "jstype"), (5, "lazy"), (15, "unverifiedLazy"), (3, "deprecated"),
+            (10, "weak"), (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = FieldOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("ctype", 1), ("packed", 2), ("jstype", 6), ("lazy", 5), ("unverifiedLazy", 15), ("deprecated", 3),
+            ("weak", 10), ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (1, FieldOptions_CType.STRING), (6, FieldOptions_JSType.JS_NORMAL), (5, false), (15, false), (3, false),
+            (10, false)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { FieldOptions().m_fieldsClone(this) }
 
     public prop var ctype: FieldOptions_CType {
-        get() { get<FieldOptions_CType>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var packed: Bool {
-        get() { get<Bool>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var jstype: FieldOptions_JSType {
-        get() { get<FieldOptions_JSType>(6) }
+        get() { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var lazy: Bool {
-        get() { get<Bool>(5) }
+        get() { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var unverifiedLazy: Bool {
-        get() { get<Bool>(15) }
+        get() { get(15) }
         set(v) { set(15, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var weak: Bool {
-        get() { get<Bool>(10) }
+        get() { get(10) }
         set(v) { set(10, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend FieldOptions <: Default<FieldOptions> {
-    public static func default() { FieldOptions() }
-}
+extend FieldOptions <: MessageParser<FieldOptions> {
+    public static func fromJson(src: JsonReader) { FieldOptions() }
+    public static func fromBytes(src: BytesReader) { let m = FieldOptions(); m.unpack(src); m }}
 
 public class OneofOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    public func clone() { let rv = OneofOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (999, "uninterpretedOption")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("uninterpretedOption", 999)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { OneofOptions().m_fieldsClone(this) }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend OneofOptions <: Default<OneofOptions> {
-    public static func default() { OneofOptions() }
-}
+extend OneofOptions <: MessageParser<OneofOptions> {
+    public static func fromJson(src: JsonReader) { OneofOptions() }
+    public static func fromBytes(src: BytesReader) { let m = OneofOptions(); m.unpack(src); m }}
 
 public class EnumOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (2, BoolAccessor.getInstance()), (3, BoolAccessor.getInstance()),
-        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (2, "allowAlias"), (3, "deprecated"), (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (2, BoolUnpacker.instance), (3, BoolUnpacker.instance),
+            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (3, false)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (2, "allowAlias"), (3, "deprecated"), (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = EnumOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("allowAlias", 2), ("deprecated", 3), ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (3, false)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { EnumOptions().m_fieldsClone(this) }
 
     public prop var allowAlias: Bool {
-        get() { get<Bool>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend EnumOptions <: Default<EnumOptions> {
-    public static func default() { EnumOptions() }
-}
+extend EnumOptions <: MessageParser<EnumOptions> {
+    public static func fromJson(src: JsonReader) { EnumOptions() }
+    public static func fromBytes(src: BytesReader) { let m = EnumOptions(); m.unpack(src); m }}
 
 public class EnumValueOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, BoolAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "deprecated"), (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (1, false)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (1, "deprecated"), (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = EnumValueOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("deprecated", 1), ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (1, false)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { EnumValueOptions().m_fieldsClone(this) }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend EnumValueOptions <: Default<EnumValueOptions> {
-    public static func default() { EnumValueOptions() }
-}
+extend EnumValueOptions <: MessageParser<EnumValueOptions> {
+    public static func fromJson(src: JsonReader) { EnumValueOptions() }
+    public static func fromBytes(src: BytesReader) { let m = EnumValueOptions(); m.unpack(src); m }}
 
 public class ServiceOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (33, BoolAccessor.getInstance()), (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (33, "deprecated"), (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (33, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (33, false)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (33, "deprecated"), (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = ServiceOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("deprecated", 33), ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (33, false)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { ServiceOptions().m_fieldsClone(this) }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(33) }
+        get() { get(33) }
         set(v) { set(33, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend ServiceOptions <: Default<ServiceOptions> {
-    public static func default() { ServiceOptions() }
-}
+extend ServiceOptions <: MessageParser<ServiceOptions> {
+    public static func fromJson(src: JsonReader) { ServiceOptions() }
+    public static func fromBytes(src: BytesReader) { let m = ServiceOptions(); m.unpack(src); m }}
 
 public enum MethodOptions_IdempotencyLevel {
     | IDEMPOTENCY_UNKNOWN | NO_SIDE_EFFECTS | IDEMPOTENT
@@ -1312,269 +1632,381 @@ extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: MethodOptions_IdempotencyLevel) { value() == right.value() }
-    public operator func !=(right: MethodOptions_IdempotencyLevel) { value() != right.value() }
-}
-
-extend MethodOptions_IdempotencyLevel <: Default<MethodOptions_IdempotencyLevel> {
-    public static func default() { IDEMPOTENCY_UNKNOWN }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
+    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class MethodOptions <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (33, BoolAccessor.getInstance()), (34, EnumAccessor<MethodOptions_IdempotencyLevel>.getInstance()),
-        (999, RepeatMessageAccessor<UninterpretedOption>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_defaultValue = s_initHashMapTagMessageFile
 
-    private static let m_names = HashMap<Tag, String>([
-        (33, "deprecated"), (34, "idempotencyLevel"), (999, "uninterpretedOption")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (33, BoolUnpacker.instance), (34, EnumUnpacker<MethodOptions_IdempotencyLevel>.instance),
+            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
+        ])
 
-    private static let m_dv = HashMap<Tag, Any>([
-        (33, false), (34, MethodOptions_IdempotencyLevel.IDEMPOTENCY_UNKNOWN)
-    ])
-    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }
+        s_names = HashMap<Tag, String>([
+            (33, "deprecated"), (34, "idempotencyLevel"), (999, "uninterpretedOption")
+        ])
 
-    public func clone() { let rv = MethodOptions(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("deprecated", 33), ("idempotencyLevel", 34), ("uninterpretedOption", 999)
+        ])
+
+        s_defaultValue = HashMap<Tag, MessageField>([
+            (33, false), (34, MethodOptions_IdempotencyLevel.IDEMPOTENCY_UNKNOWN)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_defaultValue = s_defaultValue
+    }
+
+    public func clone() { MethodOptions().m_fieldsClone(this) }
 
     public prop var deprecated: Bool {
-        get() { get<Bool>(33) }
+        get() { get(33) }
         set(v) { set(33, v) }
     }
 
     public prop var idempotencyLevel: MethodOptions_IdempotencyLevel {
-        get() { get<MethodOptions_IdempotencyLevel>(34) }
+        get() { get(34) }
         set(v) { set(34, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get<ArrayList<UninterpretedOption>>(999) }
-        set(v) { set(999, v) }
+        get() { get(999) }
+        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
 
-extend MethodOptions <: Default<MethodOptions> {
-    public static func default() { MethodOptions() }
-}
+extend MethodOptions <: MessageParser<MethodOptions> {
+    public static func fromJson(src: JsonReader) { MethodOptions() }
+    public static func fromBytes(src: BytesReader) { let m = MethodOptions(); m.unpack(src); m }}
 
 public class UninterpretedOption_NamePart <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, BoolAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+    static var s_requiredFields = s_initArrayTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "namePart"), (2, "isExtension")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, BoolUnpacker.instance)
+        ])
 
-    protected static let m_reqs = Array<Tag>([
-        1, 2
-    ])
-    protected override func getRequiredFields(): ?Array<Tag> { m_reqs }
+        s_names = HashMap<Tag, String>([
+            (1, "namePart"), (2, "isExtension")
+        ])
 
-    public func clone() { let rv = UninterpretedOption_NamePart(); rv.m_fields = m_fieldsClone(); rv }
+        s_nameTags = HashMap<String, Tag>([
+            ("namePart", 1), ("isExtension", 2)
+        ])
+
+        s_requiredFields = Array<Tag>([
+            1, 2
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+        m_requiredFields = s_requiredFields
+    }
+
+    public func clone() { UninterpretedOption_NamePart().m_fieldsClone(this) }
 
     public prop var namePart: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var isExtension: Bool {
-        get() { get<Bool>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 }
 
-extend UninterpretedOption_NamePart <: Default<UninterpretedOption_NamePart> {
-    public static func default() { UninterpretedOption_NamePart() }
-}
+extend UninterpretedOption_NamePart <: MessageParser<UninterpretedOption_NamePart> {
+    public static func fromJson(src: JsonReader) { UninterpretedOption_NamePart() }
+    public static func fromBytes(src: BytesReader) { let m = UninterpretedOption_NamePart(); m.unpack(src); m }}
 
 public class UninterpretedOption <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (2, RepeatMessageAccessor<UninterpretedOption_NamePart>.getInstance()), (3, StringAccessor.getInstance()),
-        (4, UInt64Accessor.getInstance()), (5, Int64Accessor.getInstance()), (6, DoubleAccessor.getInstance()),
-        (7, BytesAccessor.getInstance()), (8, StringAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (2, "name"), (3, "identifierValue"), (4, "positiveIntValue"), (5, "negativeIntValue"), (6, "doubleValue"),
-        (7, "stringValue"), (8, "aggregateValue")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (2, MessageUnpacker<UninterpretedOption_NamePart>.repeatInstance(2)), (3, StringUnpacker.instance),
+            (4, UInt64Unpacker.instance), (5, Int64Unpacker.instance), (6, Float64Unpacker.instance),
+            (7, BytesUnpacker.instance), (8, StringUnpacker.instance)
+        ])
 
-    public func clone() { let rv = UninterpretedOption(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (2, "name"), (3, "identifierValue"), (4, "positiveIntValue"), (5, "negativeIntValue"), (6, "doubleValue"),
+            (7, "stringValue"), (8, "aggregateValue")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 2), ("identifierValue", 3), ("positiveIntValue", 4), ("negativeIntValue", 5), ("doubleValue", 6),
+            ("stringValue", 7), ("aggregateValue", 8)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { UninterpretedOption().m_fieldsClone(this) }
 
     public prop var name: ArrayList<UninterpretedOption_NamePart> {
-        get() { get<ArrayList<UninterpretedOption_NamePart>>(2) }
-        set(v) { set(2, v) }
+        get() { get(2) }
+        set(v) { set(2, RepeatField<UninterpretedOption_NamePart>(2, v)) }
     }
 
     public prop var identifierValue: String {
-        get() { get<String>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var positiveIntValue: UInt64 {
-        get() { get<UInt64>(4) }
+        get() { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var negativeIntValue: Int64 {
-        get() { get<Int64>(5) }
+        get() { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var doubleValue: Float64 {
-        get() { get<Float64>(6) }
+        get() { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var stringValue: Bytes {
-        get() { get<Bytes>(7) }
+        get() { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var aggregateValue: String {
-        get() { get<String>(8) }
+        get() { get(8) }
         set(v) { set(8, v) }
     }
 }
 
-extend UninterpretedOption <: Default<UninterpretedOption> {
-    public static func default() { UninterpretedOption() }
-}
+extend UninterpretedOption <: MessageParser<UninterpretedOption> {
+    public static func fromJson(src: JsonReader) { UninterpretedOption() }
+    public static func fromBytes(src: BytesReader) { let m = UninterpretedOption(); m.unpack(src); m }}
 
 public class SourceCodeInfo_Location <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, PackedInt32Accessor.getInstance()), (2, PackedInt32Accessor.getInstance()),
-        (3, StringAccessor.getInstance()), (4, StringAccessor.getInstance()), (6, RepeatStringAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "path"), (2, "span"), (3, "leadingComments"), (4, "trailingComments"), (6, "leadingDetachedComments")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, Int32Unpacker.packedInstance), (2, Int32Unpacker.packedInstance), (3, StringUnpacker.instance),
+            (4, StringUnpacker.instance), (6, StringUnpacker.repeatInstance(6))
+        ])
 
-    public func clone() { let rv = SourceCodeInfo_Location(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "path"), (2, "span"), (3, "leadingComments"), (4, "trailingComments"), (6, "leadingDetachedComments")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("path", 1), ("span", 2), ("leadingComments", 3), ("trailingComments", 4), ("leadingDetachedComments", 6)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { SourceCodeInfo_Location().m_fieldsClone(this) }
 
     public prop var path: ArrayList<Int32> {
-        get() { get<ArrayList<Int32>>(1) }
-        set(v) { set(1, v) }
+        get() { get(1) }
+        set(v) { set(1, PackedField<Int32>(v)) }
     }
 
     public prop var span: ArrayList<Int32> {
-        get() { get<ArrayList<Int32>>(2) }
-        set(v) { set(2, v) }
+        get() { get(2) }
+        set(v) { set(2, PackedField<Int32>(v)) }
     }
 
     public prop var leadingComments: String {
-        get() { get<String>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var trailingComments: String {
-        get() { get<String>(4) }
+        get() { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var leadingDetachedComments: ArrayList<String> {
-        get() { get<ArrayList<String>>(6) }
-        set(v) { set(6, v) }
+        get() { get(6) }
+        set(v) { set(6, RepeatField<String>(6, v)) }
     }
 }
 
-extend SourceCodeInfo_Location <: Default<SourceCodeInfo_Location> {
-    public static func default() { SourceCodeInfo_Location() }
-}
+extend SourceCodeInfo_Location <: MessageParser<SourceCodeInfo_Location> {
+    public static func fromJson(src: JsonReader) { SourceCodeInfo_Location() }
+    public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo_Location(); m.unpack(src); m }}
 
 public class SourceCodeInfo <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatMessageAccessor<SourceCodeInfo_Location>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "location")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, MessageUnpacker<SourceCodeInfo_Location>.repeatInstance(1))
+        ])
 
-    public func clone() { let rv = SourceCodeInfo(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "location")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("location", 1)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { SourceCodeInfo().m_fieldsClone(this) }
 
     public prop var location: ArrayList<SourceCodeInfo_Location> {
-        get() { get<ArrayList<SourceCodeInfo_Location>>(1) }
-        set(v) { set(1, v) }
+        get() { get(1) }
+        set(v) { set(1, RepeatField<SourceCodeInfo_Location>(1, v)) }
     }
 }
 
-extend SourceCodeInfo <: Default<SourceCodeInfo> {
-    public static func default() { SourceCodeInfo() }
-}
+extend SourceCodeInfo <: MessageParser<SourceCodeInfo> {
+    public static func fromJson(src: JsonReader) { SourceCodeInfo() }
+    public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo(); m.unpack(src); m }}
 
 public class GeneratedCodeInfo_Annotation <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, PackedInt32Accessor.getInstance()), (2, StringAccessor.getInstance()), (3, Int32Accessor.getInstance()),
-        (4, Int32Accessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "path"), (2, "sourceFile"), (3, "begin"), (4, "end")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, Int32Unpacker.packedInstance), (2, StringUnpacker.instance), (3, Int32Unpacker.instance),
+            (4, Int32Unpacker.instance)
+        ])
 
-    public func clone() { let rv = GeneratedCodeInfo_Annotation(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "path"), (2, "sourceFile"), (3, "begin"), (4, "end")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("path", 1), ("sourceFile", 2), ("begin", 3), ("end", 4)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { GeneratedCodeInfo_Annotation().m_fieldsClone(this) }
 
     public prop var path: ArrayList<Int32> {
-        get() { get<ArrayList<Int32>>(1) }
-        set(v) { set(1, v) }
+        get() { get(1) }
+        set(v) { set(1, PackedField<Int32>(v)) }
     }
 
     public prop var sourceFile: String {
-        get() { get<String>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var begin: Int32 {
-        get() { get<Int32>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var end: Int32 {
-        get() { get<Int32>(4) }
+        get() { get(4) }
         set(v) { set(4, v) }
     }
 }
 
-extend GeneratedCodeInfo_Annotation <: Default<GeneratedCodeInfo_Annotation> {
-    public static func default() { GeneratedCodeInfo_Annotation() }
-}
+extend GeneratedCodeInfo_Annotation <: MessageParser<GeneratedCodeInfo_Annotation> {
+    public static func fromJson(src: JsonReader) { GeneratedCodeInfo_Annotation() }
+    public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo_Annotation(); m.unpack(src); m }}
 
 public class GeneratedCodeInfo <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatMessageAccessor<GeneratedCodeInfo_Annotation>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "annotation")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, MessageUnpacker<GeneratedCodeInfo_Annotation>.repeatInstance(1))
+        ])
 
-    public func clone() { let rv = GeneratedCodeInfo(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "annotation")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("annotation", 1)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { GeneratedCodeInfo().m_fieldsClone(this) }
 
     public prop var annotation: ArrayList<GeneratedCodeInfo_Annotation> {
-        get() { get<ArrayList<GeneratedCodeInfo_Annotation>>(1) }
-        set(v) { set(1, v) }
+        get() { get(1) }
+        set(v) { set(1, RepeatField<GeneratedCodeInfo_Annotation>(1, v)) }
     }
 }
 
-extend GeneratedCodeInfo <: Default<GeneratedCodeInfo> {
-    public static func default() { GeneratedCodeInfo() }
-}
+extend GeneratedCodeInfo <: MessageParser<GeneratedCodeInfo> {
+    public static func fromJson(src: JsonReader) { GeneratedCodeInfo() }
+    public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo(); m.unpack(src); m }}
