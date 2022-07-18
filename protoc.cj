@@ -38,7 +38,7 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
             // save `desc` as json, for developing.
             let dbgFile = resp.file.add()
             dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            dbgFile.content = desc.toString()
+            dbgFile.content = desc.stringify()
             fileProcess(desc, resp.file.add())
         }
     }
@@ -520,7 +520,6 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("    public func packSize() { value().packSize() }\n")
     outbuf.append("    public func pack(out: BytesWriter) { value().pack(out) }\n")
     outbuf.append("    public func isEmpty() { value() == 0 }\n")
-    outbuf.append("    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }\n")
     // extend Enum end
     outbuf.append("}\n")
 }
