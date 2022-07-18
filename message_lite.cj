@@ -64,10 +64,11 @@ public abstract class MessageLite <: MessageField & Json & ToString {
     public func pack(out: Writer<Byte>): Unit {
         m_requiredFieldsCheck()
         for ((tag, val) in m_fields) {
-            if (!val.isEmpty()) {
-                tag.tagPack(wireType(val), out)
-                pack(val, out)
+            if (reference(val) && val.isEmpty()) {
+                continue
             }
+            tag.tagPack(wireType(val), out)
+            pack(val, out)
         }
         for (val in unknownFields) {
             val.pack(out)
