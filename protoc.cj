@@ -230,21 +230,26 @@ func getUnpacker(f: FieldDescriptorProto) {
 
     // Process repeated
     if (f.label.value() != LABEL_REPEATED.value()) { return ac + ".instance" }
-    try { if (f.options.packed == true) { return ac + ".packedInstance" } } catch (_) { /* nothing. */ }
+    if (f.options.packed) { return ac + ".packedInstance" }
     ac + ".repeatInstance(${f.number})"
 }
 
 func getFieldSetName(f: FieldDescriptorProto) {
+    let vt = match (f.type_) { /* 包装类型 */
+        case TYPE_FIXED32 => "Fixed32"
+        case TYPE_FIXED64 => "Fixed64"
+        case TYPE_SFIXED32 => "SFixed32"
+        case TYPE_SFIXED64 => "SFixed64"
+        case TYPE_SINT32 => "SInt32"
+        case TYPE_SINT64 => "SInt64"
+        case _ => ""
+    }
+
     if (f.label.value() != LABEL_REPEATED.value()) {
-        match (f.type_) {
-            case TYPE_FIXED32 => return "Fixed32(v)"
-            case TYPE_FIXED64 => return "Fixed64(v)"
-            case TYPE_SFIXED32 => return "SFixed32(v)"
-            case TYPE_SFIXED64 => return "SFixed64(v)"
-            case TYPE_SINT32 => return "SInt32(v)"
-            case TYPE_SINT64 => return "SInt64(v)"
-            case _ => return "v"
+        if (vt.isEmpty()) {
+            return "v"
         }
+        return vt + "(v)"
     }
 
     let pt = match (f.type_) {
@@ -257,12 +262,14 @@ func getFieldSetName(f: FieldDescriptorProto) {
         case TYPE_STRING => "String"
         case TYPE_BYTES => "Bytes"
         case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
-        case TYPE_ENUM | TYPE_MESSAGE => f.typeName
-        case _ => throw Exception() // todo
+        case _ => f.typeName
     }
 
-    try { if (f.options.packed == true) { return "PackedField<${pt}>(v)" } } catch (_) { /* nothing. */ }
-    "RepeatField<${pt}>(${f.number}, v)"
+    if (f.options.packed) {
+        return if (vt.isEmpty()) { "PackedField<${pt}>(v)" } else { "Packed${vt}(v)" }
+    }
+
+    if (vt.isEmpty()) { "RepeatField<${pt}>(${f.number}, v)" } else { "Repeat${vt}(${f.number}, v)" }
 }
 
 func getPropType(f: FieldDescriptorProto) {
@@ -276,8 +283,7 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_STRING => "String"
         case TYPE_BYTES => "Bytes"
         case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
-        case TYPE_ENUM | TYPE_MESSAGE => f.typeName
-        case _ => throw Exception() // todo
+        case _ => f.typeName
     }
     if (f.label.value() == LABEL_REPEATED.value()) { "ArrayList<${pt}>" } else { pt }
 }
@@ -446,6 +452,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
         }
         // Set propname
         f.name = getMessagePropName(f.jsonName)
+        // Set packed option
+        try { f.options.packed } catch (_) { f.options.packed = false }
     }
 
     /* map not support yet. */
