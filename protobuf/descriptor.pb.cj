@@ -477,7 +477,6 @@ extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public enum FieldDescriptorProto_Label {
@@ -523,7 +522,6 @@ extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class FieldDescriptorProto <: MessageLite {
@@ -986,7 +984,6 @@ extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class FileOptions <: MessageLite {
@@ -1263,7 +1260,6 @@ extend FieldOptions_CType <: Enum<FieldOptions_CType> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public enum FieldOptions_JSType {
@@ -1309,7 +1305,6 @@ extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class FieldOptions <: MessageLite {
@@ -1636,7 +1631,6 @@ extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class MethodOptions <: MessageLite {

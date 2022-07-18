@@ -209,7 +209,6 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
     public func packSize() { value().packSize() }
     public func pack(out: BytesWriter) { value().pack(out) }
     public func isEmpty() { value() == 0 }
-    public func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public class CodeGeneratorResponse <: MessageLite {
