@@ -48,10 +48,20 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
+    /* proto3不打包任何空值, proto2仅空数组不打包 */
+    private func packCheck(val: MessageField): Bool {
+        match (val) {
+            case c: Bytes => m_proto2 || !c.isEmpty()
+            case c: MessageLite => m_proto2 || !c.isEmpty()
+            case _: Reference => !val.isEmpty()
+            case _ => true
+        }
+    }
+
     public func packSize(): Int64 {
         var ret = 0
         for ((tag, val) in m_fields) {
-            if (!val.isEmpty()) {
+            if (packCheck(val)) {
                 ret += tag.tagSize + packSize(val)
             }
         }
@@ -64,11 +74,10 @@ public abstract class MessageLite <: MessageField & Json & ToString {
     public func pack(out: Writer<Byte>): Unit {
         m_requiredFieldsCheck()
         for ((tag, val) in m_fields) {
-            if (reference(val) && val.isEmpty()) {
-                continue
+            if (packCheck(val)) {
+                tag.tagPack(wireType(val), out)
+                pack(val, out)
             }
-            tag.tagPack(wireType(val), out)
-            pack(val, out)
         }
         for (val in unknownFields) {
             val.pack(out)
@@ -123,7 +132,12 @@ public abstract class MessageLite <: MessageField & Json & ToString {
     }
 
     protected func set(tag: Tag, val: MessageField): Unit {
-        let cs = if (m_proto2 || !val.isEmpty()) { m_fields[tag] = val; tag } else { m_fields.remove(tag); UNSETCASE }
+        let cs = if (m_proto2 || reference(val) || !val.isEmpty()) {
+            m_fields[tag] = val; tag
+        } else {
+            m_fields.remove(tag); UNSETCASE
+        }
+
         if (let Some(idx) = m_oneofIndex.get(tag)) {
             let c = m_oneofCase[idx]
             if (c != tag && c != UNSETCASE) { m_fields.remove(c) }
