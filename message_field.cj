@@ -89,7 +89,7 @@ public interface ValuedMessageField <: MessageField {
 }
 
 public struct SInt64 <: ValuedMessageField & Varint {
-    SInt64(let val: Int64) { }
+    public SInt64(let val: Int64) { }
     public func value() { val }
     public func isEmpty() { val == 0 }
     public func packSize() { val.zigzag().packSize() }
@@ -98,7 +98,7 @@ public struct SInt64 <: ValuedMessageField & Varint {
 }
 
 public struct SInt32 <: ValuedMessageField & Varint {
-    SInt32(let val: Int32) { }
+    public SInt32(let val: Int32) { }
     public func value() { val }
     public func isEmpty() { val == 0 }
     public func packSize() { val.zigzag().packSize() }
@@ -107,7 +107,7 @@ public struct SInt32 <: ValuedMessageField & Varint {
 }
 
 public struct SFixed64 <: ValuedMessageField & Bit64 {
-    SFixed64(let val: Int64) { }
+    public SFixed64(let val: Int64) { }
     public func value() { val }
     public func isEmpty() { val == 0 }
     public func packSize() { 8 }
@@ -116,7 +116,7 @@ public struct SFixed64 <: ValuedMessageField & Bit64 {
 }
 
 public struct SFixed32 <: ValuedMessageField & Bit32 {
-    SFixed32(let val: Int32) { }
+    public SFixed32(let val: Int32) { }
     public func value() { val }
     public func isEmpty() { val == 0 }
     public func packSize() { 4 }
@@ -125,7 +125,7 @@ public struct SFixed32 <: ValuedMessageField & Bit32 {
 }
 
 public struct Fixed64 <: ValuedMessageField & Bit64 {
-    Fixed64(let val: UInt64) { }
+    public Fixed64(let val: UInt64) { }
     public func value() { val }
     public func isEmpty() { val == 0 }
     public func packSize() { 8 }
@@ -134,7 +134,7 @@ public struct Fixed64 <: ValuedMessageField & Bit64 {
 }
 
 public struct Fixed32 <: ValuedMessageField & Bit32 {
-    Fixed32(let val: UInt32) { }
+    public Fixed32(let val: UInt32) { }
     public func value() { val }
     public func isEmpty() { val == 0 }
     public func packSize() { 4 }
