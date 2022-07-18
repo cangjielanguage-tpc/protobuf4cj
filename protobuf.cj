@@ -7,7 +7,7 @@ package protobuf
 from std import collection.*
 
 public type Tag = UInt32
-public type Bytes = ArrayList<UInt8>
+public type Bytes = ArrayList<Byte>
 
 public class WireType <: ToString {
     private WireType(public let value: UInt8, private let name: String) { }

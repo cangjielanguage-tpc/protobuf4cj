@@ -78,7 +78,7 @@ extend String <: MessageField & Stringify {
 }
 
 /* bytes */
-extend ArrayList<T> <: MessageField where T <: UInt8 {
+extend ArrayList<T> <: MessageField where T <: Byte { /* cannot extend ArrayList<Byte> to Reference yet. */
     public func packSize() { size().packSize() + size() }
     public func pack(out: BytesWriter) { size().pack(out); out.appendAll((this as Bytes).getOrThrow()) }
 }
@@ -467,14 +467,16 @@ func reference(val: MessageField) {
     match (val) {
         case _: Reference => true
         case _: MessageLite => true
+        case _: ArrayList<Byte> => true
         case _ => false
     }
 }
 
-func clone(val: MessageField) {
+func clone(val: MessageField): MessageField {
     match (val) {
         case c: Reference => c.clone()
         case c: MessageLite => c.clone()
+        case c: ArrayList<Byte> => c.clone()
         case _ => val
     }
 }

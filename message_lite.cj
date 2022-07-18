@@ -61,7 +61,7 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         ret
     }
 
-    public func pack(out: Writer<UInt8>): Unit {
+    public func pack(out: Writer<Byte>): Unit {
         m_requiredFieldsCheck()
         for ((tag, val) in m_fields) {
             if (!val.isEmpty()) {
