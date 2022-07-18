@@ -57,7 +57,8 @@ public class Version <: MessageLite {
 
 extend Version <: MessageParser<Version> {
     public static func fromJson(src: JsonReader) { Version() }
-    public static func fromBytes(src: BytesReader) { let m = Version(); m.unpack(src); m }}
+    public static func fromBytes(src: BytesReader) { let m = Version(); m.unpack(src); m }
+}
 
 public class CodeGeneratorRequest <: MessageLite {
     static let m_once = Once()
@@ -113,7 +114,8 @@ public class CodeGeneratorRequest <: MessageLite {
 
 extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
     public static func fromJson(src: JsonReader) { CodeGeneratorRequest() }
-    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorRequest(); m.unpack(src); m }}
+    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorRequest(); m.unpack(src); m }
+}
 
 public class CodeGeneratorResponse_File <: MessageLite {
     static let m_once = Once()
@@ -168,7 +170,8 @@ public class CodeGeneratorResponse_File <: MessageLite {
 
 extend CodeGeneratorResponse_File <: MessageParser<CodeGeneratorResponse_File> {
     public static func fromJson(src: JsonReader) { CodeGeneratorResponse_File() }
-    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse_File(); m.unpack(src); m }}
+    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse_File(); m.unpack(src); m }
+}
 
 public enum CodeGeneratorResponse_Feature {
     | FEATURE_NONE | FEATURE_PROTO3_OPTIONAL
@@ -259,4 +262,5 @@ public class CodeGeneratorResponse <: MessageLite {
 
 extend CodeGeneratorResponse <: MessageParser<CodeGeneratorResponse> {
     public static func fromJson(src: JsonReader) { CodeGeneratorResponse() }
-    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse(); m.unpack(src); m }}
+    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse(); m.unpack(src); m }
+}
