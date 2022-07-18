@@ -420,7 +420,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     // extend
     outbuf.append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
     outbuf.append("    public static func fromJson(src: JsonReader) { ${typeName}() }\n")
-    outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }")
+    outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
     outbuf.append("}\n")
 }
 
