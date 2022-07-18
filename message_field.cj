@@ -46,12 +46,11 @@ extend Bool <: MessageField & Varint {
     public func isEmpty() { !this }
 }
 
-public interface ValuedEnum <: MessageField & Stringify {
+public interface ValuedEnum <: MessageField & ToString {
     func value(): Int32
     func packSize() { UInt64(value()).varintSize }
     func pack(out: BytesWriter) { UInt64(value()).varintPack(out) }
     func isEmpty() { value() == 0 }
-    func stringify(os: JsonSerializer) { os.append(value().toString()); () }
 }
 
 public interface Enum<E> <: ValuedEnum where E <: Enum<E> {
@@ -489,6 +488,7 @@ func stringify(val: MessageField, os: JsonSerializer) {
     match (val) {
         case c: MessageLite => c.stringify(os)
         case c: Stringify => c.stringify(os)
+        case c: ValuedEnum => os.append("\"${c.toString()}\"")
         case _ => os.append(val.toString())
     }
 }
