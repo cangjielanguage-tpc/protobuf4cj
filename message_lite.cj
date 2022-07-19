@@ -48,7 +48,10 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
-    /* proto3不打包任何空值, proto2仅空数组不打包 */
+    /* 
+     * proto3 will not pack any empty field
+     * proto2 will not pack any empty array or map, but pack empty bytes and message.
+     */
     private func packCheck(val: MessageField): Bool {
         match (val) {
             case c: Bytes => m_proto2 || !c.isEmpty()

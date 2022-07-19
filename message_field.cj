@@ -348,6 +348,7 @@ public class MapField<K, V> <: MapFieldComm<K, V> where K <: Hashable & Equatabl
         ret
     }
 
+    /* map will not pack any empty fields */
     public func packSize() {
         var len = tag.tagSize * (val.size() - 1)
         for ((k, v) in val) {
