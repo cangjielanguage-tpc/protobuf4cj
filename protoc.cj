@@ -36,9 +36,9 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
             // save `desc` as json, for developing.
-            let dbgFile = resp.file.add()
-            dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            dbgFile.content = desc.stringify()
+            // let dbgFile = resp.file.add()
+            // dbgFile.name = desc.name.replace(".proto", ".raw.json")
+            // dbgFile.content = desc.stringify()
             fileProcess(desc, resp.file.add())
         }
     }
