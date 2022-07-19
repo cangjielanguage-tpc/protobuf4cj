@@ -82,7 +82,7 @@ extend ArrayList<T> <: MessageField where T <: Byte { /* cannot extend ArrayList
     public func pack(out: BytesWriter) { size().pack(out); out.appendAll((this as Bytes).getOrThrow()) }
 }
 
-/* 返回 field 真实的数据 */
+/* get origin value from field by `value` */
 public interface ValuedMessageField <: MessageField {
     func value(): Any
 }
@@ -90,6 +90,7 @@ public interface ValuedMessageField <: MessageField {
 /* `box` trans `T` to `Proxy<T>` */
 public interface Proxy<T> <: ValuedMessageField where T <: MessageField {
     static func box(v: T): Proxy<T>
+    func value(): T
 }
 
 public struct SInt64 <: Proxy<Int64> & Varint {
