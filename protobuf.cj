@@ -34,7 +34,7 @@ extend Tag {
     * the number of bytes required to store the tag for the field. Includes
     * 3 bits for the wire-type, and a single bit that denotes the end-of-tag.
     */
-    prop let tagSize: Int64 {
+    public prop let tagSize: Int64 {
         get() {
             if (this < (1 << 4)) { return 1 }
             if (this < (1 << 11)) { return 2 }
@@ -45,11 +45,11 @@ extend Tag {
     }
 
     /* pack a tag(with wire-type) out. */
-    func tagPack(w: WireType, out: BytesWriter) {
+    public func tagPack(w: WireType, out: BytesWriter) {
         (this << 3 | UInt32(w.value)).pack(out)
     }
 
-    static func tagParse(src: BytesReader): (Tag, WireType) {
+    public static func tagParse(src: BytesReader): (Tag, WireType) {
         if (src.isEmpty()) {
             throw ParseValueExecption("tag", reason: "empty buffer")
         }
