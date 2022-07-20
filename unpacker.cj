@@ -59,11 +59,18 @@ public class BoolUnpacker <: TypedUnpacker<Bool> {
     public func default() { false }
 }
 
+func parseInt32(src:BytesReader) {
+    Int32.parse(src)
+}
+func parseInt64(src:BytesReader) {
+    Int64.parse(src)
+}
+
 public class EnumUnpacker<E> <: TypedUnpacker<E> where E <: Enum<E> {
     public static let instance = EnumUnpacker<E>()
     public static let packedInstance = RepeatUnpacker<E>(instance)
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<E>(tag, instance) }
-    public func unpack(src: BytesReader) { E.parse(Int32.parse(src)) }
+    public func unpack(src: BytesReader) { E.parse(parseInt32(src)) }
     public func default() { E.parse(0) }
 }
 
@@ -71,7 +78,7 @@ public class MessageUnpacker<M> <: TypedUnpacker<M> where M <: MessageLite & Mes
     public static let instance = MessageUnpacker<M>()
     public static let packedInstance = RepeatUnpacker<M>(instance)
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<M>(tag, instance) }
-    public func unpack(src: BytesReader) { M.fromBytes(src.read(Int64.parse(src))) }
+    public func unpack(src: BytesReader) { M.fromBytes(src.read(parseInt64(src))) }
     public func default() { M.fromBytes([]) }
 }
 
@@ -163,7 +170,7 @@ public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
     private func packedUnpack(src: BytesReader): PackedField<T> {
         let arr = ArrayList<T>()
         let ret = PackedField<T>(arr)
-        let sub = src.read(Int64.parse(src))
+        let sub = src.read(parseInt64(src))
         while (!sub.isEmpty()) {
             arr.append(unpacker.unpack(sub))
         }
@@ -213,7 +220,7 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
     private func packedUnpack(src: BytesReader): PackedProxyField<T, P> {
         let arr = ArrayList<T>()
         let ret = PackedProxyField<T, P>(arr)
-        let sub = src.read(Int64.parse(src))
+        let sub = src.read(parseInt64(src))
         while (!sub.isEmpty()) {
             arr.append(unpacker.unpack(sub).value())
         }
