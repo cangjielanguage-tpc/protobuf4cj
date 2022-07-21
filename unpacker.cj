@@ -59,6 +59,7 @@ public class BoolUnpacker <: TypedUnpacker<Bool> {
     public func default() { false }
 }
 
+/* cangjie 0.30.4, error: no method 'fromBytes' match for generic member access function call when searching in upper bounds */
 func parseInt32(src:BytesReader) {
     Int32.parse(src)
 }
