@@ -304,11 +304,34 @@ public type RepeatSFixed32 = RepeatProxyField<Int32, SFixed32>
 public type RepeatFixed64 = RepeatProxyField<UInt64, Fixed64>
 public type RepeatFixed32 = RepeatProxyField<UInt32, Fixed32>
 
-public abstract class MapFieldComm<K, V> <: ValuedMessageField & Reference & Stringify where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
-    MapFieldComm(let tag: Tag, let val: HashMap<K, V>) { }
+/*
+ * map<k, v> fields, set parameter `kb` or `kv` when `k` or `v` is proxy type
+ * for example, creating a map<sint32, string> field by `MapField<Int32, String>(1, HashMap(), kb: SInt32.box)`
+ */
+public class MapField<K, V> <: ValuedMessageField & Reference & Stringify where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
+    static func kPass(k: K): MessageField { k }
+    static func vPass(v: V): MessageField { v }
+
+    public MapField(let tag: Tag, let val: HashMap<K, V>,
+        let kb!: (K) -> MessageField = kPass,   /* box function of key */
+        let vb!: (V) -> MessageField = vPass    /* box function of value */
+    ) { }
+
     public func value() { val }
     public func isEmpty() { val.isEmpty() }
-    public func clone(): MapFieldComm<K, V>
+
+    public func clone(): MapField<K, V> {
+        let map = val.clone()
+        for ((k, v) in map) {
+            /* deep copy all the reference fields */
+            if (!reference(v)) {
+                break
+            }
+            map[k] = (clone(v) as V).getOrThrow()
+        }
+
+        MapField<K, V>(tag, map, kb: kb, vb: vb)
+    }
 
     public func toString() {
         let sb = StringBuilder("{")
@@ -334,31 +357,20 @@ public abstract class MapFieldComm<K, V> <: ValuedMessageField & Reference & Str
         }
         os.append("}")
     }
-}
-
-/* todo ValuedField K, V not support yet */
-public class MapField<K, V> <: MapFieldComm<K, V> where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
-    public MapField(tag: Tag, val: HashMap<K, V>) { super(tag, val)}
-
-    public func clone(): MapField<K, V> {
-        let map = HashMap<K, V>()
-        let ret = MapField<K, V>(tag, map)
-        for ((k, v) in val) {
-            map[k] = (clone(v) as V).getOrThrow()
-        }
-        ret
-    }
 
     /* map will not pack any empty fields */
     public func packSize() {
         var len = tag.tagSize * (val.size() - 1)
         for ((k, v) in val) {
+            /* length of key-value */
             var sub = 0
+            /* kb isEmpty when and only when b isEmpty */
             if (!k.isEmpty()) {
-                sub += 1 + k.packSize()
+                /* k will never be message, so kb(k).packSize() rather than packSize(kb(k)) */
+                sub += 1 + kb(k).packSize()
             }
             if (!v.isEmpty()) {
-                sub += 1 + packSize(v)
+                sub += 1 + packSize(vb(v))
             }
             len += sub.packSize() + sub
         }
@@ -366,7 +378,11 @@ public class MapField<K, V> <: MapFieldComm<K, V> where K <: Hashable & Equatabl
     }
 
     public func pack(out: BytesWriter) {
+        /* tag pack flag, this first tag has packed before */
         var flag = false
+        /* boxed key, value */
+        var kBox: MessageField
+        var vBox: MessageField
         for ((k, v) in val) {
             if (flag) {
                 tag.tagPack(WireType.PREFIXED, out)
@@ -375,23 +391,24 @@ public class MapField<K, V> <: MapFieldComm<K, V> where K <: Hashable & Equatabl
             }
 
             /* length of sub entry */
-            var len = 0
+            var sub = 0
+            kBox = kb(k)
+            vBox = vb(v)
             if (!k.isEmpty()) {
-                len += 1 + k.packSize()
+                sub += 1 + kBox.packSize()
             }
             if (!v.isEmpty()) {
-                len += 1 + packSize(v)
+                sub += 1 + packSize(vBox)
             }
-
-            len.pack(out)
+            sub.pack(out)
 
             if (!k.isEmpty()) {
-                UInt32(1).tagPack(wireType(k), out)
-                k.pack(out)
+                UInt32(1).tagPack(wireType(kBox), out)
+                kBox.pack(out)
             }
             if (!v.isEmpty()) {
-                UInt32(2).tagPack(wireType(v), out)
-                v.pack(out)
+                UInt32(2).tagPack(wireType(vBox), out)
+                vBox.pack(out)
             }
         }
     }
