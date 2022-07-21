@@ -11,6 +11,7 @@ message M_example {
     sint32 sval = 3;
     repeated string ss = 4;
     repeated int64 nums = 5 [packed = true];
+    map<sint64, string> mm = 6;
 }
 
 message M1 {
@@ -27,15 +28,16 @@ public class M_example <: MessageLite {
     static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, UInt64Unpacker.instance), (2, StringUnpacker.instance), (3, SInt32Unpacker.instance),
-            (4, StringUnpacker.repeatInstance(4)), (5, Int64Unpacker.packedInstance)
+            (4, StringUnpacker.repeatInstance(4)), (5, Int64Unpacker.packedInstance),
+            (6, MapUnpacker<Int64, String>(6, SInt64Unpacker.unbox, StringUnpacker.unbox))
         ])
 
         s_names = HashMap<Tag, String>([
-            (1, "num"), (2, "name"), (3, "sval"), (4, "ss"), (5, "nums")
+            (1, "num"), (2, "name"), (3, "sval"), (4, "ss"), (5, "nums"), (6, "mm")
         ])
 
         s_nameTags = HashMap<String, Tag>([
-            ("num", 1), ("name", 2), ("sval", 3), ("ss", 4), ("nums", 5)
+            ("num", 1), ("name", 2), ("sval", 3), ("ss", 4), ("nums", 5), ("mm", 6)
         ])
         // has no dafault value
         // has no required fields
@@ -80,6 +82,11 @@ public class M_example <: MessageLite {
     public prop var nums: ArrayList<Int64> {
         get() { get(5) }
         set(v) { set(5, PackedField<Int64>(v)) }
+    }
+
+    public prop var mm: HashMap<Int64, String> {
+        get() { get(6) }
+        set(v) { set(6, MapField<Int64, String>(6, v, kb: SInt64.box)) }
     }
 }
 
@@ -142,5 +149,5 @@ public class M1 <: MessageLite {
 extend M1 <: MessageParser<M1> {
     // todo
     public static func fromJson(src: JsonReader) { M1() }
-    public static func fromBytes(src: BytesReader) { let m = M1(); m.unpack(src); m}
+    public static func fromBytes(src: BytesReader) { let m = M1(); m.unpack(src); m }
 }
