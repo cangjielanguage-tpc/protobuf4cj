@@ -5,15 +5,19 @@
 package protobuf
 
 public interface Unpacker {
+    /* unpack a special message field from bytes reader */
     func unpack(src: BytesReader): MessageField
+    /* the dafault value of the special message field's type */
     func default(): MessageField
 }
 
+/* unpacker for native types */
 public interface TypedUnpacker<T> <: Unpacker where T <: MessageField {
     func unpack(src: BytesReader): T
     func default(): T
 }
 
+/* unpacker for proxy types, such as sint64, sint32, sfixed64... */
 public interface ProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <: Proxy<T> {
     func unpack(src: BytesReader): P
     func default(): P
@@ -71,7 +75,7 @@ public class EnumUnpacker<E> <: TypedUnpacker<E> where E <: Enum<E> {
     public static let instance = EnumUnpacker<E>()
     public static let packedInstance = RepeatUnpacker<E>(instance)
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<E>(tag, instance) }
-    public func unpack(src: BytesReader) { E.parse(parseInt32(src)) }
+    public func unpack(src: BytesReader) { E.parse(parseInt32(src)) /* Int32.parse(src) will not be compiled successfully */ }
     public func default() { E.parse(0) }
 }
 
@@ -163,24 +167,22 @@ public class SInt32Unpacker <: ProxyUnpacker<Int32, SInt32> {
     public func default() { SInt32(0) }
 }
 
-/* unpacker for repeated for origin types */
+/* unpacker for repeated for native types */
 public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
     public RepeatUnpacker(let tag: Tag, let unpacker: TypedUnpacker<T>) {}
     public init(packed: TypedUnpacker<T>) { unpacker = packed; tag = 0 }
 
-    private func packedUnpack(src: BytesReader): PackedField<T> {
+    private func packedUnpack(src: BytesReader) {
         let arr = ArrayList<T>()
-        let ret = PackedField<T>(arr)
         let sub = src.read(parseInt64(src))
         while (!sub.isEmpty()) {
             arr.append(unpacker.unpack(sub))
         }
-        ret
+        PackedField<T>(arr)
     }
 
-    private func repeatUnpack(src: BytesReader): RepeatField<T> {
+    private func repeatUnpack(src: BytesReader) {
         let arr = ArrayList<T>()
-        let ret = RepeatField<T>(tag, arr)
         while (true) {
             arr.append(unpacker.unpack(src))
 
@@ -195,7 +197,7 @@ public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
                 break
             }
         }
-        ret
+        RepeatField<T>(tag, arr)
     }
 
     public func unpack(src: BytesReader): RepeatFieldComm<T> {
@@ -218,19 +220,17 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
     public RepeatProxyUnpacker(let tag: Tag, let unpacker: ProxyUnpacker<T, P>) {}
     public init(packed: ProxyUnpacker<T, P>) { unpacker = packed; tag = 0 }
 
-    private func packedUnpack(src: BytesReader): PackedProxyField<T, P> {
+    private func packedUnpack(src: BytesReader) {
         let arr = ArrayList<T>()
-        let ret = PackedProxyField<T, P>(arr)
         let sub = src.read(parseInt64(src))
         while (!sub.isEmpty()) {
             arr.append(unpacker.unpack(sub).value())
         }
-        ret
+        PackedProxyField<T, P>(arr)
     }
 
-    private func repeatUnpack(src: BytesReader): RepeatProxyField<T, P> {
+    private func repeatUnpack(src: BytesReader) {
         let arr = ArrayList<T>()
-        let ret = RepeatProxyField<T, P>(tag, arr)
         while (true) {
             arr.append(unpacker.unpack(src).value())
 
@@ -245,7 +245,7 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
                 break
             }
         }
-        ret
+        RepeatProxyField<T, P>(tag, arr)
     }
 
     public func unpack(src: BytesReader): RepeatFieldComm<T> {
@@ -257,8 +257,48 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
 
     public func default(): RepeatFieldComm<T> {
         if (tag == 0) {
-            return PackedProxyField<T, P>(ArrayList<T>())
+            return PackedProxyField<T, P>(ArrayList())
         }
-        RepeatProxyField<T, P>(tag, ArrayList<T>())
+        RepeatProxyField<T, P>(tag, ArrayList())
+    }
+}
+
+/* group of unpacker and proxy's box */
+public class UnBox<T> where T <: MessageField {
+    UnBox(let box: (T) -> MessageField, let unpacker: Unpacker) { }
+}
+
+/* unpacker for maps */
+public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
+    public MapUnpacker(let tag: Tag, let ku: UnBox<K>, let vu: UnBox<V>) { }
+    public func default() { MapField<K, V>(tag, HashMap(), kb: ku.box, vb: vu.box) }
+
+    public func unpack(src: BytesReader) {
+        let map = HashMap<K, V>()
+        var key: MessageField
+        var val: MessageField
+
+        while (true) {
+            key = ku.unpacker.default()
+            val = vu.unpacker.default()
+
+            let sub = src.read(parseInt64(src))
+            while (!sub.isEmpty()) {
+                match (Tag.tagParse(sub)[0]) {
+                    case 1 => key = ku.unpacker.unpack(sub)
+                    case 2 => val = vu.unpacker.unpack(sub)
+                    case e => throw Exception() // todo
+                }
+            }
+
+            map[match (key) {
+                case k: ValuedMessageField => (k.value() as K).getOrThrow()
+                case _ => (key as K).getOrThrow()
+            }] = match (val) {
+                case v: ValuedMessageField => (v.value() as V).getOrThrow()
+                case _ => (val as V).getOrThrow()
+            }
+        }
+        MapField<K, V>(tag, map, kb: ku.box, vb: vu.box)
     }
 }

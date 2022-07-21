@@ -304,6 +304,9 @@ public type RepeatSFixed32 = RepeatProxyField<Int32, SFixed32>
 public type RepeatFixed64 = RepeatProxyField<UInt64, Fixed64>
 public type RepeatFixed32 = RepeatProxyField<UInt32, Fixed32>
 
+/* trans native type value to message field */
+public func fieldPass<T>(val: T) where T <: MessageField { val }
+
 /*
  * map<k, v> fields, set parameter `kb` or `kv` when `k` or `v` is proxy type
  * for example, creating a map<sint32, string> field by `MapField<Int32, String>(1, HashMap(), kb: SInt32.box)`
@@ -313,8 +316,8 @@ public class MapField<K, V> <: ValuedMessageField & Reference & Stringify where 
     static func vPass(v: V): MessageField { v }
 
     public MapField(let tag: Tag, let val: HashMap<K, V>,
-        let kb!: (K) -> MessageField = kPass,   /* box function of key */
-        let vb!: (V) -> MessageField = vPass    /* box function of value */
+        let kb!: (K) -> MessageField = fieldPass<K>,   /* box function of key */
+        let vb!: (V) -> MessageField = fieldPass<V>    /* box function of value */
     ) { }
 
     public func value() { val }
