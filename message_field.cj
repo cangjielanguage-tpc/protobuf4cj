@@ -305,7 +305,7 @@ public type RepeatFixed64 = RepeatProxyField<UInt64, Fixed64>
 public type RepeatFixed32 = RepeatProxyField<UInt32, Fixed32>
 
 /* trans native type value to message field */
-public func fieldPass<T>(val: T) where T <: MessageField { val }
+public func fieldPass<T>(val: T): MessageField where T <: MessageField { val }
 
 /*
  * map<k, v> fields, set parameter `kb` or `kv` when `k` or `v` is proxy type
