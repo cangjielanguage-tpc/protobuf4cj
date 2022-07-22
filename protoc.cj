@@ -99,6 +99,7 @@ class LineSepOut {
     }
 }
 
+/* save or process context of every proto file */
 class GenCodeHelper {
     /* Get type name based on nesting level */
     let nested = ArrayList<String>()
@@ -111,13 +112,19 @@ class GenCodeHelper {
         sb.append(name).toString()
     }
 
+    /* package prefix of the proto file */
     let pkgPrefix: String
     GenCodeHelper (package_: String, let proto2: Bool) {
         pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
     }
 
-    let packages = ArrayList<String>()
+    // pkg Dictionary order reverse
+    static func pkgCmp(a: String, b: String) {
+        if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
+    }
+
     /* Get all dependent packages */
+    let packages = ArrayList<String>()
     func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
         for (dep in desc.dependency) {
@@ -151,10 +158,23 @@ class GenCodeHelper {
         throw Exception() // todo
     }
 
-
-    // pkg Dictionary order reverse
-    static func pkgCmp(a: String, b: String) {
-        if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
+    // For type_ Message, special process if it is a map
+    func setMessageTypeName(f: FieldDescriptorProto, ns: ArrayList<DescriptorProto>) {
+        do {
+            if (f.label.value() != LABEL_REPEATED.value()) { break }
+            let sp = f.typeName.split('.')
+            let entry = sp[sp.size() - 1]
+            if (!entry.endsWith("Entry")) { break }
+            // Looking for entry in nestedtype
+            for (n in ns) {
+                if (n.field.size() != 2 || n.name != entry) { continue }
+                try { if (n.options.mapEntry != true) { break } } catch (_) { break }
+                /* save map entry's fields */
+                return f.typeName = getEntryTypeInfo(n.field[0]) + "," + getEntryTypeInfo(n.field[1])
+            }
+        } while (false)
+        /* normal message field */
+        f.typeName = getTypeName(f.typeName)
     }
 
     let outbuf = StringBuilder()
@@ -203,7 +223,35 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     }
 }
 
+func getEntryTypeInfo(entry: FieldDescriptorProto) {
+    match (entry.type_) {
+        case TYPE_DOUBLE => "Float64,,Float64Unpacker"
+        case TYPE_FLOAT => "Float64,,Float64Unpacker"
+        case TYPE_INT64 => "Int64,,Int64Unpacker"
+        case TYPE_UINT64 => "UInt64,,UInt64Unpacker"
+        case TYPE_INT32 => "Int32,,Int32Unpacker"
+        case TYPE_UINT32 => "Int64,,Int64Unpacker"
+        case TYPE_ENUM => "${entry.typeName},,EnumUnpacker<${entry.typeName}>"
+        case TYPE_BOOL => "Bool,,BoolUnpacker"
+        case TYPE_STRING => "String,,StringUnpacker"
+        case TYPE_MESSAGE => "${entry.typeName},,MessageUnpacker<${entry.typeName}>"
+        case TYPE_BYTES => "Bytes,,BytesUnpacker"
+        case TYPE_FIXED64 => "UInt64,Fixed64,Fixed64Unpacker"
+        case TYPE_FIXED32 => "UInt32,Fixed32,Fixed32Unpacker"
+        case TYPE_SFIXED32 => "Int32,SFixed32,SFixed32Unpacker"
+        case TYPE_SFIXED64 => "Int64,SFixed64,SFixed64Unpacker"
+        case TYPE_SINT32 => "Int32,SInt32,SInt32Unpacker"
+        case TYPE_SINT64 => "Int64,SInt64,SInt64Unpacker"
+        case _=> throw Exception()
+    }
+}
+
 func getUnpacker(f: FieldDescriptorProto) {
+    if (f.typeName.contains(',')) {
+        let types = f.typeName.split(",")
+        return "MapUnpacker<${types[0]}, ${types[3]}>(${f.number}, ${types[2]}.unbox, ${types[5]}.unbox)"
+    }
+
     let ac = match (f.type_) {
         case TYPE_DOUBLE => "Float64Unpacker"
         case TYPE_FLOAT => "Float32Unpacker"
@@ -214,7 +262,6 @@ func getUnpacker(f: FieldDescriptorProto) {
         case TYPE_FIXED32 => "Fixed32Unpacker"
         case TYPE_BOOL => "BoolUnpacker"
         case TYPE_STRING => "StringUnpacker"
-        /* map not support yet. */
         case TYPE_MESSAGE => "MessageUnpacker<${f.typeName}>"
         case TYPE_BYTES => "BytesUnpacker"
         case TYPE_UINT32 => "UInt32Unpacker"
@@ -233,6 +280,14 @@ func getUnpacker(f: FieldDescriptorProto) {
 }
 
 func getFieldSetName(f: FieldDescriptorProto) {
+    if (f.typeName.contains(',')) {
+        let types = f.typeName.split(",")
+        var ret = "MapField<${types[0]}, ${types[3]}>(${f.number}, v"
+        if (types[1] != "") { ret += ", kb: ${types[1]}.box" }
+        if (types[4] != "") { ret += ", vb: ${types[4]}.box" }
+        return ret + ')'
+    }
+
     let vt = match (f.type_) { /* 包装类型 */
         case TYPE_FIXED32 => "Fixed32"
         case TYPE_FIXED64 => "Fixed64"
@@ -271,6 +326,11 @@ func getFieldSetName(f: FieldDescriptorProto) {
 }
 
 func getPropType(f: FieldDescriptorProto) {
+    if (f.typeName.contains(',')) {
+        let types = f.typeName.split(",")
+        return "HashMap<${types[0]}, ${types[3]}>"
+    }
+
     let pt = match (f.type_) {
         case TYPE_DOUBLE => "Float64"
         case TYPE_FLOAT => "Float32"
@@ -445,7 +505,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     for (f in fields) {
         // Set typename
         match (f.type_) {
-            case TYPE_ENUM | TYPE_MESSAGE => f.typeName = helper.getTypeName(f.typeName)
+            case TYPE_ENUM => f.typeName = helper.getTypeName(f.typeName)
+            case TYPE_MESSAGE => helper.setMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
         // Set propname
@@ -454,9 +515,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
         try { f.options.packed } catch (_) { f.options.packed = false }
     }
 
-    /* map not support yet. */
     // Mapentry sets typename without generating message
-    // try { if (msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
+    try { if (fields.size() == 2 && msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
 
     helper.oneofNum = msg.oneofDecl.size()
     // fields
