@@ -5,121 +5,172 @@ from protobuf import protobuf.*
 import google.protobuf.*
 
 public class Version <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, Int32Accessor.getInstance()), (2, Int32Accessor.getInstance()), (3, Int32Accessor.getInstance()),
-        (4, StringAccessor.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "major"), (2, "minor"), (3, "patch"), (4, "suffix")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance), (3, Int32Unpacker.instance),
+            (4, StringUnpacker.instance)
+        ])
 
-    public func clone() { let rv = Version(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "major"), (2, "minor"), (3, "patch"), (4, "suffix")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("major", 1), ("minor", 2), ("patch", 3), ("suffix", 4)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { Version().m_fieldsClone(this) }
 
     public prop var major: Int32 {
-        get() { get<Int32>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var minor: Int32 {
-        get() { get<Int32>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var patch: Int32 {
-        get() { get<Int32>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var suffix: String {
-        get() { get<String>(4) }
+        get() { get(4) }
         set(v) { set(4, v) }
     }
 }
 
-extend Version <: Default<Version> {
-    public static func default() { Version() }
+extend Version <: MessageParser<Version> {
+    public static func fromJson(src: JsonReader) { Version() }
+    public static func fromBytes(src: BytesReader) { let m = Version(); m.unpack(src); m }
 }
 
 public class CodeGeneratorRequest <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, RepeatStringAccessor.getInstance()), (2, StringAccessor.getInstance()),
-        (15, RepeatMessageAccessor<google.protobuf.FileDescriptorProto>.getInstance()),
-        (3, MessageAccessor<Version>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "fileToGenerate"), (2, "parameter"), (15, "protoFile"), (3, "compilerVersion")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.repeatInstance(1)), (2, StringUnpacker.instance),
+            (15, MessageUnpacker<google.protobuf.FileDescriptorProto>.repeatInstance(15)),
+            (3, MessageUnpacker<Version>.instance)
+        ])
 
-    public func clone() { let rv = CodeGeneratorRequest(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "fileToGenerate"), (2, "parameter"), (15, "protoFile"), (3, "compilerVersion")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("fileToGenerate", 1), ("parameter", 2), ("protoFile", 15), ("compilerVersion", 3)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { CodeGeneratorRequest().m_fieldsClone(this) }
 
     public prop var fileToGenerate: ArrayList<String> {
-        get() { get<ArrayList<String>>(1) }
-        set(v) { set(1, v) }
+        get() { get(1) }
+        set(v) { set(1, RepeatField<String>(1, v)) }
     }
 
     public prop var parameter: String {
-        get() { get<String>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var protoFile: ArrayList<google.protobuf.FileDescriptorProto> {
-        get() { get<ArrayList<google.protobuf.FileDescriptorProto>>(15) }
-        set(v) { set(15, v) }
+        get() { get(15) }
+        set(v) { set(15, RepeatField<google.protobuf.FileDescriptorProto>(15, v)) }
     }
 
     public prop var compilerVersion: Version {
-        get() { get<Version>(3) }
+        get() { get(3) }
         set(v) { set(3, v) }
     }
 }
 
-extend CodeGeneratorRequest <: Default<CodeGeneratorRequest> {
-    public static func default() { CodeGeneratorRequest() }
+extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
+    public static func fromJson(src: JsonReader) { CodeGeneratorRequest() }
+    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorRequest(); m.unpack(src); m }
 }
 
 public class CodeGeneratorResponse_File <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, StringAccessor.getInstance()), (15, StringAccessor.getInstance()),
-        (16, MessageAccessor<google.protobuf.GeneratedCodeInfo>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "name"), (2, "insertionPoint"), (15, "content"), (16, "generatedCodeInfo")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, StringUnpacker.instance), (15, StringUnpacker.instance),
+            (16, MessageUnpacker<google.protobuf.GeneratedCodeInfo>.instance)
+        ])
 
-    public func clone() { let rv = CodeGeneratorResponse_File(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "name"), (2, "insertionPoint"), (15, "content"), (16, "generatedCodeInfo")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("name", 1), ("insertionPoint", 2), ("content", 15), ("generatedCodeInfo", 16)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { CodeGeneratorResponse_File().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var insertionPoint: String {
-        get() { get<String>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var content: String {
-        get() { get<String>(15) }
+        get() { get(15) }
         set(v) { set(15, v) }
     }
 
     public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo {
-        get() { get<google.protobuf.GeneratedCodeInfo>(16) }
+        get() { get(16) }
         set(v) { set(16, v) }
     }
 }
 
-extend CodeGeneratorResponse_File <: Default<CodeGeneratorResponse_File> {
-    public static func default() { CodeGeneratorResponse_File() }
+extend CodeGeneratorResponse_File <: MessageParser<CodeGeneratorResponse_File> {
+    public static func fromJson(src: JsonReader) { CodeGeneratorResponse_File() }
+    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse_File(); m.unpack(src); m }
 }
 
 public enum CodeGeneratorResponse_Feature {
@@ -157,46 +208,59 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
         }
     }
 
-    /* cangjie 0.28.4 bug, xxx should be implemented */
-    public func hashCode() { value().hashCode() }
-    public operator func ==(right: CodeGeneratorResponse_Feature) { value() == right.value() }
-    public operator func !=(right: CodeGeneratorResponse_Feature) { value() != right.value() }
-}
-
-extend CodeGeneratorResponse_Feature <: Default<CodeGeneratorResponse_Feature> {
-    public static func default() { FEATURE_NONE }
+    /* cangjie 0.30.4 bug, xxx should be implemented */
+    public func packSize() { value().packSize() }
+    public func pack(out: BytesWriter) { value().pack(out) }
+    public func isEmpty() { value() == 0 }
 }
 
 public class CodeGeneratorResponse <: MessageLite {
-    private static let m_accessors = HashMap<Tag, Accessor>([
-        (1, StringAccessor.getInstance()), (2, UInt64Accessor.getInstance()),
-        (15, RepeatMessageAccessor<CodeGeneratorResponse_File>.getInstance())
-    ])
-    protected func getAccessors() { m_accessors }
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
 
-    private static let m_names = HashMap<Tag, String>([
-        (1, "error"), (2, "supportedFeatures"), (15, "file")
-    ])
-    protected func getNames() { m_names }
+    static func s_init() {
+        s_unpackers = HashMap<Tag, Unpacker>([
+            (1, StringUnpacker.instance), (2, UInt64Unpacker.instance),
+            (15, MessageUnpacker<CodeGeneratorResponse_File>.repeatInstance(15))
+        ])
 
-    public func clone() { let rv = CodeGeneratorResponse(); rv.m_fields = m_fieldsClone(); rv }
+        s_names = HashMap<Tag, String>([
+            (1, "error"), (2, "supportedFeatures"), (15, "file")
+        ])
+
+        s_nameTags = HashMap<String, Tag>([
+            ("error", 1), ("supportedFeatures", 2), ("file", 15)
+        ])
+    }
+
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+    }
+
+    public func clone() { CodeGeneratorResponse().m_fieldsClone(this) }
 
     public prop var error: String {
-        get() { get<String>(1) }
+        get() { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var supportedFeatures: UInt64 {
-        get() { get<UInt64>(2) }
+        get() { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var file: ArrayList<CodeGeneratorResponse_File> {
-        get() { get<ArrayList<CodeGeneratorResponse_File>>(15) }
-        set(v) { set(15, v) }
+        get() { get(15) }
+        set(v) { set(15, RepeatField<CodeGeneratorResponse_File>(15, v)) }
     }
 }
 
-extend CodeGeneratorResponse <: Default<CodeGeneratorResponse> {
-    public static func default() { CodeGeneratorResponse() }
+extend CodeGeneratorResponse <: MessageParser<CodeGeneratorResponse> {
+    public static func fromJson(src: JsonReader) { CodeGeneratorResponse() }
+    public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse(); m.unpack(src); m }
 }
