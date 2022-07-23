@@ -36,9 +36,9 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
             // save `desc` as json, for developing.
-            let dbgFile = resp.file.add()
-            dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            dbgFile.content = desc.toString()
+            // let dbgFile = resp.file.add()
+            // dbgFile.name = desc.name.replace(".proto", ".raw.json")
+            // dbgFile.content = desc.stringify()
             fileProcess(desc, resp.file.add())
         }
     }
@@ -60,7 +60,7 @@ class LineSepOut {
     LineSepOut (
         let outbuf: StringBuilder,
         let sep!: String = ",",     // Separator
-        let sn!: Int64 = 8,         // Number of spaces automatically added to a new line
+        let sn!: Int64 = 12,        // Number of spaces automatically added to a new line
         let ln!: Int64 = 120 - sep.size()    // One line limit characters
     ) {
         ss = " " * sn
@@ -99,6 +99,7 @@ class LineSepOut {
     }
 }
 
+/* save or process context of every proto file */
 class GenCodeHelper {
     /* Get type name based on nesting level */
     let nested = ArrayList<String>()
@@ -111,28 +112,32 @@ class GenCodeHelper {
         sb.append(name).toString()
     }
 
+    /* package prefix of the proto file */
     let pkgPrefix: String
     GenCodeHelper (package_: String, let proto2: Bool) {
         pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
     }
 
-    let packages = ArrayList<String>()
+    // pkg Dictionary order reverse
+    static func pkgCmp(a: String, b: String) {
+        if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
+    }
+
     /* Get all dependent packages */
+    let packages = ArrayList<String>()
     func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
         for (dep in desc.dependency) {
-            match (dep.lastIndexOf('/')) {
-                case None => continue
-                case Some(i) =>
-                    let pkg = dep.substring(0, i).replace('/', '.')
-                    if (desc.package_ == "protobuf" && pkg != "protobuf") {
-                        /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
-                        throw Exception() // todo
-                    }
-                    if (pkg != desc.package_ && pkg != "protobuf") {
-                        /* Save packages other than `desc` itself and protobuf */
-                        pkgs.put(pkg)
-                    }
+            if (let Some(i) = dep.lastIndexOf('/')) {
+                let pkg = dep.substring(0, i).replace('/', '.')
+                if (desc.package_ == "protobuf" && pkg != "protobuf") {
+                    /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
+                    throw Exception() // todo
+                }
+                if (pkg != desc.package_ && pkg != "protobuf") {
+                    /* Save packages other than `desc` itself and protobuf */
+                    pkgs.put(pkg)
+                }
             }
         }
         packages.append(pkgPrefix)
@@ -153,10 +158,10 @@ class GenCodeHelper {
         throw Exception() // todo
     }
 
-    // For type_ Message. If it is a map, special processing is required
-    func getMessageTypeName(f: FieldDescriptorProto, ns: ArrayList<DescriptorProto>) {
+    // For type_ Message, special process if it is a map
+    func setMessageTypeName(f: FieldDescriptorProto, ns: ArrayList<DescriptorProto>) {
         do {
-            if (f.label != LABEL_REPEATED) { break }
+            if (f.label.value() != LABEL_REPEATED.value()) { break }
             let sp = f.typeName.split('.')
             let entry = sp[sp.size() - 1]
             if (!entry.endsWith("Entry")) { break }
@@ -164,16 +169,12 @@ class GenCodeHelper {
             for (n in ns) {
                 if (n.field.size() != 2 || n.name != entry) { continue }
                 try { if (n.options.mapEntry != true) { break } } catch (_) { break }
-                // Find netry
-                return "${getPropType(n.field[0])}, ${getPropType(n.field[1])}, ${getAccesor(n.field[0])}, ${getAccesor(n.field[1])}"
+                /* save map entry's fields */
+                return f.typeName = getEntryTypeInfo(n.field[0]) + "," + getEntryTypeInfo(n.field[1])
             }
         } while (false)
-        getTypeName(f.typeName)
-    }
-
-    // pkg Dictionary order reverse
-    static func pkgCmp(a: String, b: String) {
-        if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT }
+        /* normal message field */
+        f.typeName = getTypeName(f.typeName)
     }
 
     let outbuf = StringBuilder()
@@ -225,40 +226,88 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     }
 }
 
-func getAccesor(f: FieldDescriptorProto) {
-    let ac = match (f.type_) {
-        case TYPE_DOUBLE => "DoubleAccessor"
-        case TYPE_FLOAT => "FloatAccessor"
-        case TYPE_INT64 => "Int64Accessor"
-        case TYPE_UINT64 => "UInt64Accessor"
-        case TYPE_INT32 => "Int32Accessor"
-        case TYPE_FIXED64 => "Fixed64Accessor"
-        case TYPE_FIXED32 => "Fixed32Accessor"
-        case TYPE_BOOL => "BoolAccessor"
-        case TYPE_STRING => "StringAccessor"
-        case TYPE_MESSAGE =>
-            if (f.typeName.contains(',')) { return "MapAccessor<${f.typeName}>" }
-            else { "MessageAccessor<${f.typeName}>" }
-        case TYPE_BYTES => "BytesAccessor"
-        case TYPE_UINT32 => "UInt32Accessor"
-        case TYPE_ENUM => "EnumAccessor<${f.typeName}>"
-        case TYPE_SFIXED32 => "SFixed32Accessor"
-        case TYPE_SFIXED64 => "SFixed64Accessor"
-        case TYPE_SINT32 => "SInt32Accessor"
-        case TYPE_SINT64 => "SInt64Accessor"
-        case _ => throw Exception() // todo
+func getEntryTypeInfo(entry: FieldDescriptorProto) {
+    match (entry.type_) {
+        case TYPE_DOUBLE => "Float64,,Float64Unpacker"
+        case TYPE_FLOAT => "Float64,,Float64Unpacker"
+        case TYPE_INT64 => "Int64,,Int64Unpacker"
+        case TYPE_UINT64 => "UInt64,,UInt64Unpacker"
+        case TYPE_INT32 => "Int32,,Int32Unpacker"
+        case TYPE_UINT32 => "Int64,,Int64Unpacker"
+        case TYPE_ENUM => "${entry.typeName},,EnumUnpacker<${entry.typeName}>"
+        case TYPE_BOOL => "Bool,,BoolUnpacker"
+        case TYPE_STRING => "String,,StringUnpacker"
+        case TYPE_MESSAGE => "${entry.typeName},,MessageUnpacker<${entry.typeName}>"
+        case TYPE_BYTES => "Bytes,,BytesUnpacker"
+        case TYPE_FIXED64 => "UInt64,Fixed64,Fixed64Unpacker"
+        case TYPE_FIXED32 => "UInt32,Fixed32,Fixed32Unpacker"
+        case TYPE_SFIXED32 => "Int32,SFixed32,SFixed32Unpacker"
+        case TYPE_SFIXED64 => "Int64,SFixed64,SFixed64Unpacker"
+        case TYPE_SINT32 => "Int32,SInt32,SInt32Unpacker"
+        case TYPE_SINT64 => "Int64,SInt64,SInt64Unpacker"
+        case _=> throw Exception()
     }
-    // Process repeated
-    if (f.label != LABEL_REPEATED) { return ac }
-    try { if (f.options.packed == true) { return "Packed${ac}" } } catch (_) { /* nothing. */ }
-    "Repeat${ac}"
 }
 
-func getPropType(f: FieldDescriptorProto) {
-    if (f.type_ == TYPE_MESSAGE && f.typeName.contains(',')) {
-        let len = f.typeName.indexOf(',', f.typeName.indexOf(',').getOrThrow() + 1).getOrThrow()
-        return "HashMap<${f.typeName.substring(0, len)}>"
+func getUnpacker(f: FieldDescriptorProto) {
+    if (f.typeName.contains(',')) {
+        let types = f.typeName.split(",")
+        return "MapUnpacker<${types[0]}, ${types[3]}>(${f.number}, ${types[2]}.unbox, ${types[5]}.unbox)"
     }
+
+    let ac = match (f.type_) {
+        case TYPE_DOUBLE => "Float64Unpacker"
+        case TYPE_FLOAT => "Float32Unpacker"
+        case TYPE_INT64 => "Int64Unpacker"
+        case TYPE_UINT64 => "UInt64Unpacker"
+        case TYPE_INT32 => "Int32Unpacker"
+        case TYPE_FIXED64 => "Fixed64Unpacker"
+        case TYPE_FIXED32 => "Fixed32Unpacker"
+        case TYPE_BOOL => "BoolUnpacker"
+        case TYPE_STRING => "StringUnpacker"
+        case TYPE_MESSAGE => "MessageUnpacker<${f.typeName}>"
+        case TYPE_BYTES => "BytesUnpacker"
+        case TYPE_UINT32 => "UInt32Unpacker"
+        case TYPE_ENUM => "EnumUnpacker<${f.typeName}>"
+        case TYPE_SFIXED32 => "SFixed32Unpacker"
+        case TYPE_SFIXED64 => "SFixed64Unpacker"
+        case TYPE_SINT32 => "SInt32Unpacker"
+        case TYPE_SINT64 => "SInt64Unpacker"
+        case _ => throw Exception() // todo
+    }
+
+    // Process repeated
+    if (f.label.value() != LABEL_REPEATED.value()) { return ac + ".instance" }
+    if (f.options.packed) { return ac + ".packedInstance" }
+    ac + ".repeatInstance(${f.number})"
+}
+
+func getFieldSetName(f: FieldDescriptorProto) {
+    if (f.typeName.contains(',')) {
+        let types = f.typeName.split(",")
+        var ret = "MapField<${types[0]}, ${types[3]}>(${f.number}, v"
+        if (types[1] != "") { ret += ", kb: ${types[1]}.box" }
+        if (types[4] != "") { ret += ", vb: ${types[4]}.box" }
+        return ret + ')'
+    }
+
+    let vt = match (f.type_) { /* 包装类型 */
+        case TYPE_FIXED32 => "Fixed32"
+        case TYPE_FIXED64 => "Fixed64"
+        case TYPE_SFIXED32 => "SFixed32"
+        case TYPE_SFIXED64 => "SFixed64"
+        case TYPE_SINT32 => "SInt32"
+        case TYPE_SINT64 => "SInt64"
+        case _ => ""
+    }
+
+    if (f.label.value() != LABEL_REPEATED.value()) {
+        if (vt.isEmpty()) {
+            return "v"
+        }
+        return vt + "(v)"
+    }
+
     let pt = match (f.type_) {
         case TYPE_DOUBLE => "Float64"
         case TYPE_FLOAT => "Float32"
@@ -269,33 +318,40 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_STRING => "String"
         case TYPE_BYTES => "Bytes"
         case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
-        case TYPE_ENUM | TYPE_MESSAGE => f.typeName
-        case _ => throw Exception() // todo
+        case _ => f.typeName
     }
-    if (f.label == LABEL_REPEATED) { "ArrayList<${pt}>" } else { pt }
+
+    if (f.options.packed) {
+        return if (vt.isEmpty()) { "PackedField<${pt}>(v)" } else { "Packed${vt}(v)" }
+    }
+
+    if (vt.isEmpty()) { "RepeatField<${pt}>(${f.number}, v)" } else { "Repeat${vt}(${f.number}, v)" }
+}
+
+func getPropType(f: FieldDescriptorProto) {
+    if (f.typeName.contains(',')) {
+        let types = f.typeName.split(",")
+        return "HashMap<${types[0]}, ${types[3]}>"
+    }
+
+    let pt = match (f.type_) {
+        case TYPE_DOUBLE => "Float64"
+        case TYPE_FLOAT => "Float32"
+        case TYPE_INT64 | TYPE_SFIXED64 | TYPE_SINT64 => "Int64"
+        case TYPE_UINT64 | TYPE_FIXED64 => "UInt64"
+        case TYPE_INT32 | TYPE_SFIXED32 | TYPE_SINT32 => "Int32"
+        case TYPE_BOOL => "Bool"
+        case TYPE_STRING => "String"
+        case TYPE_BYTES => "Bytes"
+        case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
+        case _ => f.typeName
+    }
+    if (f.label.value() == LABEL_REPEATED.value()) { "ArrayList<${pt}>" } else { pt }
 }
 
 func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let outbuf = helper.outbuf
     let sepOut = LineSepOut(outbuf)
-
-    // class
-    outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
-
-    // accessors
-    outbuf.append("    private static let m_accessors = HashMap<Tag, Accessor>([\n")
-    for (f in fields) {
-        sepOut.append("(${f.number}, ${getAccesor(f)}.getInstance())")
-    }
-    outbuf.append("\n    ])\n    protected func getAccessors() { m_accessors }\n")
-
-    // names
-    outbuf.append("\n    private static let m_names = HashMap<Tag, String>([\n")
-    sepOut.reset()
-    for (f in fields) {
-        sepOut.append("(${f.number}, \"${f.name}\")")
-    }
-    outbuf.append("\n    ])\n    protected func getNames() { m_names }\n")
 
     // default value
     let dvs = ArrayList<String>()
@@ -309,63 +365,123 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
         }
         dvs.append("(${f.number}, ${dv})")
     }
-    if (!dvs.isEmpty()) {
-        outbuf.append("\n    private static let m_dv = HashMap<Tag, Any>([\n")
-        sepOut.reset()
-        for (dv in dvs) {
-            sepOut.append(dv)
-        }
-        outbuf.append("\n    ])\n    protected override func getDefaultValue(): ?HashMap<Tag, Any> { m_dv }\n")
-    }
 
     // required fields
     let reqs = ArrayList<Int32>()
     for (f in fields) {
-        if (f.label == LABEL_REQUIRED) {
+        if (f.label.value() == LABEL_REQUIRED.value()) {
             reqs.append(f.number)
         }
     }
+
+    // class
+    outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
+
+    // static
+    outbuf.append("    static let m_once = Once()\n")
+    outbuf.append("    static var s_unpackers = s_initHashMapTagUnpacker\n")
+    outbuf.append("    static var s_names = s_initHashMapTagString\n")
+    outbuf.append("    static var s_nameTags = s_initHashMapStringTag\n")
+    if (!dvs.isEmpty()) {
+        outbuf.append("    static var s_defaultValue = s_initHashMapTagMessageFile\n")
+    }
     if (!reqs.isEmpty()) {
-        outbuf.append("\n    protected static let m_reqs = Array<Tag>([\n")
+        outbuf.append("    static var s_requiredFields = s_initArrayTag\n")
+    }
+    if (helper.oneofNum != 0) {
+        outbuf.append("    static var s_oneofIndex = s_initHashMapTagInt64\n")
+    }
+
+    // s_init
+    // unpacker
+    outbuf.append("\n    static func s_init() {\n        s_unpackers = HashMap<Tag, Unpacker>([\n")
+    for (f in fields) {
+        sepOut.append("(${f.number}, ${getUnpacker(f)})")
+    }
+    outbuf.append("\n        ])\n")
+
+    // names
+    outbuf.append("\n        s_names = HashMap<Tag, String>([\n")
+    sepOut.reset()
+    for (f in fields) {
+        sepOut.append("(${f.number}, \"${f.name}\")")
+    }
+    outbuf.append("\n        ])\n")
+
+    // nameTags
+    outbuf.append("\n        s_nameTags = HashMap<String, Tag>([\n")
+    sepOut.reset()
+    for (f in fields) {
+        sepOut.append("(\"${f.name}\", ${f.number})")
+    }
+    outbuf.append("\n        ])\n")
+
+    // default value
+    if (!dvs.isEmpty()) {
+        outbuf.append("\n        s_defaultValue = HashMap<Tag, MessageField>([\n")
+        sepOut.reset()
+        for (dv in dvs) {
+            sepOut.append(dv)
+        }
+        outbuf.append("\n        ])\n")
+    }
+
+    // required fields
+    if (!reqs.isEmpty()) {
+        outbuf.append("\n        s_requiredFields = Array<Tag>([\n")
         sepOut.reset()
         for (req in reqs) {
             sepOut.append("${req}")
         }
-        outbuf.append("\n    ])\n    protected override func getRequiredFields(): ?Array<Tag> { m_reqs }\n")
+        outbuf.append("\n        ])\n")
     }
 
     // oneof
     if (helper.oneofNum != 0) {
-        outbuf.append("\n    private let m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
-        outbuf.append("    protected override func getOneofCase(): ?Array<Tag> { m_oneofCase }\n")
-        outbuf.append("    private static let m_oneofIdx = HashMap<Tag, Int64>([\n")
+        outbuf.append("\n        s_oneofIndex = HashMap<Tag, Int64>([\n")
         sepOut.reset()
         for (f in fields) {
             try { f.oneofIndex } catch (_) { continue }
             sepOut.append("(${f.number}, ${f.oneofIndex})")
         }
-        outbuf.append("\n    ])\n    protected override func getOneofIndex(): ?HashMap<Tag, Int64> { m_oneofIdx }\n")
+        outbuf.append("\n        ])\n")
     }
+    // s_init end
+    outbuf.append("    }\n")
+
+    // init
+    outbuf.append("\n    public init() {\n")
+    outbuf.append("        m_once.once(s_init)\n")
+    outbuf.append("        m_unpacker = s_unpackers\n")
+    outbuf.append("        m_names = s_names\n")
+    outbuf.append("        m_nameTags = s_nameTags\n")
+    if (!helper.proto2) { outbuf.append("        m_proto2 = false\n") }
+    if (!dvs.isEmpty()) { outbuf.append("        m_defaultValue = s_defaultValue\n") }
+    if (!reqs.isEmpty()) { outbuf.append("        m_requiredFields = s_requiredFields\n") }
+    if (helper.oneofNum != 0) {
+        outbuf.append("        m_oneofIndex = s_oneofIndex\n")
+        outbuf.append("        m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
+    }
+    // init end
+    outbuf.append("    }\n")
 
     // clone
-    outbuf.append("\n    public func clone() { let rv = ${typeName}(); rv.m_fields = m_fieldsClone(); rv }\n")
-    if (!helper.proto2) {
-        outbuf.append("    protected override func m_proto2() { false }\n")
-    }
+    outbuf.append("\n    public func clone() { ${typeName}().m_fieldsClone(this) }\n")
 
     // props
     for (f in fields) {
         outbuf.append("\n    public prop var ${f.name}: ${getPropType(f)} {\n")
-        outbuf.append("        get() { get<${getPropType(f)}>(${f.number}) }\n")
-        outbuf.append("        set(v) { set(${f.number}, v) }\n")
+        outbuf.append("        get() { get(${f.number}) }\n")
+        outbuf.append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
         outbuf.append("    }\n")
     }
-
+    // props end
     outbuf.append("}\n")
 
     // extend
-    outbuf.append("\nextend ${typeName} <: Default<${typeName}> {\n")
-    outbuf.append("    public static func default() { ${typeName}() }\n")
+    outbuf.append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
+    outbuf.append("    public static func fromJson(src: JsonReader) { ${typeName}() }\n")
+    outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
     outbuf.append("}\n")
 }
 
@@ -393,15 +509,17 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
         // Set typename
         match (f.type_) {
             case TYPE_ENUM => f.typeName = helper.getTypeName(f.typeName)
-            case TYPE_MESSAGE => f.typeName = helper.getMessageTypeName(f, msg.nestedType)
+            case TYPE_MESSAGE => helper.setMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
         // Set propname
         f.name = getMessagePropName(f.jsonName)
+        // Set packed option
+        try { f.options.packed } catch (_) { f.options.packed = false }
     }
 
     // Mapentry sets typename without generating message
-    try { if (msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
+    try { if (fields.size() == 2 && msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
 
     helper.oneofNum = msg.oneofDecl.size()
     // fields
@@ -459,18 +577,12 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
     // todo cangjie bug
-    outbuf.append("\n    /* cangjie 0.28.4 bug, xxx should be implemented */\n")
-    outbuf.append("    public func hashCode() { value().hashCode() }\n")
-    outbuf.append("    public operator func ==(right: ${typeName}) { value() == right.value() }\n")
-    outbuf.append("    public operator func !=(right: ${typeName}) { value() != right.value() }\n")
+    outbuf.append("\n    /* cangjie 0.30.4 bug, xxx should be implemented */\n")
+    outbuf.append("    public func packSize() { value().packSize() }\n")
+    outbuf.append("    public func pack(out: BytesWriter) { value().pack(out) }\n")
+    outbuf.append("    public func isEmpty() { value() == 0 }\n")
     // extend Enum end
     outbuf.append("}\n")
-
-    // extend Default
-    outbuf.append("\nextend ${typeName} <: Default<${typeName}> {\n")
-    outbuf.append("    public static func default() { ${values[0].name} }\n")
-    outbuf.append("}\n")
-    // todo reserved
 }
 
 func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
@@ -530,13 +642,18 @@ let cangjieKeyWords = HashSet<String>([
     "spawn", "static", "super", "synchronized", "this", "throw", "true", "try",
     "type", "This", "unsafe", "var", "where", "while"
 ])
+let protobufRsvdWords = HashSet<String>([
+    "protobuf", "protoc", "toString", "stringify", "packSize", "pack", "isEmpty"
+])
 let messageRsvdWords = HashSet<String>([
-    "default", "toString", "getAccessors", "getNames", "getDefaultValue", "unknownFields", "m_fields",
-    "m_proto2", "m_fieldsClone", "pack", "unpack", "has", "clear", "m_accessors",
-    "m_names", "getOneofCase", "getOneofIndex", "m_oneofCase", "m_oneofIndex", "m_dv"
+    "s_initHashMapTagUnpacker", "s_initHashMapTagString", "s_initHashMapTagMessageFile",
+    "s_initHashMapTagInt64", "s_initHashMapStringTag", "s_initArrayTag", "m_proto2", "m_unpacker",
+    "m_names", "m_nameTags", "m_defaultValue", "m_requiredFields", "m_oneofIndex", "m_oneofCase",
+    "unknownFields", "m_fields", "m_fieldsClone", "m_requiredFieldsCheck", "unpack", "get_",
+    "fromJson", "fromBytes"
 ])
 let enumRsvdWords = HashSet<String>([
-    "default", "toString", "value", "parse", "hashCode"
+    "value", "parse"
 ])
 let grpcRsvdWords = HashSet<String>([
     "getServiceName", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_ctxBind",
