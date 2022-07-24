@@ -50,10 +50,6 @@ extend Tag {
     }
 
     public static func tagParse(src: BytesReader): (Tag, WireType) {
-        if (src.isEmpty()) {
-            throw ParseValueExecption("tag", reason: "empty buffer")
-        }
-
         var byte = src.read()
         if ((byte & 0xf8) == 0) {
             throw ParseValueExecption("tag", reason: "invalid tag value")
@@ -67,10 +63,6 @@ extend Tag {
 
         var shift: UInt8 = 4
         for (i in 1..5) {
-            if (src.isEmpty()) {
-                throw ParseValueExecption("tag", reason: "incomplete buffer")
-            }
-
             byte = src.read()
             if ((byte & 0x80) == 0) {
                 tag |= UInt32(byte) << shift
@@ -153,19 +145,11 @@ extend UInt64 {
     }
 
     static func fixedParse(src: BytesReader) {
-        if (src.size() < 8) {
-            throw ParseValueExecption("fixed64", reason: "incomplete buffer")
-        }
-
         UInt64(src.read()) | (UInt64(src.read()) << 8) | (UInt64(src.read()) << 16) | (UInt64(src.read()) << 24) |
         (UInt64(src.read()) << 32) | (UInt64(src.read()) << 40) | (UInt64(src.read()) << 48) | (UInt64(src.read()) << 56)
     }
 
     static func parse(src: BytesReader) {
-        if (src.isEmpty()) {
-            throw ParseValueExecption("varint", reason: "empty buffer")
-        }
-
         var byte = src.read()
         var rv = UInt64(byte & 0x7f)
         if ((byte & 0x80) == 0) {
@@ -174,10 +158,6 @@ extend UInt64 {
 
         var shift: UInt8 = 7
         for (i in 1..10) {
-            if (src.isEmpty()) {
-                throw ParseValueExecption("varint", reason: "incomplete buffer")
-            }
-
             byte = src.read()
             if ((byte & 0x80) == 0) {
                 rv |= UInt64(byte) << shift
@@ -263,10 +243,6 @@ extend UInt32 {
     }
 
     static func fixedParse(src: BytesReader) {
-        if (src.size() < 4) {
-            throw ParseValueExecption("fixed32", reason: "incomplete buffer")
-        }
-
         UInt32(src.read()) | (UInt32(src.read()) << 8) | (UInt32(src.read()) << 16) | (UInt32(src.read()) << 24)
     }
 

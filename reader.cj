@@ -15,8 +15,6 @@ public type BytesReader = Reader<Byte>
 public interface Reader<T> {
     /* any data unread */
     func isEmpty(): Bool
-    /* unread bytes size */
-    func size(): Int64
     /* peek the current position with `offset` */
     func peek(offset: Int64): T
     /* read and increase the offset */
@@ -51,15 +49,6 @@ public class SimpleReader <: BytesReader {
     }
 
     /**
-     * unread bytes size
-     *
-     * @since 0.29.3
-     */
-    public func size() {
-        end - offset
-    }
-
-    /**
      * any data unread
      *
      * @since 0.29.3
@@ -75,7 +64,8 @@ public class SimpleReader <: BytesReader {
      *
      * @since 0.29.3
      */
-    public func peek(i: Int64) { 
+    public func peek(i: Int64) {
+        // todo offset check
         buffer[offset + i]
     }
 
@@ -84,7 +74,7 @@ public class SimpleReader <: BytesReader {
      *
      * @since 0.29.3
      */
-    public func data() { 
+    public func data() {
         if (offset >= end) {
             return Array<UInt8>()
         }
@@ -97,7 +87,8 @@ public class SimpleReader <: BytesReader {
      *
      * @since 0.29.3
      */
-    public func read() { 
+    public func read() {
+        // todo offset check
         offset++
         buffer[offset - 1]
     }
@@ -110,6 +101,7 @@ public class SimpleReader <: BytesReader {
      * @since 0.29.3
      */
     public func read(s: Int64) {
+        // todo offset check
         offset += s
         SimpleReader(buffer, begin: offset - s, end: offset)
     }
