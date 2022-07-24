@@ -203,14 +203,8 @@ public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
         while (true) {
             arr.append(unpacker.unpack(src))
 
-            if (src.isEmpty()) {
-                break
-            }
-
-            /* parse the next tag, break if not equlas to `tag`. */
-            let (t, _) = Tag.tagParse(src)
-            if (t != tag) {
-                src.seek(-t.tagSize, CurPos)
+            /* try to get the next tag, break if not equlas to `tag`. */
+            if (!tag.tagGetNext(src)) {
                 break
             }
         }
@@ -251,14 +245,8 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
         while (true) {
             arr.append(unpacker.unpack(src).value())
 
-            if (src.isEmpty()) {
-                break
-            }
-
-            /* parse the next tag, break if not equlas to `tag`. */
-            let (t, _) = Tag.tagParse(src)
-            if (t != tag) {
-                src.seek(-t.tagSize, CurPos)
+            /* try to get the next tag, break if not equlas to `tag`. */
+            if (!tag.tagGetNext(src)) {
                 break
             }
         }

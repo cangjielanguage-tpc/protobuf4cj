@@ -8,8 +8,6 @@
  */
 package protobuf
 
-public from std import io.SeekOrigin
-
 /* Bytes Reader. */
 public type BytesReader = Reader<Byte>
 
@@ -19,8 +17,6 @@ public interface Reader<T> {
     func isEmpty(): Bool
     /* unread bytes size */
     func size(): Int64
-    /* seek the offset */
-    func seek(offset: Int64, origin: SeekOrigin): Int64
     /* peek the current position with `offset` */
     func peek(offset: Int64): T
     /* read and increase the offset */
@@ -70,23 +66,6 @@ public class SimpleReader <: BytesReader {
      */
     public func isEmpty() {
         return offset >= end
-    }
-
-    /**
-     * seek the offset
-     *
-     * @param offset of Int64
-     * @param origin of seek base offset
-     *
-     * @since 0.29.3
-     */
-    public func seek(offset: Int64, origin: SeekOrigin) {
-        match(origin) {
-            case BeginPos => this.offset = begin + offset
-            case CurPos => this.offset += offset
-            case EenPos => this.offset = end - offset
-        }
-        this.offset
     }
 
     /**
