@@ -56,7 +56,6 @@ extend Tag {
 
         var byte = src.read()
         if ((byte & 0xf8) == 0) {
-            src.seek(-1, CurPos)
             throw ParseValueExecption("tag", reason: "invalid tag value")
         }
 
@@ -69,7 +68,6 @@ extend Tag {
         var shift: UInt8 = 4
         for (i in 1..5) {
             if (src.isEmpty()) {
-                src.seek(-i, CurPos)
                 throw ParseValueExecption("tag", reason: "incomplete buffer")
             }
 
@@ -83,8 +81,22 @@ extend Tag {
             shift += 7
         }
 
-        src.seek(-5, CurPos)
         throw ParseValueExecption("tag", reason: "invalid tag value")
+    }
+
+    /* try to read the same tag from the bytes reader */
+    func tagGetNext(src: BytesReader) {
+        if (src.isEmpty()) {
+            return false
+        }
+
+        let n = UInt64.peek(src)
+        if (UInt64(this) == (n >> 3)) {
+            src.read(n.varintSize)
+            return true
+        }
+
+        false
     }
 }
 
@@ -163,7 +175,6 @@ extend UInt64 {
         var shift: UInt8 = 7
         for (i in 1..10) {
             if (src.isEmpty()) {
-                src.seek(-i, CurPos)
                 throw ParseValueExecption("varint", reason: "incomplete buffer")
             }
 
@@ -176,8 +187,29 @@ extend UInt64 {
             shift += 7
         }
 
-        src.seek(-10, CurPos)
-        throw ParseValueExecption("varint", reason: "invalid tag value")
+        throw ParseValueExecption("varint", reason: "invalid value")
+    }
+
+    /* peek a varint from bytes reader */
+    static func peek(src: BytesReader) {
+        var byte = src.peek(0)
+        var rv = UInt64(byte & 0x7f)
+        if ((byte & 0x80) == 0) {
+            return rv
+        }
+
+        var shift: UInt8 = 7
+        for (i in 1..10) {
+            byte = src.peek(i)
+            if ((byte & 0x80) == 0) {
+                rv |= UInt64(byte) << shift
+                return rv
+            }
+            rv |= UInt64(byte & 0x7f) << shift
+            shift += 7
+        }
+
+        throw ParseValueExecption("varint", reason: "invalid value")
     }
 }
 

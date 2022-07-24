@@ -25,12 +25,11 @@ public class MessageUnknownField <: ToString {
     }
 
     static func unpack(tag: Tag, wt: WireType, src: BytesReader) {
-        let len: Int64
-        match (wt.value) {
-            case v where v == WireType.BIT32.value => len = 4
-            case v where v == WireType.BIT64.value => len = 8
-            case v where v == WireType.VARINT.value => len = UInt64.parse(src).packSize(); src.seek(-len, CurPos)
-            case _ => let p = Int64.parse(src); let v = p.packSize(); len = p + v; src.seek(-v, CurPos)
+        let len = match (wt.value) {
+            case v where v == WireType.BIT32.value => 4
+            case v where v == WireType.BIT64.value => 8
+            case v where v == WireType.VARINT.value => UInt64.peek(src).varintSize
+            case _ => let p = UInt64.peek(src); p.varintSize + Int64(p)
         }
         MessageUnknownField(tag, wt, src.read(len).data())
     }
