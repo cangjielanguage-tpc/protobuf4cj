@@ -270,7 +270,10 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
 
 /* group of unpacker and proxy's box */
 public class UnBox<T> where T <: MessageField {
-    UnBox(let box: (T) -> MessageField, let unpacker: Unpacker) { }
+    UnBox(
+        let box: (T) -> MessageField,   /* box function used in map field */
+        let unpacker: Unpacker          /* unpack functions used in map unpacker */
+    ) { }
 }
 
 /* unpacker for maps */
@@ -297,10 +300,10 @@ public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & 
             }
 
             map[match (key) {
-                case k: ValuedMessageField => (k.value() as K).getOrThrow()
+                case k: Value<K> => k.value()
                 case _ => (key as K).getOrThrow()
             }] = match (val) {
-                case v: ValuedMessageField => (v.value() as V).getOrThrow()
+                case v: Value<V> => v.value()
                 case _ => (val as V).getOrThrow()
             }
         }

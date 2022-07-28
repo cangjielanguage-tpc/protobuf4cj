@@ -83,14 +83,13 @@ extend ArrayList<T> <: MessageField where T <: Byte { /* cannot extend ArrayList
 }
 
 /* get origin value from field by `value` */
-public interface ValuedMessageField <: MessageField {
-    func value(): Any
+public interface Value<T> <: MessageField {
+    func value(): T
 }
 
 /* `box` trans `T` to `Proxy<T>` */
-public interface Proxy<T> <: ValuedMessageField where T <: MessageField {
+public interface Proxy<T> <: Value<T> where T <: MessageField {
     static func box(v: T): Proxy<T>
-    func value(): T
 }
 
 public struct SInt64 <: Proxy<Int64> & Varint {
@@ -154,7 +153,7 @@ public struct Fixed32 <: Proxy<UInt32> & Bit32 {
 }
 
 /* all repeated fields comm isEmpty, toString, stringify */
-public abstract class RepeatFieldComm<T> <: ValuedMessageField & Stringify & Reference where T <: MessageField {
+public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & Stringify & Reference where T <: MessageField {
     RepeatFieldComm(let val: ArrayList<T>) { }
     public func value() { val }
     public func isEmpty() { val.isEmpty() }
@@ -311,7 +310,7 @@ public func fieldPass<T>(val: T): MessageField where T <: MessageField { val }
  * map<k, v> fields, set parameter `kb` or `kv` when `k` or `v` is proxy type
  * for example, creating a map<sint32, string> field by `MapField<Int32, String>(1, HashMap(), kb: SInt32.box)`
  */
-public class MapField<K, V> <: ValuedMessageField & Reference & Stringify where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
+public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & Stringify where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
     static func kPass(k: K): MessageField { k }
     static func vPass(v: V): MessageField { v }
 

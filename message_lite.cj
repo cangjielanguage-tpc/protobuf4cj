@@ -180,7 +180,7 @@ public abstract class MessageLite <: MessageField & Json & ToString {
     /* get typeof `T` value from message field */
     protected func get<T>(tag: Tag): T {
         match (get_(tag)) {
-            case val: ValuedMessageField => (val.value() as T).getOrThrow()
+            case val: Value<T> => val.value()
             case val => (val as T).getOrThrow()
         }
     }
