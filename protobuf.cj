@@ -115,7 +115,6 @@ extend UInt64 {
     }
 
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func varintPack(out: BytesWriter) {
         var v = this
         while (v >= 0x80) {
@@ -126,13 +125,11 @@ extend UInt64 {
     }
 
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func unzigzag() {
         Int64((this >> 1) ^ -(this & 1))
     }
 
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func fixedPack(out: BytesWriter) {
         out.append(UInt8(this))
         out.append(UInt8(this >> 8))
@@ -196,13 +193,11 @@ extend UInt64 {
 extend Int64 {
     /* the ZigZag-encoded 64-bit unsigned integer form of a 64-bit signed integer. */
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func zigzag() {
         (UInt64(this) << 1) ^ UInt64(this >> 63)
     }
 
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func fixedPack(out: BytesWriter) {
         out.append(UInt8(this))
         out.append(UInt8(this >> 8))
@@ -228,13 +223,11 @@ extend Int64 {
 extend UInt32 {
     /* Unzigzag a ZigZag-decoded 32-bit unsigned integer to a 32-bit signed integer. */
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func unzigzag() {
         Int32((this >> 1) ^ -(this & 1))
     }
 
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func fixedPack(out: BytesWriter) {
         out.append(UInt8(this))
         out.append(UInt8(this >> 8))
@@ -254,13 +247,11 @@ extend UInt32 {
 
 extend Int32 {
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func zigzag() {
         (UInt32(this) << 1) ^ UInt32(this >> 31)
     }
 
     @overflowWrapping
-    public /* cangjie 0.30.4 bug */
     func fixedPack(out: BytesWriter) {
         out.append(UInt8(this))
         out.append(UInt8(this >> 8))
@@ -286,7 +277,6 @@ extend Bool {
 }
 
 extend Float64 {
-    public /* cangjie 0.30.4 bug */
     func fixedPack(out: BytesWriter) {
         unsafe { dtol(this).fixedPack(out) }
     }
@@ -297,7 +287,6 @@ extend Float64 {
 }
 
 extend Float32 {
-    public /* cangjie 0.30.4 bug */
     func fixedPack(out: BytesWriter) {
         unsafe { ftoi(this).fixedPack(out) }
     }
