@@ -478,11 +478,6 @@ extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
             case e => throw UnmatchedEnumStringException("FieldDescriptorProto_Type", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public enum FieldDescriptorProto_Label {
@@ -523,11 +518,6 @@ extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case e => throw UnmatchedEnumStringException("FieldDescriptorProto_Label", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public class FieldDescriptorProto <: MessageLite {
@@ -992,11 +982,6 @@ extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
             case e => throw UnmatchedEnumStringException("FileOptions_OptimizeMode", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public class FileOptions <: MessageLite {
@@ -1270,11 +1255,6 @@ extend FieldOptions_CType <: Enum<FieldOptions_CType> {
             case e => throw UnmatchedEnumStringException("FieldOptions_CType", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public enum FieldOptions_JSType {
@@ -1315,11 +1295,6 @@ extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case e => throw UnmatchedEnumStringException("FieldOptions_JSType", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public class FieldOptions <: MessageLite {
@@ -1646,11 +1621,6 @@ extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
             case e => throw UnmatchedEnumStringException("MethodOptions_IdempotencyLevel", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public class MethodOptions <: MessageLite {
