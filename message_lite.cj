@@ -200,9 +200,13 @@ public abstract class MessageLite <: MessageField & Json & ToString {
     }
 }
 
-public interface MessageParser<M> where M <: MessageLite & MessageParser<M> {
-    static func fromJson(src: JsonReader): M
+/* cangjie 0.31.4 bug, fromBytes cannot call the another one fromBytes. */
+public interface MessageParserTmp<M> where M <: MessageLite {
     static func fromBytes(src: BytesReader): M
+}
+
+public interface MessageParser<M> <: MessageParserTmp<M> where M <: MessageLite & MessageParser<M> {
+    static func fromJson(src: JsonReader): M
     static func fromBytes(src: Collection<Byte>): M { M.fromBytes(SimpleReader(src)) }
 }
 
