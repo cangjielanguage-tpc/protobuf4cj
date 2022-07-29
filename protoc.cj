@@ -161,7 +161,7 @@ class GenCodeHelper {
     // For type_ Message, special process if it is a map
     func setMessageTypeName(f: FieldDescriptorProto, ns: ArrayList<DescriptorProto>) {
         do {
-            if (f.label.value() != LABEL_REPEATED.value()) { break }
+            if (f.label != LABEL_REPEATED) { break }
             let sp = f.typeName.split('.')
             let entry = sp[sp.size() - 1]
             if (!entry.endsWith("Entry")) { break }
@@ -250,7 +250,7 @@ func getEntryTypeInfo(entry: FieldDescriptorProto) {
 }
 
 func getUnpacker(f: FieldDescriptorProto) {
-    if (f.type_.value() == TYPE_MESSAGE.value() && f.typeName.contains(',')) {
+    if (f.type_ == TYPE_MESSAGE && f.typeName.contains(',')) {
         let types = f.typeName.split(",")
         return "MapUnpacker<${types[0]}, ${types[3]}>(${f.number}, ${types[2]}.unbox, ${types[5]}.unbox)"
     }
@@ -277,13 +277,13 @@ func getUnpacker(f: FieldDescriptorProto) {
     }
 
     // Process repeated
-    if (f.label.value() != LABEL_REPEATED.value()) { return ac + ".instance" }
+    if (f.label != LABEL_REPEATED) { return ac + ".instance" }
     if (f.options.packed) { return ac + ".packedInstance" }
     ac + ".repeatInstance(${f.number})"
 }
 
 func getFieldSetName(f: FieldDescriptorProto) {
-    if (f.type_.value() == TYPE_MESSAGE.value() && f.typeName.contains(',')) {
+    if (f.type_ == TYPE_MESSAGE && f.typeName.contains(',')) {
         let types = f.typeName.split(",")
         var ret = "MapField<${types[0]}, ${types[3]}>(${f.number}, v"
         if (types[1] != "") { ret += ", kb: ${types[1]}.box" }
@@ -301,7 +301,7 @@ func getFieldSetName(f: FieldDescriptorProto) {
         case _ => ""
     }
 
-    if (f.label.value() != LABEL_REPEATED.value()) {
+    if (f.label != LABEL_REPEATED) {
         if (vt.isEmpty()) {
             return "v"
         }
@@ -329,7 +329,7 @@ func getFieldSetName(f: FieldDescriptorProto) {
 }
 
 func getPropType(f: FieldDescriptorProto) {
-    if (f.type_.value() == TYPE_MESSAGE.value() && f.typeName.contains(',')) {
+    if (f.type_ == TYPE_MESSAGE && f.typeName.contains(',')) {
         let types = f.typeName.split(",")
         return "HashMap<${types[0]}, ${types[3]}>"
     }
@@ -346,7 +346,7 @@ func getPropType(f: FieldDescriptorProto) {
         case TYPE_UINT32 | TYPE_FIXED32 => "UInt32"
         case _ => f.typeName
     }
-    if (f.label.value() == LABEL_REPEATED.value()) { "ArrayList<${pt}>" } else { pt }
+    if (f.label == LABEL_REPEATED) { "ArrayList<${pt}>" } else { pt }
 }
 
 func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
@@ -369,7 +369,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     // required fields
     let reqs = ArrayList<Int32>()
     for (f in fields) {
-        if (f.label.value() == LABEL_REQUIRED.value()) {
+        if (f.label == LABEL_REQUIRED) {
             reqs.append(f.number)
         }
     }
@@ -576,11 +576,6 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     }
     outbuf.append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
-    // todo cangjie bug
-    outbuf.append("\n    /* cangjie 0.30.4 bug, xxx should be implemented */\n")
-    outbuf.append("    public func packSize() { value().packSize() }\n")
-    outbuf.append("    public func pack(out: BytesWriter) { value().pack(out) }\n")
-    outbuf.append("    public func isEmpty() { value() == 0 }\n")
     // extend Enum end
     outbuf.append("}\n")
 }
