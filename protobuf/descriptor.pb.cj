@@ -950,7 +950,7 @@ public class MethodDescriptorProto <: MessageLite {
     }
 
     public prop var funcName: String {
-        get() { get<String>(15) }
+        get() { get(15) }
         set(v) { set(15, v) }
     }
 }
