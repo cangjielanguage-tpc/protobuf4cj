@@ -220,9 +220,9 @@ public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
 
     public func default(): RepeatFieldComm<T> {
         if (tag == 0) {
-            return PackedField<T>(ArrayList<T>())
+            return PackedField<T>(ArrayList())
         }
-        RepeatField<T>(tag, ArrayList<T>())
+        RepeatField<T>(tag, ArrayList())
     }
 }
 
@@ -299,13 +299,7 @@ public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & 
                 }
             }
 
-            map[match (key) {
-                case k: Value<K> => k.value()
-                case _ => (key as K).getOrThrow()
-            }] = match (val) {
-                case v: Value<V> => v.value()
-                case _ => (val as V).getOrThrow()
-            }
+            map[typeCast(key)] = typeCast(val)
         }
         MapField<K, V>(tag, map, kb: ku.box, vb: vu.box)
     }

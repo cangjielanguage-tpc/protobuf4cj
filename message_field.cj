@@ -329,6 +329,7 @@ public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & Stringify wher
             if (!reference(v)) {
                 break
             }
+            /* `v` is a value with native type */
             map[k] = (clone(v) as V).getOrThrow()
         }
 
@@ -480,5 +481,12 @@ func pack(val: MessageField, out: BytesWriter): Unit {
     match (val) {
         case c: MessageLite => c.packSize().pack(out); c.pack(out)
         case _ => val.pack(out)
+    }
+}
+
+func typeCast<T>(val: MessageField): T {
+    match (val) {
+        case c: Value<T> => c.value()
+        case _ => (val as T).getOrThrow()
     }
 }
