@@ -207,11 +207,6 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
             case e => throw UnmatchedEnumStringException("CodeGeneratorResponse_Feature", e)
         }
     }
-
-    /* cangjie 0.30.4 bug, xxx should be implemented */
-    public func packSize() { value().packSize() }
-    public func pack(out: BytesWriter) { value().pack(out) }
-    public func isEmpty() { value() == 0 }
 }
 
 public class CodeGeneratorResponse <: MessageLite {
