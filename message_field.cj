@@ -57,9 +57,11 @@ public interface ValuedEnum <: MessageField & ToString {
     func isEmpty() { value() == 0 }
 }
 
-public interface Enum<E> <: ValuedEnum where E <: Enum<E> {
+public interface Enum<E> <: ValuedEnum & Equatable<E> where E <: Enum<E> {
     static func parse(v: Int32): E
     static func parse(v: String): E
+    operator func==(e: E) { value() == e.value() }
+    operator func!=(e: E) { value() != e.value() }
 }
 
 extend Float32 <: MessageField & Bit32 & Stringify {
