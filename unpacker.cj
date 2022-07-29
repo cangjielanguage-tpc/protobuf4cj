@@ -289,6 +289,11 @@ public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & 
             }
 
             map[typeCast(key)] = typeCast(val)
+
+            /* try to get the next tag, break if not equlas to `tag`. */
+            if (!tag.tagGetNext(src)) {
+                break
+            }
         }
         MapField<K, V>(tag, map, kb: ku.box, vb: vu.box)
     }
