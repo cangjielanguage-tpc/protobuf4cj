@@ -247,7 +247,7 @@ func getEntryTypeInfo(entry: FieldDescriptorProto) {
 }
 
 func getUnpacker(f: FieldDescriptorProto) {
-    if (f.typeName.contains(',')) {
+    if (f.type_.value() == TYPE_MESSAGE.value() && f.typeName.contains(',')) {
         let types = f.typeName.split(",")
         return "MapUnpacker<${types[0]}, ${types[3]}>(${f.number}, ${types[2]}.unbox, ${types[5]}.unbox)"
     }
@@ -280,7 +280,7 @@ func getUnpacker(f: FieldDescriptorProto) {
 }
 
 func getFieldSetName(f: FieldDescriptorProto) {
-    if (f.typeName.contains(',')) {
+    if (f.type_.value() == TYPE_MESSAGE.value() && f.typeName.contains(',')) {
         let types = f.typeName.split(",")
         var ret = "MapField<${types[0]}, ${types[3]}>(${f.number}, v"
         if (types[1] != "") { ret += ", kb: ${types[1]}.box" }
@@ -326,7 +326,7 @@ func getFieldSetName(f: FieldDescriptorProto) {
 }
 
 func getPropType(f: FieldDescriptorProto) {
-    if (f.typeName.contains(',')) {
+    if (f.type_.value() == TYPE_MESSAGE.value() && f.typeName.contains(',')) {
         let types = f.typeName.split(",")
         return "HashMap<${types[0]}, ${types[3]}>"
     }
