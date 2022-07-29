@@ -52,9 +52,8 @@ extend Bool <: MessageField & Varint {
 
 public interface ValuedEnum <: MessageField & ToString {
     func value(): Int32
-    @overflowWrapping
-    func packSize() { UInt64(value()).varintSize }
-    func pack(out: BytesWriter) { UInt64(value()).varintPack(out) }
+    func packSize() { value().packSize() } /* cangjie 0.31.4 bug, varintSize undefined */
+    func pack(out: BytesWriter) { value().pack(out) } /* cangjie 0.31.4 bug, varintPack undefined */
     func isEmpty() { value() == 0 }
 }
 
