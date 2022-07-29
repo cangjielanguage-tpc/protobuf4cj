@@ -23,7 +23,9 @@ extend UInt64 <: MessageField & Varint {
 }
 
 extend Int64 <: MessageField & Varint {
+    @overflowWrapping
     public func packSize() { UInt64(this).varintSize }
+    @overflowWrapping
     public func pack(out: BytesWriter) { UInt64(this).varintPack(out) }
     public func isEmpty() { this == 0 }
 }
@@ -35,7 +37,9 @@ extend UInt32 <: MessageField & Varint {
 }
 
 extend Int32 <: MessageField & Varint {
+    @overflowWrapping
     public func packSize() { UInt64(this).varintSize }
+    @overflowWrapping
     public func pack(out: BytesWriter) { UInt64(this).varintPack(out) }
     public func isEmpty() { this == 0 }
 }
@@ -48,6 +52,7 @@ extend Bool <: MessageField & Varint {
 
 public interface ValuedEnum <: MessageField & ToString {
     func value(): Int32
+    @overflowWrapping
     func packSize() { UInt64(value()).varintSize }
     func pack(out: BytesWriter) { UInt64(value()).varintPack(out) }
     func isEmpty() { value() == 0 }
