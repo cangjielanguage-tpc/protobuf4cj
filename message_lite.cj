@@ -61,6 +61,7 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
+    /* return the size of packing required. */
     public func packSize(): Int64 {
         var ret = 0
         for ((tag, val) in m_fields) {
@@ -74,7 +75,11 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         ret
     }
 
-    public func pack(out: Writer<Byte>): Unit {
+    /**
+     * pack the message to the bytes writer.
+     * for example, `ArrayList<Byte>` is a commonly used bytes writer.
+     */
+    public func pack(out: BytesWriter): Unit {
         m_requiredFieldsCheck()
         for ((tag, val) in m_fields) {
             if (packCheck(val)) {
@@ -87,10 +92,19 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
+    /* return packing result, `Bytes` is the alias of `ArrayList<Byte>`. */
+    public func pack(): Bytes {
+        let ret = Bytes()
+        pack(ret)
+        ret
+    }
+
+    /* unpack from a readonly bytes collection. */
     public func unpack(src: Collection<Byte>) {
         unpack(SimpleReader(src))
     }
 
+    /* unpack from a bytes reader. */
     public func unpack(src: BytesReader) {
         while (!src.isEmpty()) {
             let (tag, wt) = Tag.tagParse(src)
@@ -104,8 +118,10 @@ public abstract class MessageLite <: MessageField & Json & ToString {
     /* clone */
     public func clone(): MessageLite
 
+    /* whether if the message is empty: has no fields set or all the fields is empty. */
     public func isEmpty() { m_fields.isEmpty() || packSize() == 0 }
 
+    /* to string */
     public func toString() {
         m_requiredFieldsCheck()
         let sb = StringBuilder("{")
@@ -121,6 +137,7 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         sb.append('}').toString()
     }
 
+    /* to JSON format string */
     public func stringify(os: JsonSerializer): Unit {
         m_requiredFieldsCheck()
         var sep = false
