@@ -233,7 +233,7 @@ func getEntryTypeInfo(entry: FieldDescriptorProto) {
         case TYPE_INT64 => "Int64,,Int64Unpacker"
         case TYPE_UINT64 => "UInt64,,UInt64Unpacker"
         case TYPE_INT32 => "Int32,,Int32Unpacker"
-        case TYPE_UINT32 => "Int64,,Int64Unpacker"
+        case TYPE_UINT32 => "UInt32,,UInt32Unpacker"
         case TYPE_ENUM => "${entry.typeName},,EnumUnpacker<${entry.typeName}>"
         case TYPE_BOOL => "Bool,,BoolUnpacker"
         case TYPE_STRING => "String,,StringUnpacker"
