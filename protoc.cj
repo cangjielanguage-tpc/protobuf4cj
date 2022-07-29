@@ -573,11 +573,6 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     }
     outbuf.append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
-    // todo cangjie bug
-    outbuf.append("\n    /* cangjie 0.30.4 bug, xxx should be implemented */\n")
-    outbuf.append("    public func packSize() { value().packSize() }\n")
-    outbuf.append("    public func pack(out: BytesWriter) { value().pack(out) }\n")
-    outbuf.append("    public func isEmpty() { value() == 0 }\n")
     // extend Enum end
     outbuf.append("}\n")
 }
