@@ -39,7 +39,7 @@ public class FileDescriptorSet <: MessageLite {
 }
 
 extend FileDescriptorSet <: MessageParser<FileDescriptorSet> {
-    public static func fromJson(src: JsonReader) { FileDescriptorSet() }
+    public static func fromJson(src: JsonObject) { let m = FileDescriptorSet(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = FileDescriptorSet(); m.unpack(src); m }
 }
 
@@ -144,7 +144,7 @@ public class FileDescriptorProto <: MessageLite {
 }
 
 extend FileDescriptorProto <: MessageParser<FileDescriptorProto> {
-    public static func fromJson(src: JsonReader) { FileDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = FileDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = FileDescriptorProto(); m.unpack(src); m }
 }
 
@@ -195,7 +195,7 @@ public class DescriptorProto_ExtensionRange <: MessageLite {
 }
 
 extend DescriptorProto_ExtensionRange <: MessageParser<DescriptorProto_ExtensionRange> {
-    public static func fromJson(src: JsonReader) { DescriptorProto_ExtensionRange() }
+    public static func fromJson(src: JsonObject) { let m = DescriptorProto_ExtensionRange(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ExtensionRange(); m.unpack(src); m }
 }
 
@@ -240,7 +240,7 @@ public class DescriptorProto_ReservedRange <: MessageLite {
 }
 
 extend DescriptorProto_ReservedRange <: MessageParser<DescriptorProto_ReservedRange> {
-    public static func fromJson(src: JsonReader) { DescriptorProto_ReservedRange() }
+    public static func fromJson(src: JsonObject) { let m = DescriptorProto_ReservedRange(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ReservedRange(); m.unpack(src); m }
 }
 
@@ -334,7 +334,7 @@ public class DescriptorProto <: MessageLite {
 }
 
 extend DescriptorProto <: MessageParser<DescriptorProto> {
-    public static func fromJson(src: JsonReader) { DescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = DescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = DescriptorProto(); m.unpack(src); m }
 }
 
@@ -374,7 +374,7 @@ public class ExtensionRangeOptions <: MessageLite {
 }
 
 extend ExtensionRangeOptions <: MessageParser<ExtensionRangeOptions> {
-    public static func fromJson(src: JsonReader) { ExtensionRangeOptions() }
+    public static func fromJson(src: JsonObject) { let m = ExtensionRangeOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = ExtensionRangeOptions(); m.unpack(src); m }
 }
 
@@ -612,7 +612,7 @@ public class FieldDescriptorProto <: MessageLite {
 }
 
 extend FieldDescriptorProto <: MessageParser<FieldDescriptorProto> {
-    public static func fromJson(src: JsonReader) { FieldDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = FieldDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = FieldDescriptorProto(); m.unpack(src); m }
 }
 
@@ -657,7 +657,7 @@ public class OneofDescriptorProto <: MessageLite {
 }
 
 extend OneofDescriptorProto <: MessageParser<OneofDescriptorProto> {
-    public static func fromJson(src: JsonReader) { OneofDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = OneofDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = OneofDescriptorProto(); m.unpack(src); m }
 }
 
@@ -702,7 +702,7 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
 }
 
 extend EnumDescriptorProto_EnumReservedRange <: MessageParser<EnumDescriptorProto_EnumReservedRange> {
-    public static func fromJson(src: JsonReader) { EnumDescriptorProto_EnumReservedRange() }
+    public static func fromJson(src: JsonObject) { let m = EnumDescriptorProto_EnumReservedRange(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto_EnumReservedRange(); m.unpack(src); m }
 }
 
@@ -765,7 +765,7 @@ public class EnumDescriptorProto <: MessageLite {
 }
 
 extend EnumDescriptorProto <: MessageParser<EnumDescriptorProto> {
-    public static func fromJson(src: JsonReader) { EnumDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = EnumDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto(); m.unpack(src); m }
 }
 
@@ -815,7 +815,7 @@ public class EnumValueDescriptorProto <: MessageLite {
 }
 
 extend EnumValueDescriptorProto <: MessageParser<EnumValueDescriptorProto> {
-    public static func fromJson(src: JsonReader) { EnumValueDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = EnumValueDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumValueDescriptorProto(); m.unpack(src); m }
 }
 
@@ -866,7 +866,7 @@ public class ServiceDescriptorProto <: MessageLite {
 }
 
 extend ServiceDescriptorProto <: MessageParser<ServiceDescriptorProto> {
-    public static func fromJson(src: JsonReader) { ServiceDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = ServiceDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = ServiceDescriptorProto(); m.unpack(src); m }
 }
 
@@ -940,7 +940,7 @@ public class MethodDescriptorProto <: MessageLite {
 }
 
 extend MethodDescriptorProto <: MessageParser<MethodDescriptorProto> {
-    public static func fromJson(src: JsonReader) { MethodDescriptorProto() }
+    public static func fromJson(src: JsonObject) { let m = MethodDescriptorProto(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = MethodDescriptorProto(); m.unpack(src); m }
 }
 
@@ -1144,7 +1144,7 @@ public class FileOptions <: MessageLite {
 }
 
 extend FileOptions <: MessageParser<FileOptions> {
-    public static func fromJson(src: JsonReader) { FileOptions() }
+    public static func fromJson(src: JsonObject) { let m = FileOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = FileOptions(); m.unpack(src); m }
 }
 
@@ -1213,7 +1213,7 @@ public class MessageOptions <: MessageLite {
 }
 
 extend MessageOptions <: MessageParser<MessageOptions> {
-    public static func fromJson(src: JsonReader) { MessageOptions() }
+    public static func fromJson(src: JsonObject) { let m = MessageOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = MessageOptions(); m.unpack(src); m }
 }
 
@@ -1380,7 +1380,7 @@ public class FieldOptions <: MessageLite {
 }
 
 extend FieldOptions <: MessageParser<FieldOptions> {
-    public static func fromJson(src: JsonReader) { FieldOptions() }
+    public static func fromJson(src: JsonObject) { let m = FieldOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = FieldOptions(); m.unpack(src); m }
 }
 
@@ -1420,7 +1420,7 @@ public class OneofOptions <: MessageLite {
 }
 
 extend OneofOptions <: MessageParser<OneofOptions> {
-    public static func fromJson(src: JsonReader) { OneofOptions() }
+    public static func fromJson(src: JsonObject) { let m = OneofOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = OneofOptions(); m.unpack(src); m }
 }
 
@@ -1477,7 +1477,7 @@ public class EnumOptions <: MessageLite {
 }
 
 extend EnumOptions <: MessageParser<EnumOptions> {
-    public static func fromJson(src: JsonReader) { EnumOptions() }
+    public static func fromJson(src: JsonObject) { let m = EnumOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumOptions(); m.unpack(src); m }
 }
 
@@ -1528,7 +1528,7 @@ public class EnumValueOptions <: MessageLite {
 }
 
 extend EnumValueOptions <: MessageParser<EnumValueOptions> {
-    public static func fromJson(src: JsonReader) { EnumValueOptions() }
+    public static func fromJson(src: JsonObject) { let m = EnumValueOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumValueOptions(); m.unpack(src); m }
 }
 
@@ -1579,7 +1579,7 @@ public class ServiceOptions <: MessageLite {
 }
 
 extend ServiceOptions <: MessageParser<ServiceOptions> {
-    public static func fromJson(src: JsonReader) { ServiceOptions() }
+    public static func fromJson(src: JsonObject) { let m = ServiceOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = ServiceOptions(); m.unpack(src); m }
 }
 
@@ -1676,7 +1676,7 @@ public class MethodOptions <: MessageLite {
 }
 
 extend MethodOptions <: MessageParser<MethodOptions> {
-    public static func fromJson(src: JsonReader) { MethodOptions() }
+    public static func fromJson(src: JsonObject) { let m = MethodOptions(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = MethodOptions(); m.unpack(src); m }
 }
 
@@ -1727,7 +1727,7 @@ public class UninterpretedOption_NamePart <: MessageLite {
 }
 
 extend UninterpretedOption_NamePart <: MessageParser<UninterpretedOption_NamePart> {
-    public static func fromJson(src: JsonReader) { UninterpretedOption_NamePart() }
+    public static func fromJson(src: JsonObject) { let m = UninterpretedOption_NamePart(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = UninterpretedOption_NamePart(); m.unpack(src); m }
 }
 
@@ -1801,7 +1801,7 @@ public class UninterpretedOption <: MessageLite {
 }
 
 extend UninterpretedOption <: MessageParser<UninterpretedOption> {
-    public static func fromJson(src: JsonReader) { UninterpretedOption() }
+    public static func fromJson(src: JsonObject) { let m = UninterpretedOption(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = UninterpretedOption(); m.unpack(src); m }
 }
 
@@ -1862,7 +1862,7 @@ public class SourceCodeInfo_Location <: MessageLite {
 }
 
 extend SourceCodeInfo_Location <: MessageParser<SourceCodeInfo_Location> {
-    public static func fromJson(src: JsonReader) { SourceCodeInfo_Location() }
+    public static func fromJson(src: JsonObject) { let m = SourceCodeInfo_Location(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo_Location(); m.unpack(src); m }
 }
 
@@ -1902,7 +1902,7 @@ public class SourceCodeInfo <: MessageLite {
 }
 
 extend SourceCodeInfo <: MessageParser<SourceCodeInfo> {
-    public static func fromJson(src: JsonReader) { SourceCodeInfo() }
+    public static func fromJson(src: JsonObject) { let m = SourceCodeInfo(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo(); m.unpack(src); m }
 }
 
@@ -1958,7 +1958,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite {
 }
 
 extend GeneratedCodeInfo_Annotation <: MessageParser<GeneratedCodeInfo_Annotation> {
-    public static func fromJson(src: JsonReader) { GeneratedCodeInfo_Annotation() }
+    public static func fromJson(src: JsonObject) { let m = GeneratedCodeInfo_Annotation(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo_Annotation(); m.unpack(src); m }
 }
 
@@ -1998,6 +1998,6 @@ public class GeneratedCodeInfo <: MessageLite {
 }
 
 extend GeneratedCodeInfo <: MessageParser<GeneratedCodeInfo> {
-    public static func fromJson(src: JsonReader) { GeneratedCodeInfo() }
+    public static func fromJson(src: JsonObject) { let m = GeneratedCodeInfo(); m.parse(src); m }
     public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo(); m.unpack(src); m }
 }
