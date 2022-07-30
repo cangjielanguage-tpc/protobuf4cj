@@ -5,7 +5,7 @@
 package protobuf
 
 from json import json.*
-public from json import json.JsonReader, json.JsonSerializer
+public from json import json.JsonReader, json.JsonSerializer, json.JsonObject
 
 public interface MessageField {
     /* the pack size of the field, exclude `the first tag` */
@@ -358,6 +358,7 @@ public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & Stringify wher
 
     public func stringify(os: JsonSerializer): Unit {
         var sep = false
+        os.append("{")
         for ((k, v) in val) {
             if (sep) { os.append(", ") } else { sep = true }
             k.toString().stringify(os)

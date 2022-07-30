@@ -115,6 +115,14 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
+    /* unpack from JSON object */
+    public func unpack(src: JsonObject) {
+        for ((k, v) in src) {
+            let tag = m_nameTags[k]
+            set(tag, m_unpacker[tag].unpack(v))
+        }
+    }
+
     /* clone */
     public func clone(): MessageLite
 
@@ -203,10 +211,12 @@ public abstract class MessageLite <: MessageField & Json & ToString {
 /* cangjie 0.31.4 bug, fromBytes cannot call the another one fromBytes. */
 public interface MessageParserTmp<M> where M <: MessageLite {
     static func fromBytes(src: BytesReader): M
+    static func fromJson(src: JsonObject): M
 }
 
 public interface MessageParser<M> <: MessageParserTmp<M> where M <: MessageLite & MessageParser<M> {
-    static func fromJson(src: JsonReader): M
+    static func fromJson(src: JsonReader): M { src.skipWhitespace(); M.fromJson(src.readObject()) }
+    static func fromJson(src: String): M { M.fromJson(JsonParse(src).asObject()) }
     static func fromBytes(src: Collection<Byte>): M { M.fromBytes(SimpleReader(src)) }
 }
 

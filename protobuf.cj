@@ -188,6 +188,11 @@ extend UInt64 {
 
         throw ParseValueExecption("varint", reason: "invalid value")
     }
+
+    @overflowWrapping
+    static func parse(src: Json) {
+        UInt64(Int64.parse(src))
+    }
 }
 
 extend Int64 {
@@ -218,6 +223,15 @@ extend Int64 {
     static func fixedParse(src: BytesReader) {
         Int64(UInt64.fixedParse(src))
     }
+
+    @overflowWrapping
+    static func parse(src: Json) {
+        match (src) {
+            case c: JsonNumber => Int64(c)
+            case c: JsonString => c.toInt64().getOrThrow()
+            case _ => throw Exception()
+        }
+    }
 }
 
 extend UInt32 {
@@ -243,6 +257,11 @@ extend UInt32 {
     static func parse(src: BytesReader) {
         UInt32(UInt64.parse(src))
     }
+
+    @overflowWrapping
+    static func parse(src: Json) {
+        UInt32(Int64.parse(src))
+    }
 }
 
 extend Int32 {
@@ -267,6 +286,11 @@ extend Int32 {
     @overflowWrapping
     static func fixedParse(src: BytesReader) {
         Int32(UInt32.fixedParse(src))
+    }
+
+    @overflowWrapping
+    static func parse(src: Json) {
+        Int32(Int64.parse(src))
     }
 }
 

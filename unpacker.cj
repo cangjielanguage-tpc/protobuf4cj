@@ -7,6 +7,8 @@ package protobuf
 public interface Unpacker {
     /* unpack a special message field from bytes reader */
     func unpack(src: BytesReader): MessageField
+    /* unpack a special message field from Json */
+    func unpack(src: Json): MessageField
     /* the dafault value of the special message field's type */
     func default(): MessageField
 }
@@ -18,6 +20,7 @@ public class UInt64Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<UInt64>(tag, instance) }
     public static let unbox = UnBox<UInt64>(fieldPass<UInt64>, instance)
     public func unpack(src: BytesReader): MessageField { UInt64.parse(src) }
+    public func unpack(src: Json): MessageField { UInt64.parse(src) }
     public func default(): MessageField { UInt64(0) }
 }
 
@@ -27,6 +30,7 @@ public class Int64Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<Int64>(tag, instance) }
     public static let unbox = UnBox<Int64>(fieldPass<Int64>, instance)
     public func unpack(src: BytesReader): MessageField { Int64.parse(src) }
+    public func unpack(src: Json): MessageField { Int64.parse(src) }
     public func default(): MessageField { 0 }
 }
 
@@ -36,6 +40,7 @@ public class UInt32Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<UInt32>(tag, instance) }
     public static let unbox = UnBox<UInt32>(fieldPass<UInt32>, instance)
     public func unpack(src: BytesReader): MessageField { UInt32.parse(src) }
+    public func unpack(src: Json): MessageField { UInt32.parse(src) }
     public func default(): MessageField { UInt32(0) }
 }
 
@@ -45,6 +50,7 @@ public class Int32Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<Int32>(tag, instance) }
     public static let unbox = UnBox<Int32>(fieldPass<Int32>, instance)
     public func unpack(src: BytesReader): MessageField { Int32.parse(src) }
+    public func unpack(src: Json): MessageField { Int32.parse(src) }
     public func default(): MessageField { Int32(0) }
 }
 
@@ -54,6 +60,7 @@ public class BoolUnpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<Bool>(tag, instance) }
     public static let unbox = UnBox<Bool>(fieldPass<Bool>, instance)
     public func unpack(src: BytesReader): MessageField { Bool.parse(src) }
+    public func unpack(src: Json): MessageField { src.asBoolean() }
     public func default(): MessageField { false }
 }
 
@@ -65,12 +72,22 @@ func parseInt64(src:BytesReader) {
     Int64.parse(src)
 }
 
+/* cangjie 0.31.4, error: static default implement in interface cannot call other static non implement */
+func parseEnum<E>(src: Json) where E <: Enum<E> {
+    match (src) {
+        case c: JsonString => E.parse(c)
+        case c: JsonNumber => E.parse(Int32(c))
+        case _ => throw Exception()
+    }
+}
+
 public class EnumUnpacker<E> <: Unpacker where E <: Enum<E> {
     public static let instance = EnumUnpacker<E>()
     public static let packedInstance = RepeatUnpacker<E>(instance)
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<E>(tag, instance) }
     public static let unbox = UnBox<E>(fieldPass<E>, instance)
     public func unpack(src: BytesReader): MessageField { E.parse(parseInt32(src)) /* Int32.parse(src) will not be compiled successfully */ }
+    public func unpack(src: Json): MessageField { parseEnum<E>(src) }
     public func default(): MessageField { E.parse(0) }
 }
 
@@ -80,7 +97,18 @@ public class MessageUnpacker<M> <: Unpacker where M <: MessageLite & MessagePars
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<M>(tag, instance) }
     public static let unbox = UnBox<M>(fieldPass<M>, instance)
     public func unpack(src: BytesReader): MessageField { M.fromBytes(src.read(parseInt64(src))) }
+    public func unpack(src: Json): MessageField { M.fromJson(src.asObject()) }
     public func default(): MessageField { M.fromBytes([]) }
+}
+
+/* parse bytes from json, at present, bytes only supports to parse/stringify as uint8 array. */
+func parseBytes(src: Json) {
+    let arr = Bytes()
+    /* parse as uint8 array */
+    for (v in src.asArray()) {
+        arr.append(UInt8(v.asNumber()))
+    }
+    arr
 }
 
 public class BytesUnpacker <: Unpacker {
@@ -89,6 +117,7 @@ public class BytesUnpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<Bytes>(tag, instance) }
     public static let unbox = UnBox<Bytes>(fieldPass<Bytes>, instance)
     public func unpack(src: BytesReader): MessageField { Bytes(src.read(Int64.parse(src)).data()) }
+    public func unpack(src: Json): MessageField { parseBytes(src) }
     public func default(): MessageField { Bytes() }
 }
 
@@ -98,6 +127,7 @@ public class StringUnpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<String>(tag, instance) }
     public static let unbox = UnBox<String>(fieldPass<String>, instance)
     public func unpack(src: BytesReader): MessageField { String.parse(src) }
+    public func unpack(src: Json): MessageField { src.asString() }
     public func default(): MessageField { "" }
 }
 
@@ -107,6 +137,7 @@ public class Float32Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<Float32>(tag, instance) }
     public static let unbox = UnBox<Float32>(fieldPass<Float32>, instance)
     public func unpack(src: BytesReader): MessageField { Float32.fixedParse(src) }
+    public func unpack(src: Json): MessageField { Float32(src.asNumber()) }
     public func default(): MessageField { Float32(.0) }
 }
 
@@ -116,6 +147,7 @@ public class Float64Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<Float64>(tag, instance) }
     public static let unbox = UnBox<Float64>(fieldPass<Float64>, instance)
     public func unpack(src: BytesReader): MessageField { Float64.fixedParse(src) }
+    public func unpack(src: Json): MessageField { Float64(src.asNumber()) }
     public func default(): MessageField { .0 }
 }
 
@@ -125,6 +157,7 @@ public class Fixed32Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatProxyUnpacker<UInt32, Fixed32>(tag, instance) }
     public static let unbox = UnBox<UInt32>(Fixed32.box, instance)
     public func unpack(src: BytesReader): MessageField { Fixed32(UInt32.fixedParse(src)) }
+    public func unpack(src: Json): MessageField { Fixed32(UInt32.parse(src)) }
     public func default(): MessageField { Fixed32(0) }
 }
 
@@ -134,6 +167,7 @@ public class Fixed64Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatProxyUnpacker<UInt64, Fixed64>(tag, instance) }
     public static let unbox = UnBox<UInt64>(Fixed64.box, instance)
     public func unpack(src: BytesReader): MessageField { Fixed64(UInt64.fixedParse(src)) }
+    public func unpack(src: Json): MessageField { Fixed64(UInt64.parse(src)) }
     public func default(): MessageField { Fixed64(0) }
 }
 
@@ -143,6 +177,7 @@ public class SFixed32Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatProxyUnpacker<Int32, SFixed32>(tag, instance) }
     public static let unbox = UnBox<Int32>(SFixed32.box, instance)
     public func unpack(src: BytesReader): MessageField { SFixed32(Int32.fixedParse(src)) }
+    public func unpack(src: Json): MessageField { SFixed32(Int32.parse(src)) }
     public func default(): MessageField { SFixed32(0) }
 }
 
@@ -152,6 +187,7 @@ public class SFixed64Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatProxyUnpacker<Int64, SFixed64>(tag, instance) }
     public static let unbox = UnBox<Int64>(SFixed64.box, instance)
     public func unpack(src: BytesReader): MessageField { SFixed64(Int64.fixedParse(src)) }
+    public func unpack(src: Json): MessageField { SFixed64(Int64.parse(src)) }
     public func default(): MessageField { SFixed64(0) }
 }
 
@@ -161,6 +197,7 @@ public class SInt64Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatProxyUnpacker<Int64, SInt64>(tag, instance) }
     public static let unbox = UnBox<Int64>(SInt64.box, instance)
     public func unpack(src: BytesReader): MessageField { SInt64(UInt64.parse(src).unzigzag()) }
+    public func unpack(src: Json): MessageField { SInt64(Int64.parse(src)) }
     public func default(): MessageField { SInt64(0) }
 }
 
@@ -170,7 +207,17 @@ public class SInt32Unpacker <: Unpacker {
     public static func repeatInstance(tag: Tag) { RepeatProxyUnpacker<Int32, SInt32>(tag, instance) }
     public static let unbox = UnBox<Int32>(SInt32.box, instance)
     public func unpack(src: BytesReader): MessageField { SInt32(UInt32.parse(src).unzigzag()) }
+    public func unpack(src: Json): MessageField { SInt32(Int32.parse(src)) }
     public func default(): MessageField { SInt32(0) }
+}
+
+/* parse array from json */
+func parseArray<T>(src: Json, unpack: (Json) -> MessageField) where T <: MessageField {
+    let arr = ArrayList<T>()
+    for (v in src.asArray()) {
+        arr.append(typeCast(unpack(v)))
+    }
+    arr
 }
 
 /* unpacker for repeated for native types */
@@ -205,6 +252,14 @@ public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
             return packedUnpack(src)
         }
         repeatUnpack(src)
+    }
+
+    public func unpack(src: Json): RepeatFieldComm<T> {
+        let arr = parseArray<T>(src, unpacker.unpack)
+        if (tag == 0) {
+            return PackedField<T>(arr)
+        }
+        RepeatField<T>(tag, arr)
     }
 
     public func default(): RepeatFieldComm<T> {
@@ -247,6 +302,14 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
             return packedUnpack(src)
         }
         repeatUnpack(src)
+    }
+
+    public func unpack(src: Json): RepeatFieldComm<T> {
+        let arr = parseArray<T>(src, unpacker.unpack)
+        if (tag == 0) {
+            return PackedProxyField<T, P>(arr)
+        }
+        RepeatProxyField<T, P>(tag, arr)
     }
 
     public func default(): RepeatFieldComm<T> {
@@ -294,6 +357,14 @@ public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & 
             if (!tag.tagGetNext(src)) {
                 break
             }
+        }
+        MapField<K, V>(tag, map, kb: ku.box, vb: vu.box)
+    }
+
+    public func unpack(src: Json): MessageField {
+        let map = HashMap<K, V>()
+        for ((k, v) in src.asObject()) {
+            map[typeCast(ku.unpacker.unpack(k))] = typeCast(vu.unpacker.unpack(v))
         }
         MapField<K, V>(tag, map, kb: ku.box, vb: vu.box)
     }
