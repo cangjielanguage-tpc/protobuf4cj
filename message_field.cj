@@ -358,6 +358,7 @@ public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & Stringify wher
 
     public func stringify(os: JsonSerializer): Unit {
         var sep = false
+        os.append("{")
         for ((k, v) in val) {
             if (sep) { os.append(", ") } else { sep = true }
             k.toString().stringify(os)
