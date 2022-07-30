@@ -115,6 +115,21 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
+    /* unpack from JSON object, return a JSON object that holds all unresolved `key-value`s */
+    public func unpack(src: JsonObject) {
+        let unres = JsonObject()
+        for ((k, v) in src) {
+            if (let Some(tag) = m_nameTags.get(k)) {
+                if (let Some(val) = m_unpacker[tag].unpack(src)) {
+                    set(tag, val)
+                    continue
+                }
+            }
+            unres.put(k, v)
+        }
+        unres
+    }
+
     /* clone */
     public func clone(): MessageLite
 
@@ -149,11 +164,6 @@ public abstract class MessageLite <: MessageField & Json & ToString {
             stringify(val, os)
         }
         os.append("}")
-    }
-
-    /* from JSON format string */
-    public func parse(src: JsonObject) {
-        // todo
     }
 
     protected func set(tag: Tag, val: MessageField): Unit {

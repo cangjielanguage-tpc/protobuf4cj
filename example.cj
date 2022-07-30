@@ -93,7 +93,7 @@ public class M_example <: MessageLite {
 extend M_example <: MessageParser<M_example> {
     public static func fromJson(src: JsonObject) {
         let m = M_example()
-        m.parse(src)
+        m.unpack(src)
         m
     }
 
@@ -149,6 +149,6 @@ public class M1 <: MessageLite {
 }
 
 extend M1 <: MessageParser<M1> {
-    public static func fromJson(src: JsonObject) { let m = M1(); m.parse(src); m }
+    public static func fromJson(src: JsonObject) { let m = M1(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = M1(); m.unpack(src); m }
 }

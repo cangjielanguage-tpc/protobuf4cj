@@ -7,6 +7,8 @@ package protobuf
 public interface Unpacker {
     /* unpack a special message field from bytes reader */
     func unpack(src: BytesReader): MessageField
+    /* unpack a special message field from Json */
+    func unpack(src: Json): ?MessageField { None } // todo
     /* the dafault value of the special message field's type */
     func default(): MessageField
 }
