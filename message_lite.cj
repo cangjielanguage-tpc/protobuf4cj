@@ -115,19 +115,12 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         }
     }
 
-    /* unpack from JSON object, return a JSON object that holds all unresolved `key-value`s */
+    /* unpack from JSON object */
     public func unpack(src: JsonObject) {
-        let unres = JsonObject()
         for ((k, v) in src) {
-            if (let Some(tag) = m_nameTags.get(k)) {
-                if (let Some(val) = m_unpacker[tag].unpack(src)) {
-                    set(tag, val)
-                    continue
-                }
-            }
-            unres.put(k, v)
+            let tag = m_nameTags[k]
+            set(tag, m_unpacker[tag].unpack(v))
         }
-        unres
     }
 
     /* clone */
