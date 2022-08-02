@@ -471,7 +471,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     // props
     for (f in fields) {
         outbuf.append("\n    public prop var ${f.name}: ${getPropType(f)} {\n")
-        outbuf.append("        get() { get(${f.number}) }\n")
+        outbuf.append("        get( ) { get(${f.number}) }\n")
         outbuf.append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
         outbuf.append("    }\n")
     }
