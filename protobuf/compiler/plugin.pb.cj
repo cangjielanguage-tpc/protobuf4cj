@@ -35,22 +35,22 @@ public class Version <: MessageLite {
     public func clone() { Version().m_fieldsClone(this) }
 
     public prop var major: Int32 {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var minor: Int32 {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var patch: Int32 {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var suffix: String {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, v) }
     }
 }
@@ -92,22 +92,22 @@ public class CodeGeneratorRequest <: MessageLite {
     public func clone() { CodeGeneratorRequest().m_fieldsClone(this) }
 
     public prop var fileToGenerate: ArrayList<String> {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, RepeatField<String>(1, v)) }
     }
 
     public prop var parameter: String {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var protoFile: ArrayList<google.protobuf.FileDescriptorProto> {
-        get() { get(15) }
+        get( ) { get(15) }
         set(v) { set(15, RepeatField<google.protobuf.FileDescriptorProto>(15, v)) }
     }
 
     public prop var compilerVersion: Version {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 }
@@ -148,22 +148,22 @@ public class CodeGeneratorResponse_File <: MessageLite {
     public func clone() { CodeGeneratorResponse_File().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var insertionPoint: String {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var content: String {
-        get() { get(15) }
+        get( ) { get(15) }
         set(v) { set(15, v) }
     }
 
     public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo {
-        get() { get(16) }
+        get( ) { get(16) }
         set(v) { set(16, v) }
     }
 }
@@ -240,17 +240,17 @@ public class CodeGeneratorResponse <: MessageLite {
     public func clone() { CodeGeneratorResponse().m_fieldsClone(this) }
 
     public prop var error: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var supportedFeatures: UInt64 {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var file: ArrayList<CodeGeneratorResponse_File> {
-        get() { get(15) }
+        get( ) { get(15) }
         set(v) { set(15, RepeatField<CodeGeneratorResponse_File>(15, v)) }
     }
 }

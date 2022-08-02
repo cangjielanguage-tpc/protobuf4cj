@@ -33,7 +33,7 @@ public class FileDescriptorSet <: MessageLite {
     public func clone() { FileDescriptorSet().m_fieldsClone(this) }
 
     public prop var file: ArrayList<FileDescriptorProto> {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, RepeatField<FileDescriptorProto>(1, v)) }
     }
 }
@@ -83,62 +83,62 @@ public class FileDescriptorProto <: MessageLite {
     public func clone() { FileDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var package_: String {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var dependency: ArrayList<String> {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, RepeatField<String>(3, v)) }
     }
 
     public prop var publicDependency: ArrayList<Int32> {
-        get() { get(10) }
+        get( ) { get(10) }
         set(v) { set(10, RepeatField<Int32>(10, v)) }
     }
 
     public prop var weakDependency: ArrayList<Int32> {
-        get() { get(11) }
+        get( ) { get(11) }
         set(v) { set(11, RepeatField<Int32>(11, v)) }
     }
 
     public prop var messageType: ArrayList<DescriptorProto> {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, RepeatField<DescriptorProto>(4, v)) }
     }
 
     public prop var enumType: ArrayList<EnumDescriptorProto> {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, RepeatField<EnumDescriptorProto>(5, v)) }
     }
 
     public prop var service: ArrayList<ServiceDescriptorProto> {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, RepeatField<ServiceDescriptorProto>(6, v)) }
     }
 
     public prop var extension: ArrayList<FieldDescriptorProto> {
-        get() { get(7) }
+        get( ) { get(7) }
         set(v) { set(7, RepeatField<FieldDescriptorProto>(7, v)) }
     }
 
     public prop var options: FileOptions {
-        get() { get(8) }
+        get( ) { get(8) }
         set(v) { set(8, v) }
     }
 
     public prop var sourceCodeInfo: SourceCodeInfo {
-        get() { get(9) }
+        get( ) { get(9) }
         set(v) { set(9, v) }
     }
 
     public prop var syntax: String {
-        get() { get(12) }
+        get( ) { get(12) }
         set(v) { set(12, v) }
     }
 }
@@ -179,17 +179,17 @@ public class DescriptorProto_ExtensionRange <: MessageLite {
     public func clone() { DescriptorProto_ExtensionRange().m_fieldsClone(this) }
 
     public prop var start: Int32 {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var end: Int32 {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var options: ExtensionRangeOptions {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 }
@@ -229,12 +229,12 @@ public class DescriptorProto_ReservedRange <: MessageLite {
     public func clone() { DescriptorProto_ReservedRange().m_fieldsClone(this) }
 
     public prop var start: Int32 {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var end: Int32 {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 }
@@ -283,52 +283,52 @@ public class DescriptorProto <: MessageLite {
     public func clone() { DescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var field: ArrayList<FieldDescriptorProto> {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, RepeatField<FieldDescriptorProto>(2, v)) }
     }
 
     public prop var extension: ArrayList<FieldDescriptorProto> {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, RepeatField<FieldDescriptorProto>(6, v)) }
     }
 
     public prop var nestedType: ArrayList<DescriptorProto> {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, RepeatField<DescriptorProto>(3, v)) }
     }
 
     public prop var enumType: ArrayList<EnumDescriptorProto> {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, RepeatField<EnumDescriptorProto>(4, v)) }
     }
 
     public prop var extensionRange: ArrayList<DescriptorProto_ExtensionRange> {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, RepeatField<DescriptorProto_ExtensionRange>(5, v)) }
     }
 
     public prop var oneofDecl: ArrayList<OneofDescriptorProto> {
-        get() { get(8) }
+        get( ) { get(8) }
         set(v) { set(8, RepeatField<OneofDescriptorProto>(8, v)) }
     }
 
     public prop var options: MessageOptions {
-        get() { get(7) }
+        get( ) { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var reservedRange: ArrayList<DescriptorProto_ReservedRange> {
-        get() { get(9) }
+        get( ) { get(9) }
         set(v) { set(9, RepeatField<DescriptorProto_ReservedRange>(9, v)) }
     }
 
     public prop var reservedName: ArrayList<String> {
-        get() { get(10) }
+        get( ) { get(10) }
         set(v) { set(10, RepeatField<String>(10, v)) }
     }
 }
@@ -368,7 +368,7 @@ public class ExtensionRangeOptions <: MessageLite {
     public func clone() { ExtensionRangeOptions().m_fieldsClone(this) }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -556,57 +556,57 @@ public class FieldDescriptorProto <: MessageLite {
     public func clone() { FieldDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var number: Int32 {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var label: FieldDescriptorProto_Label {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var type_: FieldDescriptorProto_Type {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var typeName: String {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var extendee: String {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var defaultValue: String {
-        get() { get(7) }
+        get( ) { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var oneofIndex: Int32 {
-        get() { get(9) }
+        get( ) { get(9) }
         set(v) { set(9, v) }
     }
 
     public prop var jsonName: String {
-        get() { get(10) }
+        get( ) { get(10) }
         set(v) { set(10, v) }
     }
 
     public prop var options: FieldOptions {
-        get() { get(8) }
+        get( ) { get(8) }
         set(v) { set(8, v) }
     }
 
     public prop var proto3Optional: Bool {
-        get() { get(17) }
+        get( ) { get(17) }
         set(v) { set(17, v) }
     }
 }
@@ -646,12 +646,12 @@ public class OneofDescriptorProto <: MessageLite {
     public func clone() { OneofDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var options: OneofOptions {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 }
@@ -691,12 +691,12 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
     public func clone() { EnumDescriptorProto_EnumReservedRange().m_fieldsClone(this) }
 
     public prop var start: Int32 {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var end: Int32 {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 }
@@ -739,27 +739,27 @@ public class EnumDescriptorProto <: MessageLite {
     public func clone() { EnumDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var value: ArrayList<EnumValueDescriptorProto> {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, RepeatField<EnumValueDescriptorProto>(2, v)) }
     }
 
     public prop var options: EnumOptions {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var reservedRange: ArrayList<EnumDescriptorProto_EnumReservedRange> {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, RepeatField<EnumDescriptorProto_EnumReservedRange>(4, v)) }
     }
 
     public prop var reservedName: ArrayList<String> {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, RepeatField<String>(5, v)) }
     }
 }
@@ -799,17 +799,17 @@ public class EnumValueDescriptorProto <: MessageLite {
     public func clone() { EnumValueDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var number: Int32 {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var options: EnumValueOptions {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 }
@@ -850,17 +850,17 @@ public class ServiceDescriptorProto <: MessageLite {
     public func clone() { ServiceDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var method: ArrayList<MethodDescriptorProto> {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, RepeatField<MethodDescriptorProto>(2, v)) }
     }
 
     public prop var options: ServiceOptions {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 }
@@ -910,37 +910,37 @@ public class MethodDescriptorProto <: MessageLite {
     public func clone() { MethodDescriptorProto().m_fieldsClone(this) }
 
     public prop var name: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var inputType: String {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var outputType: String {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var options: MethodOptions {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var clientStreaming: Bool {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var serverStreaming: Bool {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var funcName: String {
-        get() { get(15) }
+        get( ) { get(15) }
         set(v) { set(15, v) }
     }
 }
@@ -1044,107 +1044,107 @@ public class FileOptions <: MessageLite {
     public func clone() { FileOptions().m_fieldsClone(this) }
 
     public prop var javaPackage: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var javaOuterClassname: String {
-        get() { get(8) }
+        get( ) { get(8) }
         set(v) { set(8, v) }
     }
 
     public prop var javaMultipleFiles: Bool {
-        get() { get(10) }
+        get( ) { get(10) }
         set(v) { set(10, v) }
     }
 
     public prop var javaGenerateEqualsAndHash: Bool {
-        get() { get(20) }
+        get( ) { get(20) }
         set(v) { set(20, v) }
     }
 
     public prop var javaStringCheckUtf8: Bool {
-        get() { get(27) }
+        get( ) { get(27) }
         set(v) { set(27, v) }
     }
 
     public prop var optimizeFor: FileOptions_OptimizeMode {
-        get() { get(9) }
+        get( ) { get(9) }
         set(v) { set(9, v) }
     }
 
     public prop var goPackage: String {
-        get() { get(11) }
+        get( ) { get(11) }
         set(v) { set(11, v) }
     }
 
     public prop var ccGenericServices: Bool {
-        get() { get(16) }
+        get( ) { get(16) }
         set(v) { set(16, v) }
     }
 
     public prop var javaGenericServices: Bool {
-        get() { get(17) }
+        get( ) { get(17) }
         set(v) { set(17, v) }
     }
 
     public prop var pyGenericServices: Bool {
-        get() { get(18) }
+        get( ) { get(18) }
         set(v) { set(18, v) }
     }
 
     public prop var phpGenericServices: Bool {
-        get() { get(42) }
+        get( ) { get(42) }
         set(v) { set(42, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get(23) }
+        get( ) { get(23) }
         set(v) { set(23, v) }
     }
 
     public prop var ccEnableArenas: Bool {
-        get() { get(31) }
+        get( ) { get(31) }
         set(v) { set(31, v) }
     }
 
     public prop var objcClassPrefix: String {
-        get() { get(36) }
+        get( ) { get(36) }
         set(v) { set(36, v) }
     }
 
     public prop var csharpNamespace: String {
-        get() { get(37) }
+        get( ) { get(37) }
         set(v) { set(37, v) }
     }
 
     public prop var swiftPrefix: String {
-        get() { get(39) }
+        get( ) { get(39) }
         set(v) { set(39, v) }
     }
 
     public prop var phpClassPrefix: String {
-        get() { get(40) }
+        get( ) { get(40) }
         set(v) { set(40, v) }
     }
 
     public prop var phpNamespace: String {
-        get() { get(41) }
+        get( ) { get(41) }
         set(v) { set(41, v) }
     }
 
     public prop var phpMetadataNamespace: String {
-        get() { get(44) }
+        get( ) { get(44) }
         set(v) { set(44, v) }
     }
 
     public prop var rubyPackage: String {
-        get() { get(45) }
+        get( ) { get(45) }
         set(v) { set(45, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1193,27 +1193,27 @@ public class MessageOptions <: MessageLite {
     public func clone() { MessageOptions().m_fieldsClone(this) }
 
     public prop var messageSetWireFormat: Bool {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var noStandardDescriptorAccessor: Bool {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var mapEntry: Bool {
-        get() { get(7) }
+        get( ) { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1345,42 +1345,42 @@ public class FieldOptions <: MessageLite {
     public func clone() { FieldOptions().m_fieldsClone(this) }
 
     public prop var ctype: FieldOptions_CType {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var packed: Bool {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var jstype: FieldOptions_JSType {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var lazy: Bool {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var unverifiedLazy: Bool {
-        get() { get(15) }
+        get( ) { get(15) }
         set(v) { set(15, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var weak: Bool {
-        get() { get(10) }
+        get( ) { get(10) }
         set(v) { set(10, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1420,7 +1420,7 @@ public class OneofOptions <: MessageLite {
     public func clone() { OneofOptions().m_fieldsClone(this) }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1467,17 +1467,17 @@ public class EnumOptions <: MessageLite {
     public func clone() { EnumOptions().m_fieldsClone(this) }
 
     public prop var allowAlias: Bool {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var deprecated: Bool {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1523,12 +1523,12 @@ public class EnumValueOptions <: MessageLite {
     public func clone() { EnumValueOptions().m_fieldsClone(this) }
 
     public prop var deprecated: Bool {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1574,12 +1574,12 @@ public class ServiceOptions <: MessageLite {
     public func clone() { ServiceOptions().m_fieldsClone(this) }
 
     public prop var deprecated: Bool {
-        get() { get(33) }
+        get( ) { get(33) }
         set(v) { set(33, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1666,17 +1666,17 @@ public class MethodOptions <: MessageLite {
     public func clone() { MethodOptions().m_fieldsClone(this) }
 
     public prop var deprecated: Bool {
-        get() { get(33) }
+        get( ) { get(33) }
         set(v) { set(33, v) }
     }
 
     public prop var idempotencyLevel: MethodOptions_IdempotencyLevel {
-        get() { get(34) }
+        get( ) { get(34) }
         set(v) { set(34, v) }
     }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get() { get(999) }
+        get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
 }
@@ -1722,12 +1722,12 @@ public class UninterpretedOption_NamePart <: MessageLite {
     public func clone() { UninterpretedOption_NamePart().m_fieldsClone(this) }
 
     public prop var namePart: String {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, v) }
     }
 
     public prop var isExtension: Bool {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 }
@@ -1771,37 +1771,37 @@ public class UninterpretedOption <: MessageLite {
     public func clone() { UninterpretedOption().m_fieldsClone(this) }
 
     public prop var name: ArrayList<UninterpretedOption_NamePart> {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, RepeatField<UninterpretedOption_NamePart>(2, v)) }
     }
 
     public prop var identifierValue: String {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var positiveIntValue: UInt64 {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var negativeIntValue: Int64 {
-        get() { get(5) }
+        get( ) { get(5) }
         set(v) { set(5, v) }
     }
 
     public prop var doubleValue: Float64 {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, v) }
     }
 
     public prop var stringValue: Bytes {
-        get() { get(7) }
+        get( ) { get(7) }
         set(v) { set(7, v) }
     }
 
     public prop var aggregateValue: String {
-        get() { get(8) }
+        get( ) { get(8) }
         set(v) { set(8, v) }
     }
 }
@@ -1842,27 +1842,27 @@ public class SourceCodeInfo_Location <: MessageLite {
     public func clone() { SourceCodeInfo_Location().m_fieldsClone(this) }
 
     public prop var path: ArrayList<Int32> {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, PackedField<Int32>(v)) }
     }
 
     public prop var span: ArrayList<Int32> {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, PackedField<Int32>(v)) }
     }
 
     public prop var leadingComments: String {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var trailingComments: String {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, v) }
     }
 
     public prop var leadingDetachedComments: ArrayList<String> {
-        get() { get(6) }
+        get( ) { get(6) }
         set(v) { set(6, RepeatField<String>(6, v)) }
     }
 }
@@ -1902,7 +1902,7 @@ public class SourceCodeInfo <: MessageLite {
     public func clone() { SourceCodeInfo().m_fieldsClone(this) }
 
     public prop var location: ArrayList<SourceCodeInfo_Location> {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, RepeatField<SourceCodeInfo_Location>(1, v)) }
     }
 }
@@ -1943,22 +1943,22 @@ public class GeneratedCodeInfo_Annotation <: MessageLite {
     public func clone() { GeneratedCodeInfo_Annotation().m_fieldsClone(this) }
 
     public prop var path: ArrayList<Int32> {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, PackedField<Int32>(v)) }
     }
 
     public prop var sourceFile: String {
-        get() { get(2) }
+        get( ) { get(2) }
         set(v) { set(2, v) }
     }
 
     public prop var begin: Int32 {
-        get() { get(3) }
+        get( ) { get(3) }
         set(v) { set(3, v) }
     }
 
     public prop var end: Int32 {
-        get() { get(4) }
+        get( ) { get(4) }
         set(v) { set(4, v) }
     }
 }
@@ -1998,7 +1998,7 @@ public class GeneratedCodeInfo <: MessageLite {
     public func clone() { GeneratedCodeInfo().m_fieldsClone(this) }
 
     public prop var annotation: ArrayList<GeneratedCodeInfo_Annotation> {
-        get() { get(1) }
+        get( ) { get(1) }
         set(v) { set(1, RepeatField<GeneratedCodeInfo_Annotation>(1, v)) }
     }
 }
