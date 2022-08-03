@@ -592,7 +592,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // service
     outbuf.append("\npublic abstract class ${ser.name}_Service <: Service {\n")
-    outbuf.append("    func getServiceName() { \"${helper.pkgPrefix}${ser.name}\" }\n")
+    outbuf.append("    init() { super(\"${helper.pkgPrefix}${ser.name}\") }\n")
     outbuf.append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
     for (m in ser.method) {
         outbuf.append("            case \"${m.name}\" => let req = ${m.inputType}(); getRequest(ctx, req); ")
@@ -651,7 +651,7 @@ let enumRsvdWords = HashSet<String>([
     "value", "parse"
 ])
 let grpcRsvdWords = HashSet<String>([
-    "getServiceName", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_ctxBind",
+    "m_serviceName", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_ctxBind",
     "setRequest", "getRequest", "getRequest", "setRequest"
 ])
 
