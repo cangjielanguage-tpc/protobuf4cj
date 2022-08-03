@@ -598,7 +598,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
         outbuf.append("            case \"${m.name}\" => let req = ${m.inputType}(); getRequest(ctx, req); ")
         outbuf.append("setResponse(ctx, ${m.funcName}(ctx, req))\n")
     }
-    outbuf.append("            case _ => throw Exception() // todo\n        }\n    }\n\n")
+    outbuf.append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
 
     // service abstract functions
     for (m in ser.method) {
@@ -652,7 +652,7 @@ let enumRsvdWords = HashSet<String>([
 ])
 let grpcRsvdWords = HashSet<String>([
     "m_serviceName", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_ctxBind",
-    "setRequest", "getRequest", "getRequest", "setRequest"
+    "m_refused", "setRequest", "getRequest", "getRequest", "setRequest"
 ])
 
 func getEnumItemName(name: String) {
