@@ -592,8 +592,8 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // service
     outbuf.append("\npublic abstract class ${ser.name}_Service <: Service {\n")
-    outbuf.append("    protected func getServiceName() { \"${helper.pkgPrefix}${ser.name}\" }\n")
-    outbuf.append("    protected func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
+    outbuf.append("    func getServiceName() { \"${helper.pkgPrefix}${ser.name}\" }\n")
+    outbuf.append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
     for (m in ser.method) {
         outbuf.append("            case \"${m.name}\" => let req = ${m.inputType}(); getRequest(ctx, req); ")
         outbuf.append("setResponse(ctx, ${m.funcName}(ctx, req))\n")
