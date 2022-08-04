@@ -615,9 +615,9 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     // client functions
     for (m in ser.method) {
         outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}, resp: ${m.outputType}) {\n")
-        outbuf.append("        m_ctxBind(ctx, \"${m.name}\"); setRequest(ctx, req); getResponse(ctx, resp)\n    }\n")
+        outbuf.append("        m_ctxBind(ctx, \"${m.name}\"); sendRequest(ctx, req, resp)\n    }\n")
         outbuf.append("    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {\n")
-        outbuf.append("        let resp = ${m.outputType}(); m_ctxBind(ctx, \"${m.name}\"); setRequest(ctx, req); (resp, getResponse(ctx, resp))\n    }\n")
+        outbuf.append("        m_ctxBind(ctx, \"${m.name}\"); let resp = ${m.outputType}(); (resp, sendRequest(ctx, req, resp))\n    }\n")
     }
 
     // client end
