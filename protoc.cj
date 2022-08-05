@@ -615,9 +615,9 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     // client functions
     for (m in ser.method) {
         outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}, resp: ${m.outputType}) {\n")
-        outbuf.append("        m_ctxBind(ctx, \"${m.name}\"); sendRequest(ctx, req, resp)\n    }\n")
+        outbuf.append("        sendRequest(\"${m.name}\", ctx, req, resp)\n    }\n")
         outbuf.append("    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {\n")
-        outbuf.append("        m_ctxBind(ctx, \"${m.name}\"); let resp = ${m.outputType}(); (resp, sendRequest(ctx, req, resp))\n    }\n")
+        outbuf.append("        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", ctx, req, resp))\n    }\n")
     }
 
     // client end
@@ -652,8 +652,8 @@ let enumRsvdWords = HashSet<String>([
     "value", "parse"
 ])
 let grpcRsvdWords = HashSet<String>([
-    "m_path", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_ctxBind",
-    "m_refused", "setRequest", "getRequest", "getRequest", "setRequest"
+    "m_path", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_refused",
+    "sendRequest", "getRequest", "setRequest"
 ])
 
 func getEnumItemName(name: String) {
