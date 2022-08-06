@@ -38,7 +38,7 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
             // save `desc` as json, for developing.
             // let dbgFile = resp.file.add()
             // dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            // dbgFile.content = desc.stringify()
+            // dbgFile.content = desc.toJson().stringify()
             fileProcess(desc, resp.file.add())
         }
     }
@@ -404,7 +404,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("\n        s_names = HashMap<Tag, String>([\n")
     sepOut.reset()
     for (f in fields) {
-        sepOut.append("(${f.number}, \"${f.name}\")")
+        sepOut.append("(${f.number}, \"${f.jsonName}\")")
     }
     outbuf.append("\n        ])\n")
 
@@ -412,7 +412,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("\n        s_nameTags = HashMap<String, Tag>([\n")
     sepOut.reset()
     for (f in fields) {
-        sepOut.append("(\"${f.name}\", ${f.number})")
+        sepOut.append("(\"${f.jsonName}\", ${f.number})")
     }
     outbuf.append("\n        ])\n")
 
@@ -470,7 +470,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
 
     // props
     for (f in fields) {
-        outbuf.append("\n    public prop var ${f.name}: ${getPropType(f)} {\n")
+        outbuf.append("\n    public prop var ${getMessagePropName(f.jsonName)}: ${getPropType(f)} {\n")
         outbuf.append("        get( ) { get(${f.number}) }\n")
         outbuf.append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
         outbuf.append("    }\n")
@@ -512,8 +512,6 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
             case TYPE_MESSAGE => helper.setMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
-        // Set propname
-        f.name = getMessagePropName(f.jsonName)
         // Set packed option
         try { f.options.packed } catch (_) { f.options.packed = false }
     }
@@ -540,8 +538,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     // enum
     outbuf.append("\npublic enum ${typeName} {\n")
     for (v in values) {
-        v.name = getEnumItemName(v.name)
-        sepOut.append("| ${v.name}")
+        sepOut.append("| ${getEnumItemName(v.name)}")
     }
     outbuf.append("\n}\n")
 
@@ -553,26 +550,26 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     // value
     outbuf.append("    public func value(): Int32 {\n        match(this) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.name} => ${v.number}\n")
+        outbuf.append("            case ${getEnumItemName(v.name)} => ${v.number}\n")
     }
     outbuf.append("        }\n    }\n")
     // toString
     outbuf.append("\n    public func toString(): String {\n        match(this) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.name} => \"${v.name}\"\n")
+        outbuf.append("            case ${getEnumItemName(v.name)} => \"${v.name}\"\n")
     }
     outbuf.append("        }\n    }\n")
     // parse
     outbuf.append("\n    public static func parse(value: Int32): ${typeName} {\n        match(value) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.number} => ${v.name}\n")
+        outbuf.append("            case ${v.number} => ${getEnumItemName(v.name)}\n")
     }
     outbuf.append("            case e => throw InvalidEnumValueException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
     // parse, from string
     outbuf.append("\n    public static func parse(value: String): ${typeName} {\n        match(value) {\n")
     for (v in values) {
-        outbuf.append("            case \"${v.name}\" => ${v.name}\n")
+        outbuf.append("            case \"${v.name}\" => ${getEnumItemName(v.name)}\n")
     }
     outbuf.append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
@@ -639,7 +636,7 @@ let cangjieKeyWords = HashSet<String>([
     "type", "This", "unsafe", "var", "where", "while"
 ])
 let protobufRsvdWords = HashSet<String>([
-    "protobuf", "protoc", "toString", "stringify", "packSize", "pack", "isEmpty"
+    "protobuf", "protoc", "toString", "toJson", "packSize", "pack", "isEmpty"
 ])
 let messageRsvdWords = HashSet<String>([
     "s_initHashMapTagUnpacker", "s_initHashMapTagString", "s_initHashMapTagMessageFile",
