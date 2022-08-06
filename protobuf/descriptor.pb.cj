@@ -61,13 +61,13 @@ public class FileDescriptorProto <: MessageLite {
         ])
 
         s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "package_"), (3, "dependency"), (10, "publicDependency"), (11, "weakDependency"),
+            (1, "name"), (2, "package"), (3, "dependency"), (10, "publicDependency"), (11, "weakDependency"),
             (4, "messageType"), (5, "enumType"), (6, "service"), (7, "extension"), (8, "options"),
             (9, "sourceCodeInfo"), (12, "syntax")
         ])
 
         s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("package_", 2), ("dependency", 3), ("publicDependency", 10), ("weakDependency", 11),
+            ("name", 1), ("package", 2), ("dependency", 3), ("publicDependency", 10), ("weakDependency", 11),
             ("messageType", 4), ("enumType", 5), ("service", 6), ("extension", 7), ("options", 8),
             ("sourceCodeInfo", 9), ("syntax", 12)
         ])
@@ -536,12 +536,12 @@ public class FieldDescriptorProto <: MessageLite {
         ])
 
         s_names = HashMap<Tag, String>([
-            (1, "name"), (3, "number"), (4, "label"), (5, "type_"), (6, "typeName"), (2, "extendee"),
+            (1, "name"), (3, "number"), (4, "label"), (5, "type"), (6, "typeName"), (2, "extendee"),
             (7, "defaultValue"), (9, "oneofIndex"), (10, "jsonName"), (8, "options"), (17, "proto3Optional")
         ])
 
         s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("number", 3), ("label", 4), ("type_", 5), ("typeName", 6), ("extendee", 2),
+            ("name", 1), ("number", 3), ("label", 4), ("type", 5), ("typeName", 6), ("extendee", 2),
             ("defaultValue", 7), ("oneofIndex", 9), ("jsonName", 10), ("options", 8), ("proto3Optional", 17)
         ])
     }
