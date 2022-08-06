@@ -6,7 +6,7 @@ package protobuf
 
 from std import sync.*
 
-public abstract class MessageLite <: MessageField & Json & ToString {
+public abstract class MessageLite <: MessageField & ToJson & ToString {
     /* init value of all kinds of collections in message_lite. */
     protected static let s_initHashMapTagUnpacker = HashMap<Tag, Unpacker>()
     protected static let s_initHashMapTagString = HashMap<Tag, String>()
@@ -145,18 +145,13 @@ public abstract class MessageLite <: MessageField & Json & ToString {
         sb.append('}').toString()
     }
 
-    /* to JSON format string */
-    public func stringify(os: JsonSerializer): Unit {
-        m_requiredFieldsCheck()
-        var sep = false
-        os.append("{")
+    /* to Json */
+    public func toJson(): Json /* JsonObject */ {
+        let obj = JsonObject()
         for ((tag, val) in m_fields) {
-            if (sep) { os.append(", ") } else { sep = true }
-            os.append("\"${m_names[tag]}\"")
-            os.append(": ")
-            stringify(val, os)
+            obj[m_names[tag]] = toJson(val)
         }
-        os.append("}")
+        obj
     }
 
     protected func set(tag: Tag, val: MessageField): Unit {
@@ -194,7 +189,6 @@ public abstract class MessageLite <: MessageField & Json & ToString {
             return default
         }
 
-        // todo not support reference default value yet.
         if (let Some(v) = m_defaultValue.get(tag)) {
             return v
         }

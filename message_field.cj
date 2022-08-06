@@ -5,7 +5,7 @@
 package protobuf
 
 from json import json.*
-public from json import json.JsonReader, json.JsonSerializer, json.JsonObject
+public from json import json.{ JsonReader, JsonObject}
 
 public interface MessageField {
     /* the pack size of the field, exclude `the first tag` */
@@ -50,11 +50,12 @@ extend Bool <: MessageField & Varint {
     public func isEmpty() { !this }
 }
 
-public interface ValuedEnum <: MessageField & ToString {
+public interface ValuedEnum <: MessageField & ToString & ToJson {
     func value(): Int32
     func packSize() { value().packSize() } /* cangjie 0.31.4 bug, varintSize undefined */
     func pack(out: BytesWriter) { value().pack(out) } /* cangjie 0.31.4 bug, varintPack undefined */
     func isEmpty() { value() == 0 }
+    func toJson(): Json { toString() }
 }
 
 public interface Enum<E> <: ValuedEnum & Equatable<E> where E <: Enum<E> {
@@ -64,20 +65,19 @@ public interface Enum<E> <: ValuedEnum & Equatable<E> where E <: Enum<E> {
     operator func!=(e: E) { value() != e.value() }
 }
 
-extend Float32 <: MessageField & Bit32 & Stringify {
+extend Float32 <: MessageField & Bit32 {
     public func isEmpty() { this == .0 }
     public func packSize() { 4 }
     public func pack(out: BytesWriter) { fixedPack(out) }
-    public func stringify(os: JsonSerializer) { Float64(this).stringify(os) }
 }
 
-extend Float64 <: MessageField & Bit64 & Stringify {
+extend Float64 <: MessageField & Bit64 {
     public func isEmpty() { this == .0 }
     public func packSize() { 8 }
     public func pack(out: BytesWriter) { fixedPack(out) }
 }
 
-extend String <: MessageField & Stringify {
+extend String <: MessageField {
     public func packSize() { let len = this.utf8View.size(); len.packSize() + len }
     public func pack(out: BytesWriter) { let arr = this.toUtf8Array(); arr.size().pack(out); out.appendAll(arr) }
 }
@@ -94,7 +94,7 @@ public interface Value<T> <: MessageField {
 }
 
 /* `box` trans `T` to `Proxy<T>` */
-public interface Proxy<T> <: Value<T> where T <: MessageField {
+public interface Proxy<T> <: Value<T> & ToJson where T <: MessageField {
     static func box(v: T): Proxy<T>
 }
 
@@ -105,6 +105,7 @@ public struct SInt64 <: Proxy<Int64> & Varint {
     public func packSize() { val.zigzag().packSize() }
     public func pack(out: BytesWriter) { val.zigzag().pack(out) }
     public func toString() { val.toString() }
+    public func toJson(): Json { Float64(val) }
     public static func box(val: Int64): Proxy<Int64> { SInt64(val) }
 }
 
@@ -115,6 +116,7 @@ public struct SInt32 <: Proxy<Int32> & Varint {
     public func packSize() { val.zigzag().packSize() }
     public func pack(out: BytesWriter) { val.zigzag().pack(out) }
     public func toString() { val.toString() }
+    public func toJson(): Json { Float64(val) }
     public static func box(val: Int32): Proxy<Int32> { SInt32(val) }
 }
 
@@ -125,6 +127,7 @@ public struct SFixed64 <: Proxy<Int64> & Bit64 {
     public func packSize() { 8 }
     public func pack(out: BytesWriter) { val.fixedPack(out) }
     public func toString() { val.toString() }
+    public func toJson(): Json { Float64(val) }
     public static func box(val: Int64): Proxy<Int64> { SFixed64(val) }
 }
 
@@ -135,6 +138,7 @@ public struct SFixed32 <: Proxy<Int32> & Bit32 {
     public func packSize() { 4 }
     public func pack(out: BytesWriter) { val.fixedPack(out) }
     public func toString() { val.toString() }
+    public func toJson(): Json { Float64(val) }
     public static func box(val: Int32): Proxy<Int32> { SFixed32(val) }
 }
 
@@ -145,6 +149,7 @@ public struct Fixed64 <: Proxy<UInt64> & Bit64 {
     public func packSize() { 8 }
     public func pack(out: BytesWriter) { val.fixedPack(out) }
     public func toString() { val.toString() }
+    public func toJson(): Json { Float64(val) }
     public static func box(val: UInt64): Proxy<UInt64> { Fixed64(val) }
 }
 
@@ -155,11 +160,12 @@ public struct Fixed32 <: Proxy<UInt32> & Bit32 {
     public func packSize() { 4 }
     public func pack(out: BytesWriter) { val.fixedPack(out) }
     public func toString() { val.toString() }
+    public func toJson(): Json { Float64(val) }
     public static func box(val: UInt32): Proxy<UInt32> { Fixed32(val) }
 }
 
-/* all repeated fields comm isEmpty, toString, stringify */
-public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & Stringify & Reference where T <: MessageField {
+/* all repeated fields comm isEmpty, toString, toJson */
+public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & ToJson & Reference where T <: MessageField {
     RepeatFieldComm(let val: ArrayList<T>) { }
     public func value() { val }
     public func isEmpty() { val.isEmpty() }
@@ -177,14 +183,8 @@ public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & Stringify & Re
         sb.append(']').toString()
     }
 
-    public func stringify(os: JsonSerializer): Unit {
-        var sep = false
-        os.append("[")
-        for (v in val) {
-            if (sep) { os.append(", ") } else { sep = true }
-            stringify(v, os)
-        }
-        os.append("]")
+    public func toJson(): Json {
+        JsonArray(val.size(), { i => toJson(val[i]) })
     }
 }
 
@@ -316,7 +316,7 @@ public func fieldPass<T>(val: T): MessageField where T <: MessageField { val }
  * map<k, v> fields, set parameter `kb` or `kv` when `k` or `v` is proxy type
  * for example, creating a map<sint32, string> field by `MapField<Int32, String>(1, HashMap(), kb: SInt32.box)`
  */
-public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & Stringify where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
+public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & ToJson where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
     static func kPass(k: K): MessageField { k }
     static func vPass(v: V): MessageField { v }
 
@@ -356,16 +356,12 @@ public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & Stringify wher
         sb.append('}').toString()
     }
 
-    public func stringify(os: JsonSerializer): Unit {
-        var sep = false
-        os.append("{")
+    public func toJson(): Json {
+        let obj = JsonObject()
         for ((k, v) in val) {
-            if (sep) { os.append(", ") } else { sep = true }
-            k.toString().stringify(os)
-            os.append(": ")
-            stringify(v, os)
+            obj[k.toString()] = toJson(v)
         }
-        os.append("}")
+        obj
     }
 
     /* map will not pack any empty fields */
@@ -464,16 +460,11 @@ func clone(val: MessageField): MessageField {
     }
 }
 
-public interface Stringify {
-    func stringify(os: JsonSerializer): Unit
-}
-
-func stringify(val: MessageField, os: JsonSerializer) {
+func toJson(val: MessageField) {
     match (val) {
-        case c: MessageLite => c.stringify(os)
-        case c: Stringify => c.stringify(os)
-        case c: ValuedEnum => os.append("\"${c.toString()}\"")
-        case _ => os.append(val.toString())
+        case c: ToJson => c.toJson()
+        case c: ArrayList<Byte> => JsonArray(c.size(), { i => Float64(c[i])})
+        case _ => throw Exception()
     }
 }
 
