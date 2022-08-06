@@ -401,7 +401,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("\n        s_names = HashMap<Tag, String>([\n")
     sepOut.reset()
     for (f in fields) {
-        sepOut.append("(${f.number}, \"${f.name}\")")
+        sepOut.append("(${f.number}, \"${f.jsonName}\")")
     }
     outbuf.append("\n        ])\n")
 
@@ -409,7 +409,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("\n        s_nameTags = HashMap<String, Tag>([\n")
     sepOut.reset()
     for (f in fields) {
-        sepOut.append("(\"${f.name}\", ${f.number})")
+        sepOut.append("(\"${f.jsonName}\", ${f.number})")
     }
     outbuf.append("\n        ])\n")
 
@@ -467,7 +467,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
 
     // props
     for (f in fields) {
-        outbuf.append("\n    public prop var ${f.name}: ${getPropType(f)} {\n")
+        outbuf.append("\n    public prop var ${getMessagePropName(f.jsonName)}: ${getPropType(f)} {\n")
         outbuf.append("        get() { get(${f.number}) }\n")
         outbuf.append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
         outbuf.append("    }\n")
@@ -509,8 +509,6 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
             case TYPE_MESSAGE => helper.setMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
-        // Set propname
-        f.name = getMessagePropName(f.jsonName)
         // Set packed option
         try { f.options.packed } catch (_) { f.options.packed = false }
     }
