@@ -38,7 +38,7 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
             // save `desc` as json, for developing.
             // let dbgFile = resp.file.add()
             // dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            // dbgFile.content = desc.stringify()
+            // dbgFile.content = desc.toJson().stringify()
             fileProcess(desc, resp.file.add())
         }
     }
@@ -596,7 +596,7 @@ let cangjieKeyWords = HashSet<String>([
     "type", "This", "unsafe", "var", "where", "while"
 ])
 let protobufRsvdWords = HashSet<String>([
-    "protobuf", "protoc", "toString", "stringify", "packSize", "pack", "isEmpty"
+    "protobuf", "protoc", "toString", "toJson", "packSize", "pack", "isEmpty"
 ])
 let messageRsvdWords = HashSet<String>([
     "s_initHashMapTagUnpacker", "s_initHashMapTagString", "s_initHashMapTagMessageFile",
