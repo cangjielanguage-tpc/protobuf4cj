@@ -535,8 +535,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     // enum
     outbuf.append("\npublic enum ${typeName} {\n")
     for (v in values) {
-        v.name = getEnumItemName(v.name)
-        sepOut.append("| ${v.name}")
+        sepOut.append("| ${getEnumItemName(v.name)}")
     }
     outbuf.append("\n}\n")
 
@@ -548,26 +547,26 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     // value
     outbuf.append("    public func value(): Int32 {\n        match(this) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.name} => ${v.number}\n")
+        outbuf.append("            case ${getEnumItemName(v.name)} => ${v.number}\n")
     }
     outbuf.append("        }\n    }\n")
     // toString
     outbuf.append("\n    public func toString(): String {\n        match(this) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.name} => \"${v.name}\"\n")
+        outbuf.append("            case ${getEnumItemName(v.name)} => \"${v.name}\"\n")
     }
     outbuf.append("        }\n    }\n")
     // parse
     outbuf.append("\n    public static func parse(value: Int32): ${typeName} {\n        match(value) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.number} => ${v.name}\n")
+        outbuf.append("            case ${v.number} => ${getEnumItemName(v.name)}\n")
     }
     outbuf.append("            case e => throw InvalidEnumValueException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
     // parse, from string
     outbuf.append("\n    public static func parse(value: String): ${typeName} {\n        match(value) {\n")
     for (v in values) {
-        outbuf.append("            case \"${v.name}\" => ${v.name}\n")
+        outbuf.append("            case \"${v.name}\" => ${getEnumItemName(v.name)}\n")
     }
     outbuf.append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
     outbuf.append("        }\n    }\n")
