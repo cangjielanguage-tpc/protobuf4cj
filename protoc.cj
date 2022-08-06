@@ -589,7 +589,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // service
     let servicePath = "/${helper.pkgPrefix.substring(1)}${ser.name}/"
-    outbuf.append("\npublic abstract class ${ser.name}_Service <: Service {\n")
+    outbuf.append("\npublic abstract class ${ser.name}Service <: Service {\n")
     outbuf.append("    init() { super(\"${servicePath}\") }\n")
     outbuf.append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
     for (m in ser.method) {
@@ -607,7 +607,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("}\n")
 
     // client
-    outbuf.append("\npublic class ${ser.name}_Client <: Stub {\n    public init(chan: Channel) { super(chan, \"${servicePath}\") }\n")
+    outbuf.append("\npublic class ${ser.name}Client <: Stub {\n    public init(chan: Channel) { super(chan, \"${servicePath}\") }\n")
 
     // client functions
     for (m in ser.method) {
