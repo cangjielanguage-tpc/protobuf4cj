@@ -11,6 +11,8 @@ package protoc
 import google.protobuf.*
 import google.protobuf.compiler.*
 from std import collection.*
+from std import time.*
+from std import io.*
 
 /**
  * The Function is cj_generator
@@ -36,9 +38,9 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
             // save `desc` as json, for developing.
-            // let dbgFile = resp.file.add()
-            // dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            // dbgFile.content = desc.toJson().stringify()
+            let dbgFile = resp.file.add()
+            dbgFile.name = desc.name.replace(".proto", ".raw.json")
+            dbgFile.content = desc.toJson().stringify()
             fileProcess(desc, resp.file.add())
         }
     }
@@ -672,4 +674,74 @@ func getServiceFuncName(name: String) {
         return name + '_'
     }
     name
+}
+
+/* 内部使用, 对比序列化和反序列化FileDescriptorProto的执行耗时 */
+public func test_perf() {
+    let file = FileStream("./src/google/protobuf/descriptor.raw.json")
+    file.openFile()
+
+    let str = file.readAllText()
+    let src = FileDescriptorProto.fromJson(str)
+    let buf = src.pack()
+    let obj = src.toJson().asObject()
+
+    println("strlen: ${str.size()}, byteslen: ${buf.size()}")
+    var start: Time
+
+    print("[   toJson  ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        src.toJson()
+    }
+    println(Time.since(start))
+
+    print("[ stringify ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        obj.stringify()
+    }
+    println(Time.since(start))
+
+    print("[  toString ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        src.toString()
+    }
+    println(Time.since(start))
+
+    print("[    pack   ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        src.pack()
+    }
+    println(Time.since(start))
+
+    print("[  fromStr  ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        FileDescriptorProto.fromJson(str)
+    }
+    println(Time.since(start))
+
+    print("[  fromObj  ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        FileDescriptorProto.fromJson(obj)
+    }
+    println(Time.since(start))
+
+    print("[ fromBytes ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        FileDescriptorProto.fromBytes(buf)
+    }
+    println(Time.since(start))
 }
