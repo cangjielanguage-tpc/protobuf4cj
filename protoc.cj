@@ -11,6 +11,7 @@ package protoc
 import google.protobuf.*
 import google.protobuf.compiler.*
 from std import collection.*
+from std import unicode.*
 from std import time.*
 from std import io.*
 
@@ -669,7 +670,16 @@ func getMessagePropName(name: String) {
     name
 }
 
+/* 小驼峰函数名 */
 func getServiceFuncName(name: String) {
+    let arr = "${name[0].toLowerCase()}${name.substring(1)}".split('_')
+
+    for (i in 1..arr.size()) {
+        arr[i] = "${arr[i][0].toUpperCase()}${arr[i].substring(1)}"
+    }
+
+    let name = String.join(arr)
+
     if (cangjieKeyWords.contains(name) || grpcRsvdWords.contains(name)) {
         return name + '_'
     }
