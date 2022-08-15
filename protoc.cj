@@ -596,14 +596,33 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("    init() { super(\"${servicePath}\") }\n")
     outbuf.append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
     for (m in ser.method) {
-        outbuf.append("            case \"${m.name}\" => let req = ${m.inputType}(); getRequest(ctx, req); ")
-        outbuf.append("setResponse(ctx, ${m.funcName}(ctx, req))\n")
+        outbuf.append("            case \"${m.name}\" => ")
+        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+            case (false, false) =>
+                "let req = ${m.inputType}(); getRequest(ctx, req); setResponse(ctx, ${m.funcName}(ctx, req))\n"
+            case (false, true) =>
+                "let req = ${m.inputType}(); getRequest(ctx, req); setStatus(ctx, ${m.funcName}(ctx, req, getWriter(ctx)))\n"
+            case (true, false) =>
+                "setResponse(ctx, ${m.funcName}(ctx, getReader(ctx)))\n"
+            case (true, true) =>
+                "setStatus(ctx, ${m.funcName}(ctx, getStream(ctx)))\n"
+        })
     }
     outbuf.append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
 
     // service abstract functions
     for (m in ser.method) {
-        outbuf.append("    protected func ${m.funcName}(ctx: ServerContext, req: ${m.inputType}): (${m.outputType}, Status)\n")
+        outbuf.append("    protected func ${m.funcName}(ctx: ServerContext, ")
+        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+            case (false, false) =>
+                "req: ${m.inputType}): (${m.outputType}, Status)\n"
+            case (false, true) =>
+                "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
+            case (true, false) =>
+                "reader: ServerReader<${m.inputType}>): (${m.outputType}, Status)\n"
+            case (true, true) =>
+                "stream: ServerReaderWriter<${m.inputType}, ${m.outputType}>): Status\n"
+        })
     }
 
     // service end
@@ -614,10 +633,20 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // client functions
     for (m in ser.method) {
-        outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}, resp: ${m.outputType}) {\n")
-        outbuf.append("        sendRequest(\"${m.name}\", ctx, req, resp)\n    }\n")
-        outbuf.append("    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {\n")
-        outbuf.append("        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", ctx, req, resp))\n    }\n")
+        outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext")
+        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+            case (false, false) =>
+                ", req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", ctx, req, resp)\n    }" +
+                "\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {" +
+                "\n        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", ctx, req, resp))" +
+                "\n    }\n"
+            case (false, true) =>
+                ", req: ${m.inputType}) {\n        serverStream<${m.outputType}>(\"${m.name}\", ctx, req)\n    }\n"
+            case (true, false) =>
+                ", resp: ${m.outputType}) {\n        clientStream<${m.inputType}>(\"${m.name}\", ctx, resp)\n    }\n"
+            case (true, true) =>
+                ") {\n        stream<${m.inputType}, ${m.outputType}>(\"${m.name}\", ctx)\n    }\n"
+        })
     }
 
     // client end
@@ -653,7 +682,8 @@ let enumRsvdWords = HashSet<String>([
 ])
 let grpcRsvdWords = HashSet<String>([
     "m_path", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_refused",
-    "sendRequest", "getRequest", "setRequest"
+    "sendRequest", "getRequest", "setRequest", "setStatus", "getWriter", "getReader", "getStream",
+    "writer", "reader", "stream", "serverStream", "clientStream"
 ])
 
 func getEnumItemName(name: String) {
