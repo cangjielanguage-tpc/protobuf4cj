@@ -414,7 +414,8 @@ public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & ToJson where K
             }
             if (!v.isEmpty()) {
                 UInt32(2).tagPack(wireType(vBox), out)
-                vBox.pack(out)
+                /* `vBox` should be packed out byte `pack` rather than `vBox.pack` */
+                pack(vBox, out)
             }
         }
     }
