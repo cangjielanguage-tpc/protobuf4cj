@@ -215,15 +215,15 @@ public interface MessageParser<M> <: MessageParserTmp<M> where M <: MessageLite 
 }
 
 public class Once {
-    var e = false
+    var e = sync.AtomicBool(false)
     let m = sync.ReentrantMutex()
 
     public func once(f: ()-> Unit) {
-        if (e) { return }
+        if (e.load()) { return }
         m.lock()
-        if (!e) {
-            e = true
+        if (!e.load()) {
             f()
+            e.store(true)
         }
         m.unlock()
     }
