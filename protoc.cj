@@ -346,112 +346,70 @@ func getPropType(f: FieldDescriptorProto) {
     if (f.label == LABEL_REPEATED) { "ArrayList<${pt}>" } else { pt }
 }
 
+let staticInitCodes =
+"""
+    static let m_once = Once()
+    static var s_unpackers = s_initHashMapTagUnpacker
+    static var s_names = s_initHashMapTagString
+    static var s_nameTags = s_initHashMapStringTag
+"""
+
+let memberInitCodes =
+"""
+    public init() {
+        m_once.once(s_init)
+        m_unpacker = s_unpackers
+        m_names = s_names
+        m_nameTags = s_nameTags
+"""
+
 func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let outbuf = helper.outbuf
     let sepOut = LineSepOut(outbuf)
 
     // default value
-    let dvs = ArrayList<String>()
-    for (f in fields) {
-        try { f.defaultValue } catch (_) { continue }
-        let dv = match (f.type_) {
-            case TYPE_STRING => "\"${f.defaultValue}\""
-            case TYPE_BOOL | TYPE_INT64 | TYPE_DOUBLE => f.defaultValue
-            case TYPE_ENUM => "${getPropType(f)}.${f.defaultValue}"
-            case _ => "${getPropType(f)}(${f.defaultValue})"
-        }
-        dvs.append("(${f.number}, ${dv})")
-    }
+    let dvs = getDefaultValues(fields)
 
     // required fields
-    let reqs = ArrayList<Int32>()
-    for (f in fields) {
-        if (f.label == LABEL_REQUIRED) {
-            reqs.append(f.number)
-        }
-    }
+    let reqs = getRequiredFields(fields)
 
     // class
     outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
 
     // static
-    outbuf.append("    static let m_once = Once()\n")
-    outbuf.append("    static var s_unpackers = s_initHashMapTagUnpacker\n")
-    outbuf.append("    static var s_names = s_initHashMapTagString\n")
-    outbuf.append("    static var s_nameTags = s_initHashMapStringTag\n")
-    if (!dvs.isEmpty()) {
-        outbuf.append("    static var s_defaultValue = s_initHashMapTagMessageFile\n")
-    }
-    if (!reqs.isEmpty()) {
-        outbuf.append("    static var s_requiredFields = s_initArrayTag\n")
-    }
-    if (helper.oneofNum != 0) {
-        outbuf.append("    static var s_oneofIndex = s_initHashMapTagInt64\n")
-    }
+    outbuf.append(staticInitCodes)
+    if (!dvs.isEmpty()) { outbuf.append("    static var s_defaultValue = s_initHashMapTagMessageFile\n") }
+    if (!reqs.isEmpty()) { outbuf.append("    static var s_requiredFields = s_initArrayTag\n") }
+    if (helper.oneofNum != 0) { outbuf.append("    static var s_oneofIndex = s_initHashMapTagInt64\n") }
 
     // s_init
     // unpacker
     outbuf.append("\n    static func s_init() {\n        s_unpackers = HashMap<Tag, Unpacker>([\n")
-    for (f in fields) {
-        sepOut.append("(${f.number}, ${getUnpacker(f)})")
-    }
+    for (f in fields) { sepOut.append("(${f.number}, ${getUnpacker(f)})") }
     outbuf.append("\n        ])\n")
 
     // names
     outbuf.append("\n        s_names = HashMap<Tag, String>([\n")
     sepOut.reset()
-    for (f in fields) {
-        sepOut.append("(${f.number}, \"${f.jsonName}\")")
-    }
+    for (f in fields) { sepOut.append("(${f.number}, \"${f.jsonName}\")") }
     outbuf.append("\n        ])\n")
 
     // nameTags
     outbuf.append("\n        s_nameTags = HashMap<String, Tag>([\n")
     sepOut.reset()
-    for (f in fields) {
-        sepOut.append("(\"${f.jsonName}\", ${f.number})")
-    }
+    for (f in fields) { sepOut.append("(\"${f.jsonName}\", ${f.number})") }
     outbuf.append("\n        ])\n")
 
-    // default value
-    if (!dvs.isEmpty()) {
-        outbuf.append("\n        s_defaultValue = HashMap<Tag, MessageField>([\n")
-        sepOut.reset()
-        for (dv in dvs) {
-            sepOut.append(dv)
-        }
-        outbuf.append("\n        ])\n")
-    }
-
-    // required fields
-    if (!reqs.isEmpty()) {
-        outbuf.append("\n        s_requiredFields = Array<Tag>([\n")
-        sepOut.reset()
-        for (req in reqs) {
-            sepOut.append("${req}")
-        }
-        outbuf.append("\n        ])\n")
-    }
+    // special fields
+    genCodeSpecialFields(sepOut, dvs, reqs)
 
     // oneof
-    if (helper.oneofNum != 0) {
-        outbuf.append("\n        s_oneofIndex = HashMap<Tag, Int64>([\n")
-        sepOut.reset()
-        for (f in fields) {
-            try { f.oneofIndex } catch (_) { continue }
-            sepOut.append("(${f.number}, ${f.oneofIndex})")
-        }
-        outbuf.append("\n        ])\n")
-    }
+    genCodeOneofFields(sepOut, fields, helper)
     // s_init end
-    outbuf.append("    }\n")
+    outbuf.append("    }\n\n")
 
     // init
-    outbuf.append("\n    public init() {\n")
-    outbuf.append("        m_once.once(s_init)\n")
-    outbuf.append("        m_unpacker = s_unpackers\n")
-    outbuf.append("        m_names = s_names\n")
-    outbuf.append("        m_nameTags = s_nameTags\n")
+    outbuf.append(memberInitCodes)
     if (!helper.proto2) { outbuf.append("        m_proto2 = false\n") }
     if (!dvs.isEmpty()) { outbuf.append("        m_defaultValue = s_defaultValue\n") }
     if (!reqs.isEmpty()) { outbuf.append("        m_requiredFields = s_requiredFields\n") }
@@ -480,6 +438,68 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
     outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
     outbuf.append("}\n")
+}
+
+func getDefaultValues(fields: ArrayList<FieldDescriptorProto>) {
+    let dvs = ArrayList<String>()
+    for (f in fields) {
+        try { f.defaultValue } catch (_) { continue }
+        let dv = match (f.type_) {
+            case TYPE_STRING => "\"${f.defaultValue}\""
+            case TYPE_BOOL | TYPE_INT64 | TYPE_DOUBLE => f.defaultValue
+            case TYPE_ENUM => "${getPropType(f)}.${f.defaultValue}"
+            case _ => "${getPropType(f)}(${f.defaultValue})"
+        }
+        dvs.append("(${f.number}, ${dv})")
+    }
+    dvs
+}
+
+func getRequiredFields(fields: ArrayList<FieldDescriptorProto>) {
+    let reqs = ArrayList<Int32>()
+    for (f in fields) {
+        if (f.label == LABEL_REQUIRED) {
+            reqs.append(f.number)
+        }
+    }
+    reqs
+}
+
+func genCodeSpecialFields(sepOut: LineSepOut, dvs: ArrayList<String>, reqs: ArrayList<Int32>) {
+    let outbuf = sepOut.outbuf
+
+    // default value
+    if (!dvs.isEmpty()) {
+        outbuf.append("\n        s_defaultValue = HashMap<Tag, MessageField>([\n")
+        sepOut.reset()
+        for (dv in dvs) {
+            sepOut.append(dv)
+        }
+        outbuf.append("\n        ])\n")
+    }
+
+    // required fields
+    if (!reqs.isEmpty()) {
+        outbuf.append("\n        s_requiredFields = Array<Tag>([\n")
+        sepOut.reset()
+        for (req in reqs) {
+            sepOut.append("${req}")
+        }
+        outbuf.append("\n        ])\n")
+    }
+}
+
+func genCodeOneofFields(sepOut: LineSepOut, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper) {
+    let outbuf = sepOut.outbuf
+    if (helper.oneofNum != 0) {
+        outbuf.append("\n        s_oneofIndex = HashMap<Tag, Int64>([\n")
+        sepOut.reset()
+        for (f in fields) {
+            try { f.oneofIndex } catch (_) { continue }
+            sepOut.append("(${f.number}, ${f.oneofIndex})")
+        }
+        outbuf.append("\n        ])\n")
+    }
 }
 
 func genCodeMessageExtension(typeName: String, extensions: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
