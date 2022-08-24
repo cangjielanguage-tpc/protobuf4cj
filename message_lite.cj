@@ -40,7 +40,14 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     }
 
     protected func m_requiredFieldsCheck() {
-        if (!m_proto2 || m_requiredFields.isEmpty()) { return }
+        if (!m_proto2) {
+            return
+        }
+
+        if (m_requiredFields.isEmpty()) {
+            return
+        }
+
         for (tag in m_requiredFields) {
             if (!m_fields.contains(tag) && !m_defaultValue.contains(tag)) {
                 throw RequiredFieldNotSetException(m_names[tag])
@@ -55,7 +62,7 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     private func packCheck(val: MessageField): Bool {
         match (val) {
             case c: Bytes => m_proto2 || !c.isEmpty()
-            case c: MessageLite => m_proto2 || !c.isEmpty()
+            case c: MessageLite => if (m_proto2) { true } else { !c.isEmpty() }
             case _: Reference => !val.isEmpty()
             case _ => true
         }
@@ -127,7 +134,12 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     public func clone(): MessageLite
 
     /* whether if the message is empty: has no fields set or all the fields is empty. */
-    public func isEmpty() { m_fields.isEmpty() || packSize() == 0 }
+    public func isEmpty() {
+        if (m_fields.isEmpty()) {
+            return true
+        }
+        packSize() == 0
+    }
 
     /* to string */
     public func toString() {
