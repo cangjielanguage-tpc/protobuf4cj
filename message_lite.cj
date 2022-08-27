@@ -44,10 +44,6 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
             return
         }
 
-        if (m_requiredFields.isEmpty()) {
-            return
-        }
-
         for (tag in m_requiredFields) {
             if (!m_fields.contains(tag) && !m_defaultValue.contains(tag)) {
                 throw RequiredFieldNotSetException(m_names[tag])
@@ -135,10 +131,12 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
 
     /* whether if the message is empty: has no fields set or all the fields is empty. */
     public func isEmpty() {
-        if (m_fields.isEmpty()) {
-            return true
+        for ((_, val) in m_fields) {
+            if (packCheck(val)) {
+                return false
+            }
         }
-        packSize() == 0
+        return unknownFields.isEmpty()
     }
 
     /* to string */
