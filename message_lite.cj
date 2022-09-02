@@ -219,7 +219,7 @@ public interface MessageParserTmp<M> where M <: MessageLite {
 }
 
 public interface MessageParser<M> <: MessageParserTmp<M> where M <: MessageLite & MessageParser<M> {
-    static func fromJson(src: JsonReader): M { src.skipWhitespace(); M.fromJson(src.readObject()) }
+    static func fromJson(src: JsonReader): M { M.fromJson(src.readObject()) }
     static func fromJson(src: String): M { M.fromJson(JsonParse(src).asObject()) }
     static func fromBytes(src: Collection<Byte>): M { M.fromBytes(SimpleReader(src)) }
 }
