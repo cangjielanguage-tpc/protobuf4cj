@@ -129,6 +129,15 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     /* clone */
     public func clone(): MessageLite
 
+    /* clear */
+    public func clear() {
+        for (i in 0..m_oneofCase.size()) {
+            m_oneofCase[i] = UNSETCASE
+        }
+        m_fields.clear()
+        unknownFields.clear()
+    }
+
     /* whether if the message is empty: has no fields set or all the fields is empty. */
     public func isEmpty() {
         for ((_, val) in m_fields) {
