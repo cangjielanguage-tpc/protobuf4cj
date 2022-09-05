@@ -11,6 +11,9 @@ package protoc
 import google.protobuf.*
 import google.protobuf.compiler.*
 from std import collection.*
+from std import unicode.*
+from std import time.*
+from std import io.*
 
 /**
  * The Function is cj_generator
@@ -36,9 +39,9 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
     for (desc in req.protoFile) {
         if (genfiles.contains(desc.name)) {
             // save `desc` as json, for developing.
-            // let dbgFile = resp.file.add()
-            // dbgFile.name = desc.name.replace(".proto", ".raw.json")
-            // dbgFile.content = desc.toJson().stringify()
+            let dbgFile = resp.file.add()
+            dbgFile.name = desc.name.replace(".proto", ".raw.json")
+            dbgFile.content = desc.toJson().stringify()
             fileProcess(desc, resp.file.add())
         }
     }
@@ -217,6 +220,9 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     outbuf.append("from std import collection.*\n")
     if (desc.package_ != "protobuf") {
         outbuf.append("from protobuf import protobuf.*\n")
+    }
+    if (!desc.service.isEmpty() && desc.package_ != "grpc") {
+        outbuf.append("from protobuf import grpc.*\n")
     }
     for (pkg in helper.getDependencyPackages(desc)) {
         outbuf.append("import ${pkg}.*\n")
@@ -426,7 +432,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     // props
     for (f in fields) {
         outbuf.append("\n    public prop var ${getMessagePropName(f.jsonName)}: ${getPropType(f)} {\n")
-        outbuf.append("        get() { get(${f.number}) }\n")
+        outbuf.append("        get( ) { get(${f.number}) }\n")
         outbuf.append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
         outbuf.append("    }\n")
     }
@@ -559,7 +565,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     }
     outbuf.append("\n}\n")
 
-    /* enum不得为空 */
+    // enum不得为空
     if (values.isEmpty()) { return }
 
     // extend Enum
@@ -595,7 +601,76 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
 }
 
 func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
-    // todo
+    let outbuf = helper.outbuf
+
+    // calc names
+    for (m in ser.method) {
+        m.inputType = helper.getTypeName(m.inputType)
+        m.outputType = helper.getTypeName(m.outputType)
+        m.funcName = getServiceFuncName(m.name)
+    }
+
+    // service
+    let servicePath = "${helper.pkgPrefix.substring(1)}${ser.name}"
+    outbuf.append("\npublic abstract class ${ser.name}Service <: Service {\n")
+    outbuf.append("    init() { super(\"${servicePath}\") }\n")
+    outbuf.append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
+    for (m in ser.method) {
+        outbuf.append("            case \"${m.name}\" => ")
+        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+            case (false, false) =>
+                "let req = ${m.inputType}(); getRequest(ctx, req); setResponse(ctx, ${m.funcName}(ctx, req))\n"
+            case (false, true) =>
+                "let req = ${m.inputType}(); getRequest(ctx, req); setStatus(ctx, ${m.funcName}(ctx, req, getWriter(ctx)))\n"
+            case (true, false) =>
+                "setResponse(ctx, ${m.funcName}(ctx, getReader(ctx)))\n"
+            case (true, true) =>
+                "setStatus(ctx, ${m.funcName}(ctx, getStream(ctx)))\n"
+        })
+    }
+    outbuf.append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
+
+    // service abstract functions
+    for (m in ser.method) {
+        outbuf.append("    protected func ${m.funcName}(ctx: ServerContext, ")
+        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+            case (false, false) =>
+                "req: ${m.inputType}): (${m.outputType}, Status)\n"
+            case (false, true) =>
+                "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
+            case (true, false) =>
+                "reader: ServerReader<${m.inputType}>): (${m.outputType}, Status)\n"
+            case (true, true) =>
+                "stream: ServerReaderWriter<${m.inputType}, ${m.outputType}>): Status\n"
+        })
+    }
+
+    // service end
+    outbuf.append("}\n")
+
+    // client
+    outbuf.append("\npublic class ${ser.name}Client <: Stub {\n    public init(chan: Channel) { super(chan, \"${servicePath}\") }\n")
+
+    // client functions
+    for (m in ser.method) {
+        outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext")
+        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+            case (false, false) =>
+                ", req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", ctx, req, resp)\n    }" +
+                "\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {" +
+                "\n        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", ctx, req, resp))" +
+                "\n    }\n"
+            case (false, true) =>
+                ", req: ${m.inputType}) {\n        serverStream<${m.outputType}>(\"${m.name}\", ctx, req)\n    }\n"
+            case (true, false) =>
+                ", resp: ${m.outputType}) {\n        clientStream<${m.inputType}>(\"${m.name}\", ctx, resp)\n    }\n"
+            case (true, true) =>
+                ") {\n        stream<${m.inputType}, ${m.outputType}>(\"${m.name}\", ctx)\n    }\n"
+        })
+    }
+
+    // client end
+    outbuf.append("}\n")
 }
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
@@ -625,21 +700,108 @@ let messageRsvdWords = HashSet<String>([
 let enumRsvdWords = HashSet<String>([
     "value", "parse"
 ])
+let grpcRsvdWords = HashSet<String>([
+    "m_path", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_refused",
+    "sendRequest", "getRequest", "setRequest", "setStatus", "getWriter", "getReader", "getStream",
+    "writer", "reader", "stream", "serverStream", "clientStream"
+])
 
 func getEnumItemName(name: String) {
-    if (cangjieKeyWords.contains(name) ||
-        protobufRsvdWords.contains(name) ||
-        enumRsvdWords.contains(name)) {
+    if (cangjieKeyWords.contains(name) || enumRsvdWords.contains(name)) {
         return name + '_'
     }
     name
 }
 
 func getMessagePropName(name: String) {
-    if (cangjieKeyWords.contains(name) ||
-        protobufRsvdWords.contains(name) ||
-        messageRsvdWords.contains(name)) {
+    if (cangjieKeyWords.contains(name) || messageRsvdWords.contains(name)) {
         return name + '_'
     }
     name
+}
+
+/* 小驼峰函数名 */
+func getServiceFuncName(name: String) {
+    let arr = "${name[0].toLowerCase()}${name.substring(1)}".split('_')
+
+    for (i in 1..arr.size()) {
+        arr[i] = "${arr[i][0].toUpperCase()}${arr[i].substring(1)}"
+    }
+
+    let name = String.join(arr)
+
+    if (cangjieKeyWords.contains(name) || grpcRsvdWords.contains(name)) {
+        return name + '_'
+    }
+    name
+}
+
+/* 内部使用, 对比序列化和反序列化FileDescriptorProto的执行耗时 */
+public func test_perf() {
+    let file = FileStream("./src/google/protobuf/descriptor.raw.json")
+    file.openFile()
+
+    let str = file.readAllText()
+    let src = FileDescriptorProto.fromJson(str)
+    let buf = src.pack()
+    let obj = src.toJson().asObject()
+
+    println("strlen: ${str.size()}, byteslen: ${buf.size()}")
+    var start: Time
+
+    print("[   toJson  ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        src.toJson()
+    }
+    println(Time.since(start))
+
+    print("[ stringify ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        obj.stringify()
+    }
+    println(Time.since(start))
+
+    print("[  toString ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        src.toString()
+    }
+    println(Time.since(start))
+
+    print("[    pack   ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        src.pack()
+    }
+    println(Time.since(start))
+
+    print("[  fromStr  ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        FileDescriptorProto.fromJson(str)
+    }
+    println(Time.since(start))
+
+    print("[  fromObj  ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        FileDescriptorProto.fromJson(obj)
+    }
+    println(Time.since(start))
+
+    print("[ fromBytes ]")
+    start = Time.now()
+    for (i in 0..1000) {
+        if (i % 32 == 0) { print('.', flush: true) }
+        FileDescriptorProto.fromBytes(buf)
+    }
+    println(Time.since(start))
 }
