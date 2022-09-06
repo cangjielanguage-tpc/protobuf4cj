@@ -12,8 +12,6 @@ import google.protobuf.*
 import google.protobuf.compiler.*
 from std import collection.*
 from std import unicode.*
-from std import time.*
-from std import io.*
 
 /**
  * The Function is cj_generator
@@ -51,7 +49,7 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
 /* Get file name */
 func getFileName(path: String): String {
     let sp = path.split('/')
-    sp[sp.size() - 1].replace(".proto", ".pb.cj")
+    sp[sp.size - 1].replace(".proto", ".pb.cj")
 }
 
 /* Get dest path by package name */
@@ -64,7 +62,7 @@ class LineSepOut {
         let outbuf: StringBuilder,
         let sep!: String = ",",     // Separator
         let sn!: Int64 = 12,        // Number of spaces automatically added to a new line
-        let ln!: Int64 = 120 - sep.size()    // One line limit characters
+        let ln!: Int64 = 120 - sep.size    // One line limit characters
     ) {
         ss = " " * sn
         cn = sn
@@ -77,20 +75,20 @@ class LineSepOut {
     /* Append s */
     func append(s: String) {
         if (first) {
-            cn += s.size()
+            cn += s.size
             outbuf.append(ss).append(s)
             first = false
             return
         }
         // Not the first, append separator
-        cn += sep.size()
+        cn += sep.size
         outbuf.append(sep)
         // Judge whether line feed is required
-        if (cn + 1 + s.size() > ln) {
-            cn = sn + s.size()
+        if (cn + 1 + s.size > ln) {
+            cn = sn + s.size
             outbuf.append('\n').append(ss).append(s)
         } else {
-            cn += 1 + s.size()
+            cn += 1 + s.size
             outbuf.append(' ').append(s)
         }
     }
@@ -153,9 +151,9 @@ class GenCodeHelper {
         for (p in packages) {
             if (typeName.startsWith(p)) {
                 if (p == pkgPrefix) {
-                    return String.join(typeName.substring(p.size()).split('.'), delimiter: "_")
+                    return String.join(typeName.substring(p.size).split('.'), delimiter: "_")
                 }
-                return p.substring(1) + String.join(typeName.substring(p.size()).split('.'), delimiter: "_")
+                return p.substring(1) + String.join(typeName.substring(p.size).split('.'), delimiter: "_")
             }
         }
         throw Exception() // todo
@@ -166,11 +164,11 @@ class GenCodeHelper {
         do {
             if (f.label != LABEL_REPEATED) { break }
             let sp = f.typeName.split('.')
-            let entry = sp[sp.size() - 1]
+            let entry = sp[sp.size - 1]
             if (!entry.endsWith("Entry")) { break }
             // Looking for entry in nestedtype
             for (n in ns) {
-                if (n.field.size() != 2 || n.name != entry) { continue }
+                if (n.field.size != 2 || n.name != entry) { continue }
                 try { if (n.options.mapEntry != true) { break } } catch (_) { break }
                 /* save map entry's fields */
                 return f.typeName = getEntryTypeInfo(n.field[0]) + "," + getEntryTypeInfo(n.field[1])
@@ -526,7 +524,7 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     for (e in msg.enumType) {
         genCodeEnum(e, helper)
     }
-    helper.nested.remove(helper.nested.size() - 1)
+    helper.nested.remove(helper.nested.size - 1)
 
     for (f in fields) {
         // Set typename
@@ -540,9 +538,9 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     }
 
     // Mapentry sets typename without generating message
-    try { if (fields.size() == 2 && msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
+    try { if (fields.size == 2 && msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
 
-    helper.oneofNum = msg.oneofDecl.size()
+    helper.oneofNum = msg.oneofDecl.size
     // fields
     genCodeMessageField(typeName, fields, helper)
     // extensions
@@ -724,7 +722,7 @@ func getMessagePropName(name: String) {
 func getServiceFuncName(name: String) {
     let arr = "${name[0].toLowerCase()}${name.substring(1)}".split('_')
 
-    for (i in 1..arr.size()) {
+    for (i in 1..arr.size) {
         arr[i] = "${arr[i][0].toUpperCase()}${arr[i].substring(1)}"
     }
 
@@ -734,74 +732,4 @@ func getServiceFuncName(name: String) {
         return name + '_'
     }
     name
-}
-
-/* 内部使用, 对比序列化和反序列化FileDescriptorProto的执行耗时 */
-public func test_perf() {
-    let file = FileStream("./src/google/protobuf/descriptor.raw.json")
-    file.openFile()
-
-    let str = file.readAllText()
-    let src = FileDescriptorProto.fromJson(str)
-    let buf = src.pack()
-    let obj = src.toJson().asObject()
-
-    println("strlen: ${str.size()}, byteslen: ${buf.size()}")
-    var start: Time
-
-    print("[   toJson  ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        src.toJson()
-    }
-    println(Time.since(start))
-
-    print("[ stringify ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        obj.stringify()
-    }
-    println(Time.since(start))
-
-    print("[  toString ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        src.toString()
-    }
-    println(Time.since(start))
-
-    print("[    pack   ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        src.pack()
-    }
-    println(Time.since(start))
-
-    print("[  fromStr  ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        FileDescriptorProto.fromJson(str)
-    }
-    println(Time.since(start))
-
-    print("[  fromObj  ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        FileDescriptorProto.fromJson(obj)
-    }
-    println(Time.since(start))
-
-    print("[ fromBytes ]")
-    start = Time.now()
-    for (i in 0..1000) {
-        if (i % 32 == 0) { print('.', flush: true) }
-        FileDescriptorProto.fromBytes(buf)
-    }
-    println(Time.since(start))
 }
