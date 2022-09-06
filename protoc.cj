@@ -441,6 +441,10 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
     outbuf.append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
     outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
+    // cangjie 0.32.5, static default implementation in interface is forbidden now
+    outbuf.append("    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }\n")
+    outbuf.append("    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }\n")
+    outbuf.append("    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }\n")
     outbuf.append("}\n")
 }
 
