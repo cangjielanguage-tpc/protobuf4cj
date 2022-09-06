@@ -35,10 +35,10 @@ public class SimpleReader <: BytesReader {
     public SimpleReader (
         buffer: Collection<UInt8>,
         private let begin!: Int64 = 0,
-        private let end!: Int64 = buffer.size(),
+        private let end!: Int64 = buffer.size,
         private var offset!: Int64 = begin
     ) {
-        if (begin < 0 || end > buffer.size()) {
+        if (begin < 0 || end > buffer.size) {
             throw IllegalArgumentException("SimpleReader Arguments out of range.")
         }
 

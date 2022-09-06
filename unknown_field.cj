@@ -15,7 +15,7 @@ public class MessageUnknownField <: ToString {
     ) {}
 
     func packSize() {
-        tag.tagSize + data.size()
+        tag.tagSize + data.size
     }
 
     /* Pack out the unknown field with tag. */

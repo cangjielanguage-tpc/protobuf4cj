@@ -4,8 +4,8 @@
 
 package protobuf
 
-from json import json.*
-public from json import json.{ JsonReader, JsonObject}
+from json import json.{ Json, ToJson, JsonString, JsonArray, JsonNumber }
+public from json import json.{ JsonReader, JsonObject }
 
 public interface MessageField {
     /* the pack size of the field, exclude `the first tag` */
@@ -78,14 +78,14 @@ extend Float64 <: MessageField & Bit64 {
 }
 
 extend String <: MessageField {
-    public func packSize() { let len = this.utf8View.size(); len.packSize() + len }
-    public func pack(out: BytesWriter) { let arr = this.toUtf8Array(); arr.size().pack(out); out.appendAll(arr) }
+    public func packSize() { let len = this.utf8View.size; len.packSize() + len }
+    public func pack(out: BytesWriter) { let arr = this.toUtf8Array(); arr.size.pack(out); out.appendAll(arr) }
 }
 
 /* bytes */
 extend ArrayList<T> <: MessageField where T <: Byte { /* cannot extend ArrayList<Byte> to Reference yet. */
-    public func packSize() { size().packSize() + size() }
-    public func pack(out: BytesWriter) { size().pack(out); out.appendAll((this as Bytes).getOrThrow()) }
+    public func packSize() { size.packSize() + size }
+    public func pack(out: BytesWriter) { size.pack(out); out.appendAll((this as Bytes).getOrThrow()) }
 }
 
 /* get origin value from field by `value` */
@@ -184,7 +184,7 @@ public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & ToJson & Refer
     }
 
     public func toJson(): Json {
-        JsonArray(val.size(), { i => toJson(val[i]) })
+        JsonArray(val.size, { i => toJson(val[i]) })
     }
 }
 
@@ -224,11 +224,11 @@ public class RepeatField<T> <: RepeatFieldComm<T> where T <: MessageField {
         if (val.isEmpty() || !reference(val[0]) ) {
             return RepeatField<T>(tag, val.clone())
         }
-        RepeatField<T>(tag, ArrayList<T>(val.size(), { i => (clone(val[i]) as T).getOrThrow() }))
+        RepeatField<T>(tag, ArrayList<T>(val.size, { i => (clone(val[i]) as T).getOrThrow() }))
     }
 
     public func packSize() {
-        var len = tag.tagSize * (val.size() - 1)
+        var len = tag.tagSize * (val.size - 1)
         for (v in val) {
             len += packSize(v)
         }
@@ -238,7 +238,7 @@ public class RepeatField<T> <: RepeatFieldComm<T> where T <: MessageField {
     public func pack(out: BytesWriter) {
         pack(val[0], out)
         let wt = wireType(val[0])
-        for (i in 1..val.size()) {
+        for (i in 1..val.size) {
             tag.tagPack(wt, out)
             pack(val[i], out)
         }
@@ -278,7 +278,7 @@ public class RepeatProxyField<T, P> <: RepeatFieldComm<T> where T <: MessageFiel
     public func clone() { RepeatProxyField<T, P>(tag, val.clone()) }
 
     public func packSize() {
-        var len = tag.tagSize * (val.size() - 1)
+        var len = tag.tagSize * (val.size - 1)
         for (v in val) {
             len += P.box(v).packSize()
         }
@@ -288,7 +288,7 @@ public class RepeatProxyField<T, P> <: RepeatFieldComm<T> where T <: MessageFiel
     public func pack(out: BytesWriter) {
         P.box(val[0]).pack(out)
         let wt = wireType(P.box(val[0]))
-        for (i in 1..val.size()) {
+        for (i in 1..val.size) {
             tag.tagPack(wt, out)
             P.box(val[i]).pack(out)
         }
@@ -366,7 +366,7 @@ public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & ToJson where K
 
     /* map will not pack any empty fields */
     public func packSize() {
-        var len = tag.tagSize * (val.size() - 1)
+        var len = tag.tagSize * (val.size - 1)
         for ((k, v) in val) {
             /* length of key-value */
             var sub = 0
@@ -464,7 +464,7 @@ func clone(val: MessageField): MessageField {
 func toJson(val: MessageField) {
     match (val) {
         case c: ToJson => c.toJson()
-        case c: ArrayList<Byte> => JsonArray(c.size(), { i => Float64(c[i])})
+        case c: ArrayList<Byte> => JsonArray(c.size, { i => Float64(c[i])})
         case _ => throw Exception()
     }
 }

@@ -9,11 +9,11 @@
 package protobuf
 
 /**
- * The class is ProtobufException inherited from RuntimeException
+ * The class is ProtobufException inherited from Exception
  * @author tutudo
  * @since 0.29.3
  */
-public abstract class ProtobufException <: RuntimeException {}
+public abstract class ProtobufException <: Exception {}
 
 /**
  * The class is InvalidEnumValueException inherited from ProtobufException
@@ -22,13 +22,9 @@ public abstract class ProtobufException <: RuntimeException {}
  */
 public class InvalidEnumValueException <: ProtobufException {
     public InvalidEnumValueException (let name: String, let value: Int32) {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "The value `${value}` is illegal for the enum type `${name}`"
+
+    public prop let message: String {
+        get() { "The value `${value}` is illegal for the enum type `${name}`" }
     }
 }
 
@@ -39,13 +35,9 @@ public class InvalidEnumValueException <: ProtobufException {
  */
 public class UnmatchedEnumStringException <: ProtobufException {
     public UnmatchedEnumStringException (let name: String, let value: String) {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "Enum type `${name}` match `${value}` failed."
+
+    public prop let message: String {
+        get() { "Enum type `${name}` match `${value}` failed." }
     }
 }
 
@@ -56,13 +48,9 @@ public class UnmatchedEnumStringException <: ProtobufException {
  */
 public class RequiredFieldNotSetException <: ProtobufException {
     public RequiredFieldNotSetException(let name: String) {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "The field `${name}` without a default value is required to set before serialize."
+
+    public prop let message: String {
+        get() { "The field `${name}` without a default value is required to set before serialize." }
     }
 }
 
@@ -73,13 +61,9 @@ public class RequiredFieldNotSetException <: ProtobufException {
  */
 public class GetFieldValueException <: ProtobufException {
     public GetFieldValueException(let name: String) {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "The failed `${name}` without a default value is not allow read before set."
+
+    public prop let message: String {
+        get() { "The failed `${name}` without a default value is not allow read before set." }
     }
 }
 
@@ -90,13 +74,9 @@ public class GetFieldValueException <: ProtobufException {
  */
 public class ParseValueExecption <: ProtobufException {
     public ParseValueExecption(let name: String, let reason!: String = "others") {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "Failed to parse `${name}`. [${reason}]"
+
+    public prop let message: String {
+        get() { "Failed to parse `${name}`. [${reason}]" }
     }
 }
 
@@ -107,13 +87,9 @@ public class ParseValueExecption <: ProtobufException {
  */
 public class ValueTypeUnmatchException <: ProtobufException {
     public ValueTypeUnmatchException(let name: String, let vtype: String) {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "Failed to get `${vtype}` value(s) from `${name}`."
+
+    public prop let message: String {
+        get() { "Failed to get `${vtype}` value(s) from `${name}`."}
     }
 }
 
@@ -124,13 +100,9 @@ public class ValueTypeUnmatchException <: ProtobufException {
  */
 public class UnrecognizedBytesException <: ProtobufException {
     public UnrecognizedBytesException(let name: String, let left: Int64) {}
-    /**
-     * The Function is getMessage
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "Failed to unpack `${name}`, unrecognized bytes left `${left}`."
+
+    public prop let message: String {
+        get() { "Failed to unpack `${name}`, unrecognized bytes left `${left}`." }
     }
 }
 
@@ -141,12 +113,8 @@ public class UnrecognizedBytesException <: ProtobufException {
  */
 public class UnmatchedOneofCaseException <: ProtobufException {
     UnmatchedOneofCaseException(let gname: String, let cname: String) {}
-    /**
-     * The Function is getMessage()
-     *
-     * @since 0.29.3
-     */
-    public override func getMessage() {
-        "Failed to get oneof case `${gname}`, for case `${cname}` is set."
+
+    public prop let message: String {
+        get() { "Failed to get oneof case `${gname}`, for case `${cname}` is set." }
     }
 }

@@ -331,5 +331,5 @@ public interface AddMessage<M> {
 }
 
 extend ArrayList<M> <: AddMessage<M> where M <: MessageLite & MessageParser<M> {
-    public func add(): M { let m = M.fromBytes([]); this.append(m); m }
+    public func add(): M { let m = M.fromBytes(SimpleReader([])); this.append(m); m }
 }

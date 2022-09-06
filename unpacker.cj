@@ -98,7 +98,7 @@ public class MessageUnpacker<M> <: Unpacker where M <: MessageLite & MessagePars
     public static let unbox = UnBox<M>(fieldPass<M>, instance)
     public func unpack(src: BytesReader): MessageField { M.fromBytes(src.read(parseInt64(src))) }
     public func unpack(src: Json): MessageField { M.fromJson(src.asObject()) }
-    public func default(): MessageField { M.fromBytes([]) }
+    public func default(): MessageField { M.fromBytes(SimpleReader([])) }
 }
 
 /* parse bytes from json, at present, bytes only supports to parse/stringify as uint8 array. */

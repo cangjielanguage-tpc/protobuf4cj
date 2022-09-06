@@ -131,7 +131,7 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
 
     /* clear */
     public func clear() {
-        for (i in 0..m_oneofCase.size()) {
+        for (i in 0..m_oneofCase.size) {
             m_oneofCase[i] = UNSETCASE
         }
         m_fields.clear()
@@ -221,16 +221,15 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     }
 }
 
-/* cangjie 0.31.4 bug, fromBytes cannot call the another one fromBytes. */
-public interface MessageParserTmp<M> where M <: MessageLite {
-    static func fromBytes(src: BytesReader): M
-    static func fromJson(src: JsonObject): M
-}
-
-public interface MessageParser<M> <: MessageParserTmp<M> where M <: MessageLite & MessageParser<M> {
+/* cangjie 0.32.5, static default implementation in interface is forbidden now */
+public interface MessageParser<M> where M <: MessageLite & MessageParser<M> {
+    /* do not delete!
     static func fromJson(src: JsonReader): M { M.fromJson(src.readObject()) }
     static func fromJson(src: String): M { M.fromJson(JsonParse(src).asObject()) }
     static func fromBytes(src: Collection<Byte>): M { M.fromBytes(SimpleReader(src)) }
+    */
+    static func fromBytes(src: BytesReader): M
+    static func fromJson(src: JsonObject): M
 }
 
 public class Once {
