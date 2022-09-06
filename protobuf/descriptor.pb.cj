@@ -60,6 +60,9 @@ public class FileDescriptorProto <: MessageLite {
             (9, MessageUnpacker<SourceCodeInfo>.instance), (12, StringUnpacker.instance)
         ])
 
+        // /* cangjie 0.32.5 bug, 1 is not exists in s_unpackers */
+        s_unpackers[1] = StringUnpacker.instance
+
         s_names = HashMap<Tag, String>([
             (1, "name"), (2, "package"), (3, "dependency"), (10, "publicDependency"), (11, "weakDependency"),
             (4, "messageType"), (5, "enumType"), (6, "service"), (7, "extension"), (8, "options"),
