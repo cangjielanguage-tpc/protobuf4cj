@@ -223,6 +223,9 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
 
 /* cangjie 0.32.5, static default implementation in interface is forbidden now */
 public interface MessageParser<M> where M <: MessageLite & MessageParser<M> {
+    static func fromJson(src: JsonReader): M
+    static func fromJson(src: String): M
+    static func fromBytes(src: Collection<Byte>): M
     /* do not delete!
     static func fromJson(src: JsonReader): M { M.fromJson(src.readObject()) }
     static func fromJson(src: String): M { M.fromJson(JsonParse(src).asObject()) }

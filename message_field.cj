@@ -5,7 +5,7 @@
 package protobuf
 
 from json import json.{ Json, ToJson, JsonString, JsonArray, JsonNumber }
-public from json import json.{ JsonReader, JsonObject }
+public from json import json.{ JsonReader, JsonStringReader, JsonObject }
 
 public interface MessageField {
     /* the pack size of the field, exclude `the first tag` */
