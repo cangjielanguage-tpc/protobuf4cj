@@ -41,6 +41,9 @@ public class FileDescriptorSet <: MessageLite {
 extend FileDescriptorSet <: MessageParser<FileDescriptorSet> {
     public static func fromJson(src: JsonObject) { let m = FileDescriptorSet(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = FileDescriptorSet(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class FileDescriptorProto <: MessageLite {
@@ -149,6 +152,9 @@ public class FileDescriptorProto <: MessageLite {
 extend FileDescriptorProto <: MessageParser<FileDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = FileDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = FileDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class DescriptorProto_ExtensionRange <: MessageLite {
@@ -200,6 +206,9 @@ public class DescriptorProto_ExtensionRange <: MessageLite {
 extend DescriptorProto_ExtensionRange <: MessageParser<DescriptorProto_ExtensionRange> {
     public static func fromJson(src: JsonObject) { let m = DescriptorProto_ExtensionRange(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ExtensionRange(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class DescriptorProto_ReservedRange <: MessageLite {
@@ -245,6 +254,9 @@ public class DescriptorProto_ReservedRange <: MessageLite {
 extend DescriptorProto_ReservedRange <: MessageParser<DescriptorProto_ReservedRange> {
     public static func fromJson(src: JsonObject) { let m = DescriptorProto_ReservedRange(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ReservedRange(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class DescriptorProto <: MessageLite {
@@ -339,6 +351,9 @@ public class DescriptorProto <: MessageLite {
 extend DescriptorProto <: MessageParser<DescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = DescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = DescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class ExtensionRangeOptions <: MessageLite {
@@ -379,6 +394,9 @@ public class ExtensionRangeOptions <: MessageLite {
 extend ExtensionRangeOptions <: MessageParser<ExtensionRangeOptions> {
     public static func fromJson(src: JsonObject) { let m = ExtensionRangeOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = ExtensionRangeOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public enum FieldDescriptorProto_Type {
@@ -617,6 +635,9 @@ public class FieldDescriptorProto <: MessageLite {
 extend FieldDescriptorProto <: MessageParser<FieldDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = FieldDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = FieldDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class OneofDescriptorProto <: MessageLite {
@@ -662,6 +683,9 @@ public class OneofDescriptorProto <: MessageLite {
 extend OneofDescriptorProto <: MessageParser<OneofDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = OneofDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = OneofDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
@@ -707,6 +731,9 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
 extend EnumDescriptorProto_EnumReservedRange <: MessageParser<EnumDescriptorProto_EnumReservedRange> {
     public static func fromJson(src: JsonObject) { let m = EnumDescriptorProto_EnumReservedRange(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto_EnumReservedRange(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class EnumDescriptorProto <: MessageLite {
@@ -770,6 +797,9 @@ public class EnumDescriptorProto <: MessageLite {
 extend EnumDescriptorProto <: MessageParser<EnumDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = EnumDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class EnumValueDescriptorProto <: MessageLite {
@@ -820,6 +850,9 @@ public class EnumValueDescriptorProto <: MessageLite {
 extend EnumValueDescriptorProto <: MessageParser<EnumValueDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = EnumValueDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumValueDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class ServiceDescriptorProto <: MessageLite {
@@ -871,6 +904,9 @@ public class ServiceDescriptorProto <: MessageLite {
 extend ServiceDescriptorProto <: MessageParser<ServiceDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = ServiceDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = ServiceDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class MethodDescriptorProto <: MessageLite {
@@ -951,6 +987,9 @@ public class MethodDescriptorProto <: MessageLite {
 extend MethodDescriptorProto <: MessageParser<MethodDescriptorProto> {
     public static func fromJson(src: JsonObject) { let m = MethodDescriptorProto(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = MethodDescriptorProto(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public enum FileOptions_OptimizeMode {
@@ -1155,6 +1194,9 @@ public class FileOptions <: MessageLite {
 extend FileOptions <: MessageParser<FileOptions> {
     public static func fromJson(src: JsonObject) { let m = FileOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = FileOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class MessageOptions <: MessageLite {
@@ -1224,6 +1266,9 @@ public class MessageOptions <: MessageLite {
 extend MessageOptions <: MessageParser<MessageOptions> {
     public static func fromJson(src: JsonObject) { let m = MessageOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = MessageOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public enum FieldOptions_CType {
@@ -1321,6 +1366,9 @@ public class FieldOptions <: MessageLite {
             (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
         ])
 
+        // /* cangjie 0.32.5 bug, 1 is not exists in s_unpackers */
+        s_unpackers[2] = BoolUnpacker.instance
+
         s_names = HashMap<Tag, String>([
             (1, "ctype"), (2, "packed"), (6, "jstype"), (5, "lazy"), (15, "unverifiedLazy"), (3, "deprecated"),
             (10, "weak"), (999, "uninterpretedOption")
@@ -1391,6 +1439,9 @@ public class FieldOptions <: MessageLite {
 extend FieldOptions <: MessageParser<FieldOptions> {
     public static func fromJson(src: JsonObject) { let m = FieldOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = FieldOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class OneofOptions <: MessageLite {
@@ -1431,6 +1482,9 @@ public class OneofOptions <: MessageLite {
 extend OneofOptions <: MessageParser<OneofOptions> {
     public static func fromJson(src: JsonObject) { let m = OneofOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = OneofOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class EnumOptions <: MessageLite {
@@ -1488,6 +1542,9 @@ public class EnumOptions <: MessageLite {
 extend EnumOptions <: MessageParser<EnumOptions> {
     public static func fromJson(src: JsonObject) { let m = EnumOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class EnumValueOptions <: MessageLite {
@@ -1539,6 +1596,9 @@ public class EnumValueOptions <: MessageLite {
 extend EnumValueOptions <: MessageParser<EnumValueOptions> {
     public static func fromJson(src: JsonObject) { let m = EnumValueOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = EnumValueOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class ServiceOptions <: MessageLite {
@@ -1590,6 +1650,9 @@ public class ServiceOptions <: MessageLite {
 extend ServiceOptions <: MessageParser<ServiceOptions> {
     public static func fromJson(src: JsonObject) { let m = ServiceOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = ServiceOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public enum MethodOptions_IdempotencyLevel {
@@ -1687,6 +1750,9 @@ public class MethodOptions <: MessageLite {
 extend MethodOptions <: MessageParser<MethodOptions> {
     public static func fromJson(src: JsonObject) { let m = MethodOptions(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = MethodOptions(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class UninterpretedOption_NamePart <: MessageLite {
@@ -1738,6 +1804,9 @@ public class UninterpretedOption_NamePart <: MessageLite {
 extend UninterpretedOption_NamePart <: MessageParser<UninterpretedOption_NamePart> {
     public static func fromJson(src: JsonObject) { let m = UninterpretedOption_NamePart(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = UninterpretedOption_NamePart(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class UninterpretedOption <: MessageLite {
@@ -1812,6 +1881,9 @@ public class UninterpretedOption <: MessageLite {
 extend UninterpretedOption <: MessageParser<UninterpretedOption> {
     public static func fromJson(src: JsonObject) { let m = UninterpretedOption(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = UninterpretedOption(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class SourceCodeInfo_Location <: MessageLite {
@@ -1873,6 +1945,9 @@ public class SourceCodeInfo_Location <: MessageLite {
 extend SourceCodeInfo_Location <: MessageParser<SourceCodeInfo_Location> {
     public static func fromJson(src: JsonObject) { let m = SourceCodeInfo_Location(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo_Location(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class SourceCodeInfo <: MessageLite {
@@ -1913,6 +1988,9 @@ public class SourceCodeInfo <: MessageLite {
 extend SourceCodeInfo <: MessageParser<SourceCodeInfo> {
     public static func fromJson(src: JsonObject) { let m = SourceCodeInfo(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class GeneratedCodeInfo_Annotation <: MessageLite {
@@ -1969,6 +2047,9 @@ public class GeneratedCodeInfo_Annotation <: MessageLite {
 extend GeneratedCodeInfo_Annotation <: MessageParser<GeneratedCodeInfo_Annotation> {
     public static func fromJson(src: JsonObject) { let m = GeneratedCodeInfo_Annotation(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo_Annotation(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class GeneratedCodeInfo <: MessageLite {
@@ -2009,4 +2090,7 @@ public class GeneratedCodeInfo <: MessageLite {
 extend GeneratedCodeInfo <: MessageParser<GeneratedCodeInfo> {
     public static func fromJson(src: JsonObject) { let m = GeneratedCodeInfo(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }

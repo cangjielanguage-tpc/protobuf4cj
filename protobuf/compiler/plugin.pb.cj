@@ -58,6 +58,9 @@ public class Version <: MessageLite {
 extend Version <: MessageParser<Version> {
     public static func fromJson(src: JsonObject) { let m = Version(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = Version(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class CodeGeneratorRequest <: MessageLite {
@@ -115,6 +118,9 @@ public class CodeGeneratorRequest <: MessageLite {
 extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
     public static func fromJson(src: JsonObject) { let m = CodeGeneratorRequest(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = CodeGeneratorRequest(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public class CodeGeneratorResponse_File <: MessageLite {
@@ -171,6 +177,9 @@ public class CodeGeneratorResponse_File <: MessageLite {
 extend CodeGeneratorResponse_File <: MessageParser<CodeGeneratorResponse_File> {
     public static func fromJson(src: JsonObject) { let m = CodeGeneratorResponse_File(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse_File(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
 public enum CodeGeneratorResponse_Feature {
@@ -258,4 +267,7 @@ public class CodeGeneratorResponse <: MessageLite {
 extend CodeGeneratorResponse <: MessageParser<CodeGeneratorResponse> {
     public static func fromJson(src: JsonObject) { let m = CodeGeneratorResponse(); m.unpack(src); m }
     public static func fromBytes(src: BytesReader) { let m = CodeGeneratorResponse(); m.unpack(src); m }
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
