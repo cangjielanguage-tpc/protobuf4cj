@@ -625,14 +625,10 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     for (m in ser.method) {
         outbuf.append("            case \"${m.name}\" => ")
         outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
-            case (false, false) =>
-                "let req = ${m.inputType}(); getRequest(ctx, req); setResponse(ctx, ${m.funcName}(ctx, req))\n"
-            case (false, true) =>
-                "let req = ${m.inputType}(); getRequest(ctx, req); setStatus(ctx, ${m.funcName}(ctx, req, getWriter(ctx)))\n"
-            case (true, false) =>
-                "setResponse(ctx, ${m.funcName}(ctx, getReader(ctx)))\n"
-            case (true, true) =>
-                "setStatus(ctx, ${m.funcName}(ctx, getStream(ctx)))\n"
+            case (false, false) =>  "let req = ${m.inputType}(); getRequest(ctx, req); setResponse(ctx, ${m.funcName}(ctx, req))\n"
+            case (false, true) =>   "let req = ${m.inputType}(); getRequest(ctx, req); setStatus(ctx, ${m.funcName}(ctx, req, getWriter(ctx)))\n"
+            case (true, false) =>   "setResponse(ctx, ${m.funcName}(ctx, getReader(ctx)))\n"
+            case (true, true) =>    "setStatus(ctx, ${m.funcName}(ctx, getStream(ctx)))\n"
         })
     }
     outbuf.append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
@@ -641,14 +637,10 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     for (m in ser.method) {
         outbuf.append("    protected func ${m.funcName}(ctx: ServerContext, ")
         outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
-            case (false, false) =>
-                "req: ${m.inputType}): (${m.outputType}, Status)\n"
-            case (false, true) =>
-                "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
-            case (true, false) =>
-                "reader: ServerReader<${m.inputType}>): (${m.outputType}, Status)\n"
-            case (true, true) =>
-                "stream: ServerReaderWriter<${m.inputType}, ${m.outputType}>): Status\n"
+            case (false, false) =>  "req: ${m.inputType}): (${m.outputType}, Status)\n"
+            case (false, true) =>   "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
+            case (true, false) =>   "reader: ServerReader<${m.inputType}>): (${m.outputType}, Status)\n"
+            case (true, true) =>    "stream: ServerReaderWriter<${m.inputType}, ${m.outputType}>): Status\n"
         })
     }
 
