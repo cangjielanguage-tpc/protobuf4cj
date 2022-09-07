@@ -64,14 +64,6 @@ public class BoolUnpacker <: Unpacker {
     public func default(): MessageField { false }
 }
 
-/* cangjie 0.30.4, error: no method 'fromBytes' match for generic member access function call when searching in upper bounds */
-func parseInt32(src:BytesReader) {
-    Int32.parse(src)
-}
-func parseInt64(src:BytesReader) {
-    Int64.parse(src)
-}
-
 /* cangjie 0.31.4, error: static default implement in interface cannot call other static non implement */
 func parseEnum<E>(src: Json) where E <: Enum<E> {
     match (src) {
@@ -86,7 +78,7 @@ public class EnumUnpacker<E> <: Unpacker where E <: Enum<E> {
     public static let packedInstance = RepeatUnpacker<E>(instance)
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<E>(tag, instance) }
     public static let unbox = UnBox<E>(fieldPass<E>, instance)
-    public func unpack(src: BytesReader): MessageField { E.parse(parseInt32(src)) /* Int32.parse(src) will not be compiled successfully */ }
+    public func unpack(src: BytesReader): MessageField { E.parse(Int32.parse(src)) /* Int32.parse(src) will not be compiled successfully */ }
     public func unpack(src: Json): MessageField { parseEnum<E>(src) }
     public func default(): MessageField { E.parse(0) }
 }
@@ -96,7 +88,7 @@ public class MessageUnpacker<M> <: Unpacker where M <: MessageLite & MessagePars
     public static let packedInstance = RepeatUnpacker<M>(instance)
     public static func repeatInstance(tag: Tag) { RepeatUnpacker<M>(tag, instance) }
     public static let unbox = UnBox<M>(fieldPass<M>, instance)
-    public func unpack(src: BytesReader): MessageField { M.fromBytes(src.read(parseInt64(src))) }
+    public func unpack(src: BytesReader): MessageField { M.fromBytes(src.read(Int64.parse(src))) }
     public func unpack(src: Json): MessageField { M.fromJson(src.asObject()) }
     public func default(): MessageField { M.fromBytes(SimpleReader([])) }
 }
@@ -227,7 +219,7 @@ public class RepeatUnpacker<T> <: Unpacker where T <: MessageField {
 
     private func packedUnpack(src: BytesReader) {
         let arr = ArrayList<T>()
-        let sub = src.read(parseInt64(src))
+        let sub = src.read(Int64.parse(src))
         while (!sub.isEmpty()) {
             arr.append(typeCast(unpacker.unpack(sub)))
         }
@@ -277,7 +269,7 @@ public class RepeatProxyUnpacker<T, P> <: Unpacker where T <: MessageField, P <:
 
     private func packedUnpack(src: BytesReader) {
         let arr = ArrayList<T>()
-        let sub = src.read(parseInt64(src))
+        let sub = src.read(Int64.parse(src))
         while (!sub.isEmpty()) {
             arr.append(typeCast(unpacker.unpack(sub)))
         }
@@ -342,7 +334,7 @@ public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & 
             key = ku.unpacker.default()
             val = vu.unpacker.default()
 
-            let sub = src.read(parseInt64(src))
+            let sub = src.read(Int64.parse(src))
             while (!sub.isEmpty()) {
                 match (Tag.tagParse(sub)[0]) {
                     case 1 => key = ku.unpacker.unpack(sub)
