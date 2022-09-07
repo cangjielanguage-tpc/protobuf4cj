@@ -352,19 +352,26 @@ func getPropType(f: FieldDescriptorProto) {
 
 let staticInitCodes =
 """
-    static let m_once = Once()
-    static var s_unpackers = s_initHashMapTagUnpacker
-    static var s_names = s_initHashMapTagString
-    static var s_nameTags = s_initHashMapStringTag
+    private static let s_once = Once(s_onceMutex)
+    private static var s_unpackers = s_initHashMapTagUnpacker
+    private static var s_names = s_initHashMapTagString
+    private static var s_nameTags = s_initHashMapStringTag
 """
 
 let memberInitCodes =
 """
     public init() {
-        m_once.once(s_init)
+        s_once.once(s_init)
         m_unpacker = s_unpackers
         m_names = s_names
         m_nameTags = s_nameTags
+"""
+
+let staticParserCodes =
+"""
+    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
+    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
+    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 """
 
 func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
@@ -442,9 +449,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     outbuf.append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
     outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
     // cangjie 0.32.5, static default implementation in interface is forbidden now
-    outbuf.append("    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }\n")
-    outbuf.append("    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }\n")
-    outbuf.append("    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }\n")
+    outbuf.append(staticParserCodes)
     outbuf.append("}\n")
 }
 
