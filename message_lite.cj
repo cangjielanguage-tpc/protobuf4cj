@@ -15,6 +15,9 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     protected static let s_initHashMapStringTag = HashMap<String, Tag>()
     protected static let s_initArrayTag = Array<Tag>()
 
+    /* once mutex of messages */
+    protected static let s_onceMutex = sync.ReentrantMutex()
+
     protected var m_proto2 = true
     protected var m_unpacker = s_initHashMapTagUnpacker
     protected var m_names = s_initHashMapTagString
@@ -235,9 +238,16 @@ public interface MessageParser<M> where M <: MessageLite & MessageParser<M> {
     static func fromJson(src: JsonObject): M
 }
 
-public class Once {
-    var e = sync.AtomicBool(false)
-    let m = sync.ReentrantMutex()
+public struct Once {
+    public Once(
+        private let m: sync.ReentrantMutex
+    ) { }
+
+    public init() {
+        m = sync.ReentrantMutex()
+    }
+
+    private let e = sync.AtomicBool(false)
 
     public func once(f: ()-> Unit) {
         if (e.load()) { return }
