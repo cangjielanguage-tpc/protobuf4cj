@@ -211,19 +211,19 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
 }
 
 func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
-    let outbuf = helper.outbuf
+    let append: (String) -> StringBuilder = helper.outbuf.append
     // package
-    if (desc.package_ != "") { outbuf.append("package ${desc.package_}\n\n") }
+    if (desc.package_ != "") { append("package ${desc.package_}\n\n") }
     // import
-    outbuf.append("from std import collection.*\n")
+    append("from std import collection.*\n")
     if (desc.package_ != "protobuf") {
-        outbuf.append("from protobuf import protobuf.*\n")
+        append("from protobuf import protobuf.*\n")
     }
     if (!desc.service.isEmpty() && desc.package_ != "grpc") {
-        outbuf.append("from protobuf import grpc.*\n")
+        append("from protobuf import grpc.*\n")
     }
     for (pkg in helper.getDependencyPackages(desc)) {
-        outbuf.append("import ${pkg}.*\n")
+        append("import ${pkg}.*\n")
     }
 }
 
@@ -375,8 +375,8 @@ let staticParserCodes =
 """
 
 func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let outbuf = helper.outbuf
-    let sepOut = LineSepOut(outbuf)
+    let append: (String) -> StringBuilder = helper.outbuf.append
+    let sepOut = LineSepOut(helper.outbuf)
 
     // default value
     let dvs = getDefaultValues(fields)
@@ -385,31 +385,31 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     let reqs = getRequiredFields(fields)
 
     // class
-    outbuf.append("\npublic class ${typeName} <: MessageLite {\n")
+    append("\npublic class ${typeName} <: MessageLite {\n")
 
     // static
-    outbuf.append(staticInitCodes)
-    if (!dvs.isEmpty()) { outbuf.append("    static var s_defaultValue = s_initHashMapTagMessageFile\n") }
-    if (!reqs.isEmpty()) { outbuf.append("    static var s_requiredFields = s_initArrayTag\n") }
-    if (helper.oneofNum != 0) { outbuf.append("    static var s_oneofIndex = s_initHashMapTagInt64\n") }
+    append(staticInitCodes)
+    if (!dvs.isEmpty()) { append("    static var s_defaultValue = s_initHashMapTagMessageFile\n") }
+    if (!reqs.isEmpty()) { append("    static var s_requiredFields = s_initArrayTag\n") }
+    if (helper.oneofNum != 0) { append("    static var s_oneofIndex = s_initHashMapTagInt64\n") }
 
     // s_init
     // unpacker
-    outbuf.append("\n    static func s_init() {\n        s_unpackers = HashMap<Tag, Unpacker>([\n")
+    append("\n    static func s_init() {\n        s_unpackers = HashMap<Tag, Unpacker>([\n")
     for (f in fields) { sepOut.append("(${f.number}, ${getUnpacker(f)})") }
-    outbuf.append("\n        ])\n")
+    append("\n        ])\n")
 
     // names
-    outbuf.append("\n        s_names = HashMap<Tag, String>([\n")
+    append("\n        s_names = HashMap<Tag, String>([\n")
     sepOut.reset()
     for (f in fields) { sepOut.append("(${f.number}, \"${f.jsonName}\")") }
-    outbuf.append("\n        ])\n")
+    append("\n        ])\n")
 
     // nameTags
-    outbuf.append("\n        s_nameTags = HashMap<String, Tag>([\n")
+    append("\n        s_nameTags = HashMap<String, Tag>([\n")
     sepOut.reset()
     for (f in fields) { sepOut.append("(\"${f.jsonName}\", ${f.number})") }
-    outbuf.append("\n        ])\n")
+    append("\n        ])\n")
 
     // special fields
     genCodeSpecialFields(sepOut, dvs, reqs)
@@ -417,40 +417,40 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     // oneof
     genCodeOneofFields(sepOut, fields, helper)
     // s_init end
-    outbuf.append("    }\n\n")
+    append("    }\n\n")
 
     // init
-    outbuf.append(memberInitCodes)
-    if (!helper.proto2) { outbuf.append("        m_proto2 = false\n") }
-    if (!dvs.isEmpty()) { outbuf.append("        m_defaultValue = s_defaultValue\n") }
-    if (!reqs.isEmpty()) { outbuf.append("        m_requiredFields = s_requiredFields\n") }
+    append(memberInitCodes)
+    if (!helper.proto2) { append("        m_proto2 = false\n") }
+    if (!dvs.isEmpty()) { append("        m_defaultValue = s_defaultValue\n") }
+    if (!reqs.isEmpty()) { append("        m_requiredFields = s_requiredFields\n") }
     if (helper.oneofNum != 0) {
-        outbuf.append("        m_oneofIndex = s_oneofIndex\n")
-        outbuf.append("        m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
+        append("        m_oneofIndex = s_oneofIndex\n")
+        append("        m_oneofCase = Array<Tag>(${helper.oneofNum}, item: UNSETCASE)\n")
     }
     // init end
-    outbuf.append("    }\n")
+    append("    }\n")
 
     // clone
-    outbuf.append("\n    public func clone() { ${typeName}().m_fieldsClone(this) }\n")
+    append("\n    public func clone() { ${typeName}().m_fieldsClone(this) }\n")
 
     // props
     for (f in fields) {
-        outbuf.append("\n    public prop var ${getMessagePropName(f.jsonName)}: ${getPropType(f)} {\n")
-        outbuf.append("        get( ) { get(${f.number}) }\n")
-        outbuf.append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
-        outbuf.append("    }\n")
+        append("\n    public prop var ${getMessagePropName(f.jsonName)}: ${getPropType(f)} {\n")
+        append("        get( ) { get(${f.number}) }\n")
+        append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
+        append("    }\n")
     }
     // props end
-    outbuf.append("}\n")
+    append("}\n")
 
     // extend
-    outbuf.append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
-    outbuf.append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
-    outbuf.append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
+    append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
+    append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
+    append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
     // cangjie 0.32.5, static default implementation in interface is forbidden now
-    outbuf.append(staticParserCodes)
-    outbuf.append("}\n")
+    append(staticParserCodes)
+    append("}\n")
 }
 
 func getDefaultValues(fields: ArrayList<FieldDescriptorProto>) {
@@ -479,39 +479,39 @@ func getRequiredFields(fields: ArrayList<FieldDescriptorProto>) {
 }
 
 func genCodeSpecialFields(sepOut: LineSepOut, dvs: ArrayList<String>, reqs: ArrayList<Int32>) {
-    let outbuf = sepOut.outbuf
+    let append: (String) -> StringBuilder = sepOut.outbuf.append
 
     // default value
     if (!dvs.isEmpty()) {
-        outbuf.append("\n        s_defaultValue = HashMap<Tag, MessageField>([\n")
+        append("\n        s_defaultValue = HashMap<Tag, MessageField>([\n")
         sepOut.reset()
         for (dv in dvs) {
             sepOut.append(dv)
         }
-        outbuf.append("\n        ])\n")
+        append("\n        ])\n")
     }
 
     // required fields
     if (!reqs.isEmpty()) {
-        outbuf.append("\n        s_requiredFields = Array<Tag>([\n")
+        append("\n        s_requiredFields = Array<Tag>([\n")
         sepOut.reset()
         for (req in reqs) {
             sepOut.append("${req}")
         }
-        outbuf.append("\n        ])\n")
+        append("\n        ])\n")
     }
 }
 
 func genCodeOneofFields(sepOut: LineSepOut, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper) {
-    let outbuf = sepOut.outbuf
+    let append: (String) -> StringBuilder = sepOut.outbuf.append
     if (helper.oneofNum != 0) {
-        outbuf.append("\n        s_oneofIndex = HashMap<Tag, Int64>([\n")
+        append("\n        s_oneofIndex = HashMap<Tag, Int64>([\n")
         sepOut.reset()
         for (f in fields) {
             try { f.oneofIndex } catch (_) { continue }
             sepOut.append("(${f.number}, ${f.oneofIndex})")
         }
-        outbuf.append("\n        ])\n")
+        append("\n        ])\n")
     }
 }
 
@@ -562,53 +562,53 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
 func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     let typeName = helper.getNestedTypeName(e.name)
     let values = e.value
-    let outbuf = helper.outbuf
-    let sepOut = LineSepOut(outbuf, sep: "", sn: 4)
+    let append: (String) -> StringBuilder = helper.outbuf.append
+    let sepOut = LineSepOut(helper.outbuf, sep: "", sn: 4)
 
     // enum
-    outbuf.append("\npublic enum ${typeName} {\n")
+    append("\npublic enum ${typeName} {\n")
     for (v in values) {
         sepOut.append("| ${getEnumItemName(v.name)}")
     }
-    outbuf.append("\n}\n")
+    append("\n}\n")
 
     // enum不得为空
     if (values.isEmpty()) { return }
 
     // extend Enum
-    outbuf.append("\nextend ${typeName} <: Enum<${typeName}> {\n")
+    append("\nextend ${typeName} <: Enum<${typeName}> {\n")
     // value
-    outbuf.append("    public func value(): Int32 {\n        match(this) {\n")
+    append("    public func value(): Int32 {\n        match(this) {\n")
     for (v in values) {
-        outbuf.append("            case ${getEnumItemName(v.name)} => ${v.number}\n")
+        append("            case ${getEnumItemName(v.name)} => ${v.number}\n")
     }
-    outbuf.append("        }\n    }\n")
+    append("        }\n    }\n")
     // toString
-    outbuf.append("\n    public func toString(): String {\n        match(this) {\n")
+    append("\n    public func toString(): String {\n        match(this) {\n")
     for (v in values) {
-        outbuf.append("            case ${getEnumItemName(v.name)} => \"${v.name}\"\n")
+        append("            case ${getEnumItemName(v.name)} => \"${v.name}\"\n")
     }
-    outbuf.append("        }\n    }\n")
+    append("        }\n    }\n")
     // parse
-    outbuf.append("\n    public static func parse(value: Int32): ${typeName} {\n        match(value) {\n")
+    append("\n    public static func parse(value: Int32): ${typeName} {\n        match(value) {\n")
     for (v in values) {
-        outbuf.append("            case ${v.number} => ${getEnumItemName(v.name)}\n")
+        append("            case ${v.number} => ${getEnumItemName(v.name)}\n")
     }
-    outbuf.append("            case e => throw InvalidEnumValueException(\"${typeName}\", e)\n")
-    outbuf.append("        }\n    }\n")
+    append("            case e => throw InvalidEnumValueException(\"${typeName}\", e)\n")
+    append("        }\n    }\n")
     // parse, from string
-    outbuf.append("\n    public static func parse(value: String): ${typeName} {\n        match(value) {\n")
+    append("\n    public static func parse(value: String): ${typeName} {\n        match(value) {\n")
     for (v in values) {
-        outbuf.append("            case \"${v.name}\" => ${getEnumItemName(v.name)}\n")
+        append("            case \"${v.name}\" => ${getEnumItemName(v.name)}\n")
     }
-    outbuf.append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
-    outbuf.append("        }\n    }\n")
+    append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n")
+    append("        }\n    }\n")
     // extend Enum end
-    outbuf.append("}\n")
+    append("}\n")
 }
 
 func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
-    let outbuf = helper.outbuf
+    let append: (String) -> StringBuilder = helper.outbuf.append
 
     // calc names
     for (m in ser.method) {
@@ -619,24 +619,24 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // service
     let servicePath = "${helper.pkgPrefix.substring(1)}${ser.name}"
-    outbuf.append("\npublic abstract class ${ser.name}Service <: Service {\n")
-    outbuf.append("    init() { super(\"${servicePath}\") }\n")
-    outbuf.append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
+    append("\npublic abstract class ${ser.name}Service <: Service {\n")
+    append("    init() { super(\"${servicePath}\") }\n")
+    append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
     for (m in ser.method) {
-        outbuf.append("            case \"${m.name}\" => ")
-        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+        append("            case \"${m.name}\" => ")
+        append(match ((m.clientStreaming, m.serverStreaming)) {
             case (false, false) =>  "let req = ${m.inputType}(); getRequest(ctx, req); setResponse(ctx, ${m.funcName}(ctx, req))\n"
             case (false, true) =>   "let req = ${m.inputType}(); getRequest(ctx, req); setStatus(ctx, ${m.funcName}(ctx, req, getWriter(ctx)))\n"
             case (true, false) =>   "setResponse(ctx, ${m.funcName}(ctx, getReader(ctx)))\n"
             case (true, true) =>    "setStatus(ctx, ${m.funcName}(ctx, getStream(ctx)))\n"
         })
     }
-    outbuf.append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
+    append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
 
     // service abstract functions
     for (m in ser.method) {
-        outbuf.append("    protected func ${m.funcName}(ctx: ServerContext, ")
-        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+        append("    protected func ${m.funcName}(ctx: ServerContext, ")
+        append(match ((m.clientStreaming, m.serverStreaming)) {
             case (false, false) =>  "req: ${m.inputType}): (${m.outputType}, Status)\n"
             case (false, true) =>   "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
             case (true, false) =>   "reader: ServerReader<${m.inputType}>): (${m.outputType}, Status)\n"
@@ -645,15 +645,15 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     }
 
     // service end
-    outbuf.append("}\n")
+    append("}\n")
 
     // client
-    outbuf.append("\npublic class ${ser.name}Client <: Stub {\n    public init(chan: Channel) { super(chan, \"${servicePath}\") }\n")
+    append("\npublic class ${ser.name}Client <: Stub {\n    public init(chan: Channel) { super(chan, \"${servicePath}\") }\n")
 
     // client functions
     for (m in ser.method) {
-        outbuf.append("\n    public func ${m.funcName}(ctx: ClientContext")
-        outbuf.append(match ((m.clientStreaming, m.serverStreaming)) {
+        append("\n    public func ${m.funcName}(ctx: ClientContext")
+        append(match ((m.clientStreaming, m.serverStreaming)) {
             case (false, false) =>
                 ", req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", ctx, req, resp)\n    }" +
                 "\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {" +
@@ -669,7 +669,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     }
 
     // client end
-    outbuf.append("}\n")
+    append("}\n")
 }
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
