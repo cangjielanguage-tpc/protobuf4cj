@@ -5,10 +5,10 @@ from protobuf import protobuf.*
 import google.protobuf.*
 
 public class Version <: MessageLite {
-    static let m_once = Once()
-    static var s_unpackers = s_initHashMapTagUnpacker
-    static var s_names = s_initHashMapTagString
-    static var s_nameTags = s_initHashMapStringTag
+    private static let s_once = Once(s_onceMutex)
+    private static var s_unpackers = s_initHashMapTagUnpacker
+    private static var s_names = s_initHashMapTagString
+    private static var s_nameTags = s_initHashMapStringTag
 
     static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
@@ -26,7 +26,7 @@ public class Version <: MessageLite {
     }
 
     public init() {
-        m_once.once(s_init)
+        s_once.once(s_init)
         m_unpacker = s_unpackers
         m_names = s_names
         m_nameTags = s_nameTags
@@ -64,10 +64,10 @@ extend Version <: MessageParser<Version> {
 }
 
 public class CodeGeneratorRequest <: MessageLite {
-    static let m_once = Once()
-    static var s_unpackers = s_initHashMapTagUnpacker
-    static var s_names = s_initHashMapTagString
-    static var s_nameTags = s_initHashMapStringTag
+    private static let s_once = Once(s_onceMutex)
+    private static var s_unpackers = s_initHashMapTagUnpacker
+    private static var s_names = s_initHashMapTagString
+    private static var s_nameTags = s_initHashMapStringTag
 
     static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
@@ -86,7 +86,7 @@ public class CodeGeneratorRequest <: MessageLite {
     }
 
     public init() {
-        m_once.once(s_init)
+        s_once.once(s_init)
         m_unpacker = s_unpackers
         m_names = s_names
         m_nameTags = s_nameTags
@@ -124,10 +124,10 @@ extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
 }
 
 public class CodeGeneratorResponse_File <: MessageLite {
-    static let m_once = Once()
-    static var s_unpackers = s_initHashMapTagUnpacker
-    static var s_names = s_initHashMapTagString
-    static var s_nameTags = s_initHashMapStringTag
+    private static let s_once = Once(s_onceMutex)
+    private static var s_unpackers = s_initHashMapTagUnpacker
+    private static var s_names = s_initHashMapTagString
+    private static var s_nameTags = s_initHashMapStringTag
 
     static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
@@ -145,7 +145,7 @@ public class CodeGeneratorResponse_File <: MessageLite {
     }
 
     public init() {
-        m_once.once(s_init)
+        s_once.once(s_init)
         m_unpacker = s_unpackers
         m_names = s_names
         m_nameTags = s_nameTags
@@ -219,10 +219,10 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
 }
 
 public class CodeGeneratorResponse <: MessageLite {
-    static let m_once = Once()
-    static var s_unpackers = s_initHashMapTagUnpacker
-    static var s_names = s_initHashMapTagString
-    static var s_nameTags = s_initHashMapStringTag
+    private static let s_once = Once(s_onceMutex)
+    private static var s_unpackers = s_initHashMapTagUnpacker
+    private static var s_names = s_initHashMapTagString
+    private static var s_nameTags = s_initHashMapStringTag
 
     static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
@@ -240,7 +240,7 @@ public class CodeGeneratorResponse <: MessageLite {
     }
 
     public init() {
-        m_once.once(s_init)
+        s_once.once(s_init)
         m_unpacker = s_unpackers
         m_names = s_names
         m_nameTags = s_nameTags
