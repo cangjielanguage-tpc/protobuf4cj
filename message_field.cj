@@ -465,7 +465,7 @@ func toJson(val: MessageField) {
     match (val) {
         case c: ToJson => c.toJson()
         case c: ArrayList<Byte> => JsonArray(c.size, { i => Float64(c[i])})
-        case _ => throw Exception()
+        case _ => throw PBInternalException()
     }
 }
 
@@ -486,6 +486,7 @@ func pack(val: MessageField, out: BytesWriter): Unit {
 func typeCast<T>(val: MessageField): T {
     match (val) {
         case c: Value<T> => c.value()
-        case _ => (val as T).getOrThrow()
+        case c: T => c
+        case _ => throw PBInternalException()
     }
 }

@@ -19,7 +19,7 @@ public class WireType <: ToString {
             case 1 => BIT64
             case 2 => PREFIXED
             case 5 => BIT32
-            case v => throw Exception()
+            case v => throw ParseValueExecption("WireType")
         }
     }
 

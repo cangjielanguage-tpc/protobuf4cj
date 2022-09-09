@@ -81,32 +81,6 @@ public class ParseValueExecption <: ProtobufException {
 }
 
 /**
- * The class is ValueTypeUnmatchException inherited from ProtobufException
- * @author tutudo
- * @since 0.29.3
- */
-public class ValueTypeUnmatchException <: ProtobufException {
-    public ValueTypeUnmatchException(let name: String, let vtype: String) {}
-
-    public prop let message: String {
-        get() { "Failed to get `${vtype}` value(s) from `${name}`."}
-    }
-}
-
-/**
- * The class is UnrecognizedBytesException inherited from ProtobufException
- * @author tutudo
- * @since 0.29.3
- */
-public class UnrecognizedBytesException <: ProtobufException {
-    public UnrecognizedBytesException(let name: String, let left: Int64) {}
-
-    public prop let message: String {
-        get() { "Failed to unpack `${name}`, unrecognized bytes left `${left}`." }
-    }
-}
-
-/**
  * The class is UnmatchedOneofCaseException inherited from ProtobufException
  * @author tutudo
  * @since 0.29.3
@@ -116,5 +90,11 @@ public class UnmatchedOneofCaseException <: ProtobufException {
 
     public prop let message: String {
         get() { "Failed to get oneof case `${gname}`, for case `${cname}` is set." }
+    }
+}
+
+class PBInternalException <: ProtobufException{
+    public prop let message: String {
+        get() { "Protobuf Internal exception" }
     }
 }
