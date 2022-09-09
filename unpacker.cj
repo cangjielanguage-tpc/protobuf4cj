@@ -69,7 +69,7 @@ func parseEnum<E>(src: Json) where E <: Enum<E> {
     match (src) {
         case c: JsonString => E.parse(c)
         case c: JsonNumber => E.parse(Int32(c))
-        case _ => throw Exception()
+        case _ => throw ParseValueExecption("Enum")
     }
 }
 
@@ -339,7 +339,7 @@ public class MapUnpacker<K, V> <: Unpacker where K <: Hashable & Equatable<K> & 
                 match (Tag.tagParse(sub)[0]) {
                     case 1 => key = ku.unpacker.unpack(sub)
                     case 2 => val = vu.unpacker.unpack(sub)
-                    case e => throw Exception() // todo
+                    case e => throw ParseValueExecption("map", reason: "Invalid tag value in map")
                 }
             }
 

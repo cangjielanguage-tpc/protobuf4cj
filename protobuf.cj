@@ -229,7 +229,7 @@ extend Int64 {
         match (src) {
             case c: JsonNumber => Int64(c)
             case c: JsonString => c.toInt64().getOrThrow()
-            case _ => throw Exception()
+            case _ => throw ParseValueExecption("Int64")
         }
     }
 }
