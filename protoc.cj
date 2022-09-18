@@ -620,8 +620,8 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     // service
     let servicePath = "${helper.pkgPrefix.substring(1)}${ser.name}"
     append("\npublic abstract class ${ser.name}Service <: Service {\n")
-    append("    init() { super(\"${servicePath}\") }\n")
-    append("    func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
+    append("    protected init() { super(\"${servicePath}\") }\n")
+    append("    protected func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
     for (m in ser.method) {
         append("            case \"${m.name}\" => ")
         append(match ((m.clientStreaming, m.serverStreaming)) {
