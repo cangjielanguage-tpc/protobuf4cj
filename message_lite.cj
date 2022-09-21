@@ -16,7 +16,10 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     protected static let s_initArrayTag = Array<Tag>()
 
     /* once mutex of messages */
-    protected static let s_onceMutex = sync.ReentrantMutex()
+    private static let s_onceMutex = sync.ReentrantMutex()
+    protected static func s_newOnce() {
+        Once(s_onceMutex)
+    }
 
     protected var m_proto2 = true
     protected var m_unpacker = s_initHashMapTagUnpacker
