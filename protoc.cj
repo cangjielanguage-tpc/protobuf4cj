@@ -352,7 +352,7 @@ func getPropType(f: FieldDescriptorProto) {
 
 let staticInitCodes =
 """
-    private static let s_once = Once(s_onceMutex)
+    private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
@@ -693,8 +693,8 @@ let messageRsvdWords = HashSet<String>([
     "s_initHashMapTagUnpacker", "s_initHashMapTagString", "s_initHashMapTagMessageFile",
     "s_initHashMapTagInt64", "s_initHashMapStringTag", "s_initArrayTag", "m_proto2", "m_unpacker",
     "m_names", "m_nameTags", "m_defaultValue", "m_requiredFields", "m_oneofIndex", "m_oneofCase",
-    "unknownFields", "m_fields", "m_fieldsClone", "m_requiredFieldsCheck", "unpack", "get_",
-    "fromJson", "fromBytes"
+    "unknownFields", "m_fields", "m_fieldsClone", "m_requiredFieldsCheck", "unpack", "get_", "fromJson", "fromBytes",
+    "s_onceMutex", "s_newOnce", "s_once", "s_unpackers", "s_names", "s_nameTags"
 ])
 let enumRsvdWords = HashSet<String>([
     "value", "parse"
