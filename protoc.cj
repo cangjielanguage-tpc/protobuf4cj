@@ -662,7 +662,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
             case (false, true) =>
                 ", req: ${m.inputType}) {\n        serverStream<${m.outputType}>(\"${m.name}\", ctx, req)\n    }\n"
             case (true, false) =>
-                ", resp: ${m.outputType}) {\n        clientStream<${m.inputType}>(\"${m.name}\", ctx, resp)\n    }\n"
+                ") {\n        clientStream<${m.inputType}, ${m.outputType}>(\"${m.name}\", ctx)\n    }\n"
             case (true, true) =>
                 ") {\n        stream<${m.inputType}, ${m.outputType}>(\"${m.name}\", ctx)\n    }\n"
         })
