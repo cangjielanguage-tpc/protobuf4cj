@@ -5,7 +5,7 @@ from protobuf import protobuf.*
 import google.protobuf.*
 
 public class Version <: MessageLite {
-    private static let s_once = Once(s_onceMutex)
+    private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
@@ -64,7 +64,7 @@ extend Version <: MessageParser<Version> {
 }
 
 public class CodeGeneratorRequest <: MessageLite {
-    private static let s_once = Once(s_onceMutex)
+    private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
@@ -124,7 +124,7 @@ extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
 }
 
 public class CodeGeneratorResponse_File <: MessageLite {
-    private static let s_once = Once(s_onceMutex)
+    private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
@@ -219,7 +219,7 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
 }
 
 public class CodeGeneratorResponse <: MessageLite {
-    private static let s_once = Once(s_onceMutex)
+    private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
