@@ -621,21 +621,21 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
     let servicePath = "${helper.pkgPrefix.substring(1)}${ser.name}"
     append("\npublic abstract class ${ser.name}Service <: Service {\n")
     append("    protected init() { super(\"${servicePath}\") }\n")
-    append("    protected func m_dispatch(fn: String, ctx: ServerContext) {\n        match (fn) {\n")
+    append("    protected func m_dispatch(fn: String, sess: SocketSession) {\n        match (fn) {\n")
     for (m in ser.method) {
         append("            case \"${m.name}\" => ")
         append(match ((m.clientStreaming, m.serverStreaming)) {
-            case (false, false) =>  "let req = ${m.inputType}(); getRequest(ctx, req); setResponse(ctx, ${m.funcName}(ctx, req))\n"
-            case (false, true) =>   "let req = ${m.inputType}(); getRequest(ctx, req); setStatus(ctx, ${m.funcName}(ctx, req, getWriter(ctx)))\n"
-            case (true, false) =>   "setResponse(ctx, ${m.funcName}(ctx, getReader(ctx)))\n"
-            case (true, true) =>    "setStatus(ctx, ${m.funcName}(ctx, getStream(ctx)))\n"
+            case (false, false) =>  "let req = ${m.inputType}(); getRequest(sess, req); setResponse(sess, ${m.funcName}(req))\n"
+            case (false, true) =>   "let req = ${m.inputType}(); getRequest(sess, req); setStatus(sess, ${m.funcName}(req, getWriter(sess)))\n"
+            case (true, false) =>   "setResponse(sess, ${m.funcName}(getReader(sess)))\n"
+            case (true, true) =>    "setStatus(sess, ${m.funcName}(getStream(sess)))\n"
         })
     }
-    append("            case _ => m_refused(ctx)\n        }\n    }\n\n")
+    append("            case _ => m_refused(sess)\n        }\n    }\n\n")
 
     // service abstract functions
     for (m in ser.method) {
-        append("    protected func ${m.funcName}(ctx: ServerContext, ")
+        append("    protected func ${m.funcName}(")
         append(match ((m.clientStreaming, m.serverStreaming)) {
             case (false, false) =>  "req: ${m.inputType}): (${m.outputType}, Status)\n"
             case (false, true) =>   "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
