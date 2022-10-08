@@ -652,11 +652,11 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // client functions
     for (m in ser.method) {
-        append("\n    public func ${m.funcName}(ctx: ClientContext")
+        append("\n    public func ${m.funcName}(ctx: Context")
         append(match ((m.clientStreaming, m.serverStreaming)) {
             case (false, false) =>
                 ", req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", ctx, req, resp)\n    }" +
-                "\n    public func ${m.funcName}(ctx: ClientContext, req: ${m.inputType}) {" +
+                "\n    public func ${m.funcName}(ctx: Context, req: ${m.inputType}) {" +
                 "\n        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", ctx, req, resp))" +
                 "\n    }\n"
             case (false, true) =>
