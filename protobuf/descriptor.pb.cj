@@ -3,7 +3,7 @@ package google.protobuf
 from std import collection.*
 from protobuf import protobuf.*
 
-public class FileDescriptorSet <: MessageLite {
+public class FileDescriptorSet <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -30,7 +30,7 @@ public class FileDescriptorSet <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { FileDescriptorSet().m_fieldsClone(this) }
+    public func clone(): FileDescriptorSet { let m = FileDescriptorSet(); m.m_fieldsClone(this); m }
 
     public prop var file: ArrayList<FileDescriptorProto> {
         get( ) { get(1) }
@@ -46,7 +46,7 @@ extend FileDescriptorSet <: MessageParser<FileDescriptorSet> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class FileDescriptorProto <: MessageLite {
+public class FileDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -86,7 +86,7 @@ public class FileDescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { FileDescriptorProto().m_fieldsClone(this) }
+    public func clone(): FileDescriptorProto { let m = FileDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -157,7 +157,7 @@ extend FileDescriptorProto <: MessageParser<FileDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class DescriptorProto_ExtensionRange <: MessageLite {
+public class DescriptorProto_ExtensionRange <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -185,7 +185,7 @@ public class DescriptorProto_ExtensionRange <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { DescriptorProto_ExtensionRange().m_fieldsClone(this) }
+    public func clone(): DescriptorProto_ExtensionRange { let m = DescriptorProto_ExtensionRange(); m.m_fieldsClone(this); m }
 
     public prop var start: Int32 {
         get( ) { get(1) }
@@ -211,7 +211,7 @@ extend DescriptorProto_ExtensionRange <: MessageParser<DescriptorProto_Extension
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class DescriptorProto_ReservedRange <: MessageLite {
+public class DescriptorProto_ReservedRange <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -238,7 +238,7 @@ public class DescriptorProto_ReservedRange <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { DescriptorProto_ReservedRange().m_fieldsClone(this) }
+    public func clone(): DescriptorProto_ReservedRange { let m = DescriptorProto_ReservedRange(); m.m_fieldsClone(this); m }
 
     public prop var start: Int32 {
         get( ) { get(1) }
@@ -259,7 +259,7 @@ extend DescriptorProto_ReservedRange <: MessageParser<DescriptorProto_ReservedRa
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class DescriptorProto <: MessageLite {
+public class DescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -295,7 +295,7 @@ public class DescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { DescriptorProto().m_fieldsClone(this) }
+    public func clone(): DescriptorProto { let m = DescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -356,7 +356,7 @@ extend DescriptorProto <: MessageParser<DescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class ExtensionRangeOptions <: MessageLite {
+public class ExtensionRangeOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -383,7 +383,7 @@ public class ExtensionRangeOptions <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { ExtensionRangeOptions().m_fieldsClone(this) }
+    public func clone(): ExtensionRangeOptions { let m = ExtensionRangeOptions(); m.m_fieldsClone(this); m }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
         get( ) { get(999) }
@@ -541,7 +541,7 @@ extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
     }
 }
 
-public class FieldDescriptorProto <: MessageLite {
+public class FieldDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -574,7 +574,7 @@ public class FieldDescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { FieldDescriptorProto().m_fieldsClone(this) }
+    public func clone(): FieldDescriptorProto { let m = FieldDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -640,7 +640,7 @@ extend FieldDescriptorProto <: MessageParser<FieldDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class OneofDescriptorProto <: MessageLite {
+public class OneofDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -667,7 +667,7 @@ public class OneofDescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { OneofDescriptorProto().m_fieldsClone(this) }
+    public func clone(): OneofDescriptorProto { let m = OneofDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -688,7 +688,7 @@ extend OneofDescriptorProto <: MessageParser<OneofDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
+public class EnumDescriptorProto_EnumReservedRange <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -715,7 +715,7 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { EnumDescriptorProto_EnumReservedRange().m_fieldsClone(this) }
+    public func clone(): EnumDescriptorProto_EnumReservedRange { let m = EnumDescriptorProto_EnumReservedRange(); m.m_fieldsClone(this); m }
 
     public prop var start: Int32 {
         get( ) { get(1) }
@@ -736,7 +736,7 @@ extend EnumDescriptorProto_EnumReservedRange <: MessageParser<EnumDescriptorProt
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class EnumDescriptorProto <: MessageLite {
+public class EnumDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -766,7 +766,7 @@ public class EnumDescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { EnumDescriptorProto().m_fieldsClone(this) }
+    public func clone(): EnumDescriptorProto { let m = EnumDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -802,7 +802,7 @@ extend EnumDescriptorProto <: MessageParser<EnumDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class EnumValueDescriptorProto <: MessageLite {
+public class EnumValueDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -829,7 +829,7 @@ public class EnumValueDescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { EnumValueDescriptorProto().m_fieldsClone(this) }
+    public func clone(): EnumValueDescriptorProto { let m = EnumValueDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -855,7 +855,7 @@ extend EnumValueDescriptorProto <: MessageParser<EnumValueDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class ServiceDescriptorProto <: MessageLite {
+public class ServiceDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -883,7 +883,7 @@ public class ServiceDescriptorProto <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { ServiceDescriptorProto().m_fieldsClone(this) }
+    public func clone(): ServiceDescriptorProto { let m = ServiceDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -909,7 +909,7 @@ extend ServiceDescriptorProto <: MessageParser<ServiceDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class MethodDescriptorProto <: MessageLite {
+public class MethodDescriptorProto <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -946,7 +946,7 @@ public class MethodDescriptorProto <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { MethodDescriptorProto().m_fieldsClone(this) }
+    public func clone(): MethodDescriptorProto { let m = MethodDescriptorProto(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -1032,7 +1032,7 @@ extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
     }
 }
 
-public class FileOptions <: MessageLite {
+public class FileOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1083,7 +1083,7 @@ public class FileOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { FileOptions().m_fieldsClone(this) }
+    public func clone(): FileOptions { let m = FileOptions(); m.m_fieldsClone(this); m }
 
     public prop var javaPackage: String {
         get( ) { get(1) }
@@ -1199,7 +1199,7 @@ extend FileOptions <: MessageParser<FileOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class MessageOptions <: MessageLite {
+public class MessageOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1235,7 +1235,7 @@ public class MessageOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { MessageOptions().m_fieldsClone(this) }
+    public func clone(): MessageOptions { let m = MessageOptions(); m.m_fieldsClone(this); m }
 
     public prop var messageSetWireFormat: Bool {
         get( ) { get(1) }
@@ -1351,7 +1351,7 @@ extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
     }
 }
 
-public class FieldOptions <: MessageLite {
+public class FieldOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1393,7 +1393,7 @@ public class FieldOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { FieldOptions().m_fieldsClone(this) }
+    public func clone(): FieldOptions { let m = FieldOptions(); m.m_fieldsClone(this); m }
 
     public prop var ctype: FieldOptions_CType {
         get( ) { get(1) }
@@ -1444,7 +1444,7 @@ extend FieldOptions <: MessageParser<FieldOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class OneofOptions <: MessageLite {
+public class OneofOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1471,7 +1471,7 @@ public class OneofOptions <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { OneofOptions().m_fieldsClone(this) }
+    public func clone(): OneofOptions { let m = OneofOptions(); m.m_fieldsClone(this); m }
 
     public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
         get( ) { get(999) }
@@ -1487,7 +1487,7 @@ extend OneofOptions <: MessageParser<OneofOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class EnumOptions <: MessageLite {
+public class EnumOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1521,7 +1521,7 @@ public class EnumOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { EnumOptions().m_fieldsClone(this) }
+    public func clone(): EnumOptions { let m = EnumOptions(); m.m_fieldsClone(this); m }
 
     public prop var allowAlias: Bool {
         get( ) { get(2) }
@@ -1547,7 +1547,7 @@ extend EnumOptions <: MessageParser<EnumOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class EnumValueOptions <: MessageLite {
+public class EnumValueOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1580,7 +1580,7 @@ public class EnumValueOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { EnumValueOptions().m_fieldsClone(this) }
+    public func clone(): EnumValueOptions { let m = EnumValueOptions(); m.m_fieldsClone(this); m }
 
     public prop var deprecated: Bool {
         get( ) { get(1) }
@@ -1601,7 +1601,7 @@ extend EnumValueOptions <: MessageParser<EnumValueOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class ServiceOptions <: MessageLite {
+public class ServiceOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1634,7 +1634,7 @@ public class ServiceOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { ServiceOptions().m_fieldsClone(this) }
+    public func clone(): ServiceOptions { let m = ServiceOptions(); m.m_fieldsClone(this); m }
 
     public prop var deprecated: Bool {
         get( ) { get(33) }
@@ -1695,7 +1695,7 @@ extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
     }
 }
 
-public class MethodOptions <: MessageLite {
+public class MethodOptions <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1729,7 +1729,7 @@ public class MethodOptions <: MessageLite {
         m_defaultValue = s_defaultValue
     }
 
-    public func clone() { MethodOptions().m_fieldsClone(this) }
+    public func clone(): MethodOptions { let m = MethodOptions(); m.m_fieldsClone(this); m }
 
     public prop var deprecated: Bool {
         get( ) { get(33) }
@@ -1755,7 +1755,7 @@ extend MethodOptions <: MessageParser<MethodOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class UninterpretedOption_NamePart <: MessageLite {
+public class UninterpretedOption_NamePart <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1788,7 +1788,7 @@ public class UninterpretedOption_NamePart <: MessageLite {
         m_requiredFields = s_requiredFields
     }
 
-    public func clone() { UninterpretedOption_NamePart().m_fieldsClone(this) }
+    public func clone(): UninterpretedOption_NamePart { let m = UninterpretedOption_NamePart(); m.m_fieldsClone(this); m }
 
     public prop var namePart: String {
         get( ) { get(1) }
@@ -1809,7 +1809,7 @@ extend UninterpretedOption_NamePart <: MessageParser<UninterpretedOption_NamePar
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class UninterpretedOption <: MessageLite {
+public class UninterpretedOption <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1840,7 +1840,7 @@ public class UninterpretedOption <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { UninterpretedOption().m_fieldsClone(this) }
+    public func clone(): UninterpretedOption { let m = UninterpretedOption(); m.m_fieldsClone(this); m }
 
     public prop var name: ArrayList<UninterpretedOption_NamePart> {
         get( ) { get(2) }
@@ -1886,7 +1886,7 @@ extend UninterpretedOption <: MessageParser<UninterpretedOption> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class SourceCodeInfo_Location <: MessageLite {
+public class SourceCodeInfo_Location <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1914,7 +1914,7 @@ public class SourceCodeInfo_Location <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { SourceCodeInfo_Location().m_fieldsClone(this) }
+    public func clone(): SourceCodeInfo_Location { let m = SourceCodeInfo_Location(); m.m_fieldsClone(this); m }
 
     public prop var path: ArrayList<Int32> {
         get( ) { get(1) }
@@ -1950,7 +1950,7 @@ extend SourceCodeInfo_Location <: MessageParser<SourceCodeInfo_Location> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class SourceCodeInfo <: MessageLite {
+public class SourceCodeInfo <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -1977,7 +1977,7 @@ public class SourceCodeInfo <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { SourceCodeInfo().m_fieldsClone(this) }
+    public func clone(): SourceCodeInfo { let m = SourceCodeInfo(); m.m_fieldsClone(this); m }
 
     public prop var location: ArrayList<SourceCodeInfo_Location> {
         get( ) { get(1) }
@@ -1993,7 +1993,7 @@ extend SourceCodeInfo <: MessageParser<SourceCodeInfo> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class GeneratedCodeInfo_Annotation <: MessageLite {
+public class GeneratedCodeInfo_Annotation <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -2021,7 +2021,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { GeneratedCodeInfo_Annotation().m_fieldsClone(this) }
+    public func clone(): GeneratedCodeInfo_Annotation { let m = GeneratedCodeInfo_Annotation(); m.m_fieldsClone(this); m }
 
     public prop var path: ArrayList<Int32> {
         get( ) { get(1) }
@@ -2052,7 +2052,7 @@ extend GeneratedCodeInfo_Annotation <: MessageParser<GeneratedCodeInfo_Annotatio
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class GeneratedCodeInfo <: MessageLite {
+public class GeneratedCodeInfo <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -2079,7 +2079,7 @@ public class GeneratedCodeInfo <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { GeneratedCodeInfo().m_fieldsClone(this) }
+    public func clone(): GeneratedCodeInfo { let m = GeneratedCodeInfo(); m.m_fieldsClone(this); m }
 
     public prop var annotation: ArrayList<GeneratedCodeInfo_Annotation> {
         get( ) { get(1) }

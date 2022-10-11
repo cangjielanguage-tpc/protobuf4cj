@@ -4,7 +4,7 @@ from std import collection.*
 from protobuf import protobuf.*
 import google.protobuf.*
 
-public class Version <: MessageLite {
+public class Version <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -32,7 +32,7 @@ public class Version <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { Version().m_fieldsClone(this) }
+    public func clone(): Version { let m = Version(); m.m_fieldsClone(this); m }
 
     public prop var major: Int32 {
         get( ) { get(1) }
@@ -63,7 +63,7 @@ extend Version <: MessageParser<Version> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class CodeGeneratorRequest <: MessageLite {
+public class CodeGeneratorRequest <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -92,7 +92,7 @@ public class CodeGeneratorRequest <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { CodeGeneratorRequest().m_fieldsClone(this) }
+    public func clone(): CodeGeneratorRequest { let m = CodeGeneratorRequest(); m.m_fieldsClone(this); m }
 
     public prop var fileToGenerate: ArrayList<String> {
         get( ) { get(1) }
@@ -123,7 +123,7 @@ extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public class CodeGeneratorResponse_File <: MessageLite {
+public class CodeGeneratorResponse_File <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -151,7 +151,7 @@ public class CodeGeneratorResponse_File <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { CodeGeneratorResponse_File().m_fieldsClone(this) }
+    public func clone(): CodeGeneratorResponse_File { let m = CodeGeneratorResponse_File(); m.m_fieldsClone(this); m }
 
     public prop var name: String {
         get( ) { get(1) }
@@ -218,7 +218,7 @@ extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
     }
 }
 
-public class CodeGeneratorResponse <: MessageLite {
+public class CodeGeneratorResponse <: MessageLite2 {
     private static let s_once = s_newOnce()
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
@@ -246,7 +246,7 @@ public class CodeGeneratorResponse <: MessageLite {
         m_nameTags = s_nameTags
     }
 
-    public func clone() { CodeGeneratorResponse().m_fieldsClone(this) }
+    public func clone(): CodeGeneratorResponse { let m = CodeGeneratorResponse(); m.m_fieldsClone(this); m }
 
     public prop var error: String {
         get( ) { get(1) }
