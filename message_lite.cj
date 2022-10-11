@@ -300,11 +300,11 @@ public struct Once {
 
     public func once(f: ()-> Unit) {
         if (e.load()) { return }
-        m.lock()
-        if (!e.load()) {
-            f()
-            e.store(true)
+        synchronized (m) {
+            if (!e.load()) {
+                f()
+                e.store(true)
+            }
         }
-        m.unlock()
     }
 }
