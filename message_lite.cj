@@ -6,6 +6,69 @@ package protobuf
 
 from std import sync.*
 
+public abstract class MessageLite2 <: MessageLite {
+    /* special fields info of proto2 */
+    protected var m_defaultValue = s_initHashMapTagMessageFile
+    protected var m_requiredFields = s_initArrayTag
+
+    /* check required fields */
+    protected func m_requiredFieldsCheck() {
+        for (tag in m_requiredFields) {
+            if (!m_fields.contains(tag) && !m_defaultValue.contains(tag)) {
+                throw RequiredFieldNotSetException(m_names[tag])
+            }
+        }
+    }
+
+    /* check if field should be packed */
+    protected func m_packCheck(val: MessageField): Bool {
+        match (val) {
+            case _: Reference => !val.isEmpty()
+            case _ => true
+        }
+    }
+
+    /* set proto2 message field's value */
+    protected func set(tag: Tag, val: MessageField): Unit {
+        m_fields[tag] = val
+
+        if (let Some(idx) = m_oneofIndex.get(tag)) {
+            let c = m_oneofCase[idx]
+            if (c != tag) {
+                m_oneofCase[idx] = tag
+            } else if (c != UNSETCASE) {
+                m_fields.remove(c)
+            }
+        }
+    }
+
+    /* get proto2 message field's value by tag */
+    protected func get_(tag: Tag): MessageField {
+        if (let Some(v) = m_fields.get(tag)) {
+            return v
+        }
+
+        if (let Some(idx) = m_oneofIndex.get(tag)) {
+            let c = m_oneofCase[idx]
+            if (c != UNSETCASE) {
+                throw UnmatchedOneofCaseException(m_names[tag], m_names[c])
+            }
+        }
+
+        /* proto2 default value */
+        if (let Some(v) = m_defaultValue.get(tag)) {
+            return v
+        }
+
+        /* proto2, value must be set before reading */
+        let default = m_unpacker[tag].default()
+        match (default) {
+            case _: Reference => set(tag, default); return default
+            case _ => throw GetFieldValueException(m_names[tag])
+        }
+    }
+}
+
 public abstract class MessageLite <: MessageField & ToJson & ToString {
     /* init value of all kinds of collections in message_lite. */
     protected static let s_initHashMapTagUnpacker = HashMap<Tag, Unpacker>()
@@ -21,20 +84,20 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
         Once(s_onceMutex)
     }
 
-    protected var m_proto2 = true
+    /* message_lite fields info table */
     protected var m_unpacker = s_initHashMapTagUnpacker
     protected var m_names = s_initHashMapTagString
     protected var m_nameTags = s_initHashMapStringTag
-    protected var m_defaultValue = s_initHashMapTagMessageFile
-    protected var m_requiredFields = s_initArrayTag
 
     protected static let UNSETCASE: Tag = 0xffffffff
-    protected var m_oneofIndex = s_initHashMapTagInt64  /* 与类绑定 */
-    protected var m_oneofCase = s_initArrayTag /* 对象间独立 */
+    protected var m_oneofIndex = s_initHashMapTagInt64  /* group index of oneof sub fields */
+    protected var m_oneofCase = s_initArrayTag /* case of oneof group */
 
+    /* unknown fields */
     public var unknownFields = ArrayList<MessageUnknownField>()
     protected let m_fields = HashMap<Tag, MessageField>()
 
+    /* clone all fields */
     protected func m_fieldsClone(m: MessageLite) {
         if (!m_oneofCase.isEmpty()) {
             m_oneofCase = m.m_oneofCase.clone()
@@ -42,29 +105,16 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
         for ((tag, val) in m.m_fields) {
             m_fields[tag] = clone(val)
         }
-        this
     }
 
-    protected func m_requiredFieldsCheck() {
-        if (!m_proto2) {
-            return
-        }
+    /* check required fields, proto3 has no required fields */
+    protected open func m_requiredFieldsCheck() { return }
 
-        for (tag in m_requiredFields) {
-            if (!m_fields.contains(tag) && !m_defaultValue.contains(tag)) {
-                throw RequiredFieldNotSetException(m_names[tag])
-            }
-        }
-    }
-
-    /* 
-     * proto3 will not pack any empty field
-     * proto2 will not pack any empty array or map, but pack empty bytes and message.
-     */
-    private func packCheck(val: MessageField): Bool {
+    /* check if field should be pack, proto3 will not pack any empty field */
+    protected open func m_packCheck(val: MessageField): Bool {
         match (val) {
-            case c: Bytes => m_proto2 || !c.isEmpty()
-            case c: MessageLite => if (m_proto2) { true } else { !c.isEmpty() }
+            case c: Bytes => !c.isEmpty()
+            case c: MessageLite => !c.isEmpty()
             case _: Reference => !val.isEmpty()
             case _ => true
         }
@@ -74,7 +124,7 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     public func packSize(): Int64 {
         var ret = 0
         for ((tag, val) in m_fields) {
-            if (packCheck(val)) {
+            if (m_packCheck(val)) {
                 ret += tag.tagSize + packSize(val)
             }
         }
@@ -91,7 +141,7 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     public func pack(out: BytesWriter): Unit {
         m_requiredFieldsCheck()
         for ((tag, val) in m_fields) {
-            if (packCheck(val)) {
+            if (m_packCheck(val)) {
                 tag.tagPack(wireType(val), out)
                 pack(val, out)
             }
@@ -147,7 +197,7 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
     /* whether if the message is empty: has no fields set or all the fields is empty. */
     public func isEmpty() {
         for ((_, val) in m_fields) {
-            if (packCheck(val)) {
+            if (m_packCheck(val)) {
                 return false
             }
         }
@@ -179,8 +229,9 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
         obj
     }
 
-    protected func set(tag: Tag, val: MessageField): Unit {
-        let cs = if (m_proto2 || reference(val) || !val.isEmpty()) {
+    /* set message field's value */
+    protected open func set(tag: Tag, val: MessageField): Unit {
+        let cs = if (reference(val) || !val.isEmpty()) {
             m_fields[tag] = val; tag
         } else {
             m_fields.remove(tag); UNSETCASE
@@ -193,7 +244,8 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
         }
     }
 
-    private func get_(tag: Tag): MessageField {
+    /* get message field's value by tag */
+    protected open func get_(tag: Tag): MessageField {
         if (let Some(v) = m_fields.get(tag)) {
             return v
         }
@@ -207,18 +259,10 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
 
         let default = m_unpacker[tag].default()
         if (reference(default)) {
-            set(tag, default); return default
+            set(tag, default)
         }
 
-        if (!m_proto2) {
-            return default
-        }
-
-        if (let Some(v) = m_defaultValue.get(tag)) {
-            return v
-        }
-
-        throw GetFieldValueException(m_names[tag])
+        return default
     }
 
     /* get typeof `T` value from message field */
