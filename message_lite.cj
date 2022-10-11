@@ -6,6 +6,7 @@ package protobuf
 
 from std import sync.*
 
+/* supper class of all the proto2 messages */
 public abstract class MessageLite2 <: MessageLite {
     /* special fields info of proto2 */
     protected var m_defaultValue = s_initHashMapTagMessageFile
@@ -69,6 +70,7 @@ public abstract class MessageLite2 <: MessageLite {
     }
 }
 
+/* supper class of all the messages */
 public abstract class MessageLite <: MessageField & ToJson & ToString {
     /* init value of all kinds of collections in message_lite. */
     protected static let s_initHashMapTagUnpacker = HashMap<Tag, Unpacker>()
