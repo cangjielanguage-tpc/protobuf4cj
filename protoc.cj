@@ -279,7 +279,7 @@ func getUnpacker(f: FieldDescriptorProto) {
 
     // Process repeated
     if (f.label != LABEL_REPEATED) { return ac + ".instance" }
-    if (f.options.packed) { return ac + ".packedInstance" }
+    try { if (f.options.packed) { return ac + ".packedInstance" } } catch (_) { /* nothing */ }
     ac + ".repeatInstance(${f.number})"
 }
 
@@ -322,9 +322,9 @@ func getFieldSetName(f: FieldDescriptorProto) {
         case _ => f.typeName
     }
 
-    if (f.options.packed) {
+    try { if (f.options.packed) {
         return if (vt.isEmpty()) { "PackedField<${pt}>(v)" } else { "Packed${vt}(v)" }
-    }
+    } } catch (_) { /* nothing */ }
 
     if (vt.isEmpty()) { "RepeatField<${pt}>(${f.number}, v)" } else { "Repeat${vt}(${f.number}, v)" }
 }
@@ -378,14 +378,15 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     let append: (String) -> StringBuilder = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf)
 
-    // default value
-    let dvs = getDefaultValues(fields)
+    // proto2 default value
+    let dvs = if (helper.proto2) { getDefaultValues(fields) } else { ArrayList<String>() }
 
-    // required fields
-    let reqs = getRequiredFields(fields)
+    // proto2 required fields
+    let reqs = if (helper.proto2) { getRequiredFields(fields) } else { ArrayList<Int32>() }
 
     // class
-    append("\npublic class ${typeName} <: MessageLite {\n")
+    let base = if (helper.proto2) { "MessageLite2" } else { "MessageLite" }
+    append("\npublic class ${typeName} <: ${base} {\n")
 
     // static
     append(staticInitCodes)
@@ -411,7 +412,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     for (f in fields) { sepOut.append("(\"${f.jsonName}\", ${f.number})") }
     append("\n        ])\n")
 
-    // special fields
+    // proto2 special fields
     genCodeSpecialFields(sepOut, dvs, reqs)
 
     // oneof
@@ -421,7 +422,6 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
 
     // init
     append(memberInitCodes)
-    if (!helper.proto2) { append("        m_proto2 = false\n") }
     if (!dvs.isEmpty()) { append("        m_defaultValue = s_defaultValue\n") }
     if (!reqs.isEmpty()) { append("        m_requiredFields = s_requiredFields\n") }
     if (helper.oneofNum != 0) {
@@ -432,7 +432,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     append("    }\n")
 
     // clone
-    append("\n    public func clone() { ${typeName}().m_fieldsClone(this) }\n")
+    append("\n    public func clone(): ${typeName} { let m = ${typeName}(); m.m_fieldsClone(this); m }\n")
 
     // props
     for (f in fields) {
@@ -542,8 +542,6 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
             case TYPE_MESSAGE => helper.setMessageTypeName(f, msg.nestedType)
             case _ => ()
         }
-        // Set packed option
-        try { f.options.packed } catch (_) { f.options.packed = false }
     }
 
     // Mapentry sets typename without generating message
@@ -691,7 +689,7 @@ let protobufRsvdWords = HashSet<String>([
 ])
 let messageRsvdWords = HashSet<String>([
     "s_initHashMapTagUnpacker", "s_initHashMapTagString", "s_initHashMapTagMessageFile",
-    "s_initHashMapTagInt64", "s_initHashMapStringTag", "s_initArrayTag", "m_proto2", "m_unpacker",
+    "s_initHashMapTagInt64", "s_initHashMapStringTag", "s_initArrayTag", "m_packCheck", "m_unpacker",
     "m_names", "m_nameTags", "m_defaultValue", "m_requiredFields", "m_oneofIndex", "m_oneofCase",
     "unknownFields", "m_fields", "m_fieldsClone", "m_requiredFieldsCheck", "unpack", "get_", "fromJson", "fromBytes",
     "s_onceMutex", "s_newOnce", "s_once", "s_unpackers", "s_names", "s_nameTags"
