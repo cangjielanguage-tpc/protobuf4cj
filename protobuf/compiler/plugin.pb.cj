@@ -53,6 +53,11 @@ public class Version <: MessageLite2 {
         get( ) { get(4) }
         set(v) { set(4, v) }
     }
+
+    public prop let hasMajor: Bool { get() { m_fields.contains(1) } }
+    public prop let hasMinor: Bool { get() { m_fields.contains(2) } }
+    public prop let hasPatch: Bool { get() { m_fields.contains(3) } }
+    public prop let hasSuffix: Bool { get() { m_fields.contains(4) } }
 }
 
 extend Version <: MessageParser<Version> {
@@ -113,6 +118,9 @@ public class CodeGeneratorRequest <: MessageLite2 {
         get( ) { get(3) }
         set(v) { set(3, v) }
     }
+
+    public prop let hasParameter: Bool { get() { m_fields.contains(2) } }
+    public prop let hasCompilerVersion: Bool { get() { m_fields.contains(3) } }
 }
 
 extend CodeGeneratorRequest <: MessageParser<CodeGeneratorRequest> {
@@ -172,6 +180,11 @@ public class CodeGeneratorResponse_File <: MessageLite2 {
         get( ) { get(16) }
         set(v) { set(16, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasInsertionPoint: Bool { get() { m_fields.contains(2) } }
+    public prop let hasContent: Bool { get() { m_fields.contains(15) } }
+    public prop let hasGeneratedCodeInfo: Bool { get() { m_fields.contains(16) } }
 }
 
 extend CodeGeneratorResponse_File <: MessageParser<CodeGeneratorResponse_File> {
@@ -262,6 +275,9 @@ public class CodeGeneratorResponse <: MessageLite2 {
         get( ) { get(15) }
         set(v) { set(15, RepeatField<CodeGeneratorResponse_File>(15, v)) }
     }
+
+    public prop let hasError: Bool { get() { m_fields.contains(1) } }
+    public prop let hasSupportedFeatures: Bool { get() { m_fields.contains(2) } }
 }
 
 extend CodeGeneratorResponse <: MessageParser<CodeGeneratorResponse> {

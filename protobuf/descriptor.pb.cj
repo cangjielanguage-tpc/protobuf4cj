@@ -147,6 +147,12 @@ public class FileDescriptorProto <: MessageLite2 {
         get( ) { get(12) }
         set(v) { set(12, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasPackage: Bool { get() { m_fields.contains(2) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(8) } }
+    public prop let hasSourceCodeInfo: Bool { get() { m_fields.contains(9) } }
+    public prop let hasSyntax: Bool { get() { m_fields.contains(12) } }
 }
 
 extend FileDescriptorProto <: MessageParser<FileDescriptorProto> {
@@ -201,6 +207,10 @@ public class DescriptorProto_ExtensionRange <: MessageLite2 {
         get( ) { get(3) }
         set(v) { set(3, v) }
     }
+
+    public prop let hasStart: Bool { get() { m_fields.contains(1) } }
+    public prop let hasEnd: Bool { get() { m_fields.contains(2) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
 }
 
 extend DescriptorProto_ExtensionRange <: MessageParser<DescriptorProto_ExtensionRange> {
@@ -249,6 +259,9 @@ public class DescriptorProto_ReservedRange <: MessageLite2 {
         get( ) { get(2) }
         set(v) { set(2, v) }
     }
+
+    public prop let hasStart: Bool { get() { m_fields.contains(1) } }
+    public prop let hasEnd: Bool { get() { m_fields.contains(2) } }
 }
 
 extend DescriptorProto_ReservedRange <: MessageParser<DescriptorProto_ReservedRange> {
@@ -346,6 +359,9 @@ public class DescriptorProto <: MessageLite2 {
         get( ) { get(10) }
         set(v) { set(10, RepeatField<String>(10, v)) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(7) } }
 }
 
 extend DescriptorProto <: MessageParser<DescriptorProto> {
@@ -630,6 +646,18 @@ public class FieldDescriptorProto <: MessageLite2 {
         get( ) { get(17) }
         set(v) { set(17, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasNumber: Bool { get() { m_fields.contains(3) } }
+    public prop let hasLabel: Bool { get() { m_fields.contains(4) } }
+    public prop let hasType: Bool { get() { m_fields.contains(5) } }
+    public prop let hasTypeName: Bool { get() { m_fields.contains(6) } }
+    public prop let hasExtendee: Bool { get() { m_fields.contains(2) } }
+    public prop let hasDefaultValue: Bool { get() { m_fields.contains(7) } }
+    public prop let hasOneofIndex: Bool { get() { m_fields.contains(9) } }
+    public prop let hasJsonName: Bool { get() { m_fields.contains(10) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(8) } }
+    public prop let hasProto3Optional: Bool { get() { m_fields.contains(17) } }
 }
 
 extend FieldDescriptorProto <: MessageParser<FieldDescriptorProto> {
@@ -678,6 +706,9 @@ public class OneofDescriptorProto <: MessageLite2 {
         get( ) { get(2) }
         set(v) { set(2, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(2) } }
 }
 
 extend OneofDescriptorProto <: MessageParser<OneofDescriptorProto> {
@@ -726,6 +757,9 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite2 {
         get( ) { get(2) }
         set(v) { set(2, v) }
     }
+
+    public prop let hasStart: Bool { get() { m_fields.contains(1) } }
+    public prop let hasEnd: Bool { get() { m_fields.contains(2) } }
 }
 
 extend EnumDescriptorProto_EnumReservedRange <: MessageParser<EnumDescriptorProto_EnumReservedRange> {
@@ -792,6 +826,9 @@ public class EnumDescriptorProto <: MessageLite2 {
         get( ) { get(5) }
         set(v) { set(5, RepeatField<String>(5, v)) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
 }
 
 extend EnumDescriptorProto <: MessageParser<EnumDescriptorProto> {
@@ -845,6 +882,10 @@ public class EnumValueDescriptorProto <: MessageLite2 {
         get( ) { get(3) }
         set(v) { set(3, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasNumber: Bool { get() { m_fields.contains(2) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
 }
 
 extend EnumValueDescriptorProto <: MessageParser<EnumValueDescriptorProto> {
@@ -899,6 +940,9 @@ public class ServiceDescriptorProto <: MessageLite2 {
         get( ) { get(3) }
         set(v) { set(3, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
 }
 
 extend ServiceDescriptorProto <: MessageParser<ServiceDescriptorProto> {
@@ -982,6 +1026,14 @@ public class MethodDescriptorProto <: MessageLite2 {
         get( ) { get(15) }
         set(v) { set(15, v) }
     }
+
+    public prop let hasName: Bool { get() { m_fields.contains(1) } }
+    public prop let hasInputType: Bool { get() { m_fields.contains(2) } }
+    public prop let hasOutputType: Bool { get() { m_fields.contains(3) } }
+    public prop let hasOptions: Bool { get() { m_fields.contains(4) } }
+    public prop let hasClientStreaming: Bool { get() { m_fields.contains(5) } }
+    public prop let hasServerStreaming: Bool { get() { m_fields.contains(6) } }
+    public prop let hasFuncName: Bool { get() { m_fields.contains(15) } }
 }
 
 extend MethodDescriptorProto <: MessageParser<MethodDescriptorProto> {
@@ -1189,6 +1241,27 @@ public class FileOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasJavaPackage: Bool { get() { m_fields.contains(1) } }
+    public prop let hasJavaOuterClassname: Bool { get() { m_fields.contains(8) } }
+    public prop let hasJavaMultipleFiles: Bool { get() { m_fields.contains(10) } }
+    public prop let hasJavaGenerateEqualsAndHash: Bool { get() { m_fields.contains(20) } }
+    public prop let hasJavaStringCheckUtf8: Bool { get() { m_fields.contains(27) } }
+    public prop let hasOptimizeFor: Bool { get() { m_fields.contains(9) } }
+    public prop let hasGoPackage: Bool { get() { m_fields.contains(11) } }
+    public prop let hasCcGenericServices: Bool { get() { m_fields.contains(16) } }
+    public prop let hasJavaGenericServices: Bool { get() { m_fields.contains(17) } }
+    public prop let hasPyGenericServices: Bool { get() { m_fields.contains(18) } }
+    public prop let hasPhpGenericServices: Bool { get() { m_fields.contains(42) } }
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(23) } }
+    public prop let hasCcEnableArenas: Bool { get() { m_fields.contains(31) } }
+    public prop let hasObjcClassPrefix: Bool { get() { m_fields.contains(36) } }
+    public prop let hasCsharpNamespace: Bool { get() { m_fields.contains(37) } }
+    public prop let hasSwiftPrefix: Bool { get() { m_fields.contains(39) } }
+    public prop let hasPhpClassPrefix: Bool { get() { m_fields.contains(40) } }
+    public prop let hasPhpNamespace: Bool { get() { m_fields.contains(41) } }
+    public prop let hasPhpMetadataNamespace: Bool { get() { m_fields.contains(44) } }
+    public prop let hasRubyPackage: Bool { get() { m_fields.contains(45) } }
 }
 
 extend FileOptions <: MessageParser<FileOptions> {
@@ -1261,6 +1334,11 @@ public class MessageOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasMessageSetWireFormat: Bool { get() { m_fields.contains(1) } }
+    public prop let hasNoStandardDescriptorAccessor: Bool { get() { m_fields.contains(2) } }
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(3) } }
+    public prop let hasMapEntry: Bool { get() { m_fields.contains(7) } }
 }
 
 extend MessageOptions <: MessageParser<MessageOptions> {
@@ -1434,6 +1512,14 @@ public class FieldOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasCtype: Bool { get() { m_fields.contains(1) } }
+    public prop let hasPacked: Bool { get() { m_fields.contains(2) } }
+    public prop let hasJstype: Bool { get() { m_fields.contains(6) } }
+    public prop let hasLazy: Bool { get() { m_fields.contains(5) } }
+    public prop let hasUnverifiedLazy: Bool { get() { m_fields.contains(15) } }
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(3) } }
+    public prop let hasWeak: Bool { get() { m_fields.contains(10) } }
 }
 
 extend FieldOptions <: MessageParser<FieldOptions> {
@@ -1537,6 +1623,9 @@ public class EnumOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasAllowAlias: Bool { get() { m_fields.contains(2) } }
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(3) } }
 }
 
 extend EnumOptions <: MessageParser<EnumOptions> {
@@ -1591,6 +1680,8 @@ public class EnumValueOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(1) } }
 }
 
 extend EnumValueOptions <: MessageParser<EnumValueOptions> {
@@ -1645,6 +1736,8 @@ public class ServiceOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(33) } }
 }
 
 extend ServiceOptions <: MessageParser<ServiceOptions> {
@@ -1745,6 +1838,9 @@ public class MethodOptions <: MessageLite2 {
         get( ) { get(999) }
         set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
     }
+
+    public prop let hasDeprecated: Bool { get() { m_fields.contains(33) } }
+    public prop let hasIdempotencyLevel: Bool { get() { m_fields.contains(34) } }
 }
 
 extend MethodOptions <: MessageParser<MethodOptions> {
@@ -1799,6 +1895,9 @@ public class UninterpretedOption_NamePart <: MessageLite2 {
         get( ) { get(2) }
         set(v) { set(2, v) }
     }
+
+    public prop let hasNamePart: Bool { get() { m_fields.contains(1) } }
+    public prop let hasIsExtension: Bool { get() { m_fields.contains(2) } }
 }
 
 extend UninterpretedOption_NamePart <: MessageParser<UninterpretedOption_NamePart> {
@@ -1876,6 +1975,13 @@ public class UninterpretedOption <: MessageLite2 {
         get( ) { get(8) }
         set(v) { set(8, v) }
     }
+
+    public prop let hasIdentifierValue: Bool { get() { m_fields.contains(3) } }
+    public prop let hasPositiveIntValue: Bool { get() { m_fields.contains(4) } }
+    public prop let hasNegativeIntValue: Bool { get() { m_fields.contains(5) } }
+    public prop let hasDoubleValue: Bool { get() { m_fields.contains(6) } }
+    public prop let hasStringValue: Bool { get() { m_fields.contains(7) } }
+    public prop let hasAggregateValue: Bool { get() { m_fields.contains(8) } }
 }
 
 extend UninterpretedOption <: MessageParser<UninterpretedOption> {
@@ -1940,6 +2046,9 @@ public class SourceCodeInfo_Location <: MessageLite2 {
         get( ) { get(6) }
         set(v) { set(6, RepeatField<String>(6, v)) }
     }
+
+    public prop let hasLeadingComments: Bool { get() { m_fields.contains(3) } }
+    public prop let hasTrailingComments: Bool { get() { m_fields.contains(4) } }
 }
 
 extend SourceCodeInfo_Location <: MessageParser<SourceCodeInfo_Location> {
@@ -2042,6 +2151,10 @@ public class GeneratedCodeInfo_Annotation <: MessageLite2 {
         get( ) { get(4) }
         set(v) { set(4, v) }
     }
+
+    public prop let hasSourceFile: Bool { get() { m_fields.contains(2) } }
+    public prop let hasBegin: Bool { get() { m_fields.contains(3) } }
+    public prop let hasEnd: Bool { get() { m_fields.contains(4) } }
 }
 
 extend GeneratedCodeInfo_Annotation <: MessageParser<GeneratedCodeInfo_Annotation> {
