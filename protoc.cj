@@ -687,10 +687,10 @@ func genCodeOneofGroup(typeName: String, fields: ArrayList<FieldDescriptorProto>
         let append: (String) -> StringBuilder = helper.outbuf.append
         let sepOut = LineSepOut(helper.outbuf, sep: "", sn: 4)
 
-        append("\npublic enum ${typeName}_Oneof_${decl.name[0].toUpperCase()}${decl.name.substring(1)} {\n")
+        append("\npublic enum ${typeName}_Oneof_${titleCase(decl.name)} {\n")
         for (f in fields) {
             try { if(f.oneofIndex != Int32(index)) { continue } } catch (_) { continue }
-            sepOut.append("| ${f.jsonName[0].toUpperCase()}${f.jsonName.substring(1)}(${getPropType(f)})")
+            sepOut.append("| ${titleCase(f.jsonName)}(${getPropType(f)})")
         }
         sepOut.append("| None")
         append("\n}\n")
@@ -711,12 +711,12 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
 
     let append: (String) -> StringBuilder = helper.outbuf.append
     helper.oneofDecl.forEachWithIndex({ index, decl =>
-        let propType = "${typeName}_Oneof_${decl.name[0].toUpperCase()}${decl.name.substring(1)}"
+        let propType = "${typeName}_Oneof_${titleCase(decl.name)}"
         append("\n    public prop var ${getMessagePropName(decl.name)}: ${propType} {\n")
         append("        get( ) {\n")
         append("            match (m_oneofCase[${index}]) {\n")
         for (f in group[index]) {
-            append("                case ${f.number} => ${propType}.${f.jsonName[0].toUpperCase()}${f.jsonName.substring(1)}(get(${f.number}))\n")
+            append("                case ${f.number} => ${propType}.${titleCase(f.jsonName)}(get(${f.number}))\n")
         }
         append("                case _ => ${propType}.None\n")
         append("            }\n")
@@ -724,7 +724,7 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
         append("        set(v) {\n")
         append("            match (v) {\n")
         for (f in group[index]) {
-            append("                case ${f.jsonName[0].toUpperCase()}${f.jsonName.substring(1)}(v_) => set(${f.number}, v_)\n")
+            append("                case ${titleCase(f.jsonName)}(v_) => set(${f.number}, v_)\n")
         }
         append("                case None => m_oneofClear(${index})\n")
         append("            }\n")
@@ -780,12 +780,16 @@ func getMessagePropName(name: String) {
     name
 }
 
-/* 小驼峰函数名 */
+func titleCase(str: String) {
+    "${str[0].toUpperCase()}${str.substring(1)}"
+}
+
+/* lower camel case */
 func getServiceFuncName(name: String) {
     let arr = "${name[0].toLowerCase()}${name.substring(1)}".split('_')
 
     for (i in 1..arr.size) {
-        arr[i] = "${arr[i][0].toUpperCase()}${arr[i].substring(1)}"
+        arr[i] = titleCase(arr[i])
     }
 
     let name = String.join(arr)
