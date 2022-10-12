@@ -418,6 +418,10 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
         append("        set(v) { set(${f.number}, ${getFieldSetName(f)}) }\n")
         append("    }\n")
     }
+
+    // oneof props
+    genCodeOneofProps(typeName, fields, helper)
+
     // props end
     append("}\n")
 
@@ -557,6 +561,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     genCodeMessageField(typeName, fields, helper)
     // extensions
     genCodeMessageExtension(typeName, extensions, helper)
+    // oneof group enum
+    genCodeOneofGroup(typeName, fields, helper)
 
     // todo extension range
     // todo reserved range
@@ -673,6 +679,58 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // client end
     append("}\n")
+}
+
+/* gen oneof group type define (enum) */
+func genCodeOneofGroup(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    helper.oneofDecl.forEachWithIndex({ index, decl =>
+        let append: (String) -> StringBuilder = helper.outbuf.append
+        let sepOut = LineSepOut(helper.outbuf, sep: "", sn: 4)
+
+        append("\npublic enum ${typeName}_Oneof_${decl.name[0].toUpperCase()}${decl.name.substring(1)} {\n")
+        for (f in fields) {
+            try { if(f.oneofIndex != Int32(index)) { continue } } catch (_) { continue }
+            sepOut.append("| ${f.jsonName[0].toUpperCase()}${f.jsonName.substring(1)}(${getPropType(f)})")
+        }
+        sepOut.append("| None")
+        append("\n}\n")
+    })
+}
+
+/* gen oenof group props for message */
+func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    if (helper.oneofDecl.isEmpty()) {
+        return
+    }
+
+    let group = Array<ArrayList<FieldDescriptorProto>>(helper.oneofDecl.size, item: ArrayList())
+    for (f in fields) {
+        try { f.oneofIndex } catch (_) { continue }
+        group[Int64(f.oneofIndex)].append(f)
+    }
+
+    let append: (String) -> StringBuilder = helper.outbuf.append
+    helper.oneofDecl.forEachWithIndex({ index, decl =>
+        let propType = "${typeName}_Oneof_${decl.name[0].toUpperCase()}${decl.name.substring(1)}"
+        append("\n    public prop var ${getMessagePropName(decl.name)}: ${propType} {\n")
+        append("        get( ) {\n")
+        append("            match (m_oneofCase[${index}]) {\n")
+        for (f in group[index]) {
+            append("                case ${f.number} => ${propType}.${f.jsonName[0].toUpperCase()}${f.jsonName.substring(1)}(get(${f.number}))\n")
+        }
+        append("                case _ => ${propType}.None\n")
+        append("            }\n")
+        append("        }\n\n")
+        append("        set(v) {\n")
+        append("            match (v) {\n")
+        for (f in group[index]) {
+            append("                case ${f.jsonName[0].toUpperCase()}${f.jsonName.substring(1)}(v_) => set(${f.number}, v_)\n")
+        }
+        append("                case None => m_oneofClear(${index})\n")
+        append("            }\n")
+        append("        }\n")
+        append("    }\n")
+    })
 }
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
