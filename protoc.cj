@@ -419,6 +419,15 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
         append("    }\n")
     }
 
+    // proto2 hasXXX props
+    if (helper.proto2) {
+        var newline = true
+        for (f in fields where f.label != LABEL_REPEATED) {
+            if (newline) { append("\n"); newline = false }
+            append("    public prop let has${titleCase(f.jsonName)}: Bool { get() { m_fields.contains(${f.number}) } }\n")
+        }
+    }
+
     // oneof props
     genCodeOneofProps(typeName, fields, helper)
 
@@ -773,7 +782,7 @@ let protobufRsvdWords = HashSet<String>([
 let messageRsvdWords = HashSet<String>([
     "s_initHashMapTagUnpacker", "s_initHashMapTagString", "s_initHashMapTagMessageFile",
     "s_initHashMapTagInt64", "s_initHashMapStringTag", "s_initArrayTag", "m_packCheck", "m_unpacker",
-    "m_names", "m_nameTags", "m_defaultValue", "m_requiredFields", "m_oneofIndex", "m_oneofCase",
+    "m_names", "m_nameTags", "m_defaultValue", "m_requiredFields", "m_oneofIndex", "m_oneofCase", "has",
     "unknownFields", "m_fields", "m_fieldsClone", "m_requiredFieldsCheck", "unpack", "get_", "fromJson", "fromBytes",
     "s_onceMutex", "s_newOnce", "s_once", "s_unpackers", "s_names", "s_nameTags"
 ])
