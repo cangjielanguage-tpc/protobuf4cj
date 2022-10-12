@@ -721,10 +721,10 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
         append("                case _ => ${propType}.None\n")
         append("            }\n")
         append("        }\n\n")
-        append("        set(v) {\n")
-        append("            match (v) {\n")
+        append("        set(o) {\n")
+        append("            match (o) {\n")
         for (f in group[index]) {
-            append("                case ${titleCase(f.jsonName)}(v_) => set(${f.number}, v_)\n")
+            append("                case ${titleCase(f.jsonName)}(v) => set(${f.number}, v)\n")
         }
         append("                case None => m_oneofClear(${index})\n")
         append("            }\n")
