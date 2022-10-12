@@ -68,6 +68,15 @@ public abstract class MessageLite2 <: MessageLite {
             case _ => throw GetFieldValueException(m_names[tag])
         }
     }
+
+    /* return true if field has been set */
+    public func has(name: String) {
+        if (let Some(tag) = m_nameTags.get(name)) {
+            return m_fields.contains(tag)
+        }
+
+        return false
+    }
 }
 
 /* supper class of all the messages */
