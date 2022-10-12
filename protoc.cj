@@ -169,7 +169,7 @@ class GenCodeHelper {
             // Looking for entry in nestedtype
             for (n in ns) {
                 if (n.field.size != 2 || n.name != entry) { continue }
-                try { if (n.options.mapEntry != true) { break } } catch (_) { break }
+                if (!n.hasOptions || !n.options.hasMapEntry || !n.options.mapEntry) { break }
                 /* save map entry's fields */
                 return f.typeName = getEntryTypeInfo(n.field[0]) + "," + getEntryTypeInfo(n.field[1])
             }
@@ -184,9 +184,9 @@ class GenCodeHelper {
 
 func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     // Destination file path
-    desc.package_ = try { desc.package_ } catch (_) { "" }
+    if (desc.hasPackage == false) { desc.package_ = "" }
     file.name = getDestPath(desc.package_) + getFileName(desc.name)
-    let proto2 = try { desc.syntax != "proto3" } catch (_) { true }
+    let proto2 = if (desc.hasSyntax) { desc.syntax == "proto2" } else { true }
     let helper = GenCodeHelper(desc.package_, proto2)
     // Header information
     genCodeHeader(desc, helper)
@@ -279,7 +279,7 @@ func getUnpacker(f: FieldDescriptorProto) {
 
     // Process repeated
     if (f.label != LABEL_REPEATED) { return ac + ".instance" }
-    try { if (f.options.packed) { return ac + ".packedInstance" } } catch (_) { /* nothing */ }
+    if (f.hasOptions && f.options.hasPacked && f.options.packed) { return ac + ".packedInstance" }
     ac + ".repeatInstance(${f.number})"
 }
 
@@ -322,9 +322,9 @@ func getFieldSetName(f: FieldDescriptorProto) {
         case _ => f.typeName
     }
 
-    try { if (f.options.packed) {
+    if (f.hasOptions && f.options.hasPacked && f.options.packed) {
         return if (vt.isEmpty()) { "PackedField<${pt}>(v)" } else { "Packed${vt}(v)" }
-    } } catch (_) { /* nothing */ }
+    }
 
     if (vt.isEmpty()) { "RepeatField<${pt}>(${f.number}, v)" } else { "Repeat${vt}(${f.number}, v)" }
 }
@@ -458,7 +458,7 @@ func initSpecialFields(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeH
             }
 
             /* try to get default value, support string, numbers, bool, enum only */
-            try { f.defaultValue } catch (_) { continue }
+            if (!f.hasDefaultValue) { continue }
             let dv = match (f.type_) {
                 case TYPE_STRING => "\"${f.defaultValue}\""
                 case TYPE_BOOL | TYPE_INT64 | TYPE_DOUBLE => f.defaultValue
@@ -471,7 +471,7 @@ func initSpecialFields(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeH
 
     if (!helper.oneofDecl.isEmpty()) {
         for (f in fields) {
-            try { f.oneofIndex } catch (_) { continue }
+            if (!f.hasOneofIndex) { continue }
             oneofs.append("(${f.number}, ${f.oneofIndex})")
         }
     }
@@ -563,7 +563,7 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     }
 
     // Mapentry sets typename without generating message
-    try { if (fields.size == 2 && msg.options.mapEntry) { return } } catch (_) { /* nothing. */ }
+    if (fields.size == 2 && msg.hasOptions && msg.options.hasMapEntry && msg.options.mapEntry) { return }
 
     helper.oneofDecl = msg.oneofDecl
     // fields
@@ -699,7 +699,7 @@ func genCodeOneofGroup(typeName: String, fields: ArrayList<FieldDescriptorProto>
 
         append("\npublic enum ${typeName}_Oneof_${titleCase(decl.name)} <: OneofGroup {\n")
         for (f in fields) {
-            try { if(f.oneofIndex != Int32(index)) { continue } } catch (_) { continue }
+            if (!f.hasOneofIndex || f.oneofIndex != Int32(index)) { continue }
             sepOut.append("| ${titleCase(f.jsonName)}(${getPropType(f)})")
             names.append(f.jsonName)
         }
@@ -734,7 +734,7 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
 
     let group = Array<ArrayList<FieldDescriptorProto>>(helper.oneofDecl.size, item: ArrayList())
     for (f in fields) {
-        try { f.oneofIndex } catch (_) { continue }
+        if (!f.hasOneofIndex) { continue }
         group[Int64(f.oneofIndex)].append(f)
     }
 
