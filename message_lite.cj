@@ -109,6 +109,14 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
         }
     }
 
+    /* clear oneof group */
+    protected func m_oneofClear(index: Int64) {
+        if (m_oneofCase[index] != UNSETCASE) {
+            m_fields.remove(m_oneofCase[index])
+            m_oneofCase[index] = UNSETCASE
+        }
+    }
+
     /* check required fields, proto3 has no required fields */
     protected open func m_requiredFieldsCheck() { return }
 
