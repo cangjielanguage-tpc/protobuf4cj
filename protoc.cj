@@ -686,14 +686,34 @@ func genCodeOneofGroup(typeName: String, fields: ArrayList<FieldDescriptorProto>
     helper.oneofDecl.forEachWithIndex({ index, decl =>
         let append: (String) -> StringBuilder = helper.outbuf.append
         let sepOut = LineSepOut(helper.outbuf, sep: "", sn: 4)
+        let names = ArrayList<String>()
 
-        append("\npublic enum ${typeName}_Oneof_${titleCase(decl.name)} {\n")
+        append("\npublic enum ${typeName}_Oneof_${titleCase(decl.name)} <: OneofGroup {\n")
         for (f in fields) {
             try { if(f.oneofIndex != Int32(index)) { continue } } catch (_) { continue }
             sepOut.append("| ${titleCase(f.jsonName)}(${getPropType(f)})")
+            names.append(f.jsonName)
         }
-        sepOut.append("| None")
-        append("\n}\n")
+        sepOut.append("| None\n\n")
+
+        // gen toString() and which()
+        append("    public func toString() {\n")
+        append("        match (this) {\n")
+        for (name in names) {
+            append("            case ${titleCase(name)}(v) => \"${titleCase(name)}(\${v})\"\n")
+        }
+        append("            case None => \"None\"\n")
+        append("        }\n")
+        append("    }\n\n")
+        append("    public func which() {\n")
+        append("        match (this) {\n")
+        for (name in names) {
+            append("            case ${titleCase(name)}(_) => \"${name}\"\n")
+        }
+        append("            case None => \"\"\n")
+        append("        }\n")
+        append("    }\n")
+        append("}\n")
     })
 }
 
