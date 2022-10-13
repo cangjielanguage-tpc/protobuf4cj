@@ -24,7 +24,7 @@ public abstract class MessageLite2 <: MessageLite {
     /* check if field should be packed */
     protected func m_packCheck(val: MessageField): Bool {
         match (val) {
-            case _: Reference => !val.isEmpty()
+            case _: Repeated => !val.isEmpty()
             case _ => true
         }
     }
@@ -64,7 +64,7 @@ public abstract class MessageLite2 <: MessageLite {
         /* proto2, value must be set before reading */
         let default = m_unpacker[tag].default()
         match (default) {
-            case _: Reference => set(tag, default); return default
+            case _: Repeated => set(tag, default); return default
             case _ => throw GetFieldValueException(m_names[tag])
         }
     }
@@ -134,7 +134,7 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
         match (val) {
             case c: Bytes => !c.isEmpty()
             case c: MessageLite => !c.isEmpty()
-            case _: Reference => !val.isEmpty()
+            case _: Repeated => !val.isEmpty()
             case _ => true
         }
     }

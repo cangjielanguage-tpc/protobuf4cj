@@ -83,7 +83,7 @@ extend String <: MessageField {
 }
 
 /* bytes */
-extend ArrayList<T> <: MessageField where T <: Byte { /* cannot extend ArrayList<Byte> to Reference yet. */
+extend ArrayList<T> <: MessageField where T <: Byte {
     public func packSize() { size.packSize() + size }
     public func pack(out: BytesWriter) { size.pack(out); out.appendAll((this as Bytes).getOrThrow()) }
 }
@@ -165,7 +165,7 @@ public struct Fixed32 <: Proxy<UInt32> & Bit32 {
 }
 
 /* all repeated fields comm isEmpty, toString, toJson */
-public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & ToJson & Reference where T <: MessageField {
+public abstract class RepeatFieldComm<T> <: Value<ArrayList<T>> & ToJson & Repeated where T <: MessageField {
     RepeatFieldComm(let val: ArrayList<T>) { }
     public func value() { val }
     public func isEmpty() { val.isEmpty() }
@@ -316,7 +316,7 @@ public func fieldPass<T>(val: T): MessageField where T <: MessageField { val }
  * map<k, v> fields, set parameter `kb` or `kv` when `k` or `v` is proxy type
  * for example, creating a map<sint32, string> field by `MapField<Int32, String>(1, HashMap(), kb: SInt32.box)`
  */
-public class MapField<K, V> <: Value<HashMap<K, V>> & Reference & ToJson where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
+public class MapField<K, V> <: Value<HashMap<K, V>> & Repeated & ToJson where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
     static func kPass(k: K): MessageField { k }
     static func vPass(v: V): MessageField { v }
 
@@ -439,13 +439,13 @@ func wireType(val: MessageField) {
     }
 }
 
-public interface Reference {
+public interface Repeated {
     func clone(): MessageField
 }
 
 func reference(val: MessageField) {
     match (val) {
-        case _: Reference => true
+        case _: Repeated => true
         case _: MessageLite => true
         case _: ArrayList<Byte> => true
         case _ => false
@@ -454,7 +454,7 @@ func reference(val: MessageField) {
 
 func clone(val: MessageField): MessageField {
     match (val) {
-        case c: Reference => c.clone()
+        case c: Repeated => c.clone()
         case c: MessageLite => c.clone()
         case c: ArrayList<Byte> => c.clone()
         case _ => val
