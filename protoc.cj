@@ -463,6 +463,7 @@ func initSpecialFields(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeH
                 case TYPE_STRING => "\"${f.defaultValue}\""
                 case TYPE_BOOL | TYPE_INT64 | TYPE_DOUBLE => f.defaultValue
                 case TYPE_ENUM => "${getPropType(f)}.${f.defaultValue}"
+                case TYPE_BYTES => throw Exception("bytes field unsupport default option")
                 case _ => "${getPropType(f)}(${f.defaultValue})"
             }
             dvs.append("(${f.number}, ${dv})")
