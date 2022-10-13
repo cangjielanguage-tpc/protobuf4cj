@@ -225,7 +225,6 @@ public abstract class MessageLite <: MessageField & ToJson & ToString {
 
     /* to string */
     public func toString() {
-        m_requiredFieldsCheck()
         let sb = StringBuilder("{")
         var sep = false
         for ((tag, val) in m_fields) {
