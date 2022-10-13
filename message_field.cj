@@ -317,9 +317,6 @@ public func fieldPass<T>(val: T): MessageField where T <: MessageField { val }
  * for example, creating a map<sint32, string> field by `MapField<Int32, String>(1, HashMap(), kb: SInt32.box)`
  */
 public class MapField<K, V> <: Value<HashMap<K, V>> & Repeated & ToJson where K <: Hashable & Equatable<K> & MessageField, V <: MessageField {
-    static func kPass(k: K): MessageField { k }
-    static func vPass(v: V): MessageField { v }
-
     public MapField(let tag: Tag, let val: HashMap<K, V>,
         let kb!: (K) -> MessageField = fieldPass<K>,   /* box function of key */
         let vb!: (V) -> MessageField = fieldPass<V>    /* box function of value */
