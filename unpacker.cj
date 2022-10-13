@@ -4,6 +4,8 @@
 
 package protobuf
 
+from encoding import base64.*
+
 public interface Unpacker {
     /* unpack a special message field from bytes reader */
     func unpack(src: BytesReader): MessageField
@@ -93,8 +95,12 @@ public class MessageUnpacker<M> <: Unpacker where M <: MessageLite & MessagePars
     public func default(): MessageField { M.fromBytes(SimpleReader([])) }
 }
 
-/* parse bytes from json, at present, bytes only supports to parse/stringify as uint8 array. */
+/* parse bytes from json, support base64 and uint8 array. */
 func parseBytes(src: Json) {
+    /* parse as base64 string */
+    if (src.isString) {
+        return Bytes(fromBase64String(src.asString()).getOrThrow())
+    }
     let arr = Bytes()
     /* parse as uint8 array */
     for (v in src.asArray()) {

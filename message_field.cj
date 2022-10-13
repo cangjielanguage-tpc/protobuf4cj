@@ -447,7 +447,7 @@ func reference(val: MessageField) {
     match (val) {
         case _: Repeated => true
         case _: MessageLite => true
-        case _: ArrayList<Byte> => true
+        case _: Bytes => true
         case _ => false
     }
 }
@@ -456,7 +456,7 @@ func clone(val: MessageField): MessageField {
     match (val) {
         case c: Repeated => c.clone()
         case c: MessageLite => c.clone()
-        case c: ArrayList<Byte> => c.clone()
+        case c: Bytes => c.clone()
         case _ => val
     }
 }
@@ -464,7 +464,7 @@ func clone(val: MessageField): MessageField {
 func toJson(val: MessageField) {
     match (val) {
         case c: ToJson => c.toJson()
-        case c: ArrayList<Byte> => JsonArray(c.size, { i => Float64(c[i])})
+        case c: Bytes => toBase64String(c.toArray())
         case _ => throw PBInternalException()
     }
 }
