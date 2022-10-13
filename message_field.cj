@@ -50,7 +50,7 @@ extend Bool <: MessageField & Varint {
     public func isEmpty() { !this }
 }
 
-public interface ValuedEnum <: MessageField & ToString & ToJson {
+public interface Int32Enum <: MessageField & ToString & ToJson {
     func value(): Int32
     func packSize() { value().packSize() } /* cangjie 0.31.4 bug, varintSize undefined */
     func pack(out: BytesWriter) { value().pack(out) } /* cangjie 0.31.4 bug, varintPack undefined */
@@ -58,7 +58,7 @@ public interface ValuedEnum <: MessageField & ToString & ToJson {
     func toJson(): Json { toString() }
 }
 
-public interface Enum<E> <: ValuedEnum & Equatable<E> where E <: Enum<E> {
+public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
     static func parse(v: Int32): E
     static func parse(v: String): E
     operator func==(e: E) { value() == e.value() }
@@ -432,7 +432,7 @@ public interface Bit32 { }
 func wireType(val: MessageField) {
     match (val) {
         case _: Varint => WireType.VARINT
-        case _: ValuedEnum => WireType.VARINT
+        case _: Int32Enum => WireType.VARINT
         case _: Bit64 => WireType.BIT64
         case _: Bit32 => WireType.BIT32
         case _ => WireType.PREFIXED
