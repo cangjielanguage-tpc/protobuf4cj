@@ -195,11 +195,9 @@ extend CodeGeneratorResponse_File <: MessageParser<CodeGeneratorResponse_File> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public enum CodeGeneratorResponse_Feature {
+public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
     | FEATURE_NONE | FEATURE_PROTO3_OPTIONAL
-}
 
-extend CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
     public func value(): Int32 {
         match(this) {
             case FEATURE_NONE => 0

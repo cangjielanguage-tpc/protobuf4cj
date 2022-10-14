@@ -415,13 +415,11 @@ extend ExtensionRangeOptions <: MessageParser<ExtensionRangeOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public enum FieldDescriptorProto_Type {
+public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
     | TYPE_DOUBLE | TYPE_FLOAT | TYPE_INT64 | TYPE_UINT64 | TYPE_INT32 | TYPE_FIXED64 | TYPE_FIXED32 | TYPE_BOOL
     | TYPE_STRING | TYPE_GROUP | TYPE_MESSAGE | TYPE_BYTES | TYPE_UINT32 | TYPE_ENUM | TYPE_SFIXED32 | TYPE_SFIXED64
     | TYPE_SINT32 | TYPE_SINT64
-}
 
-extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
     public func value(): Int32 {
         match(this) {
             case TYPE_DOUBLE => 1
@@ -517,11 +515,9 @@ extend FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
     }
 }
 
-public enum FieldDescriptorProto_Label {
+public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
     | LABEL_OPTIONAL | LABEL_REQUIRED | LABEL_REPEATED
-}
 
-extend FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
     public func value(): Int32 {
         match(this) {
             case LABEL_OPTIONAL => 1
@@ -1044,11 +1040,9 @@ extend MethodDescriptorProto <: MessageParser<MethodDescriptorProto> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public enum FileOptions_OptimizeMode {
+public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
     | SPEED | CODE_SIZE | LITE_RUNTIME
-}
 
-extend FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
     public func value(): Int32 {
         match(this) {
             case SPEED => 1
@@ -1349,11 +1343,9 @@ extend MessageOptions <: MessageParser<MessageOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public enum FieldOptions_CType {
+public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
     | STRING | CORD | STRING_PIECE
-}
 
-extend FieldOptions_CType <: Enum<FieldOptions_CType> {
     public func value(): Int32 {
         match(this) {
             case STRING => 0
@@ -1389,11 +1381,9 @@ extend FieldOptions_CType <: Enum<FieldOptions_CType> {
     }
 }
 
-public enum FieldOptions_JSType {
+public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
     | JS_NORMAL | JS_STRING | JS_NUMBER
-}
 
-extend FieldOptions_JSType <: Enum<FieldOptions_JSType> {
     public func value(): Int32 {
         match(this) {
             case JS_NORMAL => 0
@@ -1748,11 +1738,9 @@ extend ServiceOptions <: MessageParser<ServiceOptions> {
     public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
 }
 
-public enum MethodOptions_IdempotencyLevel {
+public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
     | IDEMPOTENCY_UNKNOWN | NO_SIDE_EFFECTS | IDEMPOTENT
-}
 
-extend MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
     public func value(): Int32 {
         match(this) {
             case IDEMPOTENCY_UNKNOWN => 0
