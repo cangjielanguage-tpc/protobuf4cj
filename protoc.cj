@@ -585,17 +585,12 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     let sepOut = LineSepOut(helper.outbuf, sep: "", sn: 4)
 
     // enum
-    append("\npublic enum ${typeName} {\n")
+    append("\npublic enum ${typeName} <: Enum<${typeName}> {\n")
     for (v in values) {
         sepOut.append("| ${getEnumItemName(v.name)}")
     }
-    append("\n}\n")
+    append("\n\n")
 
-    // enum不得为空
-    if (values.isEmpty()) { return }
-
-    // extend Enum
-    append("\nextend ${typeName} <: Enum<${typeName}> {\n")
     // value
     append("    public func value(): Int32 {\n        match(this) {\n")
     for (v in values) {
