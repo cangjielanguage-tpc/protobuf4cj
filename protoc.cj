@@ -666,19 +666,20 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
     // client functions
     for (m in ser.method) {
-        append("\n    public func ${m.funcName}(")
+        append("\n    public func ${m.funcName}")
         append(match ((m.clientStreaming, m.serverStreaming)) {
             case (false, false) =>
-                "req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", req, resp)\n    }" +
-                "\n    public func ${m.funcName}(req: ${m.inputType}) {" +
-                "\n        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", req, resp))" +
-                "\n    }\n"
+                "(req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", req, resp)\n    }\n" +
+                "    public func ${m.funcName}(req: ${m.inputType}) {\n" +
+                "        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", req, resp))\n    }\n" +
+                "    public func ${m.funcName}Async(req: ${m.inputType}) {\n" +
+                "        asyncRequest<${m.outputType}>(\"${m.name}\", req)\n    }\n"
             case (false, true) =>
-                "req: ${m.inputType}) {\n        serverStream<${m.outputType}>(\"${m.name}\", req)\n    }\n"
+                "(req: ${m.inputType}) {\n        serverStream<${m.outputType}>(\"${m.name}\", req)\n    }\n"
             case (true, false) =>
-                ") {\n        clientStream<${m.outputType}, ${m.inputType}>(\"${m.name}\")\n    }\n"
+                "() {\n        clientStream<${m.outputType}, ${m.inputType}>(\"${m.name}\")\n    }\n"
             case (true, true) =>
-                ") {\n        stream<${m.outputType}, ${m.inputType}>(\"${m.name}\")\n    }\n"
+                "() {\n        stream<${m.outputType}, ${m.inputType}>(\"${m.name}\")\n    }\n"
         })
     }
 
