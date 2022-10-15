@@ -384,6 +384,11 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     let base = if (helper.proto2) { "MessageLite2" } else { "MessageLite" }
     append("\npublic class ${typeName} <: ${base} {\n")
 
+    if (fields.isEmpty()) {
+        append("    public func clone(): ${typeName} { ${typeName}() }\n}\n")
+        return
+    }
+
     // static init and calc special fields
     let spec = initSpecialFields(fields, helper)
 
@@ -432,14 +437,6 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     genCodeOneofProps(typeName, fields, helper)
 
     // props end
-    append("}\n")
-
-    // extend
-    append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
-    append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
-    append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
-    // cangjie 0.32.5, static default implementation in interface is forbidden now
-    append(staticParserCodes)
     append("}\n")
 }
 
@@ -534,6 +531,17 @@ func genCodeSpecialFields(sepOut: LineSepOut, spec: (ArrayList<String>, ArrayLis
     append("    }\n")
 }
 
+func genCodeMessageParser(typeName: String, helper: GenCodeHelper) {
+    let append: (String) -> StringBuilder = helper.outbuf.append
+
+    append("\nextend ${typeName} <: MessageParser<${typeName}> {\n")
+    append("    public static func fromJson(src: JsonObject) { let m = ${typeName}(); m.unpack(src); m }\n")
+    append("    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }\n")
+    // cangjie 0.32.5, static default implementation in interface is forbidden now
+    append(staticParserCodes)
+    append("}\n")
+}
+
 func genCodeMessageExtension(typeName: String, extensions: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     // todo
 }
@@ -569,6 +577,8 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     helper.oneofDecl = msg.oneofDecl
     // fields
     genCodeMessageField(typeName, fields, helper)
+    // parser
+    genCodeMessageParser(typeName, helper)
     // extensions
     genCodeMessageExtension(typeName, extensions, helper)
     // oneof group enum
