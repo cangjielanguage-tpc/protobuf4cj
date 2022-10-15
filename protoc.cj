@@ -739,7 +739,7 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
         return
     }
 
-    let group = Array<ArrayList<FieldDescriptorProto>>(helper.oneofDecl.size, item: ArrayList())
+    let group = Array<ArrayList<FieldDescriptorProto>>(helper.oneofDecl.size) { i => ArrayList() }
     for (f in fields) {
         if (!f.hasOneofIndex) { continue }
         group[Int64(f.oneofIndex)].append(f)
