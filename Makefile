@@ -14,8 +14,12 @@ LIB_TYPE		= static
 # lib 后缀
 ifeq ($(LIB_TYPE), static)
 	LIB_POSTFIX	= a
+	FFI_TYPECAST= ffi-typecast.o
+	FFI_GCCOPT	= -fPIE
 else
 	LIB_POSTFIX = so
+	FFI_TYPECAST= libffi-typecast.so
+	FFI_GCCOPT	= -fPIC -shared
 endif
 
 LIB_NAME_PB		= protobuf-cj
@@ -45,9 +49,16 @@ install: env-CANGJIE_DESTDIR
 build: protobuf
 
 protobuf: json $(CJO_PROTOBUF) $(LIB_PROTOBUF)
-$(CJO_PROTOBUF) $(LIB_PROTOBUF): src/protobuf/*.cj
+$(CJO_PROTOBUF) $(LIB_PROTOBUF): src/protobuf/*.cj $(OUTPUT)/$(FFI_TYPECAST)
 	install -d $(OUTPUT)/protobuf
 	cjc $(CJC_FLAGS) -p src/protobuf --output-type=$(LIB_TYPE)lib --module-name protobuf --import-path $(OUTPUT) --output-dir $(OUTPUT)/protobuf -o lib$(LIB_NAME_PB).$(LIB_POSTFIX)
+	@ if [ "$(LIB_TYPE)" = "static" ]; then \
+		echo "ar r $(LIB_PROTOBUF) $(OUTPUT)/$(FFI_TYPECAST)"; \
+		ar r $(LIB_PROTOBUF) $(OUTPUT)/$(FFI_TYPECAST); \
+	fi
+
+$(OUTPUT)/$(FFI_TYPECAST): src/protobuf/typecast.ffi.c
+	gcc -g -c $(FFI_GCCOPT) $^ -o $@
 
 json:
 	make -C third_party/json json OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
