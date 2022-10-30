@@ -1,3 +1,5 @@
+package protoc
+
 /* 通过ffi进行stdio */
 
 @c
