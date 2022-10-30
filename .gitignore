@@ -2,6 +2,7 @@
 .gitee/
 .vscode/
 output/
+*.o
 *.bc
 *.cjo
 *.so
