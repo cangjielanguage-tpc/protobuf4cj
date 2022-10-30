@@ -34,4 +34,4 @@ install:
 clean:
 	-rm -rf $(OUTPUT)
 
-.PHONY: all protobuf json install clean
+.PHONY: all protoc-gen-cj protobuf json install clean
