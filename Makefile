@@ -13,7 +13,17 @@ CJC_FLAGS		= -g -O2
 # lib 类型, "dy" or "static"
 LIB_TYPE		= static
 
-all: protoc-gen-cj
+all: submodules build
+
+# 检查submodules
+submodules:
+	@ if git submodule status | egrep -q '^[-]|^[+]' ; then \
+		echo "INFO: Need to reinitialize git submodules"; \
+		git submodule update --init; \
+	fi
+
+# 构建
+build: protoc-gen-cj
 
 protoc-gen-cj: protobuf
 	make -C src/google google OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
@@ -34,4 +44,4 @@ install:
 clean:
 	-rm -rf $(OUTPUT)
 
-.PHONY: all protoc-gen-cj protobuf json install clean
+.PHONY: all submodules build protoc-gen-cj protobuf json install clean
