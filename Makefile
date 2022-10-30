@@ -1,5 +1,6 @@
 # 安装选项
 LIB_DESTDIR		= /usr/local/lib
+BIN_DESTDIR		= /usr/local/bin
 CANGJIE_DESTDIR	= $(CANGJIE_PATH)
 
 # 构建输出选项
@@ -12,18 +13,23 @@ CJC_FLAGS		= -g -O2
 # lib 类型, "dy" or "static"
 LIB_TYPE		= static
 
-all: protobuf
+all: protoc-gen-cj
 
-# 安装
-install:
-	make -C third_party/json install OUTPUT=$(abspath $(OUTPUT)) LIB_DESTDIR=$(LIB_DESTDIR) CANGJIE_DESTDIR=$(CANGJIE_DESTDIR)
-	make -C src/protobuf install OUTPUT=$(abspath $(OUTPUT)) LIB_DESTDIR=$(LIB_DESTDIR) CANGJIE_DESTDIR=$(CANGJIE_DESTDIR)
+protoc-gen-cj: protobuf
+	make -C src/google google OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
+	make -C src/protoc protoc OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
 
 protobuf: json
 	make -C src/protobuf protobuf OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
 
 json:
 	make -C third_party/json json OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
+
+# 安装
+install:
+	make -C third_party/json install OUTPUT=$(abspath $(OUTPUT)) LIB_DESTDIR=$(LIB_DESTDIR) CANGJIE_DESTDIR=$(CANGJIE_DESTDIR)
+	make -C src/protobuf install OUTPUT=$(abspath $(OUTPUT)) LIB_DESTDIR=$(LIB_DESTDIR) CANGJIE_DESTDIR=$(CANGJIE_DESTDIR)
+	make -C src/protoc install OUTPUT=$(abspath $(OUTPUT)) BIN_DESTDIR=$(BIN_DESTDIR)
 
 clean:
 	-rm -rf $(OUTPUT)
