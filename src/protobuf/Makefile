@@ -53,6 +53,7 @@ $(CJO_PROTOBUF) $(LIB_PROTOBUF): ./*.cj $(OUTPUT)/$(FFI_TYPECAST)
 	fi
 
 $(OUTPUT)/$(FFI_TYPECAST): ./typecast.ffi.c
+	install -d $(OUTPUT)
 	gcc -g -c $(FFI_GCCOPT) $^ -o $@
 
 clean:
