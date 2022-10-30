@@ -62,3 +62,13 @@ purge: env-CANGJIE_DESTDIR
 	-rm -f $(BIN_DESTDIR)/protoc-gen-cj
 
 .PHONY: purge env-CANGJIE_PATH
+
+# 依赖的.proto文件
+proto_files :=  src/google/protobuf/descriptor.proto \
+				src/google/protobuf/compiler/plugin.proto
+
+# 编译.proto文件生成.pb.cj代码
+gencode: $(proto_files)
+	protoc --cj_out=./src -Isrc $^
+
+.PHONY: gencode
