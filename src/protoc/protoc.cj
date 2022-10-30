@@ -628,69 +628,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
 }
 
 func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
-
-    // calc names
-    for (m in ser.method) {
-        m.inputType = helper.getTypeName(m.inputType)
-        m.outputType = helper.getTypeName(m.outputType)
-        m.funcName = getServiceFuncName(m.name)
-    }
-
-    // service
-    let servicePath = "${helper.pkgPrefix.substring(1)}${ser.name}"
-    append("\npublic abstract class ${ser.name}Service <: Service {\n")
-    append("    protected init() { super(\"${servicePath}\") }\n")
-    append("    protected func m_dispatch(fn: String, sess: SocketSession) {\n        match (fn) {\n")
-    for (m in ser.method) {
-        append("            case \"${m.name}\" => ")
-        append(match ((m.clientStreaming, m.serverStreaming)) {
-            case (false, false) =>  "let req = ${m.inputType}(); getRequest(sess, req); setResponse(sess, ${m.funcName}(req))\n"
-            case (false, true) =>   "let req = ${m.inputType}(); getRequest(sess, req); setStatus(sess, ${m.funcName}(req, getWriter(sess)))\n"
-            case (true, false) =>   "setResponse(sess, ${m.funcName}(getReader(sess)))\n"
-            case (true, true) =>    "setStatus(sess, ${m.funcName}(getStream(sess)))\n"
-        })
-    }
-    append("            case _ => m_refused(sess)\n        }\n    }\n\n")
-
-    // service abstract functions
-    for (m in ser.method) {
-        append("    protected func ${m.funcName}(")
-        append(match ((m.clientStreaming, m.serverStreaming)) {
-            case (false, false) =>  "req: ${m.inputType}): (${m.outputType}, Status)\n"
-            case (false, true) =>   "req: ${m.inputType}, writer: ServerWriter<${m.outputType}>): Status\n"
-            case (true, false) =>   "reader: ServerReader<${m.inputType}>): (${m.outputType}, Status)\n"
-            case (true, true) =>    "stream: ServerReaderWriter<${m.inputType}, ${m.outputType}>): Status\n"
-        })
-    }
-
-    // service end
-    append("}\n")
-
-    // client
-    append("\npublic class ${ser.name}Client <: Stub {\n    public init(chan: Channel) { super(chan, \"${servicePath}\") }\n")
-
-    // client functions
-    for (m in ser.method) {
-        append("\n    public func ${m.funcName}")
-        append(match ((m.clientStreaming, m.serverStreaming)) {
-            case (false, false) =>
-                "(req: ${m.inputType}, resp: ${m.outputType}) {\n        sendRequest(\"${m.name}\", req, resp)\n    }\n" +
-                "    public func ${m.funcName}(req: ${m.inputType}) {\n" +
-                "        let resp = ${m.outputType}(); (resp, sendRequest(\"${m.name}\", req, resp))\n    }\n" +
-                "    public func ${m.funcName}Async(req: ${m.inputType}) {\n" +
-                "        asyncRequest<${m.outputType}>(\"${m.name}\", req)\n    }\n"
-            case (false, true) =>
-                "(req: ${m.inputType}) {\n        serverStream<${m.outputType}>(\"${m.name}\", req)\n    }\n"
-            case (true, false) =>
-                "() {\n        clientStream<${m.outputType}, ${m.inputType}>(\"${m.name}\")\n    }\n"
-            case (true, true) =>
-                "() {\n        stream<${m.outputType}, ${m.inputType}>(\"${m.name}\")\n    }\n"
-        })
-    }
-
-    // client end
-    append("}\n")
+    // ignore
 }
 
 /* gen oneof group type define (enum) */
