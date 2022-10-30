@@ -45,3 +45,20 @@ clean:
 	-rm -rf $(OUTPUT)
 
 .PHONY: all submodules build protoc-gen-cj protobuf json install clean
+
+# 检查环境变量
+env-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
+
+# 移除已安装
+purge: env-CANGJIE_DESTDIR
+	-rm -rf $(CANGJIE_PATH)/protobuf
+	-rm -rf $(CANGJIE_PATH)/json
+	-rm -f $(LIB_DESTDIR)/libprotobuf-cj.*
+	-rm -f $(LIB_DESTDIR)/libjson.*
+	-rm -f $(BIN_DESTDIR)/protoc-gen-cj
+
+.PHONY: purge env-CANGJIE_PATH
