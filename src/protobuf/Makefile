@@ -42,6 +42,10 @@ install: env-CANGJIE_DESTDIR
 	-cp -a $(OUTPUT)/protobuf/lib$(LIB_NAME_PB).* $(LIB_DESTDIR)
 	install -d $(CANGJIE_DESTDIR)/protobuf
 	-cp -a $(OUTPUT)/protobuf/*.cjo $(CANGJIE_DESTDIR)/protobuf
+	@ if [ "$(LIB_TYPE)" = "dy" ]; then \
+		echo "-cp -a $(OUTPUT)/$(FFI_TYPECAST) $(LIB_DESTDIR)"; \
+		-cp -a $(OUTPUT)/$(FFI_TYPECAST) $(LIB_DESTDIR); \
+	fi
 
 protobuf: $(CJO_PROTOBUF) $(LIB_PROTOBUF)
 $(CJO_PROTOBUF) $(LIB_PROTOBUF): ./*.cj $(OUTPUT)/$(FFI_TYPECAST)
