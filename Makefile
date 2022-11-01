@@ -39,9 +39,9 @@ env-%:
 
 # 安装
 install: env-CANGJIE_DESTDIR
-	-cp -a $(OUTPUT)/protobuf/lib$(LIB_NAME_PB).* $(LIB_DESTDIR)
+	-cp -a $(LIB_PROTOBUF) $(LIB_DESTDIR)
 	install -d $(CANGJIE_DESTDIR)/protobuf
-	-cp -a $(OUTPUT)/protobuf/*.cjo $(CANGJIE_DESTDIR)/protobuf
+	-cp -a $(CJO_PROTOBUF) $(CANGJIE_DESTDIR)/protobuf
 	@ if [ "$(LIB_TYPE)" = "dy" ]; then \
 		echo "-cp -a $(OUTPUT)/$(FFI_TYPECAST) $(LIB_DESTDIR)"; \
 		-cp -a $(OUTPUT)/$(FFI_TYPECAST) $(LIB_DESTDIR); \
@@ -61,6 +61,6 @@ $(OUTPUT)/$(FFI_TYPECAST): ./typecast.ffi.c
 	gcc -g -c $(FFI_GCCOPT) $^ -o $@
 
 clean:
-	-rm -rf $(OUTPUT)/$(FFI_TYPECAST) $(OUTPUT)/protobuf
+	-rm -rf $(OUTPUT)/$(FFI_TYPECAST) $(CJO_PROTOBUF) $(LIB_PROTOBUF)
 
 .PHONY: all protobuf install clean env-CANGJIE_DESTDIR
