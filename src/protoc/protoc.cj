@@ -633,7 +633,7 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
 /* gen oneof group type define (enum) */
 func genCodeOneofGroup(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    helper.oneofDecl.forEachWithIndex({ index, decl =>
+    for ((index, decl) in withIndex(helper.oneofDecl)) {
         let append: (String) -> StringBuilder = helper.outbuf.append
         let sepOut = LineSepOut(helper.outbuf, sep: "", sn: 4)
         let names = ArrayList<String>()
@@ -664,7 +664,7 @@ func genCodeOneofGroup(typeName: String, fields: ArrayList<FieldDescriptorProto>
         append("        }\n")
         append("    }\n")
         append("}\n")
-    })
+    }
 }
 
 /* gen oenof group props for message */
@@ -680,7 +680,7 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
     }
 
     let append: (String) -> StringBuilder = helper.outbuf.append
-    helper.oneofDecl.forEachWithIndex({ index, decl =>
+    for ((index, decl) in withIndex(helper.oneofDecl)) {
         let propType = "${typeName}_Oneof_${titleCase(decl.name)}"
         append("\n    public prop var ${getMessagePropName(decl.name)}: ${propType} {\n")
         append("        get( ) {\n")
@@ -700,7 +700,7 @@ func genCodeOneofProps(typeName: String, fields: ArrayList<FieldDescriptorProto>
         append("            }\n")
         append("        }\n")
         append("    }\n")
-    })
+    }
 }
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
