@@ -460,6 +460,7 @@ func clone(val: MessageField): MessageField {
 
 func toJson(val: MessageField) {
     match (val) {
+        case c: Json => c
         case c: ToJson => c.toJson()
         case c: Bytes => toBase64String(c.toArray())
         case _ => throw PBInternalException()
