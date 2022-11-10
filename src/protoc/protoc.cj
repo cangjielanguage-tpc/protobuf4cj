@@ -762,10 +762,9 @@ func getServiceFuncName(name: String) {
         arr[i] = titleCase(arr[i])
     }
 
-    let name = String.join(arr)
-
-    if (cangjieKeyWords.contains(name) || grpcRsvdWords.contains(name)) {
-        return name + '_'
+    let lname = String.join(arr)
+    if (cangjieKeyWords.contains(lname) || grpcRsvdWords.contains(lname)) {
+        return lname + '_'
     }
-    name
+    lname
 }
