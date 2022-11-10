@@ -6,7 +6,7 @@ CANGJIE_DESTDIR	= $(CANGJIE_PATH)
 OUTPUT			= ./output
 
 # 编译选项
-CJC_FLAGS		= -g -O2
+CJC_FLAGS		= -g -O2 --int-overflow=wrapping
 
 # lib 选项
 # lib 类型, "dy" or "static"
