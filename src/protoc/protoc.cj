@@ -390,7 +390,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
 
     // s_init
     // unpacker
-    append("\n    static func s_init() {\n        s_unpackers = HashMap<Tag, Unpacker>([\n")
+    append("\n    private static func s_init() {\n        s_unpackers = HashMap<Tag, Unpacker>([\n")
     for (f in fields) { sepOut.append("(${f.number}, ${getUnpacker(f)})") }
     append("\n        ])\n")
 
@@ -472,9 +472,9 @@ func initSpecialFields(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeH
 
     append(staticInitCodes)
     /* static member variables of special fields */
-    if (!dvs.isEmpty()) { append("    static var s_defaultValue = s_initHashMapTagMessageFile\n") }
-    if (!reqs.isEmpty()) { append("    static var s_requiredFields = s_initArrayTag\n") }
-    if (!oneofs.isEmpty()) { append("    static var s_oneofIndex = s_initHashMapTagInt64\n") }
+    if (!dvs.isEmpty()) { append("    private static var s_defaultValue = s_initHashMapTagMessageFile\n") }
+    if (!reqs.isEmpty()) { append("    private static var s_requiredFields = s_initArrayTag\n") }
+    if (!oneofs.isEmpty()) { append("    private static var s_oneofIndex = s_initHashMapTagInt64\n") }
 
     (dvs, reqs, oneofs)
 }

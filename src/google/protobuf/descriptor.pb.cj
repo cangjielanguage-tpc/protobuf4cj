@@ -9,7 +9,7 @@ public class FileDescriptorSet <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, MessageUnpacker<FileDescriptorProto>.repeatInstance(1))
         ])
@@ -52,7 +52,7 @@ public class FileDescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, StringUnpacker.instance), (3, StringUnpacker.repeatInstance(3)),
             (10, Int32Unpacker.repeatInstance(10)), (11, Int32Unpacker.repeatInstance(11)),
@@ -169,7 +169,7 @@ public class DescriptorProto_ExtensionRange <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, Int32Unpacker.instance), (2, Int32Unpacker.instance),
             (3, MessageUnpacker<ExtensionRangeOptions>.instance)
@@ -227,7 +227,7 @@ public class DescriptorProto_ReservedRange <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, Int32Unpacker.instance), (2, Int32Unpacker.instance)
         ])
@@ -278,7 +278,7 @@ public class DescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, MessageUnpacker<FieldDescriptorProto>.repeatInstance(2)),
             (6, MessageUnpacker<FieldDescriptorProto>.repeatInstance(6)),
@@ -378,7 +378,7 @@ public class ExtensionRangeOptions <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
         ])
@@ -559,7 +559,7 @@ public class FieldDescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (3, Int32Unpacker.instance),
             (4, EnumUnpacker<FieldDescriptorProto_Label>.instance),
@@ -670,7 +670,7 @@ public class OneofDescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, MessageUnpacker<OneofOptions>.instance)
         ])
@@ -721,7 +721,7 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, Int32Unpacker.instance), (2, Int32Unpacker.instance)
         ])
@@ -772,7 +772,7 @@ public class EnumDescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, MessageUnpacker<EnumValueDescriptorProto>.repeatInstance(2)),
             (3, MessageUnpacker<EnumOptions>.instance),
@@ -841,7 +841,7 @@ public class EnumValueDescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, Int32Unpacker.instance), (3, MessageUnpacker<EnumValueOptions>.instance)
         ])
@@ -898,7 +898,7 @@ public class ServiceDescriptorProto <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, MessageUnpacker<MethodDescriptorProto>.repeatInstance(2)),
             (3, MessageUnpacker<ServiceOptions>.instance)
@@ -954,9 +954,9 @@ public class MethodDescriptorProto <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, StringUnpacker.instance), (3, StringUnpacker.instance),
             (4, MessageUnpacker<MethodOptions>.instance), (5, BoolUnpacker.instance), (6, BoolUnpacker.instance),
@@ -1083,9 +1083,9 @@ public class FileOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (8, StringUnpacker.instance), (10, BoolUnpacker.instance),
             (20, BoolUnpacker.instance), (27, BoolUnpacker.instance),
@@ -1271,9 +1271,9 @@ public class MessageOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, BoolUnpacker.instance), (2, BoolUnpacker.instance), (3, BoolUnpacker.instance),
             (7, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
@@ -1424,9 +1424,9 @@ public class FieldOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, EnumUnpacker<FieldOptions_CType>.instance), (2, BoolUnpacker.instance),
             (6, EnumUnpacker<FieldOptions_JSType>.instance), (5, BoolUnpacker.instance), (15, BoolUnpacker.instance),
@@ -1526,7 +1526,7 @@ public class OneofOptions <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
         ])
@@ -1568,9 +1568,9 @@ public class EnumOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (2, BoolUnpacker.instance), (3, BoolUnpacker.instance),
             (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
@@ -1631,9 +1631,9 @@ public class EnumValueOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
         ])
@@ -1687,9 +1687,9 @@ public class ServiceOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (33, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
         ])
@@ -1781,9 +1781,9 @@ public class MethodOptions <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_defaultValue = s_initHashMapTagMessageFile
+    private static var s_defaultValue = s_initHashMapTagMessageFile
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (33, BoolUnpacker.instance), (34, EnumUnpacker<MethodOptions_IdempotencyLevel>.instance),
             (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
@@ -1844,9 +1844,9 @@ public class UninterpretedOption_NamePart <: MessageLite2 {
     private static var s_unpackers = s_initHashMapTagUnpacker
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
-    static var s_requiredFields = s_initArrayTag
+    private static var s_requiredFields = s_initArrayTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, BoolUnpacker.instance)
         ])
@@ -1902,7 +1902,7 @@ public class UninterpretedOption <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (2, MessageUnpacker<UninterpretedOption_NamePart>.repeatInstance(2)), (3, StringUnpacker.instance),
             (4, UInt64Unpacker.instance), (5, Int64Unpacker.instance), (6, Float64Unpacker.instance),
@@ -1986,7 +1986,7 @@ public class SourceCodeInfo_Location <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, Int32Unpacker.packedInstance), (2, Int32Unpacker.packedInstance), (3, StringUnpacker.instance),
             (4, StringUnpacker.instance), (6, StringUnpacker.repeatInstance(6))
@@ -2053,7 +2053,7 @@ public class SourceCodeInfo <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, MessageUnpacker<SourceCodeInfo_Location>.repeatInstance(1))
         ])
@@ -2096,7 +2096,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, Int32Unpacker.packedInstance), (2, StringUnpacker.instance), (3, Int32Unpacker.instance),
             (4, Int32Unpacker.instance)
@@ -2159,7 +2159,7 @@ public class GeneratedCodeInfo <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, MessageUnpacker<GeneratedCodeInfo_Annotation>.repeatInstance(1))
         ])

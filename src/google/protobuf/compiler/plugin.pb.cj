@@ -10,7 +10,7 @@ public class Version <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, Int32Unpacker.instance), (2, Int32Unpacker.instance), (3, Int32Unpacker.instance),
             (4, StringUnpacker.instance)
@@ -74,7 +74,7 @@ public class CodeGeneratorRequest <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.repeatInstance(1)), (2, StringUnpacker.instance),
             (15, MessageUnpacker<google.protobuf.FileDescriptorProto>.repeatInstance(15)),
@@ -137,7 +137,7 @@ public class CodeGeneratorResponse_File <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, StringUnpacker.instance), (15, StringUnpacker.instance),
             (16, MessageUnpacker<google.protobuf.GeneratedCodeInfo>.instance)
@@ -235,7 +235,7 @@ public class CodeGeneratorResponse <: MessageLite2 {
     private static var s_names = s_initHashMapTagString
     private static var s_nameTags = s_initHashMapStringTag
 
-    static func s_init() {
+    private static func s_init() {
         s_unpackers = HashMap<Tag, Unpacker>([
             (1, StringUnpacker.instance), (2, UInt64Unpacker.instance),
             (15, MessageUnpacker<CodeGeneratorResponse_File>.repeatInstance(15))
