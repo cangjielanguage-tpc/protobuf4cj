@@ -242,9 +242,6 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     if (desc.package_ != "protobuf") {
         append("from protobuf import protobuf.*\n")
     }
-    if (!desc.service.isEmpty() && desc.package_ != "grpc") {
-        append("from protobuf import grpc.*\n")
-    }
     for (pkg in helper.getDependencyPackages(desc)) {
         append("import ${pkg}.*\n")
     }
@@ -564,11 +561,6 @@ let messageRsvdWords = HashSet<String>([
 let enumRsvdWords = HashSet<String>([
     "value", "parse"
 ])
-let grpcRsvdWords = HashSet<String>([
-    "m_path", "m_dispatch", "fn", "ctx", "req", "resp", "m_chan", "m_refused",
-    "sendRequest", "getRequest", "setRequest", "setStatus", "getWriter", "getReader", "getStream",
-    "writer", "reader", "stream", "serverStream", "clientStream"
-])
 
 func getEnumItemName(name: String) {
     if (cangjieKeyWords.contains(name) || enumRsvdWords.contains(name)) {
@@ -608,13 +600,4 @@ func lowerCamelCase(name: String) {
     }
 
     String.join(arr)
-}
-
-/* lower camel case service name, check resv words. */
-func getServiceFuncName(name: String) {
-    let lname = lowerCamelCase(name)
-    if (cangjieKeyWords.contains(lname) || grpcRsvdWords.contains(lname)) {
-        return lname + '_'
-    }
-    lname
 }
