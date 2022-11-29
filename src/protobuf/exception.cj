@@ -21,7 +21,7 @@ public abstract class ProtobufException <: Exception {}
  * @since 0.29.3
  */
 public class InvalidEnumValueException <: ProtobufException {
-    public InvalidEnumValueException (let name: String, let value: Int32) {}
+    public InvalidEnumValueException (public let name: String, public let value: Int32) {}
 
     public prop let message: String {
         get() { "The value `${value}` is illegal for the enum type `${name}`" }
@@ -34,7 +34,7 @@ public class InvalidEnumValueException <: ProtobufException {
  * @since 0.29.3
  */
 public class UnmatchedEnumStringException <: ProtobufException {
-    public UnmatchedEnumStringException (let name: String, let value: String) {}
+    public UnmatchedEnumStringException (public let name: String, public let value: String) {}
 
     public prop let message: String {
         get() { "Enum type `${name}` match `${value}` failed." }
@@ -47,7 +47,7 @@ public class UnmatchedEnumStringException <: ProtobufException {
  * @since 0.29.3
  */
 public class RequiredFieldNotSetException <: ProtobufException {
-    public RequiredFieldNotSetException(let name: String) {}
+    public RequiredFieldNotSetException(public let name: String) {}
 
     public prop let message: String {
         get() { "The field `${name}` without a default value is required to set before serialize." }
@@ -60,7 +60,7 @@ public class RequiredFieldNotSetException <: ProtobufException {
  * @since 0.29.3
  */
 public class GetFieldValueException <: ProtobufException {
-    public GetFieldValueException(let name: String) {}
+    public GetFieldValueException(public let name: String) {}
 
     public prop let message: String {
         get() { "The failed `${name}` without a default value is not allow read before set." }
@@ -73,7 +73,7 @@ public class GetFieldValueException <: ProtobufException {
  * @since 0.29.3
  */
 public class ParseValueExecption <: ProtobufException {
-    public ParseValueExecption(let name: String, let reason!: String = "others") {}
+    public ParseValueExecption(public let name: String, public let reason!: String = "others") {}
 
     public prop let message: String {
         get() { "Failed to parse `${name}`. [${reason}]" }
@@ -86,12 +86,15 @@ public class ParseValueExecption <: ProtobufException {
  * @since 0.29.3
  */
 public class UnmatchedOneofCaseException <: ProtobufException {
-    UnmatchedOneofCaseException(let gname: String, let cname: String) {}
+    public UnmatchedOneofCaseException(public let exp: String, public let act: String) {}
 
     public prop let message: String {
-        get() { "Failed to get oneof case `${gname}`, for case `${cname}` is set." }
+        get() { "Failed to get oneof case `${exp}`, for case `${act}` is set." }
     }
 }
+
+/* Failed to get oneof case */
+public class UnexpectedOneofException <: ProtobufException { }
 
 class PBInternalException <: ProtobufException{
     public prop let message: String {

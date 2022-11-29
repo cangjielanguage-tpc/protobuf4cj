@@ -9,3 +9,4 @@ output/
 *.a
 *.gcda
 *.gcno
+src/example

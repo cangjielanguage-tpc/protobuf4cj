@@ -1,0 +1,144 @@
+package protobuf
+
+from encoding import base64.*
+from json import json.{ Json, ToJson, JsonString, JsonArray, JsonNumber }
+public from json import json.{ JsonReader, JsonStringReader, JsonObject }
+
+public struct StructPrinter <: ToString {
+    private StructPrinter (
+        private let stb: StringBuilder
+    ) { }
+
+    public init() { stb = StringBuilder("{") }
+
+    private var sep = false
+
+    public mut func append(key: String, str: ToString): Unit {
+        if (sep) { stb.append(", ") } else { sep = true }
+        stb.append(key).append(": ").append(str)
+    }
+
+    public mut func append(key: String, str: String): Unit {
+        if (sep) { stb.append(", ") } else { sep = true }
+        stb.append(key).append(": \"").append(str).append('"')
+    }
+
+    public mut func append(key: String, strs: ArrayList<String>): Unit {
+        if (sep) { stb.append(", ") } else { sep = true }
+        stb.append(key).append(": [")
+        for ((i, str) in withIndex(strs)) {
+            if (i != 0) { stb.append(", ") }
+            stb.append('"').append(str).append('"')
+        }
+        stb.append(']')
+    }
+
+    public mut func append(key: String, map: HashMap<String, String>): Unit {
+        var sp = subStruct(key)
+        for ((k, v) in map) {
+            sp.append("\"${k}\"", v)
+        }
+        sp.done()
+    }
+
+    public mut func append<T>(key: String, map: HashMap<T, String>): Unit where T <: ToString & Hashable & Equatable<T> {
+        var sp = subStruct(key)
+        for ((k, v) in map) {
+            sp.append(k.toString(), v)
+        }
+        sp.done()
+    }
+
+    public mut func append<T>(key: String, map: HashMap<String, T>): Unit where T <: ToString {
+        var sp = subStruct(key)
+        for ((k, v) in map) {
+            sp.append("\"${k}\"", v)
+        }
+        sp.done()
+    }
+
+    public mut func subStruct(key: String) {
+        if (sep) { stb.append(", ") } else { sep = true }
+        stb.append(key).append(": {")
+        StructPrinter(stb)
+    }
+
+    public mut func clear(): Unit { stb.clear().append('{'); sep = false }
+    public func done() { stb.append('}'); this }
+    public func toString() { stb.toString() }
+}
+
+public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K>, V <: TypedMessage<V> {
+    let map = val.clone()
+    for ((k, v) in map) {
+        map[k] = v.clone()
+    }
+    return map
+}
+
+public func mapClone<K>(val: HashMap<K, Bytes>) where K <: Hashable & Equatable<K> {
+    let map = val.clone()
+    for ((k, v) in map) {
+        map[k] = v.clone()
+    }
+    return map
+}
+
+public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K> {
+    val.clone()
+}
+
+/* parse enum from json */
+func parseEnum<E>(src: Json) where E <: Enum<E> {
+    match (src) {
+        case c: JsonString => E.parse(c)
+        case c: JsonNumber => E.parse(Int32(c))
+        case _ => throw ParseValueExecption("Enum")
+    }
+}
+
+/* parse bytes from json, support base64 and uint8 array. */
+func parseBytes(src: Json) {
+    /* parse as base64 string */
+    if (src.isString) {
+        return Bytes(fromBase64String(src.asString()).getOrThrow())
+    }
+    let arr = Bytes()
+    /* parse as uint8 array */
+    for (v in src.asArray()) {
+        arr.append(UInt8(v.asNumber()))
+    }
+    arr
+}
+
+extend UInt64 {
+    @overflowWrapping
+    static func parse(src: Json) {
+        UInt64(Int64.parse(src))
+    }
+}
+
+extend Int64 {
+    @overflowWrapping
+    static func parse(src: Json) {
+        match (src) {
+            case c: JsonNumber => Int64(c)
+            case c: JsonString => c.toInt64().getOrThrow()
+            case _ => throw ParseValueExecption("Int64")
+        }
+    }
+}
+
+extend UInt32 {
+    @overflowWrapping
+    static func parse(src: Json) {
+        UInt32(Int64.parse(src))
+    }
+}
+
+extend Int32 {
+    @overflowWrapping
+    static func parse(src: Json) {
+        Int32(Int64.parse(src))
+    }
+}

@@ -12,11 +12,9 @@ package protobuf
 public type BytesReader = Reader<Byte>
 
 /* public interface of `generic-T` reader. */
-public interface Reader<T> {
-    /* any data unread */
+public interface Reader<T> <: SubReader<Reader<T>> {
+    /* no data unread */
     func isEmpty(): Bool
-    /* peek the current position with `offset` */
-    func peek(offset: Int64): T
     /* read and increase the offset */
     func read(): T
     /* read a sub reader with length of `len` and increase the offset */
@@ -25,12 +23,17 @@ public interface Reader<T> {
     func data(): Array<T>
 }
 
+/* typed sub reader. */
+public interface SubReader<T> {
+    func read(len: Int64): T
+}
+
 /**
  * The class is SimpleReader
  * @author tutudo
  * @since 0.29.3
  */
-public class SimpleReader <: BytesReader {
+public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
     private let buffer: Array<UInt8>
     public SimpleReader (
         buffer: Collection<UInt8>,
@@ -58,18 +61,6 @@ public class SimpleReader <: BytesReader {
     }
 
     /**
-     * peek a byte
-     *
-     * @param i of Int64
-     *
-     * @since 0.29.3
-     */
-    public func peek(i: Int64) {
-        // todo offset check
-        buffer[offset + i]
-    }
-
-    /**
      * all data
      *
      * @since 0.29.3
@@ -88,7 +79,6 @@ public class SimpleReader <: BytesReader {
      * @since 0.29.3
      */
     public func read() {
-        // todo offset check
         offset++
         buffer[offset - 1]
     }
@@ -101,7 +91,6 @@ public class SimpleReader <: BytesReader {
      * @since 0.29.3
      */
     public func read(s: Int64) {
-        // todo offset check
         offset += s
         SimpleReader(buffer, begin: offset - s, end: offset)
     }

@@ -3,422 +3,632 @@ package google.protobuf
 from std import collection.*
 from protobuf import protobuf.*
 
-public class FileDescriptorSet <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
+    public var file = ArrayList<FileDescriptorProto>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, MessageUnpacker<FileDescriptorProto>.repeatInstance(1))
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!file.isEmpty()) { for (i_itmp in file) { i_tmp += 1 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "file")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("file", 1)
-        ])
+    public func isEmpty(): Bool {
+        if (!file.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        file.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): FileDescriptorSet { let m = FileDescriptorSet(); m.m_fieldsClone(this); m }
-
-    public prop var file: ArrayList<FileDescriptorProto> {
-        get( ) { get(1) }
-        set(v) { set(1, RepeatField<FileDescriptorProto>(1, v)) }
+    public func clone(): FileDescriptorSet {
+        let i_tmp = FileDescriptorSet()
+        i_tmp.file = ArrayList(file.size, { i => file[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => file.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!file.isEmpty()) { for (i_itmp in file) { tagPack(1, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!file.isEmpty()) { i_tmp.append("file", file) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { FileDescriptorSet() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = FileDescriptorSet(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FileDescriptorSet(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend FileDescriptorSet <: MessageParser<FileDescriptorSet> {
-    public static func fromJson(src: JsonObject) { let m = FileDescriptorSet(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = FileDescriptorSet(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> {
+    private var m_name: ?String = None
+    private var m_package: ?String = None
+    public var dependency = ArrayList<String>()
+    public var publicDependency = ArrayList<Int32>()
+    public var weakDependency = ArrayList<Int32>()
+    public var messageType = ArrayList<DescriptorProto>()
+    public var enumType = ArrayList<EnumDescriptorProto>()
+    public var service = ArrayList<ServiceDescriptorProto>()
+    public var extension = ArrayList<FieldDescriptorProto>()
+    private var m_options: ?FileOptions = None
+    private var m_sourceCodeInfo: ?SourceCodeInfo = None
+    private var m_syntax: ?String = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
+
+    public func clearPackage() { m_package = None }
+    public prop let hasPackage: Bool { get() { match (m_package) { case None => false case _ => true } } }
+    public prop var package_: String { get() { m_package.getOrThrow() } set(i_tmp) { m_package = i_tmp } }
+
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: FileOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public func clearSourceCodeInfo() { m_sourceCodeInfo = None }
+    public prop let hasSourceCodeInfo: Bool { get() { match (m_sourceCodeInfo) { case None => false case _ => true } } }
+    public prop var sourceCodeInfo: SourceCodeInfo { get() { m_sourceCodeInfo.getOrThrow() } set(i_tmp) { m_sourceCodeInfo = i_tmp } }
+
+    public func clearSyntax() { m_syntax = None }
+    public prop let hasSyntax: Bool { get() { match (m_syntax) { case None => false case _ => true } } }
+    public prop var syntax: String { get() { m_syntax.getOrThrow() } set(i_tmp) { m_syntax = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_package) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!dependency.isEmpty()) { for (i_itmp in dependency) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { i_tmp += 1 + varintSize(i_itmp) } }
+        if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { i_tmp += 1 + varintSize(i_itmp) } }
+        if (!messageType.isEmpty()) { for (i_itmp in messageType) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!service.isEmpty()) { for (i_itmp in service) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { i_tmp += 1 + binSize(i_itmp) } }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_sourceCodeInfo) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_syntax) { i_tmp += 1 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (let Some(i_vtmp) = m_package) { return false }
+        if (!dependency.isEmpty()) { return false }
+        if (!publicDependency.isEmpty()) { return false }
+        if (!weakDependency.isEmpty()) { return false }
+        if (!messageType.isEmpty()) { return false }
+        if (!enumType.isEmpty()) { return false }
+        if (!service.isEmpty()) { return false }
+        if (!extension.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (let Some(i_vtmp) = m_sourceCodeInfo) { return false }
+        if (let Some(i_vtmp) = m_syntax) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_name = None
+        m_package = None
+        dependency.clear()
+        publicDependency.clear()
+        weakDependency.clear()
+        messageType.clear()
+        enumType.clear()
+        service.clear()
+        extension.clear()
+        m_options = None
+        m_sourceCodeInfo = None
+        m_syntax = None
+        unknownFields.clear()
+    }
+
+    public func clone(): FileDescriptorProto {
+        let i_tmp = FileDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.m_package = m_package
+        i_tmp.dependency = dependency.clone()
+        i_tmp.publicDependency = publicDependency.clone()
+        i_tmp.weakDependency = weakDependency.clone()
+        i_tmp.messageType = ArrayList(messageType.size, { i => messageType[i].clone() })
+        i_tmp.enumType = ArrayList(enumType.size, { i => enumType[i].clone() })
+        i_tmp.service = ArrayList(service.size, { i => service[i].clone() })
+        i_tmp.extension = ArrayList(extension.size, { i => extension[i].clone() })
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.m_sourceCodeInfo = m_sourceCodeInfo?.clone()
+        i_tmp.m_syntax = m_syntax
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => m_package = stringParse(src)
+                case 3 => dependency.append(stringParse(src))
+                case 10 => publicDependency.append(int32Parse(src))
+                case 11 => weakDependency.append(int32Parse(src))
+                case 4 => messageType.add().unpack(sub(src))
+                case 5 => enumType.add().unpack(sub(src))
+                case 6 => service.add().unpack(sub(src))
+                case 7 => extension.add().unpack(sub(src))
+                case 8 => m_options = m_options ?? FileOptions(); m_options?.unpack(sub(src))
+                case 9 => m_sourceCodeInfo = m_sourceCodeInfo ?? SourceCodeInfo(); m_sourceCodeInfo?.unpack(sub(src))
+                case 12 => m_syntax = stringParse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_package) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!dependency.isEmpty()) { for (i_itmp in dependency) { tagPack(3, PREFIXED, out); binPack(i_itmp, out) } }
+        if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { tagPack(10, VARINT, out); varintPack(i_itmp, out) } }
+        if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { tagPack(11, VARINT, out); varintPack(i_itmp, out) } }
+        if (!messageType.isEmpty()) { for (i_itmp in messageType) { tagPack(4, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { tagPack(5, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!service.isEmpty()) { for (i_itmp in service) { tagPack(6, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { tagPack(7, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { tagPack(8, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_sourceCodeInfo) { tagPack(9, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_syntax) { tagPack(12, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (let Some(i_vtmp) = m_package) { i_tmp.append("package", i_vtmp) }
+        if (!dependency.isEmpty()) { i_tmp.append("dependency", dependency) }
+        if (!publicDependency.isEmpty()) { i_tmp.append("publicDependency", publicDependency) }
+        if (!weakDependency.isEmpty()) { i_tmp.append("weakDependency", weakDependency) }
+        if (!messageType.isEmpty()) { i_tmp.append("messageType", messageType) }
+        if (!enumType.isEmpty()) { i_tmp.append("enumType", enumType) }
+        if (!service.isEmpty()) { i_tmp.append("service", service) }
+        if (!extension.isEmpty()) { i_tmp.append("extension", extension) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (let Some(i_vtmp) = m_sourceCodeInfo) { i_tmp.append("sourceCodeInfo", i_vtmp) }
+        if (let Some(i_vtmp) = m_syntax) { i_tmp.append("syntax", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { FileDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = FileDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FileDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class FileDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class DescriptorProto_ExtensionRange <: Message & TypedMessage<DescriptorProto_ExtensionRange> {
+    private var m_start: ?Int32 = None
+    private var m_end: ?Int32 = None
+    private var m_options: ?ExtensionRangeOptions = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, StringUnpacker.instance), (3, StringUnpacker.repeatInstance(3)),
-            (10, Int32Unpacker.repeatInstance(10)), (11, Int32Unpacker.repeatInstance(11)),
-            (4, MessageUnpacker<DescriptorProto>.repeatInstance(4)),
-            (5, MessageUnpacker<EnumDescriptorProto>.repeatInstance(5)),
-            (6, MessageUnpacker<ServiceDescriptorProto>.repeatInstance(6)),
-            (7, MessageUnpacker<FieldDescriptorProto>.repeatInstance(7)), (8, MessageUnpacker<FileOptions>.instance),
-            (9, MessageUnpacker<SourceCodeInfo>.instance), (12, StringUnpacker.instance)
-        ])
+    public func clearStart() { m_start = None }
+    public prop let hasStart: Bool { get() { match (m_start) { case None => false case _ => true } } }
+    public prop var start: Int32 { get() { m_start.getOrThrow() } set(i_tmp) { m_start = i_tmp } }
 
-        /* cangjie 0.32.5 bug, 1 is not exists in s_unpackers */
-        s_unpackers[1] = StringUnpacker.instance
+    public func clearEnd() { m_end = None }
+    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "package"), (3, "dependency"), (10, "publicDependency"), (11, "weakDependency"),
-            (4, "messageType"), (5, "enumType"), (6, "service"), (7, "extension"), (8, "options"),
-            (9, "sourceCodeInfo"), (12, "syntax")
-        ])
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: ExtensionRangeOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("package", 2), ("dependency", 3), ("publicDependency", 10), ("weakDependency", 11),
-            ("messageType", 4), ("enumType", 5), ("service", 6), ("extension", 7), ("options", 8),
-            ("sourceCodeInfo", 9), ("syntax", 12)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_start) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_start) { return false }
+        if (let Some(i_vtmp) = m_end) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_start = None
+        m_end = None
+        m_options = None
+        unknownFields.clear()
     }
 
-    public func clone(): FileDescriptorProto { let m = FileDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): DescriptorProto_ExtensionRange {
+        let i_tmp = DescriptorProto_ExtensionRange()
+        i_tmp.m_start = m_start
+        i_tmp.m_end = m_end
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var package_: String {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_start = int32Parse(src)
+                case 2 => m_end = int32Parse(src)
+                case 3 => m_options = m_options ?? ExtensionRangeOptions(); m_options?.unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var dependency: ArrayList<String> {
-        get( ) { get(3) }
-        set(v) { set(3, RepeatField<String>(3, v)) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_start) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_end) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var publicDependency: ArrayList<Int32> {
-        get( ) { get(10) }
-        set(v) { set(10, RepeatField<Int32>(10, v)) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var weakDependency: ArrayList<Int32> {
-        get( ) { get(11) }
-        set(v) { set(11, RepeatField<Int32>(11, v)) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_start) { i_tmp.append("start", i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp.append("end", i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop var messageType: ArrayList<DescriptorProto> {
-        get( ) { get(4) }
-        set(v) { set(4, RepeatField<DescriptorProto>(4, v)) }
-    }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var enumType: ArrayList<EnumDescriptorProto> {
-        get( ) { get(5) }
-        set(v) { set(5, RepeatField<EnumDescriptorProto>(5, v)) }
-    }
-
-    public prop var service: ArrayList<ServiceDescriptorProto> {
-        get( ) { get(6) }
-        set(v) { set(6, RepeatField<ServiceDescriptorProto>(6, v)) }
-    }
-
-    public prop var extension: ArrayList<FieldDescriptorProto> {
-        get( ) { get(7) }
-        set(v) { set(7, RepeatField<FieldDescriptorProto>(7, v)) }
-    }
-
-    public prop var options: FileOptions {
-        get( ) { get(8) }
-        set(v) { set(8, v) }
-    }
-
-    public prop var sourceCodeInfo: SourceCodeInfo {
-        get( ) { get(9) }
-        set(v) { set(9, v) }
-    }
-
-    public prop var syntax: String {
-        get( ) { get(12) }
-        set(v) { set(12, v) }
-    }
-
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasPackage: Bool { get() { m_fields.contains(2) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(8) } }
-    public prop let hasSourceCodeInfo: Bool { get() { m_fields.contains(9) } }
-    public prop let hasSyntax: Bool { get() { m_fields.contains(12) } }
+    public static func empty() { DescriptorProto_ExtensionRange() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = DescriptorProto_ExtensionRange(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto_ExtensionRange(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend FileDescriptorProto <: MessageParser<FileDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = FileDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = FileDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorProto_ReservedRange> {
+    private var m_start: ?Int32 = None
+    private var m_end: ?Int32 = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearStart() { m_start = None }
+    public prop let hasStart: Bool { get() { match (m_start) { case None => false case _ => true } } }
+    public prop var start: Int32 { get() { m_start.getOrThrow() } set(i_tmp) { m_start = i_tmp } }
+
+    public func clearEnd() { m_end = None }
+    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_start) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp += 1 + varintSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_start) { return false }
+        if (let Some(i_vtmp) = m_end) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_start = None
+        m_end = None
+        unknownFields.clear()
+    }
+
+    public func clone(): DescriptorProto_ReservedRange {
+        let i_tmp = DescriptorProto_ReservedRange()
+        i_tmp.m_start = m_start
+        i_tmp.m_end = m_end
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_start = int32Parse(src)
+                case 2 => m_end = int32Parse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_start) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_end) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_start) { i_tmp.append("start", i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp.append("end", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { DescriptorProto_ReservedRange() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = DescriptorProto_ReservedRange(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto_ReservedRange(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class DescriptorProto_ExtensionRange <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
+    private var m_name: ?String = None
+    public var field = ArrayList<FieldDescriptorProto>()
+    public var extension = ArrayList<FieldDescriptorProto>()
+    public var nestedType = ArrayList<DescriptorProto>()
+    public var enumType = ArrayList<EnumDescriptorProto>()
+    public var extensionRange = ArrayList<DescriptorProto_ExtensionRange>()
+    public var oneofDecl = ArrayList<OneofDescriptorProto>()
+    private var m_options: ?MessageOptions = None
+    public var reservedRange = ArrayList<DescriptorProto_ReservedRange>()
+    public var reservedName = ArrayList<String>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance),
-            (3, MessageUnpacker<ExtensionRangeOptions>.instance)
-        ])
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "start"), (2, "end"), (3, "options")
-        ])
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: MessageOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("start", 1), ("end", 2), ("options", 3)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!field.isEmpty()) { for (i_itmp in field) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!nestedType.isEmpty()) { for (i_itmp in nestedType) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!extensionRange.isEmpty()) { for (i_itmp in extensionRange) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { i_tmp += 1 + binSize(i_itmp) } }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { i_tmp += 1 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (!field.isEmpty()) { return false }
+        if (!extension.isEmpty()) { return false }
+        if (!nestedType.isEmpty()) { return false }
+        if (!enumType.isEmpty()) { return false }
+        if (!extensionRange.isEmpty()) { return false }
+        if (!oneofDecl.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (!reservedRange.isEmpty()) { return false }
+        if (!reservedName.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_name = None
+        field.clear()
+        extension.clear()
+        nestedType.clear()
+        enumType.clear()
+        extensionRange.clear()
+        oneofDecl.clear()
+        m_options = None
+        reservedRange.clear()
+        reservedName.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): DescriptorProto_ExtensionRange { let m = DescriptorProto_ExtensionRange(); m.m_fieldsClone(this); m }
-
-    public prop var start: Int32 {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): DescriptorProto {
+        let i_tmp = DescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.field = ArrayList(field.size, { i => field[i].clone() })
+        i_tmp.extension = ArrayList(extension.size, { i => extension[i].clone() })
+        i_tmp.nestedType = ArrayList(nestedType.size, { i => nestedType[i].clone() })
+        i_tmp.enumType = ArrayList(enumType.size, { i => enumType[i].clone() })
+        i_tmp.extensionRange = ArrayList(extensionRange.size, { i => extensionRange[i].clone() })
+        i_tmp.oneofDecl = ArrayList(oneofDecl.size, { i => oneofDecl[i].clone() })
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.reservedRange = ArrayList(reservedRange.size, { i => reservedRange[i].clone() })
+        i_tmp.reservedName = reservedName.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var end: Int32 {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => field.add().unpack(sub(src))
+                case 6 => extension.add().unpack(sub(src))
+                case 3 => nestedType.add().unpack(sub(src))
+                case 4 => enumType.add().unpack(sub(src))
+                case 5 => extensionRange.add().unpack(sub(src))
+                case 8 => oneofDecl.add().unpack(sub(src))
+                case 7 => m_options = m_options ?? MessageOptions(); m_options?.unpack(sub(src))
+                case 9 => reservedRange.add().unpack(sub(src))
+                case 10 => reservedName.append(stringParse(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var options: ExtensionRangeOptions {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!field.isEmpty()) { for (i_itmp in field) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { tagPack(6, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!nestedType.isEmpty()) { for (i_itmp in nestedType) { tagPack(3, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { tagPack(4, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!extensionRange.isEmpty()) { for (i_itmp in extensionRange) { tagPack(5, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { tagPack(8, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { tagPack(7, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { tagPack(9, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { tagPack(10, PREFIXED, out); binPack(i_itmp, out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop let hasStart: Bool { get() { m_fields.contains(1) } }
-    public prop let hasEnd: Bool { get() { m_fields.contains(2) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (!field.isEmpty()) { i_tmp.append("field", field) }
+        if (!extension.isEmpty()) { i_tmp.append("extension", extension) }
+        if (!nestedType.isEmpty()) { i_tmp.append("nestedType", nestedType) }
+        if (!enumType.isEmpty()) { i_tmp.append("enumType", enumType) }
+        if (!extensionRange.isEmpty()) { i_tmp.append("extensionRange", extensionRange) }
+        if (!oneofDecl.isEmpty()) { i_tmp.append("oneofDecl", oneofDecl) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (!reservedRange.isEmpty()) { i_tmp.append("reservedRange", reservedRange) }
+        if (!reservedName.isEmpty()) { i_tmp.append("reservedName", reservedName) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { DescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = DescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend DescriptorProto_ExtensionRange <: MessageParser<DescriptorProto_ExtensionRange> {
-    public static func fromJson(src: JsonObject) { let m = DescriptorProto_ExtensionRange(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ExtensionRange(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
+public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptions> {
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-public class DescriptorProto_ReservedRange <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance)
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "start"), (2, "end")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("start", 1), ("end", 2)
-        ])
+    public func isEmpty(): Bool {
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): DescriptorProto_ReservedRange { let m = DescriptorProto_ReservedRange(); m.m_fieldsClone(this); m }
-
-    public prop var start: Int32 {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): ExtensionRangeOptions {
+        let i_tmp = ExtensionRangeOptions()
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var end: Int32 {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop let hasStart: Bool { get() { m_fields.contains(1) } }
-    public prop let hasEnd: Bool { get() { m_fields.contains(2) } }
-}
-
-extend DescriptorProto_ReservedRange <: MessageParser<DescriptorProto_ReservedRange> {
-    public static func fromJson(src: JsonObject) { let m = DescriptorProto_ReservedRange(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = DescriptorProto_ReservedRange(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class DescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, MessageUnpacker<FieldDescriptorProto>.repeatInstance(2)),
-            (6, MessageUnpacker<FieldDescriptorProto>.repeatInstance(6)),
-            (3, MessageUnpacker<DescriptorProto>.repeatInstance(3)),
-            (4, MessageUnpacker<EnumDescriptorProto>.repeatInstance(4)),
-            (5, MessageUnpacker<DescriptorProto_ExtensionRange>.repeatInstance(5)),
-            (8, MessageUnpacker<OneofDescriptorProto>.repeatInstance(8)), (7, MessageUnpacker<MessageOptions>.instance),
-            (9, MessageUnpacker<DescriptorProto_ReservedRange>.repeatInstance(9)),
-            (10, StringUnpacker.repeatInstance(10))
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "field"), (6, "extension"), (3, "nestedType"), (4, "enumType"), (5, "extensionRange"),
-            (8, "oneofDecl"), (7, "options"), (9, "reservedRange"), (10, "reservedName")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("field", 2), ("extension", 6), ("nestedType", 3), ("enumType", 4), ("extensionRange", 5),
-            ("oneofDecl", 8), ("options", 7), ("reservedRange", 9), ("reservedName", 10)
-        ])
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public func clone(): DescriptorProto { let m = DescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop var field: ArrayList<FieldDescriptorProto> {
-        get( ) { get(2) }
-        set(v) { set(2, RepeatField<FieldDescriptorProto>(2, v)) }
-    }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var extension: ArrayList<FieldDescriptorProto> {
-        get( ) { get(6) }
-        set(v) { set(6, RepeatField<FieldDescriptorProto>(6, v)) }
-    }
-
-    public prop var nestedType: ArrayList<DescriptorProto> {
-        get( ) { get(3) }
-        set(v) { set(3, RepeatField<DescriptorProto>(3, v)) }
-    }
-
-    public prop var enumType: ArrayList<EnumDescriptorProto> {
-        get( ) { get(4) }
-        set(v) { set(4, RepeatField<EnumDescriptorProto>(4, v)) }
-    }
-
-    public prop var extensionRange: ArrayList<DescriptorProto_ExtensionRange> {
-        get( ) { get(5) }
-        set(v) { set(5, RepeatField<DescriptorProto_ExtensionRange>(5, v)) }
-    }
-
-    public prop var oneofDecl: ArrayList<OneofDescriptorProto> {
-        get( ) { get(8) }
-        set(v) { set(8, RepeatField<OneofDescriptorProto>(8, v)) }
-    }
-
-    public prop var options: MessageOptions {
-        get( ) { get(7) }
-        set(v) { set(7, v) }
-    }
-
-    public prop var reservedRange: ArrayList<DescriptorProto_ReservedRange> {
-        get( ) { get(9) }
-        set(v) { set(9, RepeatField<DescriptorProto_ReservedRange>(9, v)) }
-    }
-
-    public prop var reservedName: ArrayList<String> {
-        get( ) { get(10) }
-        set(v) { set(10, RepeatField<String>(10, v)) }
-    }
-
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(7) } }
-}
-
-extend DescriptorProto <: MessageParser<DescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = DescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = DescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class ExtensionRangeOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (999, "uninterpretedOption")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("uninterpretedOption", 999)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-    }
-
-    public func clone(): ExtensionRangeOptions { let m = ExtensionRangeOptions(); m.m_fieldsClone(this); m }
-
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
-    }
-}
-
-extend ExtensionRangeOptions <: MessageParser<ExtensionRangeOptions> {
-    public static func fromJson(src: JsonObject) { let m = ExtensionRangeOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = ExtensionRangeOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+    public static func empty() { ExtensionRangeOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ExtensionRangeOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ExtensionRangeOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
 public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
-    | TYPE_DOUBLE | TYPE_FLOAT | TYPE_INT64 | TYPE_UINT64 | TYPE_INT32 | TYPE_FIXED64 | TYPE_FIXED32 | TYPE_BOOL
-    | TYPE_STRING | TYPE_GROUP | TYPE_MESSAGE | TYPE_BYTES | TYPE_UINT32 | TYPE_ENUM | TYPE_SFIXED32 | TYPE_SFIXED64
-    | TYPE_SINT32 | TYPE_SINT64
+    TYPE_DOUBLE | TYPE_FLOAT | TYPE_INT64 | TYPE_UINT64 | TYPE_INT32 | TYPE_FIXED64 | TYPE_FIXED32 | TYPE_BOOL |
+    TYPE_STRING | TYPE_GROUP | TYPE_MESSAGE | TYPE_BYTES | TYPE_UINT32 | TYPE_ENUM | TYPE_SFIXED32 | TYPE_SFIXED64 |
+    TYPE_SINT32 | TYPE_SINT64
 
     public func value(): Int32 {
         match(this) {
@@ -463,6 +673,30 @@ public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
             case TYPE_SFIXED64 => "TYPE_SFIXED64"
             case TYPE_SINT32 => "TYPE_SINT32"
             case TYPE_SINT64 => "TYPE_SINT64"
+        }
+    }
+
+    public operator func==(e: FieldDescriptorProto_Type) {
+        match((this, e)) {
+            case (TYPE_DOUBLE, TYPE_DOUBLE) => true
+            case (TYPE_FLOAT, TYPE_FLOAT) => true
+            case (TYPE_INT64, TYPE_INT64) => true
+            case (TYPE_UINT64, TYPE_UINT64) => true
+            case (TYPE_INT32, TYPE_INT32) => true
+            case (TYPE_FIXED64, TYPE_FIXED64) => true
+            case (TYPE_FIXED32, TYPE_FIXED32) => true
+            case (TYPE_BOOL, TYPE_BOOL) => true
+            case (TYPE_STRING, TYPE_STRING) => true
+            case (TYPE_GROUP, TYPE_GROUP) => true
+            case (TYPE_MESSAGE, TYPE_MESSAGE) => true
+            case (TYPE_BYTES, TYPE_BYTES) => true
+            case (TYPE_UINT32, TYPE_UINT32) => true
+            case (TYPE_ENUM, TYPE_ENUM) => true
+            case (TYPE_SFIXED32, TYPE_SFIXED32) => true
+            case (TYPE_SFIXED64, TYPE_SFIXED64) => true
+            case (TYPE_SINT32, TYPE_SINT32) => true
+            case (TYPE_SINT64, TYPE_SINT64) => true
+            case _ => false
         }
     }
 
@@ -516,7 +750,7 @@ public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
 }
 
 public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
-    | LABEL_OPTIONAL | LABEL_REQUIRED | LABEL_REPEATED
+    LABEL_OPTIONAL | LABEL_REQUIRED | LABEL_REPEATED
 
     public func value(): Int32 {
         match(this) {
@@ -531,6 +765,15 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case LABEL_OPTIONAL => "LABEL_OPTIONAL"
             case LABEL_REQUIRED => "LABEL_REQUIRED"
             case LABEL_REPEATED => "LABEL_REPEATED"
+        }
+    }
+
+    public operator func==(e: FieldDescriptorProto_Label) {
+        match((this, e)) {
+            case (LABEL_OPTIONAL, LABEL_OPTIONAL) => true
+            case (LABEL_REQUIRED, LABEL_REQUIRED) => true
+            case (LABEL_REPEATED, LABEL_REPEATED) => true
+            case _ => false
         }
     }
 
@@ -553,495 +796,795 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
     }
 }
 
-public class FieldDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto> {
+    private var m_name: ?String = None
+    private var m_number: ?Int32 = None
+    private var m_label: ?FieldDescriptorProto_Label = None
+    private var m_type: ?FieldDescriptorProto_Type = None
+    private var m_typeName: ?String = None
+    private var m_extendee: ?String = None
+    private var m_defaultValue: ?String = None
+    private var m_oneofIndex: ?Int32 = None
+    private var m_jsonName: ?String = None
+    private var m_options: ?FieldOptions = None
+    private var m_proto3Optional: ?Bool = None
+    public var mapEntry = ArrayList<FieldDescriptorProto>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (3, Int32Unpacker.instance),
-            (4, EnumUnpacker<FieldDescriptorProto_Label>.instance),
-            (5, EnumUnpacker<FieldDescriptorProto_Type>.instance), (6, StringUnpacker.instance),
-            (2, StringUnpacker.instance), (7, StringUnpacker.instance), (9, Int32Unpacker.instance),
-            (10, StringUnpacker.instance), (8, MessageUnpacker<FieldOptions>.instance), (17, BoolUnpacker.instance)
-        ])
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (3, "number"), (4, "label"), (5, "type"), (6, "typeName"), (2, "extendee"),
-            (7, "defaultValue"), (9, "oneofIndex"), (10, "jsonName"), (8, "options"), (17, "proto3Optional")
-        ])
+    public func clearNumber() { m_number = None }
+    public prop let hasNumber: Bool { get() { match (m_number) { case None => false case _ => true } } }
+    public prop var number: Int32 { get() { m_number.getOrThrow() } set(i_tmp) { m_number = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("number", 3), ("label", 4), ("type", 5), ("typeName", 6), ("extendee", 2),
-            ("defaultValue", 7), ("oneofIndex", 9), ("jsonName", 10), ("options", 8), ("proto3Optional", 17)
-        ])
+    public func clearLabel() { m_label = None }
+    public prop let hasLabel: Bool { get() { match (m_label) { case None => false case _ => true } } }
+    public prop var label: FieldDescriptorProto_Label { get() { m_label.getOrThrow() } set(i_tmp) { m_label = i_tmp } }
+
+    public func clearType() { m_type = None }
+    public prop let hasType: Bool { get() { match (m_type) { case None => false case _ => true } } }
+    public prop var type_: FieldDescriptorProto_Type { get() { m_type.getOrThrow() } set(i_tmp) { m_type = i_tmp } }
+
+    public func clearTypeName() { m_typeName = None }
+    public prop let hasTypeName: Bool { get() { match (m_typeName) { case None => false case _ => true } } }
+    public prop var typeName: String { get() { m_typeName.getOrThrow() } set(i_tmp) { m_typeName = i_tmp } }
+
+    public func clearExtendee() { m_extendee = None }
+    public prop let hasExtendee: Bool { get() { match (m_extendee) { case None => false case _ => true } } }
+    public prop var extendee: String { get() { m_extendee.getOrThrow() } set(i_tmp) { m_extendee = i_tmp } }
+
+    public func clearDefaultValue() { m_defaultValue = None }
+    public prop let hasDefaultValue: Bool { get() { match (m_defaultValue) { case None => false case _ => true } } }
+    public prop var defaultValue: String { get() { m_defaultValue.getOrThrow() } set(i_tmp) { m_defaultValue = i_tmp } }
+
+    public func clearOneofIndex() { m_oneofIndex = None }
+    public prop let hasOneofIndex: Bool { get() { match (m_oneofIndex) { case None => false case _ => true } } }
+    public prop var oneofIndex: Int32 { get() { m_oneofIndex.getOrThrow() } set(i_tmp) { m_oneofIndex = i_tmp } }
+
+    public func clearJsonName() { m_jsonName = None }
+    public prop let hasJsonName: Bool { get() { match (m_jsonName) { case None => false case _ => true } } }
+    public prop var jsonName: String { get() { m_jsonName.getOrThrow() } set(i_tmp) { m_jsonName = i_tmp } }
+
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: FieldOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public func clearProto3Optional() { m_proto3Optional = None }
+    public prop let hasProto3Optional: Bool { get() { match (m_proto3Optional) { case None => false case _ => true } } }
+    public prop var proto3Optional: Bool { get() { m_proto3Optional.getOrThrow() } set(i_tmp) { m_proto3Optional = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_label) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_type) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_typeName) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_extendee) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_defaultValue) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_oneofIndex) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_jsonName) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_proto3Optional) { i_tmp += 2 + 1 }
+        if (!mapEntry.isEmpty()) { for (i_itmp in mapEntry) { i_tmp += 3 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (let Some(i_vtmp) = m_number) { return false }
+        if (let Some(i_vtmp) = m_label) { return false }
+        if (let Some(i_vtmp) = m_type) { return false }
+        if (let Some(i_vtmp) = m_typeName) { return false }
+        if (let Some(i_vtmp) = m_extendee) { return false }
+        if (let Some(i_vtmp) = m_defaultValue) { return false }
+        if (let Some(i_vtmp) = m_oneofIndex) { return false }
+        if (let Some(i_vtmp) = m_jsonName) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (let Some(i_vtmp) = m_proto3Optional) { return false }
+        if (!mapEntry.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_name = None
+        m_number = None
+        m_label = None
+        m_type = None
+        m_typeName = None
+        m_extendee = None
+        m_defaultValue = None
+        m_oneofIndex = None
+        m_jsonName = None
+        m_options = None
+        m_proto3Optional = None
+        mapEntry.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): FieldDescriptorProto { let m = FieldDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): FieldDescriptorProto {
+        let i_tmp = FieldDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.m_number = m_number
+        i_tmp.m_label = m_label
+        i_tmp.m_type = m_type
+        i_tmp.m_typeName = m_typeName
+        i_tmp.m_extendee = m_extendee
+        i_tmp.m_defaultValue = m_defaultValue
+        i_tmp.m_oneofIndex = m_oneofIndex
+        i_tmp.m_jsonName = m_jsonName
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.m_proto3Optional = m_proto3Optional
+        i_tmp.mapEntry = ArrayList(mapEntry.size, { i => mapEntry[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var number: Int32 {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 3 => m_number = int32Parse(src)
+                case 4 => m_label = FieldDescriptorProto_Label.parse(int32Parse(src))
+                case 5 => m_type = FieldDescriptorProto_Type.parse(int32Parse(src))
+                case 6 => m_typeName = stringParse(src)
+                case 2 => m_extendee = stringParse(src)
+                case 7 => m_defaultValue = stringParse(src)
+                case 9 => m_oneofIndex = int32Parse(src)
+                case 10 => m_jsonName = stringParse(src)
+                case 8 => m_options = m_options ?? FieldOptions(); m_options?.unpack(sub(src))
+                case 17 => m_proto3Optional = boolParse(src)
+                case 9999 => mapEntry.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var label: FieldDescriptorProto_Label {
-        get( ) { get(4) }
-        set(v) { set(4, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_number) { tagPack(3, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_label) { tagPack(4, VARINT, out); varintPack(i_vtmp.value(), out) }
+        if (let Some(i_vtmp) = m_type) { tagPack(5, VARINT, out); varintPack(i_vtmp.value(), out) }
+        if (let Some(i_vtmp) = m_typeName) { tagPack(6, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_extendee) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_defaultValue) { tagPack(7, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_oneofIndex) { tagPack(9, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_jsonName) { tagPack(10, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_options) { tagPack(8, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_proto3Optional) { tagPack(17, VARINT, out); boolPack(i_vtmp, out) }
+        if (!mapEntry.isEmpty()) { for (i_itmp in mapEntry) { tagPack(9999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var type_: FieldDescriptorProto_Type {
-        get( ) { get(5) }
-        set(v) { set(5, v) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var typeName: String {
-        get( ) { get(6) }
-        set(v) { set(6, v) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { i_tmp.append("number", i_vtmp) }
+        if (let Some(i_vtmp) = m_label) { i_tmp.append("label", i_vtmp) }
+        if (let Some(i_vtmp) = m_type) { i_tmp.append("type", i_vtmp) }
+        if (let Some(i_vtmp) = m_typeName) { i_tmp.append("typeName", i_vtmp) }
+        if (let Some(i_vtmp) = m_extendee) { i_tmp.append("extendee", i_vtmp) }
+        if (let Some(i_vtmp) = m_defaultValue) { i_tmp.append("defaultValue", i_vtmp) }
+        if (let Some(i_vtmp) = m_oneofIndex) { i_tmp.append("oneofIndex", i_vtmp) }
+        if (let Some(i_vtmp) = m_jsonName) { i_tmp.append("jsonName", i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (let Some(i_vtmp) = m_proto3Optional) { i_tmp.append("proto3Optional", i_vtmp) }
+        if (!mapEntry.isEmpty()) { i_tmp.append("mapEntry", mapEntry) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop var extendee: String {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
-    }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var defaultValue: String {
-        get( ) { get(7) }
-        set(v) { set(7, v) }
-    }
-
-    public prop var oneofIndex: Int32 {
-        get( ) { get(9) }
-        set(v) { set(9, v) }
-    }
-
-    public prop var jsonName: String {
-        get( ) { get(10) }
-        set(v) { set(10, v) }
-    }
-
-    public prop var options: FieldOptions {
-        get( ) { get(8) }
-        set(v) { set(8, v) }
-    }
-
-    public prop var proto3Optional: Bool {
-        get( ) { get(17) }
-        set(v) { set(17, v) }
-    }
-
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasNumber: Bool { get() { m_fields.contains(3) } }
-    public prop let hasLabel: Bool { get() { m_fields.contains(4) } }
-    public prop let hasType: Bool { get() { m_fields.contains(5) } }
-    public prop let hasTypeName: Bool { get() { m_fields.contains(6) } }
-    public prop let hasExtendee: Bool { get() { m_fields.contains(2) } }
-    public prop let hasDefaultValue: Bool { get() { m_fields.contains(7) } }
-    public prop let hasOneofIndex: Bool { get() { m_fields.contains(9) } }
-    public prop let hasJsonName: Bool { get() { m_fields.contains(10) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(8) } }
-    public prop let hasProto3Optional: Bool { get() { m_fields.contains(17) } }
+    public static func empty() { FieldDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = FieldDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FieldDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend FieldDescriptorProto <: MessageParser<FieldDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = FieldDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = FieldDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto> {
+    private var m_name: ?String = None
+    private var m_options: ?OneofOptions = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
+
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: OneofOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_name = None
+        m_options = None
+        unknownFields.clear()
+    }
+
+    public func clone(): OneofDescriptorProto {
+        let i_tmp = OneofDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => m_options = m_options ?? OneofOptions(); m_options?.unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_options) { tagPack(2, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { OneofDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = OneofDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = OneofDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class OneofDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<EnumDescriptorProto_EnumReservedRange> {
+    private var m_start: ?Int32 = None
+    private var m_end: ?Int32 = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, MessageUnpacker<OneofOptions>.instance)
-        ])
+    public func clearStart() { m_start = None }
+    public prop let hasStart: Bool { get() { match (m_start) { case None => false case _ => true } } }
+    public prop var start: Int32 { get() { m_start.getOrThrow() } set(i_tmp) { m_start = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "options")
-        ])
+    public func clearEnd() { m_end = None }
+    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("options", 2)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_start) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp += 1 + varintSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_start) { return false }
+        if (let Some(i_vtmp) = m_end) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_start = None
+        m_end = None
+        unknownFields.clear()
     }
 
-    public func clone(): OneofDescriptorProto { let m = OneofDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): EnumDescriptorProto_EnumReservedRange {
+        let i_tmp = EnumDescriptorProto_EnumReservedRange()
+        i_tmp.m_start = m_start
+        i_tmp.m_end = m_end
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var options: OneofOptions {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_start = int32Parse(src)
+                case 2 => m_end = int32Parse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(2) } }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_start) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_end) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_start) { i_tmp.append("start", i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp.append("end", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { EnumDescriptorProto_EnumReservedRange() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumDescriptorProto_EnumReservedRange(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumDescriptorProto_EnumReservedRange(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend OneofDescriptorProto <: MessageParser<OneofDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = OneofDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = OneofDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> {
+    private var m_name: ?String = None
+    public var value = ArrayList<EnumValueDescriptorProto>()
+    private var m_options: ?EnumOptions = None
+    public var reservedRange = ArrayList<EnumDescriptorProto_EnumReservedRange>()
+    public var reservedName = ArrayList<String>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
+
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: EnumOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!value.isEmpty()) { for (i_itmp in value) { i_tmp += 1 + binSize(i_itmp) } }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { i_tmp += 1 + binSize(i_itmp) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { i_tmp += 1 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (!value.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (!reservedRange.isEmpty()) { return false }
+        if (!reservedName.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_name = None
+        value.clear()
+        m_options = None
+        reservedRange.clear()
+        reservedName.clear()
+        unknownFields.clear()
+    }
+
+    public func clone(): EnumDescriptorProto {
+        let i_tmp = EnumDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.value = ArrayList(value.size, { i => value[i].clone() })
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.reservedRange = ArrayList(reservedRange.size, { i => reservedRange[i].clone() })
+        i_tmp.reservedName = reservedName.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => value.add().unpack(sub(src))
+                case 3 => m_options = m_options ?? EnumOptions(); m_options?.unpack(sub(src))
+                case 4 => reservedRange.add().unpack(sub(src))
+                case 5 => reservedName.append(stringParse(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!value.isEmpty()) { for (i_itmp in value) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { tagPack(4, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { tagPack(5, PREFIXED, out); binPack(i_itmp, out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (!value.isEmpty()) { i_tmp.append("value", value) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (!reservedRange.isEmpty()) { i_tmp.append("reservedRange", reservedRange) }
+        if (!reservedName.isEmpty()) { i_tmp.append("reservedName", reservedName) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { EnumDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class EnumDescriptorProto_EnumReservedRange <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescriptorProto> {
+    private var m_name: ?String = None
+    private var m_number: ?Int32 = None
+    private var m_options: ?EnumValueOptions = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, Int32Unpacker.instance), (2, Int32Unpacker.instance)
-        ])
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "start"), (2, "end")
-        ])
+    public func clearNumber() { m_number = None }
+    public prop let hasNumber: Bool { get() { match (m_number) { case None => false case _ => true } } }
+    public prop var number: Int32 { get() { m_number.getOrThrow() } set(i_tmp) { m_number = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("start", 1), ("end", 2)
-        ])
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: EnumValueOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (let Some(i_vtmp) = m_number) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_name = None
+        m_number = None
+        m_options = None
+        unknownFields.clear()
     }
 
-    public func clone(): EnumDescriptorProto_EnumReservedRange { let m = EnumDescriptorProto_EnumReservedRange(); m.m_fieldsClone(this); m }
-
-    public prop var start: Int32 {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): EnumValueDescriptorProto {
+        let i_tmp = EnumValueDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.m_number = m_number
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var end: Int32 {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => m_number = int32Parse(src)
+                case 3 => m_options = m_options ?? EnumValueOptions(); m_options?.unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop let hasStart: Bool { get() { m_fields.contains(1) } }
-    public prop let hasEnd: Bool { get() { m_fields.contains(2) } }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_number) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { i_tmp.append("number", i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { EnumValueDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumValueDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumValueDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend EnumDescriptorProto_EnumReservedRange <: MessageParser<EnumDescriptorProto_EnumReservedRange> {
-    public static func fromJson(src: JsonObject) { let m = EnumDescriptorProto_EnumReservedRange(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto_EnumReservedRange(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorProto> {
+    private var m_name: ?String = None
+    public var method = ArrayList<MethodDescriptorProto>()
+    private var m_options: ?ServiceOptions = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
+
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: ServiceOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!method.isEmpty()) { for (i_itmp in method) { i_tmp += 1 + binSize(i_itmp) } }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (!method.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_name = None
+        method.clear()
+        m_options = None
+        unknownFields.clear()
+    }
+
+    public func clone(): ServiceDescriptorProto {
+        let i_tmp = ServiceDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.method = ArrayList(method.size, { i => method[i].clone() })
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => method.add().unpack(sub(src))
+                case 3 => m_options = m_options ?? ServiceOptions(); m_options?.unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!method.isEmpty()) { for (i_itmp in method) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (!method.isEmpty()) { i_tmp.append("method", method) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { ServiceDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ServiceDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ServiceDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class EnumDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorProto> {
+    private var m_name: ?String = None
+    private var m_inputType: ?String = None
+    private var m_outputType: ?String = None
+    private var m_options: ?MethodOptions = None
+    private var m_clientStreaming: ?Bool = None
+    private var m_serverStreaming: ?Bool = None
+    private var m_funcName: ?String = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, MessageUnpacker<EnumValueDescriptorProto>.repeatInstance(2)),
-            (3, MessageUnpacker<EnumOptions>.instance),
-            (4, MessageUnpacker<EnumDescriptorProto_EnumReservedRange>.repeatInstance(4)),
-            (5, StringUnpacker.repeatInstance(5))
-        ])
+    public func clearName() { m_name = None }
+    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "value"), (3, "options"), (4, "reservedRange"), (5, "reservedName")
-        ])
+    public func clearInputType() { m_inputType = None }
+    public prop let hasInputType: Bool { get() { match (m_inputType) { case None => false case _ => true } } }
+    public prop var inputType: String { get() { m_inputType.getOrThrow() } set(i_tmp) { m_inputType = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("value", 2), ("options", 3), ("reservedRange", 4), ("reservedName", 5)
-        ])
+    public func clearOutputType() { m_outputType = None }
+    public prop let hasOutputType: Bool { get() { match (m_outputType) { case None => false case _ => true } } }
+    public prop var outputType: String { get() { m_outputType.getOrThrow() } set(i_tmp) { m_outputType = i_tmp } }
+
+    public func clearOptions() { m_options = None }
+    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop var options: MethodOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
+
+    public func clearClientStreaming() { m_clientStreaming = None }
+    public prop let hasClientStreaming: Bool { get() { match (m_clientStreaming) { case None => false case _ => true } } }
+    public prop var clientStreaming: Bool { get() { m_clientStreaming ?? false } set(i_tmp) { m_clientStreaming = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearServerStreaming() { m_serverStreaming = None }
+    public prop let hasServerStreaming: Bool { get() { match (m_serverStreaming) { case None => false case _ => true } } }
+    public prop var serverStreaming: Bool { get() { m_serverStreaming ?? false } set(i_tmp) { m_serverStreaming = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearFuncName() { m_funcName = None }
+    public prop let hasFuncName: Bool { get() { match (m_funcName) { case None => false case _ => true } } }
+    public prop var funcName: String { get() { m_funcName.getOrThrow() } set(i_tmp) { m_funcName = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_inputType) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_outputType) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_clientStreaming) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_serverStreaming) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_funcName) { i_tmp += 3 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_name) { return false }
+        if (let Some(i_vtmp) = m_inputType) { return false }
+        if (let Some(i_vtmp) = m_outputType) { return false }
+        if (let Some(i_vtmp) = m_options) { return false }
+        if (let Some(i_vtmp) = m_clientStreaming) { return false }
+        if (let Some(i_vtmp) = m_serverStreaming) { return false }
+        if (let Some(i_vtmp) = m_funcName) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_name = None
+        m_inputType = None
+        m_outputType = None
+        m_options = None
+        m_clientStreaming = None
+        m_serverStreaming = None
+        m_funcName = None
+        unknownFields.clear()
     }
 
-    public func clone(): EnumDescriptorProto { let m = EnumDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): MethodDescriptorProto {
+        let i_tmp = MethodDescriptorProto()
+        i_tmp.m_name = m_name
+        i_tmp.m_inputType = m_inputType
+        i_tmp.m_outputType = m_outputType
+        i_tmp.m_options = m_options?.clone()
+        i_tmp.m_clientStreaming = m_clientStreaming
+        i_tmp.m_serverStreaming = m_serverStreaming
+        i_tmp.m_funcName = m_funcName
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var value: ArrayList<EnumValueDescriptorProto> {
-        get( ) { get(2) }
-        set(v) { set(2, RepeatField<EnumValueDescriptorProto>(2, v)) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_name = stringParse(src)
+                case 2 => m_inputType = stringParse(src)
+                case 3 => m_outputType = stringParse(src)
+                case 4 => m_options = m_options ?? MethodOptions(); m_options?.unpack(sub(src))
+                case 5 => clientStreaming = boolParse(src)
+                case 6 => serverStreaming = boolParse(src)
+                case 9999 => m_funcName = stringParse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var options: EnumOptions {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_inputType) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_outputType) { tagPack(3, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_options) { tagPack(4, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_clientStreaming) { tagPack(5, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_serverStreaming) { tagPack(6, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_funcName) { tagPack(9999, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var reservedRange: ArrayList<EnumDescriptorProto_EnumReservedRange> {
-        get( ) { get(4) }
-        set(v) { set(4, RepeatField<EnumDescriptorProto_EnumReservedRange>(4, v)) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var reservedName: ArrayList<String> {
-        get( ) { get(5) }
-        set(v) { set(5, RepeatField<String>(5, v)) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
+        if (let Some(i_vtmp) = m_inputType) { i_tmp.append("inputType", i_vtmp) }
+        if (let Some(i_vtmp) = m_outputType) { i_tmp.append("outputType", i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { i_tmp.append("options", i_vtmp) }
+        if (let Some(i_vtmp) = m_clientStreaming) { i_tmp.append("clientStreaming", i_vtmp) }
+        if (let Some(i_vtmp) = m_serverStreaming) { i_tmp.append("serverStreaming", i_vtmp) }
+        if (let Some(i_vtmp) = m_funcName) { i_tmp.append("funcName", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
-}
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-extend EnumDescriptorProto <: MessageParser<EnumDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = EnumDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = EnumDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class EnumValueDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, Int32Unpacker.instance), (3, MessageUnpacker<EnumValueOptions>.instance)
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "number"), (3, "options")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("number", 2), ("options", 3)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-    }
-
-    public func clone(): EnumValueDescriptorProto { let m = EnumValueDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
-    }
-
-    public prop var number: Int32 {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
-    }
-
-    public prop var options: EnumValueOptions {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
-    }
-
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasNumber: Bool { get() { m_fields.contains(2) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
-}
-
-extend EnumValueDescriptorProto <: MessageParser<EnumValueDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = EnumValueDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = EnumValueDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class ServiceDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, MessageUnpacker<MethodDescriptorProto>.repeatInstance(2)),
-            (3, MessageUnpacker<ServiceOptions>.instance)
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "method"), (3, "options")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("method", 2), ("options", 3)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-    }
-
-    public func clone(): ServiceDescriptorProto { let m = ServiceDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
-    }
-
-    public prop var method: ArrayList<MethodDescriptorProto> {
-        get( ) { get(2) }
-        set(v) { set(2, RepeatField<MethodDescriptorProto>(2, v)) }
-    }
-
-    public prop var options: ServiceOptions {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
-    }
-
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(3) } }
-}
-
-extend ServiceDescriptorProto <: MessageParser<ServiceDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = ServiceDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = ServiceDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class MethodDescriptorProto <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, StringUnpacker.instance), (3, StringUnpacker.instance),
-            (4, MessageUnpacker<MethodOptions>.instance), (5, BoolUnpacker.instance), (6, BoolUnpacker.instance),
-            (15, StringUnpacker.instance)
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "name"), (2, "inputType"), (3, "outputType"), (4, "options"), (5, "clientStreaming"),
-            (6, "serverStreaming"), (15, "funcName")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 1), ("inputType", 2), ("outputType", 3), ("options", 4), ("clientStreaming", 5),
-            ("serverStreaming", 6), ("funcName", 15)
-        ])
-
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (5, false), (6, false)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
-    }
-
-    public func clone(): MethodDescriptorProto { let m = MethodDescriptorProto(); m.m_fieldsClone(this); m }
-
-    public prop var name: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
-    }
-
-    public prop var inputType: String {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
-    }
-
-    public prop var outputType: String {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
-    }
-
-    public prop var options: MethodOptions {
-        get( ) { get(4) }
-        set(v) { set(4, v) }
-    }
-
-    public prop var clientStreaming: Bool {
-        get( ) { get(5) }
-        set(v) { set(5, v) }
-    }
-
-    public prop var serverStreaming: Bool {
-        get( ) { get(6) }
-        set(v) { set(6, v) }
-    }
-
-    public prop var funcName: String {
-        get( ) { get(15) }
-        set(v) { set(15, v) }
-    }
-
-    public prop let hasName: Bool { get() { m_fields.contains(1) } }
-    public prop let hasInputType: Bool { get() { m_fields.contains(2) } }
-    public prop let hasOutputType: Bool { get() { m_fields.contains(3) } }
-    public prop let hasOptions: Bool { get() { m_fields.contains(4) } }
-    public prop let hasClientStreaming: Bool { get() { m_fields.contains(5) } }
-    public prop let hasServerStreaming: Bool { get() { m_fields.contains(6) } }
-    public prop let hasFuncName: Bool { get() { m_fields.contains(15) } }
-}
-
-extend MethodDescriptorProto <: MessageParser<MethodDescriptorProto> {
-    public static func fromJson(src: JsonObject) { let m = MethodDescriptorProto(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = MethodDescriptorProto(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+    public static func empty() { MethodDescriptorProto() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = MethodDescriptorProto(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = MethodDescriptorProto(); i_tmp.unpacki(src); i_tmp }
 }
 
 public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
-    | SPEED | CODE_SIZE | LITE_RUNTIME
+    SPEED | CODE_SIZE | LITE_RUNTIME
 
     public func value(): Int32 {
         match(this) {
@@ -1056,6 +1599,15 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
             case SPEED => "SPEED"
             case CODE_SIZE => "CODE_SIZE"
             case LITE_RUNTIME => "LITE_RUNTIME"
+        }
+    }
+
+    public operator func==(e: FileOptions_OptimizeMode) {
+        match((this, e)) {
+            case (SPEED, SPEED) => true
+            case (CODE_SIZE, CODE_SIZE) => true
+            case (LITE_RUNTIME, LITE_RUNTIME) => true
+            case _ => false
         }
     }
 
@@ -1078,273 +1630,426 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
     }
 }
 
-public class FileOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
+public class FileOptions <: Message & TypedMessage<FileOptions> {
+    private var m_javaPackage: ?String = None
+    private var m_javaOuterClassname: ?String = None
+    private var m_javaMultipleFiles: ?Bool = None
+    private var m_javaGenerateEqualsAndHash: ?Bool = None
+    private var m_javaStringCheckUtf8: ?Bool = None
+    private var m_optimizeFor: ?FileOptions_OptimizeMode = None
+    private var m_goPackage: ?String = None
+    private var m_ccGenericServices: ?Bool = None
+    private var m_javaGenericServices: ?Bool = None
+    private var m_pyGenericServices: ?Bool = None
+    private var m_phpGenericServices: ?Bool = None
+    private var m_deprecated: ?Bool = None
+    private var m_ccEnableArenas: ?Bool = None
+    private var m_objcClassPrefix: ?String = None
+    private var m_csharpNamespace: ?String = None
+    private var m_swiftPrefix: ?String = None
+    private var m_phpClassPrefix: ?String = None
+    private var m_phpNamespace: ?String = None
+    private var m_phpMetadataNamespace: ?String = None
+    private var m_rubyPackage: ?String = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (8, StringUnpacker.instance), (10, BoolUnpacker.instance),
-            (20, BoolUnpacker.instance), (27, BoolUnpacker.instance),
-            (9, EnumUnpacker<FileOptions_OptimizeMode>.instance), (11, StringUnpacker.instance),
-            (16, BoolUnpacker.instance), (17, BoolUnpacker.instance), (18, BoolUnpacker.instance),
-            (42, BoolUnpacker.instance), (23, BoolUnpacker.instance), (31, BoolUnpacker.instance),
-            (36, StringUnpacker.instance), (37, StringUnpacker.instance), (39, StringUnpacker.instance),
-            (40, StringUnpacker.instance), (41, StringUnpacker.instance), (44, StringUnpacker.instance),
-            (45, StringUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
+    public func clearJavaPackage() { m_javaPackage = None }
+    public prop let hasJavaPackage: Bool { get() { match (m_javaPackage) { case None => false case _ => true } } }
+    public prop var javaPackage: String { get() { m_javaPackage.getOrThrow() } set(i_tmp) { m_javaPackage = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "javaPackage"), (8, "javaOuterClassname"), (10, "javaMultipleFiles"), (20, "javaGenerateEqualsAndHash"),
-            (27, "javaStringCheckUtf8"), (9, "optimizeFor"), (11, "goPackage"), (16, "ccGenericServices"),
-            (17, "javaGenericServices"), (18, "pyGenericServices"), (42, "phpGenericServices"), (23, "deprecated"),
-            (31, "ccEnableArenas"), (36, "objcClassPrefix"), (37, "csharpNamespace"), (39, "swiftPrefix"),
-            (40, "phpClassPrefix"), (41, "phpNamespace"), (44, "phpMetadataNamespace"), (45, "rubyPackage"),
-            (999, "uninterpretedOption")
-        ])
+    public func clearJavaOuterClassname() { m_javaOuterClassname = None }
+    public prop let hasJavaOuterClassname: Bool { get() { match (m_javaOuterClassname) { case None => false case _ => true } } }
+    public prop var javaOuterClassname: String { get() { m_javaOuterClassname.getOrThrow() } set(i_tmp) { m_javaOuterClassname = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("javaPackage", 1), ("javaOuterClassname", 8), ("javaMultipleFiles", 10), ("javaGenerateEqualsAndHash", 20),
-            ("javaStringCheckUtf8", 27), ("optimizeFor", 9), ("goPackage", 11), ("ccGenericServices", 16),
-            ("javaGenericServices", 17), ("pyGenericServices", 18), ("phpGenericServices", 42), ("deprecated", 23),
-            ("ccEnableArenas", 31), ("objcClassPrefix", 36), ("csharpNamespace", 37), ("swiftPrefix", 39),
-            ("phpClassPrefix", 40), ("phpNamespace", 41), ("phpMetadataNamespace", 44), ("rubyPackage", 45),
-            ("uninterpretedOption", 999)
-        ])
+    public func clearJavaMultipleFiles() { m_javaMultipleFiles = None }
+    public prop let hasJavaMultipleFiles: Bool { get() { match (m_javaMultipleFiles) { case None => false case _ => true } } }
+    public prop var javaMultipleFiles: Bool { get() { m_javaMultipleFiles ?? false } set(i_tmp) { m_javaMultipleFiles = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (10, false), (27, false), (9, FileOptions_OptimizeMode.SPEED), (16, false), (17, false), (18, false),
-            (42, false), (23, false), (31, true)
-        ])
+    public func clearJavaGenerateEqualsAndHash() { m_javaGenerateEqualsAndHash = None }
+    public prop let hasJavaGenerateEqualsAndHash: Bool { get() { match (m_javaGenerateEqualsAndHash) { case None => false case _ => true } } }
+    public prop var javaGenerateEqualsAndHash: Bool { get() { m_javaGenerateEqualsAndHash.getOrThrow() } set(i_tmp) { m_javaGenerateEqualsAndHash = i_tmp } }
+
+    public func clearJavaStringCheckUtf8() { m_javaStringCheckUtf8 = None }
+    public prop let hasJavaStringCheckUtf8: Bool { get() { match (m_javaStringCheckUtf8) { case None => false case _ => true } } }
+    public prop var javaStringCheckUtf8: Bool { get() { m_javaStringCheckUtf8 ?? false } set(i_tmp) { m_javaStringCheckUtf8 = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearOptimizeFor() { m_optimizeFor = None }
+    public prop let hasOptimizeFor: Bool { get() { match (m_optimizeFor) { case None => false case _ => true } } }
+    public prop var optimizeFor: FileOptions_OptimizeMode { get() { m_optimizeFor ?? SPEED } set(i_tmp) { m_optimizeFor = if (i_tmp == SPEED) { None } else { i_tmp } } }
+
+    public func clearGoPackage() { m_goPackage = None }
+    public prop let hasGoPackage: Bool { get() { match (m_goPackage) { case None => false case _ => true } } }
+    public prop var goPackage: String { get() { m_goPackage.getOrThrow() } set(i_tmp) { m_goPackage = i_tmp } }
+
+    public func clearCcGenericServices() { m_ccGenericServices = None }
+    public prop let hasCcGenericServices: Bool { get() { match (m_ccGenericServices) { case None => false case _ => true } } }
+    public prop var ccGenericServices: Bool { get() { m_ccGenericServices ?? false } set(i_tmp) { m_ccGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearJavaGenericServices() { m_javaGenericServices = None }
+    public prop let hasJavaGenericServices: Bool { get() { match (m_javaGenericServices) { case None => false case _ => true } } }
+    public prop var javaGenericServices: Bool { get() { m_javaGenericServices ?? false } set(i_tmp) { m_javaGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearPyGenericServices() { m_pyGenericServices = None }
+    public prop let hasPyGenericServices: Bool { get() { match (m_pyGenericServices) { case None => false case _ => true } } }
+    public prop var pyGenericServices: Bool { get() { m_pyGenericServices ?? false } set(i_tmp) { m_pyGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearPhpGenericServices() { m_phpGenericServices = None }
+    public prop let hasPhpGenericServices: Bool { get() { match (m_phpGenericServices) { case None => false case _ => true } } }
+    public prop var phpGenericServices: Bool { get() { m_phpGenericServices ?? false } set(i_tmp) { m_phpGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearCcEnableArenas() { m_ccEnableArenas = None }
+    public prop let hasCcEnableArenas: Bool { get() { match (m_ccEnableArenas) { case None => false case _ => true } } }
+    public prop var ccEnableArenas: Bool { get() { m_ccEnableArenas ?? true } set(i_tmp) { m_ccEnableArenas = if (i_tmp == true) { None } else { i_tmp } } }
+
+    public func clearObjcClassPrefix() { m_objcClassPrefix = None }
+    public prop let hasObjcClassPrefix: Bool { get() { match (m_objcClassPrefix) { case None => false case _ => true } } }
+    public prop var objcClassPrefix: String { get() { m_objcClassPrefix.getOrThrow() } set(i_tmp) { m_objcClassPrefix = i_tmp } }
+
+    public func clearCsharpNamespace() { m_csharpNamespace = None }
+    public prop let hasCsharpNamespace: Bool { get() { match (m_csharpNamespace) { case None => false case _ => true } } }
+    public prop var csharpNamespace: String { get() { m_csharpNamespace.getOrThrow() } set(i_tmp) { m_csharpNamespace = i_tmp } }
+
+    public func clearSwiftPrefix() { m_swiftPrefix = None }
+    public prop let hasSwiftPrefix: Bool { get() { match (m_swiftPrefix) { case None => false case _ => true } } }
+    public prop var swiftPrefix: String { get() { m_swiftPrefix.getOrThrow() } set(i_tmp) { m_swiftPrefix = i_tmp } }
+
+    public func clearPhpClassPrefix() { m_phpClassPrefix = None }
+    public prop let hasPhpClassPrefix: Bool { get() { match (m_phpClassPrefix) { case None => false case _ => true } } }
+    public prop var phpClassPrefix: String { get() { m_phpClassPrefix.getOrThrow() } set(i_tmp) { m_phpClassPrefix = i_tmp } }
+
+    public func clearPhpNamespace() { m_phpNamespace = None }
+    public prop let hasPhpNamespace: Bool { get() { match (m_phpNamespace) { case None => false case _ => true } } }
+    public prop var phpNamespace: String { get() { m_phpNamespace.getOrThrow() } set(i_tmp) { m_phpNamespace = i_tmp } }
+
+    public func clearPhpMetadataNamespace() { m_phpMetadataNamespace = None }
+    public prop let hasPhpMetadataNamespace: Bool { get() { match (m_phpMetadataNamespace) { case None => false case _ => true } } }
+    public prop var phpMetadataNamespace: String { get() { m_phpMetadataNamespace.getOrThrow() } set(i_tmp) { m_phpMetadataNamespace = i_tmp } }
+
+    public func clearRubyPackage() { m_rubyPackage = None }
+    public prop let hasRubyPackage: Bool { get() { match (m_rubyPackage) { case None => false case _ => true } } }
+    public prop var rubyPackage: String { get() { m_rubyPackage.getOrThrow() } set(i_tmp) { m_rubyPackage = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_javaPackage) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaOuterClassname) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaMultipleFiles) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_optimizeFor) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_goPackage) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_ccGenericServices) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_javaGenericServices) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_pyGenericServices) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_phpGenericServices) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_ccEnableArenas) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_objcClassPrefix) { i_tmp += 2 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_csharpNamespace) { i_tmp += 2 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_swiftPrefix) { i_tmp += 2 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpClassPrefix) { i_tmp += 2 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpNamespace) { i_tmp += 2 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpMetadataNamespace) { i_tmp += 2 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_rubyPackage) { i_tmp += 2 + binSize(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_javaPackage) { return false }
+        if (let Some(i_vtmp) = m_javaOuterClassname) { return false }
+        if (let Some(i_vtmp) = m_javaMultipleFiles) { return false }
+        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { return false }
+        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { return false }
+        if (let Some(i_vtmp) = m_optimizeFor) { return false }
+        if (let Some(i_vtmp) = m_goPackage) { return false }
+        if (let Some(i_vtmp) = m_ccGenericServices) { return false }
+        if (let Some(i_vtmp) = m_javaGenericServices) { return false }
+        if (let Some(i_vtmp) = m_pyGenericServices) { return false }
+        if (let Some(i_vtmp) = m_phpGenericServices) { return false }
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (let Some(i_vtmp) = m_ccEnableArenas) { return false }
+        if (let Some(i_vtmp) = m_objcClassPrefix) { return false }
+        if (let Some(i_vtmp) = m_csharpNamespace) { return false }
+        if (let Some(i_vtmp) = m_swiftPrefix) { return false }
+        if (let Some(i_vtmp) = m_phpClassPrefix) { return false }
+        if (let Some(i_vtmp) = m_phpNamespace) { return false }
+        if (let Some(i_vtmp) = m_phpMetadataNamespace) { return false }
+        if (let Some(i_vtmp) = m_rubyPackage) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
+    public func clear(): Unit {
+        m_javaPackage = None
+        m_javaOuterClassname = None
+        m_javaMultipleFiles = None
+        m_javaGenerateEqualsAndHash = None
+        m_javaStringCheckUtf8 = None
+        m_optimizeFor = None
+        m_goPackage = None
+        m_ccGenericServices = None
+        m_javaGenericServices = None
+        m_pyGenericServices = None
+        m_phpGenericServices = None
+        m_deprecated = None
+        m_ccEnableArenas = None
+        m_objcClassPrefix = None
+        m_csharpNamespace = None
+        m_swiftPrefix = None
+        m_phpClassPrefix = None
+        m_phpNamespace = None
+        m_phpMetadataNamespace = None
+        m_rubyPackage = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): FileOptions { let m = FileOptions(); m.m_fieldsClone(this); m }
-
-    public prop var javaPackage: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): FileOptions {
+        let i_tmp = FileOptions()
+        i_tmp.m_javaPackage = m_javaPackage
+        i_tmp.m_javaOuterClassname = m_javaOuterClassname
+        i_tmp.m_javaMultipleFiles = m_javaMultipleFiles
+        i_tmp.m_javaGenerateEqualsAndHash = m_javaGenerateEqualsAndHash
+        i_tmp.m_javaStringCheckUtf8 = m_javaStringCheckUtf8
+        i_tmp.m_optimizeFor = m_optimizeFor
+        i_tmp.m_goPackage = m_goPackage
+        i_tmp.m_ccGenericServices = m_ccGenericServices
+        i_tmp.m_javaGenericServices = m_javaGenericServices
+        i_tmp.m_pyGenericServices = m_pyGenericServices
+        i_tmp.m_phpGenericServices = m_phpGenericServices
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.m_ccEnableArenas = m_ccEnableArenas
+        i_tmp.m_objcClassPrefix = m_objcClassPrefix
+        i_tmp.m_csharpNamespace = m_csharpNamespace
+        i_tmp.m_swiftPrefix = m_swiftPrefix
+        i_tmp.m_phpClassPrefix = m_phpClassPrefix
+        i_tmp.m_phpNamespace = m_phpNamespace
+        i_tmp.m_phpMetadataNamespace = m_phpMetadataNamespace
+        i_tmp.m_rubyPackage = m_rubyPackage
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var javaOuterClassname: String {
-        get( ) { get(8) }
-        set(v) { set(8, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_javaPackage = stringParse(src)
+                case 8 => m_javaOuterClassname = stringParse(src)
+                case 10 => javaMultipleFiles = boolParse(src)
+                case 20 => m_javaGenerateEqualsAndHash = boolParse(src)
+                case 27 => javaStringCheckUtf8 = boolParse(src)
+                case 9 => optimizeFor = FileOptions_OptimizeMode.parse(int32Parse(src))
+                case 11 => m_goPackage = stringParse(src)
+                case 16 => ccGenericServices = boolParse(src)
+                case 17 => javaGenericServices = boolParse(src)
+                case 18 => pyGenericServices = boolParse(src)
+                case 42 => phpGenericServices = boolParse(src)
+                case 23 => deprecated = boolParse(src)
+                case 31 => ccEnableArenas = boolParse(src)
+                case 36 => m_objcClassPrefix = stringParse(src)
+                case 37 => m_csharpNamespace = stringParse(src)
+                case 39 => m_swiftPrefix = stringParse(src)
+                case 40 => m_phpClassPrefix = stringParse(src)
+                case 41 => m_phpNamespace = stringParse(src)
+                case 44 => m_phpMetadataNamespace = stringParse(src)
+                case 45 => m_rubyPackage = stringParse(src)
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var javaMultipleFiles: Bool {
-        get( ) { get(10) }
-        set(v) { set(10, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_javaPackage) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_javaOuterClassname) { tagPack(8, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_javaMultipleFiles) { tagPack(10, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { tagPack(20, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { tagPack(27, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_optimizeFor) { tagPack(9, VARINT, out); varintPack(i_vtmp.value(), out) }
+        if (let Some(i_vtmp) = m_goPackage) { tagPack(11, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_ccGenericServices) { tagPack(16, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_javaGenericServices) { tagPack(17, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_pyGenericServices) { tagPack(18, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_phpGenericServices) { tagPack(42, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(23, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_ccEnableArenas) { tagPack(31, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_objcClassPrefix) { tagPack(36, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_csharpNamespace) { tagPack(37, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_swiftPrefix) { tagPack(39, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_phpClassPrefix) { tagPack(40, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_phpNamespace) { tagPack(41, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_phpMetadataNamespace) { tagPack(44, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_rubyPackage) { tagPack(45, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var javaGenerateEqualsAndHash: Bool {
-        get( ) { get(20) }
-        set(v) { set(20, v) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var javaStringCheckUtf8: Bool {
-        get( ) { get(27) }
-        set(v) { set(27, v) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_javaPackage) { i_tmp.append("javaPackage", i_vtmp) }
+        if (let Some(i_vtmp) = m_javaOuterClassname) { i_tmp.append("javaOuterClassname", i_vtmp) }
+        if (let Some(i_vtmp) = m_javaMultipleFiles) { i_tmp.append("javaMultipleFiles", i_vtmp) }
+        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { i_tmp.append("javaGenerateEqualsAndHash", i_vtmp) }
+        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { i_tmp.append("javaStringCheckUtf8", i_vtmp) }
+        if (let Some(i_vtmp) = m_optimizeFor) { i_tmp.append("optimizeFor", i_vtmp) }
+        if (let Some(i_vtmp) = m_goPackage) { i_tmp.append("goPackage", i_vtmp) }
+        if (let Some(i_vtmp) = m_ccGenericServices) { i_tmp.append("ccGenericServices", i_vtmp) }
+        if (let Some(i_vtmp) = m_javaGenericServices) { i_tmp.append("javaGenericServices", i_vtmp) }
+        if (let Some(i_vtmp) = m_pyGenericServices) { i_tmp.append("pyGenericServices", i_vtmp) }
+        if (let Some(i_vtmp) = m_phpGenericServices) { i_tmp.append("phpGenericServices", i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (let Some(i_vtmp) = m_ccEnableArenas) { i_tmp.append("ccEnableArenas", i_vtmp) }
+        if (let Some(i_vtmp) = m_objcClassPrefix) { i_tmp.append("objcClassPrefix", i_vtmp) }
+        if (let Some(i_vtmp) = m_csharpNamespace) { i_tmp.append("csharpNamespace", i_vtmp) }
+        if (let Some(i_vtmp) = m_swiftPrefix) { i_tmp.append("swiftPrefix", i_vtmp) }
+        if (let Some(i_vtmp) = m_phpClassPrefix) { i_tmp.append("phpClassPrefix", i_vtmp) }
+        if (let Some(i_vtmp) = m_phpNamespace) { i_tmp.append("phpNamespace", i_vtmp) }
+        if (let Some(i_vtmp) = m_phpMetadataNamespace) { i_tmp.append("phpMetadataNamespace", i_vtmp) }
+        if (let Some(i_vtmp) = m_rubyPackage) { i_tmp.append("rubyPackage", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop var optimizeFor: FileOptions_OptimizeMode {
-        get( ) { get(9) }
-        set(v) { set(9, v) }
-    }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var goPackage: String {
-        get( ) { get(11) }
-        set(v) { set(11, v) }
-    }
-
-    public prop var ccGenericServices: Bool {
-        get( ) { get(16) }
-        set(v) { set(16, v) }
-    }
-
-    public prop var javaGenericServices: Bool {
-        get( ) { get(17) }
-        set(v) { set(17, v) }
-    }
-
-    public prop var pyGenericServices: Bool {
-        get( ) { get(18) }
-        set(v) { set(18, v) }
-    }
-
-    public prop var phpGenericServices: Bool {
-        get( ) { get(42) }
-        set(v) { set(42, v) }
-    }
-
-    public prop var deprecated: Bool {
-        get( ) { get(23) }
-        set(v) { set(23, v) }
-    }
-
-    public prop var ccEnableArenas: Bool {
-        get( ) { get(31) }
-        set(v) { set(31, v) }
-    }
-
-    public prop var objcClassPrefix: String {
-        get( ) { get(36) }
-        set(v) { set(36, v) }
-    }
-
-    public prop var csharpNamespace: String {
-        get( ) { get(37) }
-        set(v) { set(37, v) }
-    }
-
-    public prop var swiftPrefix: String {
-        get( ) { get(39) }
-        set(v) { set(39, v) }
-    }
-
-    public prop var phpClassPrefix: String {
-        get( ) { get(40) }
-        set(v) { set(40, v) }
-    }
-
-    public prop var phpNamespace: String {
-        get( ) { get(41) }
-        set(v) { set(41, v) }
-    }
-
-    public prop var phpMetadataNamespace: String {
-        get( ) { get(44) }
-        set(v) { set(44, v) }
-    }
-
-    public prop var rubyPackage: String {
-        get( ) { get(45) }
-        set(v) { set(45, v) }
-    }
-
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
-    }
-
-    public prop let hasJavaPackage: Bool { get() { m_fields.contains(1) } }
-    public prop let hasJavaOuterClassname: Bool { get() { m_fields.contains(8) } }
-    public prop let hasJavaMultipleFiles: Bool { get() { m_fields.contains(10) } }
-    public prop let hasJavaGenerateEqualsAndHash: Bool { get() { m_fields.contains(20) } }
-    public prop let hasJavaStringCheckUtf8: Bool { get() { m_fields.contains(27) } }
-    public prop let hasOptimizeFor: Bool { get() { m_fields.contains(9) } }
-    public prop let hasGoPackage: Bool { get() { m_fields.contains(11) } }
-    public prop let hasCcGenericServices: Bool { get() { m_fields.contains(16) } }
-    public prop let hasJavaGenericServices: Bool { get() { m_fields.contains(17) } }
-    public prop let hasPyGenericServices: Bool { get() { m_fields.contains(18) } }
-    public prop let hasPhpGenericServices: Bool { get() { m_fields.contains(42) } }
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(23) } }
-    public prop let hasCcEnableArenas: Bool { get() { m_fields.contains(31) } }
-    public prop let hasObjcClassPrefix: Bool { get() { m_fields.contains(36) } }
-    public prop let hasCsharpNamespace: Bool { get() { m_fields.contains(37) } }
-    public prop let hasSwiftPrefix: Bool { get() { m_fields.contains(39) } }
-    public prop let hasPhpClassPrefix: Bool { get() { m_fields.contains(40) } }
-    public prop let hasPhpNamespace: Bool { get() { m_fields.contains(41) } }
-    public prop let hasPhpMetadataNamespace: Bool { get() { m_fields.contains(44) } }
-    public prop let hasRubyPackage: Bool { get() { m_fields.contains(45) } }
+    public static func empty() { FileOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = FileOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FileOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend FileOptions <: MessageParser<FileOptions> {
-    public static func fromJson(src: JsonObject) { let m = FileOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = FileOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
+public class MessageOptions <: Message & TypedMessage<MessageOptions> {
+    private var m_messageSetWireFormat: ?Bool = None
+    private var m_noStandardDescriptorAccessor: ?Bool = None
+    private var m_deprecated: ?Bool = None
+    private var m_mapEntry: ?Bool = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-public class MessageOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
+    public func clearMessageSetWireFormat() { m_messageSetWireFormat = None }
+    public prop let hasMessageSetWireFormat: Bool { get() { match (m_messageSetWireFormat) { case None => false case _ => true } } }
+    public prop var messageSetWireFormat: Bool { get() { m_messageSetWireFormat ?? false } set(i_tmp) { m_messageSetWireFormat = if (i_tmp == false) { None } else { i_tmp } } }
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, BoolUnpacker.instance), (2, BoolUnpacker.instance), (3, BoolUnpacker.instance),
-            (7, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
+    public func clearNoStandardDescriptorAccessor() { m_noStandardDescriptorAccessor = None }
+    public prop let hasNoStandardDescriptorAccessor: Bool { get() { match (m_noStandardDescriptorAccessor) { case None => false case _ => true } } }
+    public prop var noStandardDescriptorAccessor: Bool { get() { m_noStandardDescriptorAccessor ?? false } set(i_tmp) { m_noStandardDescriptorAccessor = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "messageSetWireFormat"), (2, "noStandardDescriptorAccessor"), (3, "deprecated"), (7, "mapEntry"),
-            (999, "uninterpretedOption")
-        ])
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("messageSetWireFormat", 1), ("noStandardDescriptorAccessor", 2), ("deprecated", 3), ("mapEntry", 7),
-            ("uninterpretedOption", 999)
-        ])
+    public func clearMapEntry() { m_mapEntry = None }
+    public prop let hasMapEntry: Bool { get() { match (m_mapEntry) { case None => false case _ => true } } }
+    public prop var mapEntry: Bool { get() { m_mapEntry.getOrThrow() } set(i_tmp) { m_mapEntry = i_tmp } }
 
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (1, false), (2, false), (3, false)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_messageSetWireFormat) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_mapEntry) { i_tmp += 1 + 1 }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_messageSetWireFormat) { return false }
+        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { return false }
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (let Some(i_vtmp) = m_mapEntry) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
+    public func clear(): Unit {
+        m_messageSetWireFormat = None
+        m_noStandardDescriptorAccessor = None
+        m_deprecated = None
+        m_mapEntry = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): MessageOptions { let m = MessageOptions(); m.m_fieldsClone(this); m }
-
-    public prop var messageSetWireFormat: Bool {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): MessageOptions {
+        let i_tmp = MessageOptions()
+        i_tmp.m_messageSetWireFormat = m_messageSetWireFormat
+        i_tmp.m_noStandardDescriptorAccessor = m_noStandardDescriptorAccessor
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.m_mapEntry = m_mapEntry
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var noStandardDescriptorAccessor: Bool {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => messageSetWireFormat = boolParse(src)
+                case 2 => noStandardDescriptorAccessor = boolParse(src)
+                case 3 => deprecated = boolParse(src)
+                case 7 => m_mapEntry = boolParse(src)
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var deprecated: Bool {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_messageSetWireFormat) { tagPack(1, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(3, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_mapEntry) { tagPack(7, VARINT, out); boolPack(i_vtmp, out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var mapEntry: Bool {
-        get( ) { get(7) }
-        set(v) { set(7, v) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_messageSetWireFormat) { i_tmp.append("messageSetWireFormat", i_vtmp) }
+        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { i_tmp.append("noStandardDescriptorAccessor", i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (let Some(i_vtmp) = m_mapEntry) { i_tmp.append("mapEntry", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop let hasMessageSetWireFormat: Bool { get() { m_fields.contains(1) } }
-    public prop let hasNoStandardDescriptorAccessor: Bool { get() { m_fields.contains(2) } }
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(3) } }
-    public prop let hasMapEntry: Bool { get() { m_fields.contains(7) } }
-}
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-extend MessageOptions <: MessageParser<MessageOptions> {
-    public static func fromJson(src: JsonObject) { let m = MessageOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = MessageOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+    public static func empty() { MessageOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = MessageOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = MessageOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
 public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
-    | STRING | CORD | STRING_PIECE
+    STRING | CORD | STRING_PIECE
 
     public func value(): Int32 {
         match(this) {
@@ -1359,6 +2064,15 @@ public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
             case STRING => "STRING"
             case CORD => "CORD"
             case STRING_PIECE => "STRING_PIECE"
+        }
+    }
+
+    public operator func==(e: FieldOptions_CType) {
+        match((this, e)) {
+            case (STRING, STRING) => true
+            case (CORD, CORD) => true
+            case (STRING_PIECE, STRING_PIECE) => true
+            case _ => false
         }
     }
 
@@ -1382,7 +2096,7 @@ public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
 }
 
 public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
-    | JS_NORMAL | JS_STRING | JS_NUMBER
+    JS_NORMAL | JS_STRING | JS_NUMBER
 
     public func value(): Int32 {
         match(this) {
@@ -1397,6 +2111,15 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case JS_NORMAL => "JS_NORMAL"
             case JS_STRING => "JS_STRING"
             case JS_NUMBER => "JS_NUMBER"
+        }
+    }
+
+    public operator func==(e: FieldOptions_JSType) {
+        match((this, e)) {
+            case (JS_NORMAL, JS_NORMAL) => true
+            case (JS_STRING, JS_STRING) => true
+            case (JS_NUMBER, JS_NUMBER) => true
+            case _ => false
         }
     }
 
@@ -1419,327 +2142,465 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
     }
 }
 
-public class FieldOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
+public class FieldOptions <: Message & TypedMessage<FieldOptions> {
+    private var m_ctype: ?FieldOptions_CType = None
+    private var m_packed: ?Bool = None
+    private var m_jstype: ?FieldOptions_JSType = None
+    private var m_lazy: ?Bool = None
+    private var m_unverifiedLazy: ?Bool = None
+    private var m_deprecated: ?Bool = None
+    private var m_weak: ?Bool = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, EnumUnpacker<FieldOptions_CType>.instance), (2, BoolUnpacker.instance),
-            (6, EnumUnpacker<FieldOptions_JSType>.instance), (5, BoolUnpacker.instance), (15, BoolUnpacker.instance),
-            (3, BoolUnpacker.instance), (10, BoolUnpacker.instance),
-            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
+    public func clearCtype() { m_ctype = None }
+    public prop let hasCtype: Bool { get() { match (m_ctype) { case None => false case _ => true } } }
+    public prop var ctype: FieldOptions_CType { get() { m_ctype ?? STRING } set(i_tmp) { m_ctype = if (i_tmp == STRING) { None } else { i_tmp } } }
 
-        /* cangjie 0.32.5 bug, 2 is not exists in s_unpackers */
-        s_unpackers[2] = BoolUnpacker.instance
+    public func clearPacked() { m_packed = None }
+    public prop let hasPacked: Bool { get() { match (m_packed) { case None => false case _ => true } } }
+    public prop var packed: Bool { get() { m_packed.getOrThrow() } set(i_tmp) { m_packed = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "ctype"), (2, "packed"), (6, "jstype"), (5, "lazy"), (15, "unverifiedLazy"), (3, "deprecated"),
-            (10, "weak"), (999, "uninterpretedOption")
-        ])
+    public func clearJstype() { m_jstype = None }
+    public prop let hasJstype: Bool { get() { match (m_jstype) { case None => false case _ => true } } }
+    public prop var jstype: FieldOptions_JSType { get() { m_jstype ?? JS_NORMAL } set(i_tmp) { m_jstype = if (i_tmp == JS_NORMAL) { None } else { i_tmp } } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("ctype", 1), ("packed", 2), ("jstype", 6), ("lazy", 5), ("unverifiedLazy", 15), ("deprecated", 3),
-            ("weak", 10), ("uninterpretedOption", 999)
-        ])
+    public func clearLazy() { m_lazy = None }
+    public prop let hasLazy: Bool { get() { match (m_lazy) { case None => false case _ => true } } }
+    public prop var lazy: Bool { get() { m_lazy ?? false } set(i_tmp) { m_lazy = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (1, FieldOptions_CType.STRING), (6, FieldOptions_JSType.JS_NORMAL), (5, false), (15, false), (3, false),
-            (10, false)
-        ])
+    public func clearUnverifiedLazy() { m_unverifiedLazy = None }
+    public prop let hasUnverifiedLazy: Bool { get() { match (m_unverifiedLazy) { case None => false case _ => true } } }
+    public prop var unverifiedLazy: Bool { get() { m_unverifiedLazy ?? false } set(i_tmp) { m_unverifiedLazy = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public func clearWeak() { m_weak = None }
+    public prop let hasWeak: Bool { get() { match (m_weak) { case None => false case _ => true } } }
+    public prop var weak: Bool { get() { m_weak ?? false } set(i_tmp) { m_weak = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_ctype) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_packed) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_jstype) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_lazy) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_unverifiedLazy) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_weak) { i_tmp += 1 + 1 }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_ctype) { return false }
+        if (let Some(i_vtmp) = m_packed) { return false }
+        if (let Some(i_vtmp) = m_jstype) { return false }
+        if (let Some(i_vtmp) = m_lazy) { return false }
+        if (let Some(i_vtmp) = m_unverifiedLazy) { return false }
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (let Some(i_vtmp) = m_weak) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
+    public func clear(): Unit {
+        m_ctype = None
+        m_packed = None
+        m_jstype = None
+        m_lazy = None
+        m_unverifiedLazy = None
+        m_deprecated = None
+        m_weak = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): FieldOptions { let m = FieldOptions(); m.m_fieldsClone(this); m }
-
-    public prop var ctype: FieldOptions_CType {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): FieldOptions {
+        let i_tmp = FieldOptions()
+        i_tmp.m_ctype = m_ctype
+        i_tmp.m_packed = m_packed
+        i_tmp.m_jstype = m_jstype
+        i_tmp.m_lazy = m_lazy
+        i_tmp.m_unverifiedLazy = m_unverifiedLazy
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.m_weak = m_weak
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var packed: Bool {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => ctype = FieldOptions_CType.parse(int32Parse(src))
+                case 2 => m_packed = boolParse(src)
+                case 6 => jstype = FieldOptions_JSType.parse(int32Parse(src))
+                case 5 => lazy = boolParse(src)
+                case 15 => unverifiedLazy = boolParse(src)
+                case 3 => deprecated = boolParse(src)
+                case 10 => weak = boolParse(src)
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var jstype: FieldOptions_JSType {
-        get( ) { get(6) }
-        set(v) { set(6, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_ctype) { tagPack(1, VARINT, out); varintPack(i_vtmp.value(), out) }
+        if (let Some(i_vtmp) = m_packed) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_jstype) { tagPack(6, VARINT, out); varintPack(i_vtmp.value(), out) }
+        if (let Some(i_vtmp) = m_lazy) { tagPack(5, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_unverifiedLazy) { tagPack(15, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(3, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_weak) { tagPack(10, VARINT, out); boolPack(i_vtmp, out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var lazy: Bool {
-        get( ) { get(5) }
-        set(v) { set(5, v) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var unverifiedLazy: Bool {
-        get( ) { get(15) }
-        set(v) { set(15, v) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_ctype) { i_tmp.append("ctype", i_vtmp) }
+        if (let Some(i_vtmp) = m_packed) { i_tmp.append("packed", i_vtmp) }
+        if (let Some(i_vtmp) = m_jstype) { i_tmp.append("jstype", i_vtmp) }
+        if (let Some(i_vtmp) = m_lazy) { i_tmp.append("lazy", i_vtmp) }
+        if (let Some(i_vtmp) = m_unverifiedLazy) { i_tmp.append("unverifiedLazy", i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (let Some(i_vtmp) = m_weak) { i_tmp.append("weak", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop var deprecated: Bool {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
-    }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var weak: Bool {
-        get( ) { get(10) }
-        set(v) { set(10, v) }
-    }
-
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
-    }
-
-    public prop let hasCtype: Bool { get() { m_fields.contains(1) } }
-    public prop let hasPacked: Bool { get() { m_fields.contains(2) } }
-    public prop let hasJstype: Bool { get() { m_fields.contains(6) } }
-    public prop let hasLazy: Bool { get() { m_fields.contains(5) } }
-    public prop let hasUnverifiedLazy: Bool { get() { m_fields.contains(15) } }
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(3) } }
-    public prop let hasWeak: Bool { get() { m_fields.contains(10) } }
+    public static func empty() { FieldOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = FieldOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FieldOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend FieldOptions <: MessageParser<FieldOptions> {
-    public static func fromJson(src: JsonObject) { let m = FieldOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = FieldOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class OneofOptions <: Message & TypedMessage<OneofOptions> {
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        uninterpretedOption.clear()
+        unknownFields.clear()
+    }
+
+    public func clone(): OneofOptions {
+        let i_tmp = OneofOptions()
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { OneofOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = OneofOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = OneofOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class OneofOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class EnumOptions <: Message & TypedMessage<EnumOptions> {
+    private var m_allowAlias: ?Bool = None
+    private var m_deprecated: ?Bool = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
+    public func clearAllowAlias() { m_allowAlias = None }
+    public prop let hasAllowAlias: Bool { get() { match (m_allowAlias) { case None => false case _ => true } } }
+    public prop var allowAlias: Bool { get() { m_allowAlias.getOrThrow() } set(i_tmp) { m_allowAlias = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (999, "uninterpretedOption")
-        ])
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("uninterpretedOption", 999)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_allowAlias) { i_tmp += 1 + 1 }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 1 + 1 }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_allowAlias) { return false }
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        m_allowAlias = None
+        m_deprecated = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): OneofOptions { let m = OneofOptions(); m.m_fieldsClone(this); m }
-
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
+    public func clone(): EnumOptions {
+        let i_tmp = EnumOptions()
+        i_tmp.m_allowAlias = m_allowAlias
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 2 => m_allowAlias = boolParse(src)
+                case 3 => deprecated = boolParse(src)
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_allowAlias) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(3, VARINT, out); boolPack(i_vtmp, out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_allowAlias) { i_tmp.append("allowAlias", i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { EnumOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend OneofOptions <: MessageParser<OneofOptions> {
-    public static func fromJson(src: JsonObject) { let m = OneofOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = OneofOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
+    private var m_deprecated: ?Bool = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 1 + 1 }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_deprecated = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
+    }
+
+    public func clone(): EnumValueOptions {
+        let i_tmp = EnumValueOptions()
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => deprecated = boolParse(src)
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(1, VARINT, out); boolPack(i_vtmp, out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { EnumValueOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumValueOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumValueOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class EnumOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
+public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
+    private var m_deprecated: ?Bool = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (2, BoolUnpacker.instance), (3, BoolUnpacker.instance),
-            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_names = HashMap<Tag, String>([
-            (2, "allowAlias"), (3, "deprecated"), (999, "uninterpretedOption")
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 2 + 1 }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("allowAlias", 2), ("deprecated", 3), ("uninterpretedOption", 999)
-        ])
-
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (3, false)
-        ])
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
+    public func clear(): Unit {
+        m_deprecated = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): EnumOptions { let m = EnumOptions(); m.m_fieldsClone(this); m }
-
-    public prop var allowAlias: Bool {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func clone(): ServiceOptions {
+        let i_tmp = ServiceOptions()
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var deprecated: Bool {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 33 => deprecated = boolParse(src)
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(33, VARINT, out); boolPack(i_vtmp, out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop let hasAllowAlias: Bool { get() { m_fields.contains(2) } }
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(3) } }
-}
-
-extend EnumOptions <: MessageParser<EnumOptions> {
-    public static func fromJson(src: JsonObject) { let m = EnumOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = EnumOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class EnumValueOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "deprecated"), (999, "uninterpretedOption")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("deprecated", 1), ("uninterpretedOption", 999)
-        ])
-
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (1, false)
-        ])
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public func clone(): EnumValueOptions { let m = EnumValueOptions(); m.m_fieldsClone(this); m }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var deprecated: Bool {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
-    }
-
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
-    }
-
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(1) } }
-}
-
-extend EnumValueOptions <: MessageParser<EnumValueOptions> {
-    public static func fromJson(src: JsonObject) { let m = EnumValueOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = EnumValueOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class ServiceOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (33, BoolUnpacker.instance), (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (33, "deprecated"), (999, "uninterpretedOption")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("deprecated", 33), ("uninterpretedOption", 999)
-        ])
-
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (33, false)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
-    }
-
-    public func clone(): ServiceOptions { let m = ServiceOptions(); m.m_fieldsClone(this); m }
-
-    public prop var deprecated: Bool {
-        get( ) { get(33) }
-        set(v) { set(33, v) }
-    }
-
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
-    }
-
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(33) } }
-}
-
-extend ServiceOptions <: MessageParser<ServiceOptions> {
-    public static func fromJson(src: JsonObject) { let m = ServiceOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = ServiceOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+    public static func empty() { ServiceOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ServiceOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ServiceOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
 public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
-    | IDEMPOTENCY_UNKNOWN | NO_SIDE_EFFECTS | IDEMPOTENT
+    IDEMPOTENCY_UNKNOWN | NO_SIDE_EFFECTS | IDEMPOTENT
 
     public func value(): Int32 {
         match(this) {
@@ -1754,6 +2615,15 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
             case IDEMPOTENCY_UNKNOWN => "IDEMPOTENCY_UNKNOWN"
             case NO_SIDE_EFFECTS => "NO_SIDE_EFFECTS"
             case IDEMPOTENT => "IDEMPOTENT"
+        }
+    }
+
+    public operator func==(e: MethodOptions_IdempotencyLevel) {
+        match((this, e)) {
+            case (IDEMPOTENCY_UNKNOWN, IDEMPOTENCY_UNKNOWN) => true
+            case (NO_SIDE_EFFECTS, NO_SIDE_EFFECTS) => true
+            case (IDEMPOTENT, IDEMPOTENT) => true
+            case _ => false
         }
     }
 
@@ -1776,422 +2646,647 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
     }
 }
 
-public class MethodOptions <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_defaultValue = s_initHashMapTagMessageFile
+public class MethodOptions <: Message & TypedMessage<MethodOptions> {
+    private var m_deprecated: ?Bool = None
+    private var m_idempotencyLevel: ?MethodOptions_IdempotencyLevel = None
+    public var uninterpretedOption = ArrayList<UninterpretedOption>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (33, BoolUnpacker.instance), (34, EnumUnpacker<MethodOptions_IdempotencyLevel>.instance),
-            (999, MessageUnpacker<UninterpretedOption>.repeatInstance(999))
-        ])
+    public func clearDeprecated() { m_deprecated = None }
+    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
-        s_names = HashMap<Tag, String>([
-            (33, "deprecated"), (34, "idempotencyLevel"), (999, "uninterpretedOption")
-        ])
+    public func clearIdempotencyLevel() { m_idempotencyLevel = None }
+    public prop let hasIdempotencyLevel: Bool { get() { match (m_idempotencyLevel) { case None => false case _ => true } } }
+    public prop var idempotencyLevel: MethodOptions_IdempotencyLevel { get() { m_idempotencyLevel ?? IDEMPOTENCY_UNKNOWN } set(i_tmp) { m_idempotencyLevel = if (i_tmp == IDEMPOTENCY_UNKNOWN) { None } else { i_tmp } } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("deprecated", 33), ("idempotencyLevel", 34), ("uninterpretedOption", 999)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp += 2 + 1 }
+        if (let Some(i_vtmp) = m_idempotencyLevel) { i_tmp += 2 + varintSize(i_vtmp.value()) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
 
-        s_defaultValue = HashMap<Tag, MessageField>([
-            (33, false), (34, MethodOptions_IdempotencyLevel.IDEMPOTENCY_UNKNOWN)
-        ])
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_deprecated) { return false }
+        if (let Some(i_vtmp) = m_idempotencyLevel) { return false }
+        if (!uninterpretedOption.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_defaultValue = s_defaultValue
+    public func clear(): Unit {
+        m_deprecated = None
+        m_idempotencyLevel = None
+        uninterpretedOption.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): MethodOptions { let m = MethodOptions(); m.m_fieldsClone(this); m }
-
-    public prop var deprecated: Bool {
-        get( ) { get(33) }
-        set(v) { set(33, v) }
+    public func clone(): MethodOptions {
+        let i_tmp = MethodOptions()
+        i_tmp.m_deprecated = m_deprecated
+        i_tmp.m_idempotencyLevel = m_idempotencyLevel
+        i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var idempotencyLevel: MethodOptions_IdempotencyLevel {
-        get( ) { get(34) }
-        set(v) { set(34, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 33 => deprecated = boolParse(src)
+                case 34 => idempotencyLevel = MethodOptions_IdempotencyLevel.parse(int32Parse(src))
+                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var uninterpretedOption: ArrayList<UninterpretedOption> {
-        get( ) { get(999) }
-        set(v) { set(999, RepeatField<UninterpretedOption>(999, v)) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_deprecated) { tagPack(33, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_idempotencyLevel) { tagPack(34, VARINT, out); varintPack(i_vtmp.value(), out) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop let hasDeprecated: Bool { get() { m_fields.contains(33) } }
-    public prop let hasIdempotencyLevel: Bool { get() { m_fields.contains(34) } }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_deprecated) { i_tmp.append("deprecated", i_vtmp) }
+        if (let Some(i_vtmp) = m_idempotencyLevel) { i_tmp.append("idempotencyLevel", i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.append("uninterpretedOption", uninterpretedOption) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { MethodOptions() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = MethodOptions(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = MethodOptions(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend MethodOptions <: MessageParser<MethodOptions> {
-    public static func fromJson(src: JsonObject) { let m = MethodOptions(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = MethodOptions(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class UninterpretedOption_NamePart <: Message & TypedMessage<UninterpretedOption_NamePart> {
+    private var m_namePart: ?String = None
+    private var m_isExtension: ?Bool = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearNamePart() { m_namePart = None }
+    public prop let hasNamePart: Bool { get() { match (m_namePart) { case None => false case _ => true } } }
+    public prop var namePart: String { get() { m_namePart.getOrThrow() } set(i_tmp) { m_namePart = i_tmp } }
+
+    public func clearIsExtension() { m_isExtension = None }
+    public prop let hasIsExtension: Bool { get() { match (m_isExtension) { case None => false case _ => true } } }
+    public prop var isExtension: Bool { get() { m_isExtension.getOrThrow() } set(i_tmp) { m_isExtension = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = m_namePart) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_isExtension) { i_tmp += 1 + 1 }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (let Some(i_vtmp) = m_namePart) { return false }
+        if (let Some(i_vtmp) = m_isExtension) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        m_namePart = None
+        m_isExtension = None
+        unknownFields.clear()
+    }
+
+    public func clone(): UninterpretedOption_NamePart {
+        let i_tmp = UninterpretedOption_NamePart()
+        i_tmp.m_namePart = m_namePart
+        i_tmp.m_isExtension = m_isExtension
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => m_namePart = stringParse(src)
+                case 2 => m_isExtension = boolParse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = m_namePart) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_isExtension) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+        match (m_namePart) { case None => throw RequiredFieldNotSetException("namePart") case _ => () }
+        match (m_isExtension) { case None => throw RequiredFieldNotSetException("isExtension") case _ => () }
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (let Some(i_vtmp) = m_namePart) { i_tmp.append("namePart", i_vtmp) }
+        if (let Some(i_vtmp) = m_isExtension) { i_tmp.append("isExtension", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { UninterpretedOption_NamePart() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = UninterpretedOption_NamePart(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = UninterpretedOption_NamePart(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class UninterpretedOption_NamePart <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-    private static var s_requiredFields = s_initArrayTag
+public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> {
+    public var name = ArrayList<UninterpretedOption_NamePart>()
+    private var m_identifierValue: ?String = None
+    private var m_positiveIntValue: ?UInt64 = None
+    private var m_negativeIntValue: ?Int64 = None
+    private var m_doubleValue: ?Float64 = None
+    private var m_stringValue: ?Bytes = None
+    private var m_aggregateValue: ?String = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, StringUnpacker.instance), (2, BoolUnpacker.instance)
-        ])
+    public func clearIdentifierValue() { m_identifierValue = None }
+    public prop let hasIdentifierValue: Bool { get() { match (m_identifierValue) { case None => false case _ => true } } }
+    public prop var identifierValue: String { get() { m_identifierValue.getOrThrow() } set(i_tmp) { m_identifierValue = i_tmp } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "namePart"), (2, "isExtension")
-        ])
+    public func clearPositiveIntValue() { m_positiveIntValue = None }
+    public prop let hasPositiveIntValue: Bool { get() { match (m_positiveIntValue) { case None => false case _ => true } } }
+    public prop var positiveIntValue: UInt64 { get() { m_positiveIntValue.getOrThrow() } set(i_tmp) { m_positiveIntValue = i_tmp } }
 
-        s_nameTags = HashMap<String, Tag>([
-            ("namePart", 1), ("isExtension", 2)
-        ])
+    public func clearNegativeIntValue() { m_negativeIntValue = None }
+    public prop let hasNegativeIntValue: Bool { get() { match (m_negativeIntValue) { case None => false case _ => true } } }
+    public prop var negativeIntValue: Int64 { get() { m_negativeIntValue.getOrThrow() } set(i_tmp) { m_negativeIntValue = i_tmp } }
 
-        s_requiredFields = Array<Tag>([
-            1, 2
-        ])
+    public func clearDoubleValue() { m_doubleValue = None }
+    public prop let hasDoubleValue: Bool { get() { match (m_doubleValue) { case None => false case _ => true } } }
+    public prop var doubleValue: Float64 { get() { m_doubleValue.getOrThrow() } set(i_tmp) { m_doubleValue = i_tmp } }
+
+    public func clearStringValue() { m_stringValue = None }
+    public prop let hasStringValue: Bool { get() { match (m_stringValue) { case None => false case _ => true } } }
+    public prop var stringValue: Bytes { get() { m_stringValue.getOrThrow() } set(i_tmp) { m_stringValue = i_tmp } }
+
+    public func clearAggregateValue() { m_aggregateValue = None }
+    public prop let hasAggregateValue: Bool { get() { match (m_aggregateValue) { case None => false case _ => true } } }
+    public prop var aggregateValue: String { get() { m_aggregateValue.getOrThrow() } set(i_tmp) { m_aggregateValue = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!name.isEmpty()) { for (i_itmp in name) { i_tmp += 1 + binSize(i_itmp) } }
+        if (let Some(i_vtmp) = m_identifierValue) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_positiveIntValue) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_negativeIntValue) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_doubleValue) { i_tmp += 1 + 8 }
+        if (let Some(i_vtmp) = m_stringValue) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_aggregateValue) { i_tmp += 1 + binSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (!name.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_identifierValue) { return false }
+        if (let Some(i_vtmp) = m_positiveIntValue) { return false }
+        if (let Some(i_vtmp) = m_negativeIntValue) { return false }
+        if (let Some(i_vtmp) = m_doubleValue) { return false }
+        if (let Some(i_vtmp) = m_stringValue) { return false }
+        if (let Some(i_vtmp) = m_aggregateValue) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-        m_requiredFields = s_requiredFields
+    public func clear(): Unit {
+        name.clear()
+        m_identifierValue = None
+        m_positiveIntValue = None
+        m_negativeIntValue = None
+        m_doubleValue = None
+        m_stringValue = None
+        m_aggregateValue = None
+        unknownFields.clear()
     }
 
-    public func clone(): UninterpretedOption_NamePart { let m = UninterpretedOption_NamePart(); m.m_fieldsClone(this); m }
-
-    public prop var namePart: String {
-        get( ) { get(1) }
-        set(v) { set(1, v) }
+    public func clone(): UninterpretedOption {
+        let i_tmp = UninterpretedOption()
+        i_tmp.name = ArrayList(name.size, { i => name[i].clone() })
+        i_tmp.m_identifierValue = m_identifierValue
+        i_tmp.m_positiveIntValue = m_positiveIntValue
+        i_tmp.m_negativeIntValue = m_negativeIntValue
+        i_tmp.m_doubleValue = m_doubleValue
+        i_tmp.m_stringValue = m_stringValue?.clone()
+        i_tmp.m_aggregateValue = m_aggregateValue
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var isExtension: Bool {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 2 => name.add().unpack(sub(src))
+                case 3 => m_identifierValue = stringParse(src)
+                case 4 => m_positiveIntValue = uint64Parse(src)
+                case 5 => m_negativeIntValue = int64Parse(src)
+                case 6 => m_doubleValue = float64Parse(src)
+                case 7 => m_stringValue = bytesParse(src)
+                case 8 => m_aggregateValue = stringParse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop let hasNamePart: Bool { get() { m_fields.contains(1) } }
-    public prop let hasIsExtension: Bool { get() { m_fields.contains(2) } }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!name.isEmpty()) { for (i_itmp in name) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_identifierValue) { tagPack(3, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_positiveIntValue) { tagPack(4, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_negativeIntValue) { tagPack(5, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_doubleValue) { tagPack(6, BIT64, out); fixedPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_stringValue) { tagPack(7, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_aggregateValue) { tagPack(8, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!name.isEmpty()) { i_tmp.append("name", name) }
+        if (let Some(i_vtmp) = m_identifierValue) { i_tmp.append("identifierValue", i_vtmp) }
+        if (let Some(i_vtmp) = m_positiveIntValue) { i_tmp.append("positiveIntValue", i_vtmp) }
+        if (let Some(i_vtmp) = m_negativeIntValue) { i_tmp.append("negativeIntValue", i_vtmp) }
+        if (let Some(i_vtmp) = m_doubleValue) { i_tmp.append("doubleValue", i_vtmp) }
+        if (let Some(i_vtmp) = m_stringValue) { i_tmp.append("stringValue", i_vtmp) }
+        if (let Some(i_vtmp) = m_aggregateValue) { i_tmp.append("aggregateValue", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { UninterpretedOption() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = UninterpretedOption(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = UninterpretedOption(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend UninterpretedOption_NamePart <: MessageParser<UninterpretedOption_NamePart> {
-    public static func fromJson(src: JsonObject) { let m = UninterpretedOption_NamePart(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = UninterpretedOption_NamePart(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Location> {
+    public var path = ArrayList<Int32>()
+    public var span = ArrayList<Int32>()
+    private var m_leadingComments: ?String = None
+    private var m_trailingComments: ?String = None
+    public var leadingDetachedComments = ArrayList<String>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearLeadingComments() { m_leadingComments = None }
+    public prop let hasLeadingComments: Bool { get() { match (m_leadingComments) { case None => false case _ => true } } }
+    public prop var leadingComments: String { get() { m_leadingComments.getOrThrow() } set(i_tmp) { m_leadingComments = i_tmp } }
+
+    public func clearTrailingComments() { m_trailingComments = None }
+    public prop let hasTrailingComments: Bool { get() { match (m_trailingComments) { case None => false case _ => true } } }
+    public prop var trailingComments: String { get() { m_trailingComments.getOrThrow() } set(i_tmp) { m_trailingComments = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!path.isEmpty()) { var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; i_tmp += 1 + varintSize(i_stmp) + i_stmp }
+        if (!span.isEmpty()) { var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; i_tmp += 1 + varintSize(i_stmp) + i_stmp }
+        if (let Some(i_vtmp) = m_leadingComments) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_trailingComments) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!leadingDetachedComments.isEmpty()) { for (i_itmp in leadingDetachedComments) { i_tmp += 1 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (!path.isEmpty()) { return false }
+        if (!span.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_leadingComments) { return false }
+        if (let Some(i_vtmp) = m_trailingComments) { return false }
+        if (!leadingDetachedComments.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        path.clear()
+        span.clear()
+        m_leadingComments = None
+        m_trailingComments = None
+        leadingDetachedComments.clear()
+        unknownFields.clear()
+    }
+
+    public func clone(): SourceCodeInfo_Location {
+        let i_tmp = SourceCodeInfo_Location()
+        i_tmp.path = path.clone()
+        i_tmp.span = span.clone()
+        i_tmp.m_leadingComments = m_leadingComments
+        i_tmp.m_trailingComments = m_trailingComments
+        i_tmp.leadingDetachedComments = leadingDetachedComments.clone()
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => let i_stmp = sub(src); while (!i_stmp.isEmpty()) { path.append(int32Parse(i_stmp)) }
+                case 2 => let i_stmp = sub(src); while (!i_stmp.isEmpty()) { span.append(int32Parse(i_stmp)) }
+                case 3 => m_leadingComments = stringParse(src)
+                case 4 => m_trailingComments = stringParse(src)
+                case 6 => leadingDetachedComments.append(stringParse(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!path.isEmpty()) { tagPack(1, PREFIXED, out); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in path) { varintPack(i_itmp, out) } }
+        if (!span.isEmpty()) { tagPack(2, PREFIXED, out); var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in span) { varintPack(i_itmp, out) } }
+        if (let Some(i_vtmp) = m_leadingComments) { tagPack(3, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_trailingComments) { tagPack(4, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!leadingDetachedComments.isEmpty()) { for (i_itmp in leadingDetachedComments) { tagPack(6, PREFIXED, out); binPack(i_itmp, out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!path.isEmpty()) { i_tmp.append("path", path) }
+        if (!span.isEmpty()) { i_tmp.append("span", span) }
+        if (let Some(i_vtmp) = m_leadingComments) { i_tmp.append("leadingComments", i_vtmp) }
+        if (let Some(i_vtmp) = m_trailingComments) { i_tmp.append("trailingComments", i_vtmp) }
+        if (!leadingDetachedComments.isEmpty()) { i_tmp.append("leadingDetachedComments", leadingDetachedComments) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { SourceCodeInfo_Location() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = SourceCodeInfo_Location(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = SourceCodeInfo_Location(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class UninterpretedOption <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
+    public var location = ArrayList<SourceCodeInfo_Location>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (2, MessageUnpacker<UninterpretedOption_NamePart>.repeatInstance(2)), (3, StringUnpacker.instance),
-            (4, UInt64Unpacker.instance), (5, Int64Unpacker.instance), (6, Float64Unpacker.instance),
-            (7, BytesUnpacker.instance), (8, StringUnpacker.instance)
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!location.isEmpty()) { for (i_itmp in location) { i_tmp += 1 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
 
-        s_names = HashMap<Tag, String>([
-            (2, "name"), (3, "identifierValue"), (4, "positiveIntValue"), (5, "negativeIntValue"), (6, "doubleValue"),
-            (7, "stringValue"), (8, "aggregateValue")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("name", 2), ("identifierValue", 3), ("positiveIntValue", 4), ("negativeIntValue", 5), ("doubleValue", 6),
-            ("stringValue", 7), ("aggregateValue", 8)
-        ])
+    public func isEmpty(): Bool {
+        if (!location.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        location.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): UninterpretedOption { let m = UninterpretedOption(); m.m_fieldsClone(this); m }
-
-    public prop var name: ArrayList<UninterpretedOption_NamePart> {
-        get( ) { get(2) }
-        set(v) { set(2, RepeatField<UninterpretedOption_NamePart>(2, v)) }
+    public func clone(): SourceCodeInfo {
+        let i_tmp = SourceCodeInfo()
+        i_tmp.location = ArrayList(location.size, { i => location[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var identifierValue: String {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => location.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var positiveIntValue: UInt64 {
-        get( ) { get(4) }
-        set(v) { set(4, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!location.isEmpty()) { for (i_itmp in location) { tagPack(1, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var negativeIntValue: Int64 {
-        get( ) { get(5) }
-        set(v) { set(5, v) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var doubleValue: Float64 {
-        get( ) { get(6) }
-        set(v) { set(6, v) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!location.isEmpty()) { i_tmp.append("location", location) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop var stringValue: Bytes {
-        get( ) { get(7) }
-        set(v) { set(7, v) }
-    }
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-    public prop var aggregateValue: String {
-        get( ) { get(8) }
-        set(v) { set(8, v) }
-    }
-
-    public prop let hasIdentifierValue: Bool { get() { m_fields.contains(3) } }
-    public prop let hasPositiveIntValue: Bool { get() { m_fields.contains(4) } }
-    public prop let hasNegativeIntValue: Bool { get() { m_fields.contains(5) } }
-    public prop let hasDoubleValue: Bool { get() { m_fields.contains(6) } }
-    public prop let hasStringValue: Bool { get() { m_fields.contains(7) } }
-    public prop let hasAggregateValue: Bool { get() { m_fields.contains(8) } }
+    public static func empty() { SourceCodeInfo() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = SourceCodeInfo(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = SourceCodeInfo(); i_tmp.unpacki(src); i_tmp }
 }
 
-extend UninterpretedOption <: MessageParser<UninterpretedOption> {
-    public static func fromJson(src: JsonObject) { let m = UninterpretedOption(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = UninterpretedOption(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCodeInfo_Annotation> {
+    public var path = ArrayList<Int32>()
+    private var m_sourceFile: ?String = None
+    private var m_begin: ?Int32 = None
+    private var m_end: ?Int32 = None
+    public var unknownFields = ArrayList<MessageUnknownField>()
+
+    public func clearSourceFile() { m_sourceFile = None }
+    public prop let hasSourceFile: Bool { get() { match (m_sourceFile) { case None => false case _ => true } } }
+    public prop var sourceFile: String { get() { m_sourceFile.getOrThrow() } set(i_tmp) { m_sourceFile = i_tmp } }
+
+    public func clearBegin() { m_begin = None }
+    public prop let hasBegin: Bool { get() { match (m_begin) { case None => false case _ => true } } }
+    public prop var begin: Int32 { get() { m_begin.getOrThrow() } set(i_tmp) { m_begin = i_tmp } }
+
+    public func clearEnd() { m_end = None }
+    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
+
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!path.isEmpty()) { var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; i_tmp += 1 + varintSize(i_stmp) + i_stmp }
+        if (let Some(i_vtmp) = m_sourceFile) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_begin) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp += 1 + varintSize(i_vtmp) }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
+
+    public func isEmpty(): Bool {
+        if (!path.isEmpty()) { return false }
+        if (let Some(i_vtmp) = m_sourceFile) { return false }
+        if (let Some(i_vtmp) = m_begin) { return false }
+        if (let Some(i_vtmp) = m_end) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
+    }
+
+    public func clear(): Unit {
+        path.clear()
+        m_sourceFile = None
+        m_begin = None
+        m_end = None
+        unknownFields.clear()
+    }
+
+    public func clone(): GeneratedCodeInfo_Annotation {
+        let i_tmp = GeneratedCodeInfo_Annotation()
+        i_tmp.path = path.clone()
+        i_tmp.m_sourceFile = m_sourceFile
+        i_tmp.m_begin = m_begin
+        i_tmp.m_end = m_end
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
+    }
+
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => let i_stmp = sub(src); while (!i_stmp.isEmpty()) { path.append(int32Parse(i_stmp)) }
+                case 2 => m_sourceFile = stringParse(src)
+                case 3 => m_begin = int32Parse(src)
+                case 4 => m_end = int32Parse(src)
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
+    }
+
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!path.isEmpty()) { tagPack(1, PREFIXED, out); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in path) { varintPack(i_itmp, out) } }
+        if (let Some(i_vtmp) = m_sourceFile) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_begin) { tagPack(3, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_end) { tagPack(4, VARINT, out); varintPack(i_vtmp, out) }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+    }
+
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
+    }
+
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!path.isEmpty()) { i_tmp.append("path", path) }
+        if (let Some(i_vtmp) = m_sourceFile) { i_tmp.append("sourceFile", i_vtmp) }
+        if (let Some(i_vtmp) = m_begin) { i_tmp.append("begin", i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { i_tmp.append("end", i_vtmp) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
+    }
+
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
+
+    public static func empty() { GeneratedCodeInfo_Annotation() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = GeneratedCodeInfo_Annotation(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = GeneratedCodeInfo_Annotation(); i_tmp.unpacki(src); i_tmp }
 }
 
-public class SourceCodeInfo_Location <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
+public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
+    public var annotation = ArrayList<GeneratedCodeInfo_Annotation>()
+    public var unknownFields = ArrayList<MessageUnknownField>()
 
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, Int32Unpacker.packedInstance), (2, Int32Unpacker.packedInstance), (3, StringUnpacker.instance),
-            (4, StringUnpacker.instance), (6, StringUnpacker.repeatInstance(6))
-        ])
+    public prop let size: Int64 { get() {
+        var i_tmp = 0
+        if (!annotation.isEmpty()) { for (i_itmp in annotation) { i_tmp += 1 + binSize(i_itmp) } }
+        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
+        return i_tmp
+    } }
 
-        s_names = HashMap<Tag, String>([
-            (1, "path"), (2, "span"), (3, "leadingComments"), (4, "trailingComments"), (6, "leadingDetachedComments")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("path", 1), ("span", 2), ("leadingComments", 3), ("trailingComments", 4), ("leadingDetachedComments", 6)
-        ])
+    public func isEmpty(): Bool {
+        if (!annotation.isEmpty()) { return false }
+        if (!unknownFields.isEmpty()) { return false }
+        return true
     }
 
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
+    public func clear(): Unit {
+        annotation.clear()
+        unknownFields.clear()
     }
 
-    public func clone(): SourceCodeInfo_Location { let m = SourceCodeInfo_Location(); m.m_fieldsClone(this); m }
-
-    public prop var path: ArrayList<Int32> {
-        get( ) { get(1) }
-        set(v) { set(1, PackedField<Int32>(v)) }
+    public func clone(): GeneratedCodeInfo {
+        let i_tmp = GeneratedCodeInfo()
+        i_tmp.annotation = ArrayList(annotation.size, { i => annotation[i].clone() })
+        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        return i_tmp
     }
 
-    public prop var span: ArrayList<Int32> {
-        get( ) { get(2) }
-        set(v) { set(2, PackedField<Int32>(v)) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+        while (!src.isEmpty()) {
+            let i_tmp = tagParse(src)
+            match (i_tmp[0]) {
+                case 1 => annotation.add().unpack(sub(src))
+                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+            }
+        }
     }
 
-    public prop var leadingComments: String {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!annotation.isEmpty()) { for (i_itmp in annotation) { tagPack(1, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
-    public prop var trailingComments: String {
-        get( ) { get(4) }
-        set(v) { set(4, v) }
+    public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
-    public prop var leadingDetachedComments: ArrayList<String> {
-        get( ) { get(6) }
-        set(v) { set(6, RepeatField<String>(6, v)) }
+    public func toString(): String {
+        var i_tmp = StructPrinter()
+        if (!annotation.isEmpty()) { i_tmp.append("annotation", annotation) }
+        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        return i_tmp.done().toString()
     }
 
-    public prop let hasLeadingComments: Bool { get() { m_fields.contains(3) } }
-    public prop let hasTrailingComments: Bool { get() { m_fields.contains(4) } }
-}
+    public func packi(out: Bytes) { pack(out) }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
-extend SourceCodeInfo_Location <: MessageParser<SourceCodeInfo_Location> {
-    public static func fromJson(src: JsonObject) { let m = SourceCodeInfo_Location(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo_Location(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class SourceCodeInfo <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, MessageUnpacker<SourceCodeInfo_Location>.repeatInstance(1))
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "location")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("location", 1)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-    }
-
-    public func clone(): SourceCodeInfo { let m = SourceCodeInfo(); m.m_fieldsClone(this); m }
-
-    public prop var location: ArrayList<SourceCodeInfo_Location> {
-        get( ) { get(1) }
-        set(v) { set(1, RepeatField<SourceCodeInfo_Location>(1, v)) }
-    }
-}
-
-extend SourceCodeInfo <: MessageParser<SourceCodeInfo> {
-    public static func fromJson(src: JsonObject) { let m = SourceCodeInfo(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = SourceCodeInfo(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class GeneratedCodeInfo_Annotation <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, Int32Unpacker.packedInstance), (2, StringUnpacker.instance), (3, Int32Unpacker.instance),
-            (4, Int32Unpacker.instance)
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "path"), (2, "sourceFile"), (3, "begin"), (4, "end")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("path", 1), ("sourceFile", 2), ("begin", 3), ("end", 4)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-    }
-
-    public func clone(): GeneratedCodeInfo_Annotation { let m = GeneratedCodeInfo_Annotation(); m.m_fieldsClone(this); m }
-
-    public prop var path: ArrayList<Int32> {
-        get( ) { get(1) }
-        set(v) { set(1, PackedField<Int32>(v)) }
-    }
-
-    public prop var sourceFile: String {
-        get( ) { get(2) }
-        set(v) { set(2, v) }
-    }
-
-    public prop var begin: Int32 {
-        get( ) { get(3) }
-        set(v) { set(3, v) }
-    }
-
-    public prop var end: Int32 {
-        get( ) { get(4) }
-        set(v) { set(4, v) }
-    }
-
-    public prop let hasSourceFile: Bool { get() { m_fields.contains(2) } }
-    public prop let hasBegin: Bool { get() { m_fields.contains(3) } }
-    public prop let hasEnd: Bool { get() { m_fields.contains(4) } }
-}
-
-extend GeneratedCodeInfo_Annotation <: MessageParser<GeneratedCodeInfo_Annotation> {
-    public static func fromJson(src: JsonObject) { let m = GeneratedCodeInfo_Annotation(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo_Annotation(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
-}
-
-public class GeneratedCodeInfo <: MessageLite2 {
-    private static let s_once = s_newOnce()
-    private static var s_unpackers = s_initHashMapTagUnpacker
-    private static var s_names = s_initHashMapTagString
-    private static var s_nameTags = s_initHashMapStringTag
-
-    private static func s_init() {
-        s_unpackers = HashMap<Tag, Unpacker>([
-            (1, MessageUnpacker<GeneratedCodeInfo_Annotation>.repeatInstance(1))
-        ])
-
-        s_names = HashMap<Tag, String>([
-            (1, "annotation")
-        ])
-
-        s_nameTags = HashMap<String, Tag>([
-            ("annotation", 1)
-        ])
-    }
-
-    public init() {
-        s_once.once(s_init)
-        m_unpacker = s_unpackers
-        m_names = s_names
-        m_nameTags = s_nameTags
-    }
-
-    public func clone(): GeneratedCodeInfo { let m = GeneratedCodeInfo(); m.m_fieldsClone(this); m }
-
-    public prop var annotation: ArrayList<GeneratedCodeInfo_Annotation> {
-        get( ) { get(1) }
-        set(v) { set(1, RepeatField<GeneratedCodeInfo_Annotation>(1, v)) }
-    }
-}
-
-extend GeneratedCodeInfo <: MessageParser<GeneratedCodeInfo> {
-    public static func fromJson(src: JsonObject) { let m = GeneratedCodeInfo(); m.unpack(src); m }
-    public static func fromBytes(src: BytesReader) { let m = GeneratedCodeInfo(); m.unpack(src); m }
-    public static func fromJson(src: JsonReader) { fromJson(src.readObject()) }
-    public static func fromJson(src: String) { fromJson(JsonStringReader(src).readObject()) }
-    public static func fromBytes(src: Collection<Byte>) { fromBytes(SimpleReader(src)) }
+    public static func empty() { GeneratedCodeInfo() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = GeneratedCodeInfo(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = GeneratedCodeInfo(); i_tmp.unpacki(src); i_tmp }
 }

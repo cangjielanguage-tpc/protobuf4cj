@@ -7,38 +7,35 @@ package protobuf
 public class MessageUnknownField <: ToString {
     public MessageUnknownField(
         /** The tag number. */
-        let tag: Tag,
+        public let tag: Tag,
         /** The wire type of the field. */
-        let wireType: WireType,
+        public let wireType: WireType,
         /** Field data. */
-        let data: Array<UInt8>
+        public let data: Array<UInt8>
     ) {}
 
-    func packSize() {
-        tag.tagSize + data.size
+    public func packSize() {
+        tagSize(tag) + if (wireType.value == PREFIXED) { varintSize(data.size) + data.size } else { data.size }
     }
 
     /* Pack out the unknown field with tag. */
-    func pack(out: BytesWriter) {
-        tag.tagPack(wireType, out)
+    public func pack<T>(out: T) where T <: BytesWriter {
+        tagPack(tag, wireType, out)
+        if (wireType.value == PREFIXED) { varintPack(data.size, out) }
         out.appendAll(data)
     }
 
-    static func unpack(tag: Tag, wt: WireType, src: BytesReader) {
-        let len = match (wt.value) {
-            case v where v == WireType.BIT32.value => 4
-            case v where v == WireType.BIT64.value => 8
-            case v where v == WireType.VARINT.value => UInt64.peek(src).varintSize
-            case _ => let p = UInt64.peek(src); p.varintSize + Int64(p)
-        }
-        MessageUnknownField(tag, wt, src.read(len).data())
+    public static func unpack<T>(tag: Tag, wt: WireNum, src: T) where T <: BytesReader & SubReader<T> {
+        MessageUnknownField(tag, WireType.parse(wt), match (wt) {
+            case 0 => varintData(src)
+            case 1 => src.read(8).data()
+            case 2 => sub(src).data()
+            case 5 => src.read(4).data()
+            case _ => throw ParseValueExecption("UnknownField")
+        })
     }
 
-    /**
-     * The Function is toString
-     *
-     * @return Type of $
-     * @since 0.29.3
-     */
-    public func toString() { "tag: ${tag}, wireType: ${wireType}, data: ${data}" }
+    public func toString() { "{tag: ${tag}, wireType: ${wireType}, data: ${data}}" }
+
+    public func clone() { MessageUnknownField(tag, wireType, data.clone()) }
 }
