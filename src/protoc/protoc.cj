@@ -536,7 +536,7 @@ func namedParseSrc(name: String, src: String, field: FieldDescriptorProto) {
         case TYPE_SFIXED32 => " = sfixed32Parse(${src})"
         case TYPE_SFIXED64 => " = sfixed64Parse(${src})"
         case TYPE_SINT32 => " = sint32Parse(${src})"
-        case TYPE_SINT64 => "sint64Parse(${src})"
+        case TYPE_SINT64 => " = sint64Parse(${src})"
         case _ => throw Exception("UNSUPPORTED TYPE")
     }
 }
