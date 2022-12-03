@@ -9,6 +9,7 @@ from std import collection.*
 public type Tag = UInt32
 public type WireNum = UInt8
 public type Bytes = ArrayList<Byte>
+public type BytesBuffer = ArrayList<Byte>
 
 /* ffi, typecast by bits */
 foreign func itof(v: UInt32): Float32
@@ -435,7 +436,6 @@ public interface Message <: ToString {
 
     func unpack(src: Collection<Byte>): Unit
     func unpacki(src: BytesReader): Unit
-    func packi(src: Bytes): Unit
     func packi(src: BytesWriter): Unit
 }
 

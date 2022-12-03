@@ -58,8 +58,7 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -231,8 +230,7 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -324,8 +322,7 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -405,8 +402,7 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -550,8 +546,7 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -615,8 +610,7 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -983,8 +977,7 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1064,8 +1057,7 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1145,8 +1137,7 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1250,8 +1241,7 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1343,8 +1333,7 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1432,8 +1421,7 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1573,8 +1561,7 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -1925,8 +1912,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2038,8 +2024,7 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2281,8 +2266,7 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2346,8 +2330,7 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2435,8 +2418,7 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2512,8 +2494,7 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2589,8 +2570,7 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2725,8 +2705,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2808,8 +2787,7 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -2945,8 +2923,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -3050,8 +3027,7 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -3115,8 +3091,7 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -3216,8 +3191,7 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
@@ -3281,8 +3255,7 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: Bytes) { pack(out) }
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: Bytes => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
     public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }
 
