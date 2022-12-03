@@ -38,7 +38,7 @@ public struct RoArray<T> {
     }
 
     @fastCall
-    public func get(index: Int64): Option<T> {
+    public func get(index: Int64) {
         data.get(index)
     }
 
@@ -48,8 +48,18 @@ public struct RoArray<T> {
      */
     @fastCall
     @overflowWrapping
-    public operator func [](index: Int64) : T {
+    public operator func [](index: Int64) {
         data[index]
+    }
+
+    @fastCall
+    public operator func [](range: Range<Int64>) {
+        data[range]
+    }
+
+    @fastCall
+    public func copyTo(dst: Array<T>, srcStart: Int64, dstStart: Int64, copyLen: Int64) {
+        data.copyTo(dst, srcStart, dstStart, copyLen)
     }
 }
 
