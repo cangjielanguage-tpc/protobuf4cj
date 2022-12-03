@@ -10,6 +10,7 @@ public type Tag = UInt32
 public type WireNum = UInt8
 public type Bytes = Array<Byte>
 public type BytesBuffer = ArrayList<Byte>
+public type BytesSlice = RoArraySlice<Byte>
 
 /* ffi, typecast by bits */
 foreign func itof(v: UInt32): Float32
@@ -404,11 +405,11 @@ public func sub<T>(src: T) where T <: BytesReader & SubReader<T> {
 }
 
 public func bytesParse<T>(src: T) where T <: BytesReader & SubReader<T> {
-    src.read(int64Parse(src)).data()
+    src.read(int64Parse(src)).data().toArray()
 }
 
 public func stringParse<T>(src: T) where T <: BytesReader & SubReader<T> {
-    String.fromUtf8(src.read(int64Parse(src)).data())
+    String.fromUtf8(src.read(int64Parse(src)).data().toArray())
 }
 
 public interface Int32Enum <: ToString & ToJson {

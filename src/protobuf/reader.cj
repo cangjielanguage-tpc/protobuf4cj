@@ -20,7 +20,7 @@ public interface Reader<T> <: SubReader<Reader<T>> {
     /* read a sub reader with length of `len` and increase the offset */
     func read(len: Int64): Reader<T>
     /* all the unread data */
-    func data(): Array<T>
+    func data(): RoArraySlice<T>
 }
 
 /* typed sub reader. */
@@ -29,69 +29,45 @@ public interface SubReader<T> {
 }
 
 /**
- * The class is SimpleReader
- * @author tutudo
- * @since 0.29.3
+ * SimpleReader
  */
 public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
-    private let buffer: Array<UInt8>
-    public SimpleReader (
-        buffer: Collection<UInt8>,
-        private let begin!: Int64 = 0,
-        private let end!: Int64 = buffer.size,
-        private var offset!: Int64 = begin
-    ) {
-        if (begin < 0 || end > buffer.size) {
-            throw IllegalArgumentException("SimpleReader Arguments out of range.")
-        }
+    private var offset: Int64       /* raw data offset */
 
-        this.buffer = match (buffer) {
-            case arr: Bytes => arr
-            case _ => Array(buffer)
+    public SimpleReader(let bytes: RoArray<Byte>, let begin!: Int64 = 0, let end!: Int64 = bytes.size) {
+        if (begin < 0 || end < begin || end > bytes.size) {
+            throw IllegalArgumentException("Arguments out of range.")
         }
+        offset = begin
     }
 
-    /**
-     * any data unread
-     *
-     * @since 0.29.3
-     */
+    public init(data: Collection<Byte>, begin!: Int64 = 0, end!: Int64 = data.size) {
+        this(RoArray(data), begin: begin, end: end)
+    }
+
+    /** Returns true if this Reader contains no elements. */
+    @fastCall
     public func isEmpty() {
         return offset >= end
     }
 
-    /**
-     * all data
-     *
-     * @since 0.29.3
-     */
+    /** Return bytes slice. */
+    @fastCall
     public func data() {
-        if (offset >= end) {
-            return Bytes()
-        }
-        buffer[offset..end]
+        bytes.slice(offset, end - offset)
     }
 
-    /**
-     * read a byte, increase the offset
-     *
-     *
-     * @since 0.29.3
-     */
+    /** read a byte, increase the offset */
+    @fastCall
     public func read() {
         offset++
-        buffer[offset - 1]
+        bytes[offset - 1]
     }
 
-    /**
-     * read length of `s` bytes, return its reader.
-     *
-     * @param s of Int64
-     *
-     * @since 0.29.3
-     */
-    public func read(s: Int64) {
-        offset += s
-        SimpleReader(buffer, begin: offset - s, end: offset)
+    /** read length of `len` bytes, return its reader. */
+    @fastCall
+    public func read(len: Int64) {
+        offset += len
+        SimpleReader(bytes, begin: offset - len, end: offset)
     }
 }
