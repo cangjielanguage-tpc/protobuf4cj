@@ -8,7 +8,7 @@ from std import collection.*
 
 public type Tag = UInt32
 public type WireNum = UInt8
-public type Bytes = ArrayList<Byte>
+public type Bytes = Array<Byte>
 public type BytesBuffer = ArrayList<Byte>
 
 /* ffi, typecast by bits */
@@ -167,13 +167,13 @@ public func varintPack<E, T>(val: E, out: T) where E <: Int32Enum, T <: BytesWri
 }
 
 /* get varint data from bytes reader */
-public func varintData<T>(src: T): Array<Byte> where T <: BytesReader {
+public func varintData<T>(src: T): Bytes where T <: BytesReader {
     var byte = src.read()
     if (byte < 128) {
         return [byte]
     }
 
-    let data: Array<Byte> = [byte, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    let data: Bytes = [byte, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for (i in 1..10) {
         byte = src.read()
         data[i] = byte
@@ -404,7 +404,7 @@ public func sub<T>(src: T) where T <: BytesReader & SubReader<T> {
 }
 
 public func bytesParse<T>(src: T) where T <: BytesReader & SubReader<T> {
-    ArrayList(src.read(int64Parse(src)).data())
+    src.read(int64Parse(src)).data()
 }
 
 public func stringParse<T>(src: T) where T <: BytesReader & SubReader<T> {

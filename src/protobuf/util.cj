@@ -101,14 +101,11 @@ func parseEnum<E>(src: Json) where E <: Enum<E> {
 func parseBytes(src: Json) {
     /* parse as base64 string */
     if (src.isString) {
-        return Bytes(fromBase64String(src.asString()).getOrThrow())
+        return fromBase64String(src.asString()).getOrThrow()
     }
-    let arr = Bytes()
-    /* parse as uint8 array */
-    for (v in src.asArray()) {
-        arr.append(UInt8(v.asNumber()))
-    }
-    arr
+
+    let arr = src.asArray()
+    Bytes(arr.size) { i => UInt8(arr[i].asNumber()) }
 }
 
 extend UInt64 {

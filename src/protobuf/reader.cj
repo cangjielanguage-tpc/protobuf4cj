@@ -46,7 +46,7 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
         }
 
         this.buffer = match (buffer) {
-            case arr: Array<UInt8> => arr
+            case arr: Bytes => arr
             case _ => Array(buffer)
         }
     }
@@ -67,7 +67,7 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
      */
     public func data() {
         if (offset >= end) {
-            return Array<UInt8>()
+            return Bytes()
         }
         buffer[offset..end]
     }

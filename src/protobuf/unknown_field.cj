@@ -11,7 +11,7 @@ public class MessageUnknownField <: ToString {
         /** The wire type of the field. */
         public let wireType: WireType,
         /** Field data. */
-        public let data: Array<UInt8>
+        public let data: Bytes
     ) {}
 
     public func packSize() {
