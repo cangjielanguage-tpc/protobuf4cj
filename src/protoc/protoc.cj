@@ -23,9 +23,9 @@ from std import unicode.*
  * @return Type of Unit
  * @since 0.29.3
  */
-public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Unit {
+public func cj_generator(input: ArrayList<UInt8>): Array<UInt8> {
     let req = CodeGeneratorRequest()
-    req.unpack(inbuf)
+    req.unpack(input)
 
     let resp = CodeGeneratorResponse()
 
@@ -40,7 +40,8 @@ public func cj_generator(inbuf: ArrayList<UInt8>, outbuf: ArrayList<UInt8>): Uni
             fileProcess(desc, resp.file.add())
         }
     }
-    resp.pack(outbuf)
+
+    resp.pack()
 }
 
 /* Get file name */
@@ -411,7 +412,6 @@ func getOneofFieldUnapckExpr(name: String, field: FieldDescriptorProto) {
 func getImplIterfaceApi(typeName: String) {
     "    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }\n" +
     "    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }\n" +
-    "    public func unpack(src: Collection<Byte>) { unpack(SimpleReader(src)) }\n" +
     "\n" +
     "    public static func empty() { ${typeName}() }\n" +
     "    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }\n" +

@@ -22,7 +22,7 @@ public class MessageUnknownField <: ToString {
     public func pack<T>(out: T) where T <: BytesWriter {
         tagPack(tag, wireType, out)
         if (wireType.value == PREFIXED) { varintPack(data.size, out) }
-        out.appendAll(data)
+        out.appendBytes(data)
     }
 
     public static func unpack<T>(tag: Tag, wt: WireNum, src: T) where T <: BytesReader & SubReader<T> {

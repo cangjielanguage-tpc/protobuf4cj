@@ -9,7 +9,6 @@ from std import collection.*
 public type Tag = UInt32
 public type WireNum = UInt8
 public type Bytes = Array<Byte>
-public type BytesBuffer = ArrayList<Byte>
 public type BytesSlice = RoArraySlice<Byte>
 
 /* ffi, typecast by bits */
@@ -391,13 +390,13 @@ public func binSize<M>(val: M) where M <: Message {
 
 public func binPack<T>(val: Bytes, out: T) where T <: BytesWriter {
     varintPack<T>(val.size, out)
-    out.appendAll(val)
+    out.appendBytes(val)
 }
 
 public func binPack<T>(val: String, out: T) where T <: BytesWriter {
     let view = val.utf8View
     varintPack<T>(view.size, out)
-    out.appendAll(view)
+    out.appendUtf8View(view)
 }
 
 public func sub<T>(src: T) where T <: BytesReader & SubReader<T> {
@@ -435,9 +434,20 @@ public interface Message <: ToString {
     /* func unpack<T>(src: T): Unit where T <: BytesReader */
     /* func pack<T>(out: T): Unit where T <: BytesWriter */
 
-    func unpack(src: Collection<Byte>): Unit
     func unpacki(src: BytesReader): Unit
-    func packi(src: BytesWriter): Unit
+    func packi(out: BytesWriter): Unit
+
+    /* unpack from collection. */
+    func unpack(src: Collection<Byte>): Unit {
+        unpacki(SimpleReader(src))
+    }
+
+    /* pack message to bytes */
+    func pack(): Bytes {
+        let out = BytesBuffer(size)
+        packi(out)
+        out.data
+    }
 }
 
 public interface TypedMessage<M> where M <: Message {

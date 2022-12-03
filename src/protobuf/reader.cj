@@ -8,19 +8,16 @@
  */
 package protobuf
 
-/* Bytes Reader. */
-public type BytesReader = Reader<Byte>
-
-/* public interface of `generic-T` reader. */
-public interface Reader<T> <: SubReader<Reader<T>> {
+/* public interface of reader. */
+public interface BytesReader <: SubReader<BytesReader> {
     /* no data unread */
     func isEmpty(): Bool
     /* read and increase the offset */
-    func read(): T
+    func read(): Byte
     /* read a sub reader with length of `len` and increase the offset */
-    func read(len: Int64): Reader<T>
+    func read(len: Int64): BytesReader
     /* all the unread data */
-    func data(): RoArraySlice<T>
+    func data(): BytesSlice
 }
 
 /* typed sub reader. */
@@ -53,12 +50,14 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
 
     /** Return bytes slice. */
     @fastCall
+    @overflowWrapping
     public func data() {
         bytes.slice(offset, end - offset)
     }
 
     /** read a byte, increase the offset */
     @fastCall
+    @overflowWrapping
     public func read() {
         offset++
         bytes[offset - 1]
@@ -66,6 +65,7 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
 
     /** read length of `len` bytes, return its reader. */
     @fastCall
+    @overflowWrapping
     public func read(len: Int64) {
         offset += len
         SimpleReader(bytes, begin: offset - len, end: offset)

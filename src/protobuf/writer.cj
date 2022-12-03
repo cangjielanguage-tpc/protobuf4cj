@@ -4,16 +4,43 @@
 
 package protobuf
 
-/* Bytes Reader. */
-public type BytesWriter = Writer<Byte>
-
-/* public interface of `generic-T` writer. */
-public interface Writer<T> {
-    /* append `v` to writer */
-    func append(v: T): Unit
-    /* append all the `a` to writer */
-    func appendAll(a: Collection<T>): Unit
+/* public interface of bytes writer. */
+public interface BytesWriter {
+    /* append a byte writer */
+    func append(val: Byte): Unit
+    /* append bytes to writer */
+    func appendBytes(val: Bytes): Unit
+    /* append string utf8 view to writer */
+    func appendUtf8View(val: Utf8View): Unit
 }
 
-/* ArrayList is already Writer */
-extend ArrayList<T> <: Writer<T>  { }
+public class BytesBuffer <: BytesWriter {
+    public BytesBuffer(
+        public let data: Bytes,
+        public var offset!: Int64 = 0
+    ) { }
+
+    public init(size: Int64) {
+        this(Bytes(size, item: 0))
+    }
+
+    @fastCall
+    @overflowWrapping
+    public func append(val: Byte) {
+        data[offset] = val
+        offset++
+    }
+
+    @fastCall
+    @overflowWrapping
+    public func appendBytes(val: Bytes) {
+        val.copyTo(data, 0, offset, val.size)
+        offset += val.size
+    }
+
+    @fastCall
+    public func appendUtf8View(val: Utf8View) {
+        val.copyTo(data, offset)
+        offset += val.size
+    }
+}
