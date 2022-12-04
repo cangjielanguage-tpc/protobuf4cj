@@ -410,7 +410,7 @@ func getOneofFieldUnapckExpr(name: String, field: FieldDescriptorProto) {
 
 /* impl interface api */
 func getImplIterfaceApi(typeName: String) {
-    "    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }\n" +
+    "    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }\n" +
     "    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }\n" +
     "\n" +
     "    public static func empty() { ${typeName}() }\n" +

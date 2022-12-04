@@ -99,7 +99,7 @@ public class Version <: Message & TypedMessage<Version> {
         return i_tmp.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
 
     public static func empty() { Version() }
@@ -194,7 +194,7 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
         return i_tmp.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorRequest() }
@@ -297,7 +297,7 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
         return i_tmp.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorResponse_File() }
@@ -426,7 +426,7 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
         return i_tmp.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: BytesBuffer => pack(i_tmp) case _ => pack(out) } }
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorResponse() }

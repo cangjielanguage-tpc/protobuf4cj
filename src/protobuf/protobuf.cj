@@ -448,7 +448,7 @@ public interface Message <: ToString {
 
     /* pack message to bytes */
     func pack(): Bytes {
-        let out = BytesBuffer(size)
+        let out = SimpleWriter(size)
         packi(out)
         out.data
     }

@@ -16,8 +16,8 @@ public interface BytesWriter {
     func appendSlice(val: BytesSlice): Unit
 }
 
-public class BytesBuffer <: BytesWriter {
-    public BytesBuffer(
+public class SimpleWriter <: BytesWriter {
+    public SimpleWriter(
         public let data: Bytes,         /* data's buffer */
         public var offset!: Int64 = 0   /* curren write position */
     ) { }
@@ -25,6 +25,12 @@ public class BytesBuffer <: BytesWriter {
     public init(size: Int64) {
         this(Bytes(size, item: 0))
     }
+
+    /* reset offset to `0` */
+    @fastCall
+    public func clear() { offset = 0 }
+    @fastCall
+    public func isFull() { offset >= data.size }
 
     @fastCall
     @overflowWrapping
