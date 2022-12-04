@@ -167,6 +167,7 @@ public func varintPack<E, T>(val: E, out: T) where E <: Int32Enum, T <: BytesWri
 }
 
 /* get varint data from bytes reader */
+@overflowWrapping
 public func varintData<T>(src: T): Bytes where T <: BytesReader {
     var byte = src.read()
     if (byte < 128) {
@@ -373,16 +374,19 @@ public func float32Parse<T>(src: T) where T <: BytesReader {
     unsafe { itof(fixed32Parse(src)) }
 }
 
+@overflowWrapping
 public func binSize(val: Bytes) {
     let size = val.size
     varintSize(size) + size
 }
 
+@overflowWrapping
 public func binSize(val: String) {
     let size = val.utf8View.size
     varintSize(size) + size
 }
 
+@overflowWrapping
 public func binSize<M>(val: M) where M <: Message {
     let size = val.size
     varintSize(size) + size
