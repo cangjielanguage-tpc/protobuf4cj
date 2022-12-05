@@ -446,6 +446,16 @@ public interface Message <: ToString {
         unpacki(SimpleReader(src))
     }
 
+    /* unpack from ro-array */
+    func unpack(src: RoArray<Byte>): Unit {
+        unpacki(SimpleReader(src))
+    }
+
+    /* unpack from bytes slice */
+    func unpack(src: BytesSlice): Unit {
+        unpacki(SimpleReader(src))
+    }
+
     /* pack message to bytes */
     func pack(): Bytes {
         let out = SimpleWriter(size)

@@ -38,6 +38,10 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
         offset = begin
     }
 
+    public init(data: BytesSlice) {
+        this(data.rawData, begin: data.start, end: data.start + data.size)
+    }
+
     public init(data: Collection<Byte>, begin!: Int64 = 0, end!: Int64 = data.size) {
         this(RoArray(data), begin: begin, end: end)
     }
