@@ -17,43 +17,42 @@ public interface BytesWriter {
 }
 
 public class SimpleWriter <: BytesWriter {
+    public var offset = 0               /* curren write position */
+
     public SimpleWriter(
-        public let data: Bytes,         /* data's buffer */
-        public var offset!: Int64 = 0   /* curren write position */
+        public let data: Bytes          /* data's buffer */
     ) { }
+
+    public init() {
+        this(Bytes())
+    }
 
     public init(size: Int64) {
         this(Bytes(size, item: 0))
     }
 
     /* reset offset to `0` */
-    @fastCall
     public func clear() { offset = 0 }
-    @fastCall
     public func isFull() { offset >= data.size }
 
-    @fastCall
     @overflowWrapping
     public func append(val: Byte) {
         data[offset] = val
         offset++
     }
 
-    @fastCall
     @overflowWrapping
     public func appendBytes(val: Bytes) {
         val.copyTo(data, 0, offset, val.size)
         offset += val.size
     }
 
-    @fastCall
     @overflowWrapping
     public func appendUtf8View(val: Utf8View) {
         val.copyTo(data, offset)
         offset += val.size
     }
 
-    @fastCall
     @overflowWrapping
     public func appendSlice(val: BytesSlice) {
         val.copyTo(data, offset)

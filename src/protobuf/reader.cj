@@ -47,20 +47,17 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
     }
 
     /** Returns true if this Reader contains no elements. */
-    @fastCall
     public func isEmpty() {
         return offset >= end
     }
 
     /** Return bytes slice. */
-    @fastCall
     @overflowWrapping
     public func data() {
         bytes.slice(offset, end - offset)
     }
 
     /** read a byte, increase the offset */
-    @fastCall
     @overflowWrapping
     public func read() {
         offset++
@@ -68,7 +65,6 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
     }
 
     /** read length of `len` bytes, return its reader. */
-    @fastCall
     @overflowWrapping
     public func read(len: Int64) {
         offset += len
