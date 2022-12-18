@@ -66,12 +66,12 @@ public class Version <: Message & TypedMessage<Version> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_major = int32Parse(src)
-                case 2 => m_minor = int32Parse(src)
-                case 3 => m_patch = int32Parse(src)
-                case 4 => m_suffix = stringParse(src)
+                case 1 => m_major = src.parseInt32()
+                case 2 => m_minor = src.parseInt32()
+                case 3 => m_patch = src.parseInt32()
+                case 4 => m_suffix = src.parseString()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -79,10 +79,10 @@ public class Version <: Message & TypedMessage<Version> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_major) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_minor) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_patch) { tagPack(3, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_suffix) { tagPack(4, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_major) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_minor) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_patch) { out.packTag(3, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_suffix) { out.packTag(4, PREFIXED); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -161,12 +161,12 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => fileToGenerate.append(stringParse(src))
-                case 2 => m_parameter = stringParse(src)
-                case 15 => protoFile.add().unpack(sub(src))
-                case 3 => m_compilerVersion = m_compilerVersion ?? Version(); m_compilerVersion?.unpack(sub(src))
+                case 1 => fileToGenerate.append(src.parseString())
+                case 2 => m_parameter = src.parseString()
+                case 15 => protoFile.add().unpack(src.sub())
+                case 3 => m_compilerVersion = m_compilerVersion ?? Version(); m_compilerVersion?.unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -174,10 +174,10 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!fileToGenerate.isEmpty()) { for (i_itmp in fileToGenerate) { tagPack(1, PREFIXED, out); binPack(i_itmp, out) } }
-        if (let Some(i_vtmp) = m_parameter) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { tagPack(15, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_compilerVersion) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (!fileToGenerate.isEmpty()) { for (i_itmp in fileToGenerate) { out.packTag(1, PREFIXED); out.packBin(i_itmp) } }
+        if (let Some(i_vtmp) = m_parameter) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
+        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { out.packTag(15, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_compilerVersion) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -264,12 +264,12 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => m_insertionPoint = stringParse(src)
-                case 15 => m_content = stringParse(src)
-                case 16 => m_generatedCodeInfo = m_generatedCodeInfo ?? google.protobuf.GeneratedCodeInfo(); m_generatedCodeInfo?.unpack(sub(src))
+                case 1 => m_name = src.parseString()
+                case 2 => m_insertionPoint = src.parseString()
+                case 15 => m_content = src.parseString()
+                case 16 => m_generatedCodeInfo = m_generatedCodeInfo ?? google.protobuf.GeneratedCodeInfo(); m_generatedCodeInfo?.unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -277,10 +277,10 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_insertionPoint) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_content) { tagPack(15, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_generatedCodeInfo) { tagPack(16, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_insertionPoint) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_content) { out.packTag(15, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_generatedCodeInfo) { out.packTag(16, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -396,11 +396,11 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_error = stringParse(src)
-                case 2 => m_supportedFeatures = uint64Parse(src)
-                case 15 => file.add().unpack(sub(src))
+                case 1 => m_error = src.parseString()
+                case 2 => m_supportedFeatures = src.parseUInt64()
+                case 15 => file.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -408,9 +408,9 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_error) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_supportedFeatures) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
-        if (!file.isEmpty()) { for (i_itmp in file) { tagPack(15, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_error) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_supportedFeatures) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
+        if (!file.isEmpty()) { for (i_itmp in file) { out.packTag(15, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 

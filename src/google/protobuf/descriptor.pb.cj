@@ -34,9 +34,9 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => file.add().unpack(sub(src))
+                case 1 => file.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -44,7 +44,7 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!file.isEmpty()) { for (i_itmp in file) { tagPack(1, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!file.isEmpty()) { for (i_itmp in file) { out.packTag(1, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -172,20 +172,20 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => m_package = stringParse(src)
-                case 3 => dependency.append(stringParse(src))
-                case 10 => publicDependency.append(int32Parse(src))
-                case 11 => weakDependency.append(int32Parse(src))
-                case 4 => messageType.add().unpack(sub(src))
-                case 5 => enumType.add().unpack(sub(src))
-                case 6 => service.add().unpack(sub(src))
-                case 7 => extension.add().unpack(sub(src))
-                case 8 => m_options = m_options ?? FileOptions(); m_options?.unpack(sub(src))
-                case 9 => m_sourceCodeInfo = m_sourceCodeInfo ?? SourceCodeInfo(); m_sourceCodeInfo?.unpack(sub(src))
-                case 12 => m_syntax = stringParse(src)
+                case 1 => m_name = src.parseString()
+                case 2 => m_package = src.parseString()
+                case 3 => dependency.append(src.parseString())
+                case 10 => publicDependency.append(src.parseInt32())
+                case 11 => weakDependency.append(src.parseInt32())
+                case 4 => messageType.add().unpack(src.sub())
+                case 5 => enumType.add().unpack(src.sub())
+                case 6 => service.add().unpack(src.sub())
+                case 7 => extension.add().unpack(src.sub())
+                case 8 => m_options = m_options ?? FileOptions(); m_options?.unpack(src.sub())
+                case 9 => m_sourceCodeInfo = m_sourceCodeInfo ?? SourceCodeInfo(); m_sourceCodeInfo?.unpack(src.sub())
+                case 12 => m_syntax = src.parseString()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -193,18 +193,18 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_package) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!dependency.isEmpty()) { for (i_itmp in dependency) { tagPack(3, PREFIXED, out); binPack(i_itmp, out) } }
-        if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { tagPack(10, VARINT, out); varintPack(i_itmp, out) } }
-        if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { tagPack(11, VARINT, out); varintPack(i_itmp, out) } }
-        if (!messageType.isEmpty()) { for (i_itmp in messageType) { tagPack(4, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!enumType.isEmpty()) { for (i_itmp in enumType) { tagPack(5, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!service.isEmpty()) { for (i_itmp in service) { tagPack(6, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!extension.isEmpty()) { for (i_itmp in extension) { tagPack(7, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { tagPack(8, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_sourceCodeInfo) { tagPack(9, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_syntax) { tagPack(12, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_package) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
+        if (!dependency.isEmpty()) { for (i_itmp in dependency) { out.packTag(3, PREFIXED); out.packBin(i_itmp) } }
+        if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { out.packTag(10, VARINT); out.packVarint(i_itmp) } }
+        if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { out.packTag(11, VARINT); out.packVarint(i_itmp) } }
+        if (!messageType.isEmpty()) { for (i_itmp in messageType) { out.packTag(4, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { out.packTag(5, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!service.isEmpty()) { for (i_itmp in service) { out.packTag(6, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { out.packTag(7, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.packTag(8, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_sourceCodeInfo) { out.packTag(9, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_syntax) { out.packTag(12, PREFIXED); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -290,11 +290,11 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_start = int32Parse(src)
-                case 2 => m_end = int32Parse(src)
-                case 3 => m_options = m_options ?? ExtensionRangeOptions(); m_options?.unpack(sub(src))
+                case 1 => m_start = src.parseInt32()
+                case 2 => m_end = src.parseInt32()
+                case 3 => m_options = m_options ?? ExtensionRangeOptions(); m_options?.unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -302,9 +302,9 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_start) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_end) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_start) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -372,10 +372,10 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_start = int32Parse(src)
-                case 2 => m_end = int32Parse(src)
+                case 1 => m_start = src.parseInt32()
+                case 2 => m_end = src.parseInt32()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -383,8 +383,8 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_start) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_end) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_start) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -491,18 +491,18 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => field.add().unpack(sub(src))
-                case 6 => extension.add().unpack(sub(src))
-                case 3 => nestedType.add().unpack(sub(src))
-                case 4 => enumType.add().unpack(sub(src))
-                case 5 => extensionRange.add().unpack(sub(src))
-                case 8 => oneofDecl.add().unpack(sub(src))
-                case 7 => m_options = m_options ?? MessageOptions(); m_options?.unpack(sub(src))
-                case 9 => reservedRange.add().unpack(sub(src))
-                case 10 => reservedName.append(stringParse(src))
+                case 1 => m_name = src.parseString()
+                case 2 => field.add().unpack(src.sub())
+                case 6 => extension.add().unpack(src.sub())
+                case 3 => nestedType.add().unpack(src.sub())
+                case 4 => enumType.add().unpack(src.sub())
+                case 5 => extensionRange.add().unpack(src.sub())
+                case 8 => oneofDecl.add().unpack(src.sub())
+                case 7 => m_options = m_options ?? MessageOptions(); m_options?.unpack(src.sub())
+                case 9 => reservedRange.add().unpack(src.sub())
+                case 10 => reservedName.append(src.parseString())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -510,16 +510,16 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!field.isEmpty()) { for (i_itmp in field) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!extension.isEmpty()) { for (i_itmp in extension) { tagPack(6, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!nestedType.isEmpty()) { for (i_itmp in nestedType) { tagPack(3, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!enumType.isEmpty()) { for (i_itmp in enumType) { tagPack(4, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!extensionRange.isEmpty()) { for (i_itmp in extensionRange) { tagPack(5, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { tagPack(8, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { tagPack(7, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
-        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { tagPack(9, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { tagPack(10, PREFIXED, out); binPack(i_itmp, out) } }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (!field.isEmpty()) { for (i_itmp in field) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { out.packTag(6, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!nestedType.isEmpty()) { for (i_itmp in nestedType) { out.packTag(3, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { out.packTag(4, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!extensionRange.isEmpty()) { for (i_itmp in extensionRange) { out.packTag(5, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { out.packTag(8, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.packTag(7, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { out.packTag(9, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { out.packTag(10, PREFIXED); out.packBin(i_itmp) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -581,9 +581,9 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -591,7 +591,7 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -914,20 +914,20 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 3 => m_number = int32Parse(src)
-                case 4 => m_label = FieldDescriptorProto_Label.parse(int32Parse(src))
-                case 5 => m_type = FieldDescriptorProto_Type.parse(int32Parse(src))
-                case 6 => m_typeName = stringParse(src)
-                case 2 => m_extendee = stringParse(src)
-                case 7 => m_defaultValue = stringParse(src)
-                case 9 => m_oneofIndex = int32Parse(src)
-                case 10 => m_jsonName = stringParse(src)
-                case 8 => m_options = m_options ?? FieldOptions(); m_options?.unpack(sub(src))
-                case 17 => m_proto3Optional = boolParse(src)
-                case 9999 => mapEntry.add().unpack(sub(src))
+                case 1 => m_name = src.parseString()
+                case 3 => m_number = src.parseInt32()
+                case 4 => m_label = FieldDescriptorProto_Label.parse(src.parseInt32())
+                case 5 => m_type = FieldDescriptorProto_Type.parse(src.parseInt32())
+                case 6 => m_typeName = src.parseString()
+                case 2 => m_extendee = src.parseString()
+                case 7 => m_defaultValue = src.parseString()
+                case 9 => m_oneofIndex = src.parseInt32()
+                case 10 => m_jsonName = src.parseString()
+                case 8 => m_options = m_options ?? FieldOptions(); m_options?.unpack(src.sub())
+                case 17 => m_proto3Optional = src.parseBool()
+                case 9999 => mapEntry.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -935,18 +935,18 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_number) { tagPack(3, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_label) { tagPack(4, VARINT, out); varintPack(i_vtmp.value(), out) }
-        if (let Some(i_vtmp) = m_type) { tagPack(5, VARINT, out); varintPack(i_vtmp.value(), out) }
-        if (let Some(i_vtmp) = m_typeName) { tagPack(6, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_extendee) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_defaultValue) { tagPack(7, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_oneofIndex) { tagPack(9, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_jsonName) { tagPack(10, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_options) { tagPack(8, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_proto3Optional) { tagPack(17, VARINT, out); boolPack(i_vtmp, out) }
-        if (!mapEntry.isEmpty()) { for (i_itmp in mapEntry) { tagPack(9999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { out.packTag(3, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_label) { out.packTag(4, VARINT); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_type) { out.packTag(5, VARINT); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_typeName) { out.packTag(6, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_extendee) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_defaultValue) { out.packTag(7, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_oneofIndex) { out.packTag(9, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_jsonName) { out.packTag(10, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.packTag(8, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_proto3Optional) { out.packTag(17, VARINT); out.packBool(i_vtmp) }
+        if (!mapEntry.isEmpty()) { for (i_itmp in mapEntry) { out.packTag(9999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1023,10 +1023,10 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => m_options = m_options ?? OneofOptions(); m_options?.unpack(sub(src))
+                case 1 => m_name = src.parseString()
+                case 2 => m_options = m_options ?? OneofOptions(); m_options?.unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1034,8 +1034,8 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_options) { tagPack(2, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.packTag(2, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1102,10 +1102,10 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_start = int32Parse(src)
-                case 2 => m_end = int32Parse(src)
+                case 1 => m_start = src.parseInt32()
+                case 2 => m_end = src.parseInt32()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1113,8 +1113,8 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_start) { tagPack(1, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_end) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_start) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1196,13 +1196,13 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => value.add().unpack(sub(src))
-                case 3 => m_options = m_options ?? EnumOptions(); m_options?.unpack(sub(src))
-                case 4 => reservedRange.add().unpack(sub(src))
-                case 5 => reservedName.append(stringParse(src))
+                case 1 => m_name = src.parseString()
+                case 2 => value.add().unpack(src.sub())
+                case 3 => m_options = m_options ?? EnumOptions(); m_options?.unpack(src.sub())
+                case 4 => reservedRange.add().unpack(src.sub())
+                case 5 => reservedName.append(src.parseString())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1210,11 +1210,11 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!value.isEmpty()) { for (i_itmp in value) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
-        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { tagPack(4, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { tagPack(5, PREFIXED, out); binPack(i_itmp, out) } }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (!value.isEmpty()) { for (i_itmp in value) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { out.packTag(4, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { out.packTag(5, PREFIXED); out.packBin(i_itmp) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1293,11 +1293,11 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => m_number = int32Parse(src)
-                case 3 => m_options = m_options ?? EnumValueOptions(); m_options?.unpack(sub(src))
+                case 1 => m_name = src.parseString()
+                case 2 => m_number = src.parseInt32()
+                case 3 => m_options = m_options ?? EnumValueOptions(); m_options?.unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1305,9 +1305,9 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_number) { tagPack(2, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1380,11 +1380,11 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => method.add().unpack(sub(src))
-                case 3 => m_options = m_options ?? ServiceOptions(); m_options?.unpack(sub(src))
+                case 1 => m_name = src.parseString()
+                case 2 => method.add().unpack(src.sub())
+                case 3 => m_options = m_options ?? ServiceOptions(); m_options?.unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1392,9 +1392,9 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!method.isEmpty()) { for (i_itmp in method) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { tagPack(3, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (!method.isEmpty()) { for (i_itmp in method) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1507,15 +1507,15 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = stringParse(src)
-                case 2 => m_inputType = stringParse(src)
-                case 3 => m_outputType = stringParse(src)
-                case 4 => m_options = m_options ?? MethodOptions(); m_options?.unpack(sub(src))
-                case 5 => clientStreaming = boolParse(src)
-                case 6 => serverStreaming = boolParse(src)
-                case 9999 => m_funcName = stringParse(src)
+                case 1 => m_name = src.parseString()
+                case 2 => m_inputType = src.parseString()
+                case 3 => m_outputType = src.parseString()
+                case 4 => m_options = m_options ?? MethodOptions(); m_options?.unpack(src.sub())
+                case 5 => clientStreaming = src.parseBool()
+                case 6 => serverStreaming = src.parseBool()
+                case 9999 => m_funcName = src.parseString()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1523,13 +1523,13 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_inputType) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_outputType) { tagPack(3, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_options) { tagPack(4, PREFIXED, out); varintPack(i_vtmp.size, out); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_clientStreaming) { tagPack(5, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_serverStreaming) { tagPack(6, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_funcName) { tagPack(9999, PREFIXED, out); binPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_inputType) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_outputType) { out.packTag(3, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.packTag(4, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_clientStreaming) { out.packTag(5, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_serverStreaming) { out.packTag(6, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_funcName) { out.packTag(9999, PREFIXED); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1815,29 +1815,29 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_javaPackage = stringParse(src)
-                case 8 => m_javaOuterClassname = stringParse(src)
-                case 10 => javaMultipleFiles = boolParse(src)
-                case 20 => m_javaGenerateEqualsAndHash = boolParse(src)
-                case 27 => javaStringCheckUtf8 = boolParse(src)
-                case 9 => optimizeFor = FileOptions_OptimizeMode.parse(int32Parse(src))
-                case 11 => m_goPackage = stringParse(src)
-                case 16 => ccGenericServices = boolParse(src)
-                case 17 => javaGenericServices = boolParse(src)
-                case 18 => pyGenericServices = boolParse(src)
-                case 42 => phpGenericServices = boolParse(src)
-                case 23 => deprecated = boolParse(src)
-                case 31 => ccEnableArenas = boolParse(src)
-                case 36 => m_objcClassPrefix = stringParse(src)
-                case 37 => m_csharpNamespace = stringParse(src)
-                case 39 => m_swiftPrefix = stringParse(src)
-                case 40 => m_phpClassPrefix = stringParse(src)
-                case 41 => m_phpNamespace = stringParse(src)
-                case 44 => m_phpMetadataNamespace = stringParse(src)
-                case 45 => m_rubyPackage = stringParse(src)
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 1 => m_javaPackage = src.parseString()
+                case 8 => m_javaOuterClassname = src.parseString()
+                case 10 => javaMultipleFiles = src.parseBool()
+                case 20 => m_javaGenerateEqualsAndHash = src.parseBool()
+                case 27 => javaStringCheckUtf8 = src.parseBool()
+                case 9 => optimizeFor = FileOptions_OptimizeMode.parse(src.parseInt32())
+                case 11 => m_goPackage = src.parseString()
+                case 16 => ccGenericServices = src.parseBool()
+                case 17 => javaGenericServices = src.parseBool()
+                case 18 => pyGenericServices = src.parseBool()
+                case 42 => phpGenericServices = src.parseBool()
+                case 23 => deprecated = src.parseBool()
+                case 31 => ccEnableArenas = src.parseBool()
+                case 36 => m_objcClassPrefix = src.parseString()
+                case 37 => m_csharpNamespace = src.parseString()
+                case 39 => m_swiftPrefix = src.parseString()
+                case 40 => m_phpClassPrefix = src.parseString()
+                case 41 => m_phpNamespace = src.parseString()
+                case 44 => m_phpMetadataNamespace = src.parseString()
+                case 45 => m_rubyPackage = src.parseString()
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1845,27 +1845,27 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_javaPackage) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_javaOuterClassname) { tagPack(8, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_javaMultipleFiles) { tagPack(10, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { tagPack(20, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { tagPack(27, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_optimizeFor) { tagPack(9, VARINT, out); varintPack(i_vtmp.value(), out) }
-        if (let Some(i_vtmp) = m_goPackage) { tagPack(11, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_ccGenericServices) { tagPack(16, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_javaGenericServices) { tagPack(17, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_pyGenericServices) { tagPack(18, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_phpGenericServices) { tagPack(42, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(23, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_ccEnableArenas) { tagPack(31, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_objcClassPrefix) { tagPack(36, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_csharpNamespace) { tagPack(37, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_swiftPrefix) { tagPack(39, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_phpClassPrefix) { tagPack(40, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_phpNamespace) { tagPack(41, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_phpMetadataNamespace) { tagPack(44, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_rubyPackage) { tagPack(45, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_javaPackage) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaOuterClassname) { out.packTag(8, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaMultipleFiles) { out.packTag(10, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { out.packTag(20, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { out.packTag(27, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_optimizeFor) { out.packTag(9, VARINT); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_goPackage) { out.packTag(11, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_ccGenericServices) { out.packTag(16, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaGenericServices) { out.packTag(17, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_pyGenericServices) { out.packTag(18, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpGenericServices) { out.packTag(42, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(23, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_ccEnableArenas) { out.packTag(31, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_objcClassPrefix) { out.packTag(36, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_csharpNamespace) { out.packTag(37, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_swiftPrefix) { out.packTag(39, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpClassPrefix) { out.packTag(40, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpNamespace) { out.packTag(41, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_phpMetadataNamespace) { out.packTag(44, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_rubyPackage) { out.packTag(45, PREFIXED); out.packBin(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1974,13 +1974,13 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => messageSetWireFormat = boolParse(src)
-                case 2 => noStandardDescriptorAccessor = boolParse(src)
-                case 3 => deprecated = boolParse(src)
-                case 7 => m_mapEntry = boolParse(src)
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 1 => messageSetWireFormat = src.parseBool()
+                case 2 => noStandardDescriptorAccessor = src.parseBool()
+                case 3 => deprecated = src.parseBool()
+                case 7 => m_mapEntry = src.parseBool()
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1988,11 +1988,11 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_messageSetWireFormat) { tagPack(1, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(3, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_mapEntry) { tagPack(7, VARINT, out); boolPack(i_vtmp, out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_messageSetWireFormat) { out.packTag(1, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(3, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_mapEntry) { out.packTag(7, VARINT); out.packBool(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2206,16 +2206,16 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => ctype = FieldOptions_CType.parse(int32Parse(src))
-                case 2 => m_packed = boolParse(src)
-                case 6 => jstype = FieldOptions_JSType.parse(int32Parse(src))
-                case 5 => lazy = boolParse(src)
-                case 15 => unverifiedLazy = boolParse(src)
-                case 3 => deprecated = boolParse(src)
-                case 10 => weak = boolParse(src)
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 1 => ctype = FieldOptions_CType.parse(src.parseInt32())
+                case 2 => m_packed = src.parseBool()
+                case 6 => jstype = FieldOptions_JSType.parse(src.parseInt32())
+                case 5 => lazy = src.parseBool()
+                case 15 => unverifiedLazy = src.parseBool()
+                case 3 => deprecated = src.parseBool()
+                case 10 => weak = src.parseBool()
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2223,14 +2223,14 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_ctype) { tagPack(1, VARINT, out); varintPack(i_vtmp.value(), out) }
-        if (let Some(i_vtmp) = m_packed) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_jstype) { tagPack(6, VARINT, out); varintPack(i_vtmp.value(), out) }
-        if (let Some(i_vtmp) = m_lazy) { tagPack(5, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_unverifiedLazy) { tagPack(15, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(3, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_weak) { tagPack(10, VARINT, out); boolPack(i_vtmp, out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_ctype) { out.packTag(1, VARINT); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_packed) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_jstype) { out.packTag(6, VARINT); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_lazy) { out.packTag(5, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_unverifiedLazy) { out.packTag(15, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(3, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_weak) { out.packTag(10, VARINT); out.packBool(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2290,9 +2290,9 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2300,7 +2300,7 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2371,11 +2371,11 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 2 => m_allowAlias = boolParse(src)
-                case 3 => deprecated = boolParse(src)
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 2 => m_allowAlias = src.parseBool()
+                case 3 => deprecated = src.parseBool()
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2383,9 +2383,9 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_allowAlias) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(3, VARINT, out); boolPack(i_vtmp, out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_allowAlias) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(3, VARINT); out.packBool(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2449,10 +2449,10 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => deprecated = boolParse(src)
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 1 => deprecated = src.parseBool()
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2460,8 +2460,8 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(1, VARINT, out); boolPack(i_vtmp, out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(1, VARINT); out.packBool(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2524,10 +2524,10 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 33 => deprecated = boolParse(src)
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 33 => deprecated = src.parseBool()
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2535,8 +2535,8 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(33, VARINT, out); boolPack(i_vtmp, out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(33, VARINT); out.packBool(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2655,11 +2655,11 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 33 => deprecated = boolParse(src)
-                case 34 => idempotencyLevel = MethodOptions_IdempotencyLevel.parse(int32Parse(src))
-                case 999 => uninterpretedOption.add().unpack(sub(src))
+                case 33 => deprecated = src.parseBool()
+                case 34 => idempotencyLevel = MethodOptions_IdempotencyLevel.parse(src.parseInt32())
+                case 999 => uninterpretedOption.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2667,9 +2667,9 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_deprecated) { tagPack(33, VARINT, out); boolPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_idempotencyLevel) { tagPack(34, VARINT, out); varintPack(i_vtmp.value(), out) }
-        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { tagPack(999, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_deprecated) { out.packTag(33, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_idempotencyLevel) { out.packTag(34, VARINT); out.packVarint(i_vtmp.value()) }
+        if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2737,10 +2737,10 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_namePart = stringParse(src)
-                case 2 => m_isExtension = boolParse(src)
+                case 1 => m_namePart = src.parseString()
+                case 2 => m_isExtension = src.parseBool()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2748,8 +2748,8 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_namePart) { tagPack(1, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_isExtension) { tagPack(2, VARINT, out); boolPack(i_vtmp, out) }
+        if (let Some(i_vtmp) = m_namePart) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_isExtension) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2859,15 +2859,15 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 2 => name.add().unpack(sub(src))
-                case 3 => m_identifierValue = stringParse(src)
-                case 4 => m_positiveIntValue = uint64Parse(src)
-                case 5 => m_negativeIntValue = int64Parse(src)
-                case 6 => m_doubleValue = float64Parse(src)
-                case 7 => m_stringValue = bytesParse(src)
-                case 8 => m_aggregateValue = stringParse(src)
+                case 2 => name.add().unpack(src.sub())
+                case 3 => m_identifierValue = src.parseString()
+                case 4 => m_positiveIntValue = src.parseUInt64()
+                case 5 => m_negativeIntValue = src.parseInt64()
+                case 6 => m_doubleValue = src.parseFloat64()
+                case 7 => m_stringValue = src.parseBytes()
+                case 8 => m_aggregateValue = src.parseString()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2875,13 +2875,13 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!name.isEmpty()) { for (i_itmp in name) { tagPack(2, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_identifierValue) { tagPack(3, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_positiveIntValue) { tagPack(4, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_negativeIntValue) { tagPack(5, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_doubleValue) { tagPack(6, BIT64, out); fixedPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_stringValue) { tagPack(7, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_aggregateValue) { tagPack(8, PREFIXED, out); binPack(i_vtmp, out) }
+        if (!name.isEmpty()) { for (i_itmp in name) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_identifierValue) { out.packTag(3, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_positiveIntValue) { out.packTag(4, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_negativeIntValue) { out.packTag(5, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_doubleValue) { out.packTag(6, BIT64); out.packFixed(i_vtmp) }
+        if (let Some(i_vtmp) = m_stringValue) { out.packTag(7, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_aggregateValue) { out.packTag(8, PREFIXED); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2968,13 +2968,13 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => let i_stmp = sub(src); while (!i_stmp.isEmpty()) { path.append(int32Parse(i_stmp)) }
-                case 2 => let i_stmp = sub(src); while (!i_stmp.isEmpty()) { span.append(int32Parse(i_stmp)) }
-                case 3 => m_leadingComments = stringParse(src)
-                case 4 => m_trailingComments = stringParse(src)
-                case 6 => leadingDetachedComments.append(stringParse(src))
+                case 1 => let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { path.append(i_stmp.parseInt32()) }
+                case 2 => let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { span.append(i_stmp.parseInt32()) }
+                case 3 => m_leadingComments = src.parseString()
+                case 4 => m_trailingComments = src.parseString()
+                case 6 => leadingDetachedComments.append(src.parseString())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2982,11 +2982,11 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!path.isEmpty()) { tagPack(1, PREFIXED, out); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in path) { varintPack(i_itmp, out) } }
-        if (!span.isEmpty()) { tagPack(2, PREFIXED, out); var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in span) { varintPack(i_itmp, out) } }
-        if (let Some(i_vtmp) = m_leadingComments) { tagPack(3, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_trailingComments) { tagPack(4, PREFIXED, out); binPack(i_vtmp, out) }
-        if (!leadingDetachedComments.isEmpty()) { for (i_itmp in leadingDetachedComments) { tagPack(6, PREFIXED, out); binPack(i_itmp, out) } }
+        if (!path.isEmpty()) { out.packTag(1, PREFIXED); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in path) { out.packVarint(i_itmp) } }
+        if (!span.isEmpty()) { out.packTag(2, PREFIXED); var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in span) { out.packVarint(i_itmp) } }
+        if (let Some(i_vtmp) = m_leadingComments) { out.packTag(3, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_trailingComments) { out.packTag(4, PREFIXED); out.packBin(i_vtmp) }
+        if (!leadingDetachedComments.isEmpty()) { for (i_itmp in leadingDetachedComments) { out.packTag(6, PREFIXED); out.packBin(i_itmp) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -3043,9 +3043,9 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => location.add().unpack(sub(src))
+                case 1 => location.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -3053,7 +3053,7 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!location.isEmpty()) { for (i_itmp in location) { tagPack(1, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!location.isEmpty()) { for (i_itmp in location) { out.packTag(1, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -3133,12 +3133,12 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => let i_stmp = sub(src); while (!i_stmp.isEmpty()) { path.append(int32Parse(i_stmp)) }
-                case 2 => m_sourceFile = stringParse(src)
-                case 3 => m_begin = int32Parse(src)
-                case 4 => m_end = int32Parse(src)
+                case 1 => let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { path.append(i_stmp.parseInt32()) }
+                case 2 => m_sourceFile = src.parseString()
+                case 3 => m_begin = src.parseInt32()
+                case 4 => m_end = src.parseInt32()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -3146,10 +3146,10 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!path.isEmpty()) { tagPack(1, PREFIXED, out); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in path) { varintPack(i_itmp, out) } }
-        if (let Some(i_vtmp) = m_sourceFile) { tagPack(2, PREFIXED, out); binPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_begin) { tagPack(3, VARINT, out); varintPack(i_vtmp, out) }
-        if (let Some(i_vtmp) = m_end) { tagPack(4, VARINT, out); varintPack(i_vtmp, out) }
+        if (!path.isEmpty()) { out.packTag(1, PREFIXED); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in path) { out.packVarint(i_itmp) } }
+        if (let Some(i_vtmp) = m_sourceFile) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_begin) { out.packTag(3, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.packTag(4, VARINT); out.packVarint(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -3205,9 +3205,9 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
         while (!src.isEmpty()) {
-            let i_tmp = tagParse(src)
+            let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => annotation.add().unpack(sub(src))
+                case 1 => annotation.add().unpack(src.sub())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -3215,7 +3215,7 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!annotation.isEmpty()) { for (i_itmp in annotation) { tagPack(1, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) } }
+        if (!annotation.isEmpty()) { for (i_itmp in annotation) { out.packTag(1, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
