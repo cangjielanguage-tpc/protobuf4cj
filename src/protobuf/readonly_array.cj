@@ -22,18 +22,13 @@ public struct RoArray<T> {
     }
 
     /* [unsafe] constuct ro-array from array refence. */
-    unsafe init(data: Array<T>, placeholder: Int64) {
+    public unsafe init(data: Array<T>) {
         this.data = data
     }
 
     /* [unsafe] get the raw array of this ro-array */
     public unsafe func getRawArray() {
         data
-    }
-
-    /* [unsafe] detach ro-array from array */
-    public unsafe static func detach(data: Array<T>) {
-        RoArray<T>(data, 0)
     }
 
     public func get(index: Int64) {
@@ -48,12 +43,20 @@ public struct RoArray<T> {
         data[index]
     }
 
-    public func slice(start: Int64, len: Int64) {
-        RoArraySlice(this, start, len)
+    public operator func [](range: Range<Int64>) {
+        unsafe { RoArray(data[range]) }
     }
 
-    public func copyTo(dst: Array<T>, srcStart: Int64, dstStart: Int64, copyLen: Int64) {
-        data.copyTo(dst, srcStart, dstStart, copyLen)
+    public func slice(start: Int64, len: Int64) {
+        unsafe { RoArray(data.slice(start, len)) }
+    }
+
+    public func copyTo(dst: Array<T>, dstStart: Int64) {
+        data.copyTo(dst, 0, dstStart, data.size)
+    }
+
+    public func clone(): RoArray<T> {
+        unsafe { RoArray(data.clone()) }
     }
 }
 
@@ -100,55 +103,5 @@ extend RoArray<T> <: Equatable<RoArray<T>> where T <: Equatable<T> {
 
     public func contains(element: T): Bool {
         data.contains(element)
-    }
-}
-
-public interface Ro { }
-extend Array<T> <: Ro {
-    /* [unsafe] make ro-array */
-    public unsafe func ro() {
-        RoArray<T>(this, 0)
-    }
-}
-
-public struct RoArraySlice<T> {
-    public RoArraySlice(
-        public let rawData: RoArray<T>,
-        public let start: Int64,
-        public let size: Int64          /* length */
-    ) {
-        if (start < 0 || size < 0 || start + size > rawData.size) {
-            throw IllegalArgumentException("Arguments out of range.")
-        }
-    }
-
-    @overflowWrapping
-    public func get(index: Int64): ?T {
-        if (index >= 0 && index < size) {
-            return rawData.data.get(start + index)
-        }
-        None
-    }
-
-    @overflowWrapping
-    public operator func [](index: Int64) {
-        if (index >= 0 && index < size) {
-           return rawData.data[start + index]
-        }
-
-        throw IndexOutOfBoundsException()
-    }
-
-    public func toArray() {
-        rawData.data.slice(start, size)
-    }
-
-    @overflowWrapping
-    public func slice(start: Int64, len: Int64) {
-        RoArraySlice(rawData, this.start + start, len)
-    }
-
-    public func copyTo(dst: Array<T>, dstStart: Int64) {
-        rawData.data.copyTo(dst, start, dstStart, size)
     }
 }

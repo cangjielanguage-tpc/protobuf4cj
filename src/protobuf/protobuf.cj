@@ -9,7 +9,7 @@ from std import collection.*
 public type Tag = UInt32
 public type WireNum = UInt8
 public type Bytes = Array<Byte>
-public type BytesSlice = RoArraySlice<Byte>
+public type BytesSlice = RoArray<Byte>
 
 /* ffi, typecast by bits */
 foreign func itof(v: UInt32): Float32
@@ -179,7 +179,7 @@ public func varintData<T>(src: T): Bytes where T <: BytesReader {
         byte = src.read()
         data[i] = byte
         if (byte < 128) {
-            return data.slice(0, i + 1)
+            return data[.. i + 1]
         }
     }
 
@@ -412,7 +412,7 @@ public func bytesParse<T>(src: T) where T <: BytesReader & SubReader<T> {
 }
 
 public func stringParse<T>(src: T) where T <: BytesReader & SubReader<T> {
-    String.fromUtf8(src.read(int64Parse(src)).data().toArray())
+    String.fromUtf8(unsafe { src.read(int64Parse(src)).data().getRawArray() })
 }
 
 public interface Int32Enum <: ToString & ToJson {
@@ -443,11 +443,6 @@ public interface Message <: ToString {
 
     /* unpack from collection. */
     func unpack(src: Collection<Byte>): Unit {
-        unpacki(SimpleReader(src))
-    }
-
-    /* unpack from ro-array */
-    func unpack(src: RoArray<Byte>): Unit {
         unpacki(SimpleReader(src))
     }
 
