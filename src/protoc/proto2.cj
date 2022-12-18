@@ -156,7 +156,7 @@ func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorPro
     append("        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }\n        return i_tmp\n    }\n")
 
     // func unpack
-    append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {\n        while (!src.isEmpty()) {\n            let i_tmp = tagParse(src)\n            match (i_tmp[0]) {\n")
+    append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {\n        while (!src.isEmpty()) {\n            let i_tmp = src.parseTag()\n            match (i_tmp[0]) {\n")
     for (field in fields where !field.hasOneofIndex) { append("                case ${field.number} => ${getFieldUnpackExpr2(field)}\n") }
     for ((name, ofields) in helper.oneofDecl) { for (field in ofields) { append("                case ${field.number} => ${getOneofFieldUnapckExpr(name, field)}\n") } }
     append("                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))\n            }\n        }\n    }\n")

@@ -121,7 +121,7 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
     if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) {
         let ek = field.mapEntry[0]
         let ev = field.mapEntry[1]
-        return "for ((i_ktmp, i_vtmp) in ${name}) { tagPack(${field.number}, PREFIXED, out); var i_stmp = 0; if (${namedNoEmpty("i_ktmp", ek)}) { i_stmp += 1 + ${namedSize("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { i_stmp += 1 + ${namedSize("i_vtmp", ev)} }; varintPack(i_stmp, out); if (${namedNoEmpty("i_ktmp", ek)}) { ${namedPack("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { ${namedPack("i_vtmp", ev)} } }"
+        return "for ((i_ktmp, i_vtmp) in ${name}) { out.packTag(${field.number}, PREFIXED); var i_stmp = 0; if (${namedNoEmpty("i_ktmp", ek)}) { i_stmp += 1 + ${namedSize("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { i_stmp += 1 + ${namedSize("i_vtmp", ev)} }; out.packVarint(i_stmp); if (${namedNoEmpty("i_ktmp", ek)}) { ${namedPack("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { ${namedPack("i_vtmp", ev)} } }"
     }
 
     /* normal fields */
@@ -131,26 +131,26 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
 
     /* packed repeated fields */
     if (field.hasOptions && field.options.hasPacked && field.options.packed) {
-        return "tagPack(${field.number}, PREFIXED, out); " + match (field.type_) {
-            case TYPE_BOOL => "varintPack(${name}.size, out); for (i_itmp in ${name}) { boolPack(i_itmp, out) }"
-            case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "varintPack(8 * ${name}.size, out); for (i_itmp in ${name}) { fixedPack(i_itmp, out) }"
-            case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "varintPack(4 * ${name}.size, out); for (i_itmp in ${name}) { fixedPack(i_itmp, out) }"
-            case TYPE_ENUM => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp.value()) }; varintPack(i_stmp, out); for (i_itmp in ${name}) { varintPack(i_itmp.value(), out) }"
-            case TYPE_SINT32 | TYPE_SINT64 => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += sintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in ${name}) { sintPack(i_itmp, out) }"
-            case _ => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp) }; varintPack(i_stmp, out); for (i_itmp in ${name}) { varintPack(i_itmp, out) }"
+        return "out.packTag(${field.number}, PREFIXED); " + match (field.type_) {
+            case TYPE_BOOL => "out.packVarint(${name}.size); for (i_itmp in ${name}) { out.packBool(i_itmp) }"
+            case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "out.packVarint(8 * ${name}.size); for (i_itmp in ${name}) { out.packFixed(i_itmp) }"
+            case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "out.packVarint(4 * ${name}.size); for (i_itmp in ${name}) { out.packFixed(i_itmp) }"
+            case TYPE_ENUM => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp.value()) }; out.packVarint(i_stmp); for (i_itmp in ${name}) { out.packVarint(i_itmp.value()) }"
+            case TYPE_SINT32 | TYPE_SINT64 => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += sintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in ${name}) { out.packSInt(i_itmp) }"
+            case _ => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in ${name}) { out.packVarint(i_itmp) }"
         }
     }
 
     /* repeated fields */
     match (field.type_) {
-        case TYPE_BOOL => "for (i_itmp in ${name}) { tagPack(${field.number}, VARINT, out); boolPack(i_itmp, out) }"
-        case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "for (i_itmp in ${name}) { tagPack(${field.number}, BIT64, out); fixedPack(i_itmp, out) }"
-        case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "for (i_itmp in ${name}) { tagPack(${field.number}, BIT32, out); fixedPack(i_itmp, out) }"
-        case TYPE_BYTES | TYPE_STRING => "for (i_itmp in ${name}) { tagPack(${field.number}, PREFIXED, out); binPack(i_itmp, out) }"
-        case TYPE_MESSAGE => "for (i_itmp in ${name}) { tagPack(${field.number}, PREFIXED, out); varintPack(i_itmp.size, out); i_itmp.pack(out) }"
-        case TYPE_ENUM => "for (i_itmp in ${name}) { tagPack(${field.number}, VARINT, out); varintPack(i_itmp.value(), out) }"
-        case TYPE_SINT32 | TYPE_SINT64 => "for (i_itmp in ${name}) { tagPack(${field.number}, VARINT, out); sintPack(i_itmp, out) }"
-        case _ => "for (i_itmp in ${name}) { tagPack(${field.number}, VARINT, out); varintPack(i_itmp, out) }"
+        case TYPE_BOOL => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packBool(i_itmp) }"
+        case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "for (i_itmp in ${name}) { out.packTag(${field.number}, BIT64); out.packFixed(i_itmp) }"
+        case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "for (i_itmp in ${name}) { out.packTag(${field.number}, BIT32); out.packFixed(i_itmp) }"
+        case TYPE_BYTES | TYPE_STRING => "for (i_itmp in ${name}) { out.packTag(${field.number}, PREFIXED); out.packBin(i_itmp) }"
+        case TYPE_MESSAGE => "for (i_itmp in ${name}) { out.packTag(${field.number}, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) }"
+        case TYPE_ENUM => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packVarint(i_itmp.value()) }"
+        case TYPE_SINT32 | TYPE_SINT64 => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packSInt(i_itmp) }"
+        case _ => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packVarint(i_itmp) }"
     }
 }
 
@@ -162,7 +162,7 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
     if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) {
         let ek = field.mapEntry[0]
         let ev = field.mapEntry[1]
-        return "let i_stmp = sub(src); var i_ktmp = ${initValue(ek)}; var i_vtmp = ${initValue(ev)}; while (!i_stmp.isEmpty()) { match (tagParse(i_stmp)[0]) { case 1 => ${namedParseSrc("i_ktmp", "i_stmp", ek)} case 2 => ${namedParseSrc("i_vtmp", "i_stmp", ev)} case _ => throw ParseValueExecption(\"map\") } }; ${name}[i_ktmp] = i_vtmp"
+        return "let i_stmp = src.sub(); var i_ktmp = ${initValue(ek)}; var i_vtmp = ${initValue(ev)}; while (!i_stmp.isEmpty()) { match (i_stmp.parseTag()[0]) { case 1 => ${namedParseSrc("i_ktmp", "i_stmp", ek)} case 2 => ${namedParseSrc("i_vtmp", "i_stmp", ev)} case _ => throw ParseValueExecption(\"map\") } }; ${name}[i_ktmp] = i_vtmp"
     }
 
     /* normal fields */
@@ -172,44 +172,44 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
 
     /* packed repeated fields */
     if (field.hasOptions && field.options.hasPacked && field.options.packed) {
-        return "let i_stmp = sub(src); while (!i_stmp.isEmpty()) { " + match (field.type_) {
-            case TYPE_DOUBLE => "${name}.append(float64Parse(i_stmp))"
-            case TYPE_FLOAT => "${name}.append(float32Parse(i_stmp))"
-            case TYPE_INT64 => "${name}.append(int64Parse(i_stmp))"
-            case TYPE_UINT64 => "${name}.append(uint64Parse(i_stmp))"
-            case TYPE_INT32 => "${name}.append(int32Parse(i_stmp))"
-            case TYPE_UINT32 => "${name}.append(uint32Parse(i_stmp))"
-            case TYPE_ENUM => "${name}.append(${field.typeName}.parse(int32Parse(i_stmp)))"
-            case TYPE_BOOL => "${name}.append(boolParse(i_stmp))"
-            case TYPE_FIXED64 => "${name}.append(fixed64Parse(i_stmp))"
-            case TYPE_FIXED32 => "${name}.append(fixed32Parse(i_stmp))"
-            case TYPE_SFIXED32 => "${name}.append(sfixed32Parse(i_stmp))"
-            case TYPE_SFIXED64 => "${name}.append(sfixed64Parse(i_stmp))"
-            case TYPE_SINT32 => "${name}.append(sint32Parse(i_stmp))"
-            case TYPE_SINT64 => "${name}.append(sint64Parse(i_stmp))"
+        return "let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { " + match (field.type_) {
+            case TYPE_DOUBLE => "${name}.append(i_stmp.parseFloat64())"
+            case TYPE_FLOAT => "${name}.append(i_stmp.parseFloat32())"
+            case TYPE_INT64 => "${name}.append(i_stmp.parseInt64())"
+            case TYPE_UINT64 => "${name}.append(i_stmp.parseUInt64())"
+            case TYPE_INT32 => "${name}.append(i_stmp.parseInt32())"
+            case TYPE_UINT32 => "${name}.append(i_stmp.parseUInt32())"
+            case TYPE_ENUM => "${name}.append(${field.typeName}.parse(i_stmp.parseInt32()))"
+            case TYPE_BOOL => "${name}.append(i_stmp.parseBool())"
+            case TYPE_FIXED64 => "${name}.append(i_stmp.parseFixed64())"
+            case TYPE_FIXED32 => "${name}.append(i_stmp.parseFixed32())"
+            case TYPE_SFIXED32 => "${name}.append(i_stmp.parseSFixed32())"
+            case TYPE_SFIXED64 => "${name}.append(i_stmp.parseSFixed64())"
+            case TYPE_SINT32 => "${name}.append(i_stmp.parseSInt32())"
+            case TYPE_SINT64 => "${name}.append(i_stmp.parseSInt64())"
             case _=> throw Exception("UNSUPPORTED TYPE")
         } + " }"
     }
 
     /* repeated fields */
     match (field.type_) {
-        case TYPE_DOUBLE => "${name}.append(float64Parse(src))"
-        case TYPE_FLOAT => "${name}.append(float32Parse(src))"
-        case TYPE_INT64 => "${name}.append(int64Parse(src))"
-        case TYPE_UINT64 => "${name}.append(uint64Parse(src))"
-        case TYPE_INT32 => "${name}.append(int32Parse(src))"
-        case TYPE_UINT32 => "${name}.append(uint32Parse(src))"
-        case TYPE_ENUM => "${name}.append(${field.typeName}.parse(int32Parse(src)))"
-        case TYPE_BOOL => "${name}.append(boolParse(src))"
-        case TYPE_STRING => "${name}.append(stringParse(src))"
-        case TYPE_MESSAGE => "${name}.add().unpack(sub(src))"
-        case TYPE_BYTES => "${name}.append(bytesParse(src))"
-        case TYPE_FIXED64 => "${name}.append(fixed64Parse(src))"
-        case TYPE_FIXED32 => "${name}.append(fixed32Parse(src))"
-        case TYPE_SFIXED32 => "${name}.append(sfixed32Parse(src))"
-        case TYPE_SFIXED64 => "${name}.append(sfixed64Parse(src))"
-        case TYPE_SINT32 => "${name}.append(sint32Parse(src))"
-        case TYPE_SINT64 => "${name}.append(sint64Parse(src))"
+        case TYPE_DOUBLE => "${name}.append(src.parseFloat64())"
+        case TYPE_FLOAT => "${name}.append(src.parseFloat32())"
+        case TYPE_INT64 => "${name}.append(src.parseInt64())"
+        case TYPE_UINT64 => "${name}.append(src.parseUInt64())"
+        case TYPE_INT32 => "${name}.append(src.parseInt32())"
+        case TYPE_UINT32 => "${name}.append(src.parseUInt32())"
+        case TYPE_ENUM => "${name}.append(${field.typeName}.parse(src.parseInt32()))"
+        case TYPE_BOOL => "${name}.append(src.parseBool())"
+        case TYPE_STRING => "${name}.append(src.parseString())"
+        case TYPE_MESSAGE => "${name}.add().unpack(src.sub())"
+        case TYPE_BYTES => "${name}.append(src.parseBytes())"
+        case TYPE_FIXED64 => "${name}.append(src.parseFixed64())"
+        case TYPE_FIXED32 => "${name}.append(src.parseFixed32())"
+        case TYPE_SFIXED32 => "${name}.append(src.parseSFixed32())"
+        case TYPE_SFIXED64 => "${name}.append(src.parseSFixed64())"
+        case TYPE_SINT32 => "${name}.append(src.parseSInt32())"
+        case TYPE_SINT64 => "${name}.append(src.parseSInt64())"
         case _=> throw Exception("UNSUPPORTED TYPE")
     }
 }
@@ -284,7 +284,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     append("        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }\n        return i_tmp\n    }\n")
 
     // func unpack
-    append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {\n        while (!src.isEmpty()) {\n            let i_tmp = tagParse(src)\n            match (i_tmp[0]) {\n")
+    append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {\n        while (!src.isEmpty()) {\n            let i_tmp = src.parseTag()\n            match (i_tmp[0]) {\n")
     for (field in fields where !field.hasOneofIndex) { append("                case ${field.number} => ${getFieldUnpackExpr(field)}\n") }
     for ((name, ofields) in helper.oneofDecl) { for (field in ofields) { append("                case ${field.number} => ${getOneofFieldUnapckExpr(name, field)}\n") } }
     append("                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))\n            }\n        }\n    }\n")
