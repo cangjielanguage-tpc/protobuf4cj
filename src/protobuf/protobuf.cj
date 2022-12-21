@@ -49,7 +49,7 @@ public func tagSize(tag: Tag) {
     if (tag < (1 << 11)) { return 2 }
     if (tag < (1 << 18)) { return 3 }
     if (tag < (1 << 25)) { return 4 }
-    5
+    return 5
 }
 
 /* pack a tag(with wire-type) out. */
@@ -95,8 +95,7 @@ public func tagParse<T>(src: T): (Tag, WireNum) where T <: BytesReader {
 
 /* packed size by varint encoding. */
 public func varintSize(val: UInt64) {
-    if (val > 0x7fff_ffff_ffff_ffff) { return 10 }
-    if (val < (1 << 7)) { return 1 } 
+    if (val < (1 << 7)) { return 1 }
     if (val < (1 << 14)) { return 2 }
     if (val < (1 << 21)) { return 3 }
     if (val < (1 << 28)) { return 4 }
@@ -104,7 +103,8 @@ public func varintSize(val: UInt64) {
     if (val < (1 << 42)) { return 6 }
     if (val < (1 << 49)) { return 7 }
     if (val < (1 << 56)) { return 8 }
-    9
+    if (val < (1 << 63)) { return 9 }
+    return 10
 }
 
 /* packed size by varint encoding. */
@@ -134,7 +134,11 @@ public func varintSize<E>(val: E) where E <: Int32Enum {
 /* pack out by varint encoding. */
 @overflowWrapping
 public func varintPack<T>(val: UInt64, out: T) where T <: BytesWriter {
-    var v = val
+    if (val < 0x80) {
+        return out.append(UInt8(val))
+    }
+
+    var v = val >> 7
     while (v >= 0x80) {
         out.append(UInt8(v | 0x80))
         v >>= 7

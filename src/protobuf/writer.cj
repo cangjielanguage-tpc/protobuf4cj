@@ -30,7 +30,11 @@ public interface BytesWriter {
     /* pack out by varint encoding. */
     @overflowWrapping
     func packVarint(val: UInt64) {
-        var v = val
+        if (val < 0x80) {
+            return append(UInt8(val))
+        }
+
+        var v = val >> 7
         while (v >= 0x80) {
             append(UInt8(v | 0x80))
             v >>= 7

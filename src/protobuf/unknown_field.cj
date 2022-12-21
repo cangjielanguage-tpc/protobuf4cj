@@ -21,16 +21,16 @@ public class MessageUnknownField <: ToString {
 
     /* Pack out the unknown field with tag. */
     public func pack<T>(out: T) where T <: BytesWriter {
-        tagPack(tag, wireType, out)
-        if (wireType.value == PREFIXED) { varintPack(data.size, out) }
+        out.packTag(tag, wireType)
+        if (wireType.value == PREFIXED) { out.packVarint(data.size) }
         out.appendBytes(data)
     }
 
     public static func unpack<T>(tag: Tag, wt: WireNum, src: T) where T <: BytesReader & SubReader<T> {
         MessageUnknownField(tag, WireType.parse(wt), match (wt) {
-            case 0 => varintData(src)
+            case 0 => src.parseVarintData()
             case 1 => src.read(8).data().toArray()
-            case 2 => sub(src).data().toArray()
+            case 2 => src.sub().data().toArray()
             case 5 => src.read(4).data().toArray()
             case _ => throw ParseValueExecption("UnknownField")
         })
