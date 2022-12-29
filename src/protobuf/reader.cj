@@ -29,14 +29,14 @@ public interface BytesReader <: SubReader<BytesReader> {
 
         var tag = UInt32(byte & 0x7f) >> 3
         let wireType = byte & 7
-        if ((byte & 0x80) == 0) {
+        if (byte < 0x80) {
             return (tag, wireType)
         }
 
         var shift: UInt8 = 4
         for (i in 1..5) {
             byte = read()
-            if ((byte & 0x80) == 0) {
+            if (byte < 0x80) {
                 tag |= UInt32(byte) << shift
                 return (tag, wireType)
             }
@@ -52,7 +52,7 @@ public interface BytesReader <: SubReader<BytesReader> {
     @overflowWrapping
     func parseVarintData() {
         var byte = read()
-        if (byte < 128) {
+        if (byte < 0x80) {
             return [byte]
         }
 
@@ -60,7 +60,7 @@ public interface BytesReader <: SubReader<BytesReader> {
         for (i in 1..10) {
             byte = read()
             data[i] = byte
-            if (byte < 128) {
+            if (byte < 0x80) {
                 return data[.. i + 1]
             }
         }
@@ -73,14 +73,14 @@ public interface BytesReader <: SubReader<BytesReader> {
     func parseUInt64() {
         var byte = read()
         var rv = UInt64(byte & 0x7f)
-        if ((byte & 0x80) == 0) {
+        if (byte < 0x80) {
             return rv
         }
 
         var shift: UInt8 = 7
         for (i in 1..10) {
             byte = read()
-            if ((byte & 0x80) == 0) {
+            if (byte < 0x80) {
                 rv |= UInt64(byte) << shift
                 return rv
             }
@@ -100,13 +100,44 @@ public interface BytesReader <: SubReader<BytesReader> {
     /* parse uint32 from varint encoded  */
     @overflowWrapping
     func parseUInt32() {
-        UInt32(parseUInt64())
+        var byte = read()
+        var rv = UInt32(byte & 0x7f)
+        if (byte < 0x80) {
+            return rv
+        }
+
+        byte = read()
+        rv |= UInt32(byte & 0x7f) << 7
+        if (byte < 0x80) {
+            return rv
+        }
+
+        byte = read()
+        rv |= UInt32(byte & 0x7f) << 14
+        if (byte < 0x80) {
+            return rv
+        }
+
+        byte = read()
+        rv |= UInt32(byte & 0x7f) << 21
+        if (byte < 0x80) {
+            return rv
+        }
+
+        byte = read()
+        rv |= UInt32(byte) << 28
+        /* scan varint */
+        if ((byte > 0x7f) && (read() > 0x7f) && (read() > 0x7f) && (read() > 0x7f) && (read() > 0x7f)) {
+            read()
+        }
+
+        return rv
     }
 
     /* parse int32 from varint encoded  */
     @overflowWrapping
     func parseInt32() {
-        Int32(parseUInt64())
+        Int32(parseUInt32())
     }
 
     func parseBool() {
