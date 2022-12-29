@@ -69,19 +69,37 @@ public func varintSize(val: UInt64) {
 /* packed size by varint encoding. */
 @overflowWrapping
 public func varintSize(val: Int64) {
-    varintSize(UInt64(val))
+    if (val < 0) { return 10 }
+    if (val < (1 << 7)) { return 1 }
+    if (val < (1 << 14)) { return 2 }
+    if (val < (1 << 21)) { return 3 }
+    if (val < (1 << 28)) { return 4 }
+    if (val < (1 << 35)) { return 5 }
+    if (val < (1 << 42)) { return 6 }
+    if (val < (1 << 49)) { return 7 }
+    if (val < (1 << 56)) { return 8 }
+    return 9
 }
 
 /* packed size by varint encoding. */
 @overflowWrapping
 public func varintSize(val: UInt32) {
-    varintSize(UInt64(val))
+    if (val < (1 << 7)) { return 1 }
+    if (val < (1 << 14)) { return 2 }
+    if (val < (1 << 21)) { return 3 }
+    if (val < (1 << 28)) { return 4 }
+	return 5
 }
 
 /* packed size by varint encoding. */
 @overflowWrapping
 public func varintSize(val: Int32) {
-    varintSize(UInt64(val))
+    if (val < 0) { return 10 }
+    if (val < (1 << 7)) { return 1 }
+    if (val < (1 << 14)) { return 2 }
+    if (val < (1 << 21)) { return 3 }
+    if (val < (1 << 28)) { return 4 }
+    return 5
 }
 
 /* the zigzag-encoded 64-bit unsigned integer form of a 64-bit signed integer. */
