@@ -30,11 +30,7 @@ public interface BytesWriter {
     /* pack out by varint encoding. */
     @overflowWrapping
     func packVarint(val: UInt64) {
-        if (val < 0x80) {
-            return append(UInt8(val))
-        }
-
-        var v = val >> 7
+        var v = val
         while (v >= 0x80) {
             append(UInt8(v | 0x80))
             v >>= 7
@@ -51,19 +47,45 @@ public interface BytesWriter {
     /* pack out by varint encoding. */
     @overflowWrapping
     func packVarint(val: UInt32) {
-        packVarint(UInt64(val))
+        var value = val
+        if (value >= 0x80) {
+            append(UInt8(value | 0x80))
+            value >>= 7
+            if (value >= 0x80) {
+                append(UInt8(value | 0x80))
+                value >>= 7
+                if (value >= 0x80) {
+                    append(UInt8(value | 0x80))
+                    value >>= 7
+                    if (value >= 0x80) {
+                        append(UInt8(value | 0x80))
+                        value >>= 7
+                    }
+                }
+            }
+        }
+
+        /* assert: value < 128 */
+        append(UInt8(value))
     }
 
     /* pack out by varint encoding. */
     @overflowWrapping
     func packVarint(val: Int32) {
-        packVarint(UInt64(val))
-    }
+        if (val >= 0) {
+            return packVarint(UInt32(val))
+        }
 
-    /* pack out by varint encoding. */
-    @overflowWrapping
-    func packVarint(val: Int32Enum) {
-        packVarint(UInt64(val.value()))
+        append(UInt8(val | 0x80))
+        append(UInt8((val >> 7) | 0x80))
+        append(UInt8((val >> 14) | 0x80))
+        append(UInt8((val >> 21) | 0x80))
+        append(UInt8((val >> 28) | 0x80))
+        append(0xff)
+        append(0xff)
+        append(0xff)
+        append(0xff)
+        append(0x01)
     }
 
     /* pack out bool */
