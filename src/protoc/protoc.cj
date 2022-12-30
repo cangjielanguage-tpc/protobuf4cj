@@ -382,12 +382,12 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
 }
 
 /* oneof unpack expr */
-func getOneofFieldUnapckExpr(name: String, field: FieldDescriptorProto) {
+func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescriptorProto) {
     if (field.type_ == TYPE_MESSAGE) {
-        return "let i_vtmp = ${field.typeName}(); i_vtmp.unpack(src); ${getMessagePropName(name)} = ${titleCase(field.jsonName)}(i_vtmp)"
+        return "let i_vtmp = ${field.typeName}(); i_vtmp.unpack(src); ${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.jsonName)}(i_vtmp)"
     }
 
-    "${getMessagePropName(name)} = ${titleCase(field.jsonName)}(" + match (field.type_) {
+    "${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.jsonName)}(" + match (field.type_) {
         case TYPE_DOUBLE => "src.parseFloat64()"
         case TYPE_FLOAT => "src.parseFloat32()"
         case TYPE_INT64 => "src.parseInt64()"

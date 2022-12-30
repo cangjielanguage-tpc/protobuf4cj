@@ -120,7 +120,7 @@ func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorPro
     // oneof field props
     for ((name, ofields) in helper.oneofDecl) {
         append("\n    /* oneof ${name} */\n")
-        for (field in ofields) { append("    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { match (${getMessagePropName(name)}) { case ${titleCase(field.jsonName)}(i_vtmp) => i_vtmp case _ => throw UnexpectedOneofException() } } set(i_vtmp) { ${getMessagePropName(name)} = ${titleCase(field.jsonName)}(i_vtmp) } }\n") }
+        for (field in ofields) { append("    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { match (${getMessagePropName(name)}) { case ${titleCase(field.jsonName)}(i_vtmp) => i_vtmp case _ => throw UnexpectedOneofException() } } set(i_vtmp) { ${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.jsonName)}(i_vtmp) } }\n") }
     }
 
     // prop size
@@ -158,7 +158,7 @@ func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorPro
     // func unpack
     append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {\n        while (!src.isEmpty()) {\n            let i_tmp = src.parseTag()\n            match (i_tmp[0]) {\n")
     for (field in fields where !field.hasOneofIndex) { append("                case ${field.number} => ${getFieldUnpackExpr2(field)}\n") }
-    for ((name, ofields) in helper.oneofDecl) { for (field in ofields) { append("                case ${field.number} => ${getOneofFieldUnapckExpr(name, field)}\n") } }
+    for ((name, ofields) in helper.oneofDecl) { for (field in ofields) { append("                case ${field.number} => ${getOneofFieldUnapckExpr(typeName, name, field)}\n") } }
     append("                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))\n            }\n        }\n    }\n")
 
     // func pack
