@@ -10,10 +10,11 @@ public interface BytesWriter {
     func append(val: Byte): Unit
     /* append bytes to writer */
     func appendBytes(val: Bytes): Unit
+
     /* append string utf8 view to writer */
-    func appendUtf8View(val: Utf8View): Unit
+    func appendUtf8View(val: Utf8View): Unit { unsafe { appendBytes(val.getRawBytes()) } }
     /* append slice to writer */
-    func appendSlice(val: BytesSlice): Unit
+    func appendSlice(val: BytesSlice): Unit { unsafe { appendBytes(val.getRawArray()) } }
 
     /* pack a tag(with wire-type) out. */
     @overflowWrapping
@@ -191,18 +192,6 @@ public class SimpleWriter <: BytesWriter {
     @overflowWrapping
     public func appendBytes(val: Bytes) {
         val.copyTo(data, 0, offset, val.size)
-        offset += val.size
-    }
-
-    @overflowWrapping
-    public func appendUtf8View(val: Utf8View) {
-        val.copyTo(data, offset)
-        offset += val.size
-    }
-
-    @overflowWrapping
-    public func appendSlice(val: BytesSlice) {
-        val.copyTo(data, offset)
         offset += val.size
     }
 }
