@@ -34,7 +34,7 @@ public interface BytesReader <: SubReader<BytesReader> {
         }
 
         var shift: UInt8 = 4
-        for (i in 1..5) {
+        while (shift <= 25) {
             byte = read()
             if (byte < 0x80) {
                 tag |= UInt32(byte) << shift
@@ -57,7 +57,8 @@ public interface BytesReader <: SubReader<BytesReader> {
         }
 
         let data: Bytes = [byte, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (i in 1..10) {
+        var i = 1
+        while (i < 10) {
             byte = read()
             data[i] = byte
             if (byte < 0x80) {
@@ -78,7 +79,7 @@ public interface BytesReader <: SubReader<BytesReader> {
         }
 
         var shift: UInt8 = 7
-        for (i in 1..10) {
+        while (shift <= 63) {
             byte = read()
             if (byte < 0x80) {
                 rv |= UInt64(byte) << shift
