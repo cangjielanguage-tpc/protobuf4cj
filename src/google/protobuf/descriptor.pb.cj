@@ -44,7 +44,7 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!file.isEmpty()) { for (i_itmp in file) { out.packTag(1, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!file.isEmpty()) { for (i_itmp in file) { out.append(10); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -193,18 +193,18 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_package) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
-        if (!dependency.isEmpty()) { for (i_itmp in dependency) { out.packTag(3, PREFIXED); out.packBin(i_itmp) } }
-        if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { out.packTag(10, VARINT); out.packVarint(i_itmp) } }
-        if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { out.packTag(11, VARINT); out.packVarint(i_itmp) } }
-        if (!messageType.isEmpty()) { for (i_itmp in messageType) { out.packTag(4, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!enumType.isEmpty()) { for (i_itmp in enumType) { out.packTag(5, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!service.isEmpty()) { for (i_itmp in service) { out.packTag(6, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!extension.isEmpty()) { for (i_itmp in extension) { out.packTag(7, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { out.packTag(8, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_sourceCodeInfo) { out.packTag(9, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_syntax) { out.packTag(12, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_package) { out.append(18); out.packBin(i_vtmp) }
+        if (!dependency.isEmpty()) { for (i_itmp in dependency) { out.append(26); out.packBin(i_itmp) } }
+        if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { out.append(80); out.packVarint(i_itmp) } }
+        if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { out.append(88); out.packVarint(i_itmp) } }
+        if (!messageType.isEmpty()) { for (i_itmp in messageType) { out.append(34); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { out.append(42); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!service.isEmpty()) { for (i_itmp in service) { out.append(50); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { out.append(58); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.append(66); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_sourceCodeInfo) { out.append(74); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_syntax) { out.append(98); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -302,9 +302,9 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_start) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_end) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_start) { out.append(8); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.append(16); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -383,8 +383,8 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_start) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_end) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_start) { out.append(8); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.append(16); out.packVarint(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -510,16 +510,16 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (!field.isEmpty()) { for (i_itmp in field) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!extension.isEmpty()) { for (i_itmp in extension) { out.packTag(6, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!nestedType.isEmpty()) { for (i_itmp in nestedType) { out.packTag(3, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!enumType.isEmpty()) { for (i_itmp in enumType) { out.packTag(4, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!extensionRange.isEmpty()) { for (i_itmp in extensionRange) { out.packTag(5, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { out.packTag(8, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { out.packTag(7, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { out.packTag(9, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { out.packTag(10, PREFIXED); out.packBin(i_itmp) } }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (!field.isEmpty()) { for (i_itmp in field) { out.append(18); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!extension.isEmpty()) { for (i_itmp in extension) { out.append(50); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!nestedType.isEmpty()) { for (i_itmp in nestedType) { out.append(26); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!enumType.isEmpty()) { for (i_itmp in enumType) { out.append(34); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!extensionRange.isEmpty()) { for (i_itmp in extensionRange) { out.append(42); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { out.append(66); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.append(58); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { out.append(74); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { out.append(82); out.packBin(i_itmp) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -935,16 +935,16 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_number) { out.packTag(3, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_label) { out.packTag(4, VARINT); out.packVarint(i_vtmp.value()) }
-        if (let Some(i_vtmp) = m_type) { out.packTag(5, VARINT); out.packVarint(i_vtmp.value()) }
-        if (let Some(i_vtmp) = m_typeName) { out.packTag(6, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_extendee) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_defaultValue) { out.packTag(7, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_oneofIndex) { out.packTag(9, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_jsonName) { out.packTag(10, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_options) { out.packTag(8, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { out.append(24); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_label) { out.append(32); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_type) { out.append(40); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_typeName) { out.append(50); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_extendee) { out.append(18); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_defaultValue) { out.append(58); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_oneofIndex) { out.append(72); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_jsonName) { out.append(82); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.append(66); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (let Some(i_vtmp) = m_proto3Optional) { out.packTag(17, VARINT); out.packBool(i_vtmp) }
         if (!mapEntry.isEmpty()) { for (i_itmp in mapEntry) { out.packTag(9999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
@@ -1034,8 +1034,8 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_options) { out.packTag(2, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.append(18); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1113,8 +1113,8 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_start) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_end) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_start) { out.append(8); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.append(16); out.packVarint(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1210,11 +1210,11 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (!value.isEmpty()) { for (i_itmp in value) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { out.packTag(4, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { out.packTag(5, PREFIXED); out.packBin(i_itmp) } }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (!value.isEmpty()) { for (i_itmp in value) { out.append(18); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { out.append(34); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!reservedName.isEmpty()) { for (i_itmp in reservedName) { out.append(42); out.packBin(i_itmp) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1305,9 +1305,9 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_number) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_number) { out.append(16); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1392,9 +1392,9 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (!method.isEmpty()) { for (i_itmp in method) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_options) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (!method.isEmpty()) { for (i_itmp in method) { out.append(18); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_options) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -1523,12 +1523,12 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_inputType) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_outputType) { out.packTag(3, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_options) { out.packTag(4, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (let Some(i_vtmp) = m_clientStreaming) { out.packTag(5, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_serverStreaming) { out.packTag(6, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_inputType) { out.append(18); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_outputType) { out.append(26); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_options) { out.append(34); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(i_vtmp) = m_clientStreaming) { out.append(40); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_serverStreaming) { out.append(48); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = m_funcName) { out.packTag(9999, PREFIXED); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
@@ -1845,13 +1845,13 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_javaPackage) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_javaOuterClassname) { out.packTag(8, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_javaMultipleFiles) { out.packTag(10, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaPackage) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaOuterClassname) { out.append(66); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_javaMultipleFiles) { out.append(80); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { out.packTag(20, VARINT); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = m_javaStringCheckUtf8) { out.packTag(27, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_optimizeFor) { out.packTag(9, VARINT); out.packVarint(i_vtmp.value()) }
-        if (let Some(i_vtmp) = m_goPackage) { out.packTag(11, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_optimizeFor) { out.append(72); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_goPackage) { out.append(90); out.packBin(i_vtmp) }
         if (let Some(i_vtmp) = m_ccGenericServices) { out.packTag(16, VARINT); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = m_javaGenericServices) { out.packTag(17, VARINT); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = m_pyGenericServices) { out.packTag(18, VARINT); out.packBool(i_vtmp) }
@@ -1988,10 +1988,10 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_messageSetWireFormat) { out.packTag(1, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_deprecated) { out.packTag(3, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_mapEntry) { out.packTag(7, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_messageSetWireFormat) { out.append(8); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { out.append(16); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.append(24); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_mapEntry) { out.append(56); out.packBool(i_vtmp) }
         if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
@@ -2223,13 +2223,13 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_ctype) { out.packTag(1, VARINT); out.packVarint(i_vtmp.value()) }
-        if (let Some(i_vtmp) = m_packed) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_jstype) { out.packTag(6, VARINT); out.packVarint(i_vtmp.value()) }
-        if (let Some(i_vtmp) = m_lazy) { out.packTag(5, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_unverifiedLazy) { out.packTag(15, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_deprecated) { out.packTag(3, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_weak) { out.packTag(10, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_ctype) { out.append(8); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_packed) { out.append(16); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_jstype) { out.append(48); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = m_lazy) { out.append(40); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_unverifiedLazy) { out.append(120); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.append(24); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_weak) { out.append(80); out.packBool(i_vtmp) }
         if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
@@ -2383,8 +2383,8 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_allowAlias) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = m_deprecated) { out.packTag(3, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_allowAlias) { out.append(16); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.append(24); out.packBool(i_vtmp) }
         if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
@@ -2460,7 +2460,7 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_deprecated) { out.packTag(1, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_deprecated) { out.append(8); out.packBool(i_vtmp) }
         if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
@@ -2748,8 +2748,8 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_namePart) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_isExtension) { out.packTag(2, VARINT); out.packBool(i_vtmp) }
+        if (let Some(i_vtmp) = m_namePart) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_isExtension) { out.append(16); out.packBool(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2875,13 +2875,13 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!name.isEmpty()) { for (i_itmp in name) { out.packTag(2, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_identifierValue) { out.packTag(3, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_positiveIntValue) { out.packTag(4, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_negativeIntValue) { out.packTag(5, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_doubleValue) { out.packTag(6, BIT64); out.packFixed(i_vtmp) }
-        if (let Some(i_vtmp) = m_stringValue) { out.packTag(7, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_aggregateValue) { out.packTag(8, PREFIXED); out.packBin(i_vtmp) }
+        if (!name.isEmpty()) { for (i_itmp in name) { out.append(18); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_identifierValue) { out.append(26); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_positiveIntValue) { out.append(32); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_negativeIntValue) { out.append(40); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_doubleValue) { out.append(49); out.packFixed(i_vtmp) }
+        if (let Some(i_vtmp) = m_stringValue) { out.append(58); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_aggregateValue) { out.append(66); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -2982,11 +2982,11 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!path.isEmpty()) { out.packTag(1, PREFIXED); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in path) { out.packVarint(i_itmp) } }
-        if (!span.isEmpty()) { out.packTag(2, PREFIXED); var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in span) { out.packVarint(i_itmp) } }
-        if (let Some(i_vtmp) = m_leadingComments) { out.packTag(3, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_trailingComments) { out.packTag(4, PREFIXED); out.packBin(i_vtmp) }
-        if (!leadingDetachedComments.isEmpty()) { for (i_itmp in leadingDetachedComments) { out.packTag(6, PREFIXED); out.packBin(i_itmp) } }
+        if (!path.isEmpty()) { out.append(10); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in path) { out.packVarint(i_itmp) } }
+        if (!span.isEmpty()) { out.append(18); var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in span) { out.packVarint(i_itmp) } }
+        if (let Some(i_vtmp) = m_leadingComments) { out.append(26); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_trailingComments) { out.append(34); out.packBin(i_vtmp) }
+        if (!leadingDetachedComments.isEmpty()) { for (i_itmp in leadingDetachedComments) { out.append(50); out.packBin(i_itmp) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -3053,7 +3053,7 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!location.isEmpty()) { for (i_itmp in location) { out.packTag(1, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!location.isEmpty()) { for (i_itmp in location) { out.append(10); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -3146,10 +3146,10 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!path.isEmpty()) { out.packTag(1, PREFIXED); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in path) { out.packVarint(i_itmp) } }
-        if (let Some(i_vtmp) = m_sourceFile) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_begin) { out.packTag(3, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_end) { out.packTag(4, VARINT); out.packVarint(i_vtmp) }
+        if (!path.isEmpty()) { out.append(10); var i_stmp = 0; for (i_itmp in path) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in path) { out.packVarint(i_itmp) } }
+        if (let Some(i_vtmp) = m_sourceFile) { out.append(18); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_begin) { out.append(24); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_end) { out.append(32); out.packVarint(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -3215,7 +3215,7 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!annotation.isEmpty()) { for (i_itmp in annotation) { out.packTag(1, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (!annotation.isEmpty()) { for (i_itmp in annotation) { out.append(10); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 

@@ -121,7 +121,7 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
     if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) {
         let ek = field.mapEntry[0]
         let ev = field.mapEntry[1]
-        return "for ((i_ktmp, i_vtmp) in ${name}) { out.packTag(${field.number}, PREFIXED); var i_stmp = 0; if (${namedNoEmpty("i_ktmp", ek)}) { i_stmp += 1 + ${namedSize("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { i_stmp += 1 + ${namedSize("i_vtmp", ev)} }; out.packVarint(i_stmp); if (${namedNoEmpty("i_ktmp", ek)}) { ${namedPack("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { ${namedPack("i_vtmp", ev)} } }"
+        return "for ((i_ktmp, i_vtmp) in ${name}) { ${packTagOut(field.number, PREFIXED)}; var i_stmp = 0; if (${namedNoEmpty("i_ktmp", ek)}) { i_stmp += 1 + ${namedSize("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { i_stmp += 1 + ${namedSize("i_vtmp", ev)} }; out.packVarint(i_stmp); if (${namedNoEmpty("i_ktmp", ek)}) { ${namedPack("i_ktmp", ek)} }; if (${namedNoEmpty("i_vtmp", ev)}) { ${namedPack("i_vtmp", ev)} } }"
     }
 
     /* normal fields */
@@ -131,7 +131,7 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
 
     /* packed repeated fields */
     if (field.hasOptions && field.options.hasPacked && field.options.packed) {
-        return "out.packTag(${field.number}, PREFIXED); " + match (field.type_) {
+        return "${packTagOut(field.number, PREFIXED)}; " + match (field.type_) {
             case TYPE_BOOL => "out.packVarint(${name}.size); for (i_itmp in ${name}) { out.packBool(i_itmp) }"
             case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "out.packVarint(8 * ${name}.size); for (i_itmp in ${name}) { out.packFixed(i_itmp) }"
             case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "out.packVarint(4 * ${name}.size); for (i_itmp in ${name}) { out.packFixed(i_itmp) }"
@@ -143,14 +143,14 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
 
     /* repeated fields */
     match (field.type_) {
-        case TYPE_BOOL => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packBool(i_itmp) }"
-        case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "for (i_itmp in ${name}) { out.packTag(${field.number}, BIT64); out.packFixed(i_itmp) }"
-        case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "for (i_itmp in ${name}) { out.packTag(${field.number}, BIT32); out.packFixed(i_itmp) }"
-        case TYPE_BYTES | TYPE_STRING => "for (i_itmp in ${name}) { out.packTag(${field.number}, PREFIXED); out.packBin(i_itmp) }"
-        case TYPE_MESSAGE => "for (i_itmp in ${name}) { out.packTag(${field.number}, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) }"
-        case TYPE_ENUM => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packVarint(i_itmp.value()) }"
-        case TYPE_SINT32 | TYPE_SINT64 => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packSInt(i_itmp) }"
-        case _ => "for (i_itmp in ${name}) { out.packTag(${field.number}, VARINT); out.packVarint(i_itmp) }"
+        case TYPE_BOOL => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packBool(i_itmp) }"
+        case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "for (i_itmp in ${name}) { ${packTagOut(field.number, BIT64)}; out.packFixed(i_itmp) }"
+        case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "for (i_itmp in ${name}) { ${packTagOut(field.number, BIT32)}; out.packFixed(i_itmp) }"
+        case TYPE_BYTES | TYPE_STRING => "for (i_itmp in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packBin(i_itmp) }"
+        case TYPE_MESSAGE => "for (i_itmp in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packVarint(i_itmp.size); i_itmp.pack(out) }"
+        case TYPE_ENUM => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packVarint(i_itmp.value()) }"
+        case TYPE_SINT32 | TYPE_SINT64 => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packSInt(i_itmp) }"
+        case _ => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packVarint(i_itmp) }"
     }
 }
 

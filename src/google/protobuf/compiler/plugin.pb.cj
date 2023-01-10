@@ -79,10 +79,10 @@ public class Version <: Message & TypedMessage<Version> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_major) { out.packTag(1, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_minor) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_patch) { out.packTag(3, VARINT); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_suffix) { out.packTag(4, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_major) { out.append(8); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_minor) { out.append(16); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_patch) { out.append(24); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = m_suffix) { out.append(34); out.packBin(i_vtmp) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -174,10 +174,10 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!fileToGenerate.isEmpty()) { for (i_itmp in fileToGenerate) { out.packTag(1, PREFIXED); out.packBin(i_itmp) } }
-        if (let Some(i_vtmp) = m_parameter) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
-        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { out.packTag(15, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_compilerVersion) { out.packTag(3, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (!fileToGenerate.isEmpty()) { for (i_itmp in fileToGenerate) { out.append(10); out.packBin(i_itmp) } }
+        if (let Some(i_vtmp) = m_parameter) { out.append(18); out.packBin(i_vtmp) }
+        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_compilerVersion) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 
@@ -277,9 +277,9 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_name) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_insertionPoint) { out.packTag(2, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_content) { out.packTag(15, PREFIXED); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_insertionPoint) { out.append(18); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_content) { out.append(122); out.packBin(i_vtmp) }
         if (let Some(i_vtmp) = m_generatedCodeInfo) { out.packTag(16, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
@@ -408,9 +408,9 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = m_error) { out.packTag(1, PREFIXED); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_supportedFeatures) { out.packTag(2, VARINT); out.packVarint(i_vtmp) }
-        if (!file.isEmpty()) { for (i_itmp in file) { out.packTag(15, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = m_error) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = m_supportedFeatures) { out.append(16); out.packVarint(i_vtmp) }
+        if (!file.isEmpty()) { for (i_itmp in file) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
     }
 

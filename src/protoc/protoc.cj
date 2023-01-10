@@ -10,7 +10,7 @@ package protoc
 
 import google.protobuf.*
 import google.protobuf.compiler.*
-from protobuf import protobuf.tagSize
+from protobuf import protobuf.*
 from std import collection.*
 from std import unicode.*
 
@@ -479,6 +479,15 @@ func zeroValue(field: FieldDescriptorProto) {
     }
 }
 
+/* pack tag out */
+func packTagOut(number: Int32, typ: WireNum) {
+    if (number <= 15) {
+        return "out.append(${UInt8(number) << 3 | typ})"
+    }
+
+    return "out.packTag(${number}, ${WireType.parse(typ)})"
+}
+
 /* named no empty */
 func namedNoEmpty(name: String, field: FieldDescriptorProto) {
     match (field.type_) {
@@ -505,14 +514,14 @@ func namedSize(name: String, field: FieldDescriptorProto) {
 /* named pack */
 func namedPack(name: String, field: FieldDescriptorProto) {
     match (field.type_) {
-        case TYPE_BOOL => "out.packTag(${field.number}, VARINT); out.packBool(${name})"
-        case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "out.packTag(${field.number}, BIT64); out.packFixed(${name})"
-        case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "out.packTag(${field.number}, BIT32); out.packFixed(${name})"
-        case TYPE_BYTES | TYPE_STRING => "out.packTag(${field.number}, PREFIXED); out.packBin(${name})"
-        case TYPE_MESSAGE => "out.packTag(${field.number}, PREFIXED); out.packVarint(${name}.size); ${name}.pack(out)"
-        case TYPE_ENUM => "out.packTag(${field.number}, VARINT); out.packVarint(${name}.value())"
-        case TYPE_SINT32 | TYPE_SINT64 => "out.packTag(${field.number}, VARINT); out.packSInt(${name})"
-        case _ => "out.packTag(${field.number}, VARINT); out.packVarint(${name})"
+        case TYPE_BOOL => "${packTagOut(field.number, VARINT)}; out.packBool(${name})"
+        case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "${packTagOut(field.number, BIT64)}; out.packFixed(${name})"
+        case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "${packTagOut(field.number, BIT32)}; out.packFixed(${name})"
+        case TYPE_BYTES | TYPE_STRING => "${packTagOut(field.number, PREFIXED)}; out.packBin(${name})"
+        case TYPE_MESSAGE => "${packTagOut(field.number, PREFIXED)}; out.packVarint(${name}.size); ${name}.pack(out)"
+        case TYPE_ENUM => "${packTagOut(field.number, VARINT)}; out.packVarint(${name}.value())"
+        case TYPE_SINT32 | TYPE_SINT64 => "${packTagOut(field.number, VARINT)}; out.packSInt(${name})"
+        case _ => "${packTagOut(field.number, VARINT)}; out.packVarint(${name})"
     }
 }
 
