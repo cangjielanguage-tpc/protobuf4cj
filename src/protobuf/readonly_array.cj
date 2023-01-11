@@ -13,6 +13,7 @@ public struct RoArray<T> {
         data = Array(size, item: item)
     }
 
+    /* constuct ro-array from the copy of collection */
     public init(data: Collection<T>) {
         this.data = data.toArray()
     }
@@ -21,9 +22,14 @@ public struct RoArray<T> {
         data = Array(size, initElement)
     }
 
-    /* [unsafe] constuct ro-array from array refence. */
-    public unsafe init(data: Array<T>) {
+    /* [Private] constuct ro-array from array reference. */
+    private init(data: Array<T>, placeholder: Unit) {
         this.data = data
+    }
+
+    /* [unsafe] constuct ro-array from an array reference that will not be modified. */
+    public unsafe static func grab(data: Array<T>) {
+        RoArray<T>(data, ())
     }
 
     /* [unsafe] get the raw array of this ro-array */
@@ -44,11 +50,11 @@ public struct RoArray<T> {
     }
 
     public operator func [](range: Range<Int64>) {
-        unsafe { RoArray(data[range]) }
+        RoArray(data[range], ())
     }
 
     public func slice(start: Int64, len: Int64) {
-        unsafe { RoArray(data.slice(start, len)) }
+        RoArray(data.slice(start, len), ())
     }
 
     public func copyTo(dst: Array<T>, dstStart: Int64) {
@@ -56,7 +62,7 @@ public struct RoArray<T> {
     }
 
     public func clone(): RoArray<T> {
-        unsafe { RoArray(data.clone()) }
+        RoArray(data.clone(), ())
     }
 }
 
