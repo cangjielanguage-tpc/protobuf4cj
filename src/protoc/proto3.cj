@@ -162,7 +162,7 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
     if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) {
         let ek = field.mapEntry[0]
         let ev = field.mapEntry[1]
-        return "let i_stmp = src.sub(); var i_ktmp = ${initValue(ek)}; var i_vtmp = ${initValue(ev)}; while (!i_stmp.isEmpty()) { match (i_stmp.parseTag()[0]) { case 1 => ${namedParseSrc("i_ktmp", "i_stmp", ek)} case 2 => ${namedParseSrc("i_vtmp", "i_stmp", ev)} case _ => throw ParseValueExecption(\"map\") } }; ${name}[i_ktmp] = i_vtmp"
+        return "let i_stmp = subReader(src); var i_ktmp = ${initValue(ek)}; var i_vtmp = ${initValue(ev)}; while (!i_stmp.isEmpty()) { match (i_stmp.parseTag()[0]) { case 1 => ${namedParseSrc("i_ktmp", "i_stmp", ek)} case 2 => ${namedParseSrc("i_vtmp", "i_stmp", ev)} case _ => throw ParseValueExecption(\"map\") } }; ${name}[i_ktmp] = i_vtmp"
     }
 
     /* normal fields */
@@ -172,7 +172,7 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
 
     /* packed repeated fields */
     if (field.hasOptions && field.options.hasPacked && field.options.packed) {
-        return "let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { " + match (field.type_) {
+        return "let i_stmp = subReader(src); while (!i_stmp.isEmpty()) { " + match (field.type_) {
             case TYPE_DOUBLE => "${name}.append(i_stmp.parseFloat64())"
             case TYPE_FLOAT => "${name}.append(i_stmp.parseFloat32())"
             case TYPE_INT64 => "${name}.append(i_stmp.parseInt64())"
@@ -202,7 +202,7 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
         case TYPE_ENUM => "${name}.append(${field.typeName}.parse(src.parseInt32()))"
         case TYPE_BOOL => "${name}.append(src.parseBool())"
         case TYPE_STRING => "${name}.append(src.parseString())"
-        case TYPE_MESSAGE => "${name}.add().unpack(src.sub())"
+        case TYPE_MESSAGE => "${name}.add().unpack(subReader(src))"
         case TYPE_BYTES => "${name}.append(src.parseBytes())"
         case TYPE_FIXED64 => "${name}.append(src.parseFixed64())"
         case TYPE_FIXED32 => "${name}.append(src.parseFixed32())"
@@ -284,7 +284,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     append("        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }\n        return i_tmp\n    }\n")
 
     // func unpack
-    append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {\n        while (!src.isEmpty()) {\n            let i_tmp = src.parseTag()\n            match (i_tmp[0]) {\n")
+    append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader {\n        while (!src.isEmpty()) {\n            let i_tmp = src.parseTag()\n            match (i_tmp[0]) {\n")
     for (field in fields where !field.hasOneofIndex) { append("                case ${field.number} => ${getFieldUnpackExpr(field)}\n") }
     for ((name, ofields) in helper.oneofDecl) { for (field in ofields) { append("                case ${field.number} => ${getOneofFieldUnapckExpr(typeName, name, field)}\n") } }
     append("                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))\n            }\n        }\n    }\n")

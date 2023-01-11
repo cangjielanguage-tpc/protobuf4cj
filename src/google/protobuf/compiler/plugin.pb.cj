@@ -64,7 +64,7 @@ public class Version <: Message & TypedMessage<Version> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -159,14 +159,14 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => fileToGenerate.append(src.parseString())
                 case 2 => m_parameter = src.parseString()
-                case 15 => protoFile.add().unpack(src.sub())
-                case 3 => m_compilerVersion = m_compilerVersion ?? Version(); m_compilerVersion?.unpack(src.sub())
+                case 15 => protoFile.add().unpack(subReader(src))
+                case 3 => m_compilerVersion = m_compilerVersion ?? Version(); m_compilerVersion?.unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -262,14 +262,14 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
                 case 2 => m_insertionPoint = src.parseString()
                 case 15 => m_content = src.parseString()
-                case 16 => m_generatedCodeInfo = m_generatedCodeInfo ?? google.protobuf.GeneratedCodeInfo(); m_generatedCodeInfo?.unpack(src.sub())
+                case 16 => m_generatedCodeInfo = m_generatedCodeInfo ?? google.protobuf.GeneratedCodeInfo(); m_generatedCodeInfo?.unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -322,8 +322,8 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
         }
     }
 
-    public operator func==(e: CodeGeneratorResponse_Feature) {
-        match((this, e)) {
+    public operator func==(value: CodeGeneratorResponse_Feature) {
+        match((this, value)) {
             case (FEATURE_NONE, FEATURE_NONE) => true
             case (FEATURE_PROTO3_OPTIONAL, FEATURE_PROTO3_OPTIONAL) => true
             case _ => false
@@ -334,7 +334,7 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
         match(value) {
             case 0 => FEATURE_NONE
             case 1 => FEATURE_PROTO3_OPTIONAL
-            case e => throw InvalidEnumValueException("CodeGeneratorResponse_Feature", e)
+            case _ => throw InvalidEnumValueException("CodeGeneratorResponse_Feature", value)
         }
     }
 
@@ -342,7 +342,7 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
         match(value) {
             case "FEATURE_NONE" => FEATURE_NONE
             case "FEATURE_PROTO3_OPTIONAL" => FEATURE_PROTO3_OPTIONAL
-            case e => throw UnmatchedEnumStringException("CodeGeneratorResponse_Feature", e)
+            case _ => throw UnmatchedEnumStringException("CodeGeneratorResponse_Feature", value)
         }
     }
 }
@@ -394,13 +394,13 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_error = src.parseString()
                 case 2 => m_supportedFeatures = src.parseUInt64()
-                case 15 => file.add().unpack(src.sub())
+                case 15 => file.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }

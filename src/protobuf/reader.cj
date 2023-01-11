@@ -9,15 +9,13 @@
 package protobuf
 
 /* public interface of reader. */
-public interface BytesReader <: SubReader<BytesReader> {
+public interface BytesReader {
     /* no data unread */
     func isEmpty(): Bool
     /* read and increase the offset */
     func read(): Byte
-    /* read a sub reader with length of `len` and increase the offset */
-    func read(len: Int64): BytesReader
-    /* all the unread data */
-    func data(): BytesSlice
+    /* read a bytes slice with length of `len` and increase the offset */
+    func read(len: Int64): BytesSlice
 
     /* parse a tag(with wire-type) from  */
     @overflowWrapping
@@ -186,30 +184,21 @@ public interface BytesReader <: SubReader<BytesReader> {
         unsafe { itof(parseFixed32()) }
     }
 
-    func sub() {
-        read(parseInt64())
-    }
-
     func parseBytes() {
-        read(parseInt64()).data().toArray()
+        read(parseInt64()).toArray()
     }
 
     func parseString() {
-        String.fromUtf8(unsafe { read(parseInt64()).data().getRawArray() })
+        String.fromUtf8(unsafe { read(parseInt64()).getRawArray() })
     }
-}
-
-/* typed sub reader. */
-public interface SubReader<T> {
-    func read(len: Int64): T
 }
 
 /**
  * SimpleReader
  */
-public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
-    private var offset = 0       /* bytes offset */
-    private let size: Int64       /* bytes size */
+public class SimpleReader <: BytesReader {
+    private var offset = 0          /* bytes offset */
+    private let size: Int64         /* bytes size */
 
     public SimpleReader(let bytes: BytesSlice) {
         size = bytes.size
@@ -228,12 +217,6 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
         return offset >= size
     }
 
-    /** Return bytes slice. */
-    @overflowWrapping
-    public func data() {
-        bytes[offset ..]
-    }
-
     /** read a byte, increase the offset */
     @overflowWrapping
     public func read() {
@@ -245,6 +228,6 @@ public class SimpleReader <: BytesReader & SubReader<SimpleReader> {
     @overflowWrapping
     public func read(len: Int64) {
         offset += len
-        SimpleReader(bytes.slice(offset - len, len))
+        bytes.slice(offset - len, len)
     }
 }

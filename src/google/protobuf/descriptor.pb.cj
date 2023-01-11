@@ -32,11 +32,11 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => file.add().unpack(src.sub())
+                case 1 => file.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -170,7 +170,7 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -179,12 +179,12 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
                 case 3 => dependency.append(src.parseString())
                 case 10 => publicDependency.append(src.parseInt32())
                 case 11 => weakDependency.append(src.parseInt32())
-                case 4 => messageType.add().unpack(src.sub())
-                case 5 => enumType.add().unpack(src.sub())
-                case 6 => service.add().unpack(src.sub())
-                case 7 => extension.add().unpack(src.sub())
-                case 8 => m_options = m_options ?? FileOptions(); m_options?.unpack(src.sub())
-                case 9 => m_sourceCodeInfo = m_sourceCodeInfo ?? SourceCodeInfo(); m_sourceCodeInfo?.unpack(src.sub())
+                case 4 => messageType.add().unpack(subReader(src))
+                case 5 => enumType.add().unpack(subReader(src))
+                case 6 => service.add().unpack(subReader(src))
+                case 7 => extension.add().unpack(subReader(src))
+                case 8 => m_options = m_options ?? FileOptions(); m_options?.unpack(subReader(src))
+                case 9 => m_sourceCodeInfo = m_sourceCodeInfo ?? SourceCodeInfo(); m_sourceCodeInfo?.unpack(subReader(src))
                 case 12 => m_syntax = src.parseString()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
@@ -288,13 +288,13 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_start = src.parseInt32()
                 case 2 => m_end = src.parseInt32()
-                case 3 => m_options = m_options ?? ExtensionRangeOptions(); m_options?.unpack(src.sub())
+                case 3 => m_options = m_options ?? ExtensionRangeOptions(); m_options?.unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -370,7 +370,7 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -489,19 +489,19 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
-                case 2 => field.add().unpack(src.sub())
-                case 6 => extension.add().unpack(src.sub())
-                case 3 => nestedType.add().unpack(src.sub())
-                case 4 => enumType.add().unpack(src.sub())
-                case 5 => extensionRange.add().unpack(src.sub())
-                case 8 => oneofDecl.add().unpack(src.sub())
-                case 7 => m_options = m_options ?? MessageOptions(); m_options?.unpack(src.sub())
-                case 9 => reservedRange.add().unpack(src.sub())
+                case 2 => field.add().unpack(subReader(src))
+                case 6 => extension.add().unpack(subReader(src))
+                case 3 => nestedType.add().unpack(subReader(src))
+                case 4 => enumType.add().unpack(subReader(src))
+                case 5 => extensionRange.add().unpack(subReader(src))
+                case 8 => oneofDecl.add().unpack(subReader(src))
+                case 7 => m_options = m_options ?? MessageOptions(); m_options?.unpack(subReader(src))
+                case 9 => reservedRange.add().unpack(subReader(src))
                 case 10 => reservedName.append(src.parseString())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
@@ -579,11 +579,11 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -664,8 +664,8 @@ public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
         }
     }
 
-    public operator func==(e: FieldDescriptorProto_Type) {
-        match((this, e)) {
+    public operator func==(value: FieldDescriptorProto_Type) {
+        match((this, value)) {
             case (TYPE_DOUBLE, TYPE_DOUBLE) => true
             case (TYPE_FLOAT, TYPE_FLOAT) => true
             case (TYPE_INT64, TYPE_INT64) => true
@@ -708,7 +708,7 @@ public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
             case 16 => TYPE_SFIXED64
             case 17 => TYPE_SINT32
             case 18 => TYPE_SINT64
-            case e => throw InvalidEnumValueException("FieldDescriptorProto_Type", e)
+            case _ => throw InvalidEnumValueException("FieldDescriptorProto_Type", value)
         }
     }
 
@@ -732,7 +732,7 @@ public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
             case "TYPE_SFIXED64" => TYPE_SFIXED64
             case "TYPE_SINT32" => TYPE_SINT32
             case "TYPE_SINT64" => TYPE_SINT64
-            case e => throw UnmatchedEnumStringException("FieldDescriptorProto_Type", e)
+            case _ => throw UnmatchedEnumStringException("FieldDescriptorProto_Type", value)
         }
     }
 }
@@ -756,8 +756,8 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
         }
     }
 
-    public operator func==(e: FieldDescriptorProto_Label) {
-        match((this, e)) {
+    public operator func==(value: FieldDescriptorProto_Label) {
+        match((this, value)) {
             case (LABEL_OPTIONAL, LABEL_OPTIONAL) => true
             case (LABEL_REQUIRED, LABEL_REQUIRED) => true
             case (LABEL_REPEATED, LABEL_REPEATED) => true
@@ -770,7 +770,7 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case 1 => LABEL_OPTIONAL
             case 2 => LABEL_REQUIRED
             case 3 => LABEL_REPEATED
-            case e => throw InvalidEnumValueException("FieldDescriptorProto_Label", e)
+            case _ => throw InvalidEnumValueException("FieldDescriptorProto_Label", value)
         }
     }
 
@@ -779,7 +779,7 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case "LABEL_OPTIONAL" => LABEL_OPTIONAL
             case "LABEL_REQUIRED" => LABEL_REQUIRED
             case "LABEL_REPEATED" => LABEL_REPEATED
-            case e => throw UnmatchedEnumStringException("FieldDescriptorProto_Label", e)
+            case _ => throw UnmatchedEnumStringException("FieldDescriptorProto_Label", value)
         }
     }
 }
@@ -912,7 +912,7 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -925,9 +925,9 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
                 case 7 => m_defaultValue = src.parseString()
                 case 9 => m_oneofIndex = src.parseInt32()
                 case 10 => m_jsonName = src.parseString()
-                case 8 => m_options = m_options ?? FieldOptions(); m_options?.unpack(src.sub())
+                case 8 => m_options = m_options ?? FieldOptions(); m_options?.unpack(subReader(src))
                 case 17 => m_proto3Optional = src.parseBool()
-                case 9999 => mapEntry.add().unpack(src.sub())
+                case 9999 => mapEntry.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1021,12 +1021,12 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
-                case 2 => m_options = m_options ?? OneofOptions(); m_options?.unpack(src.sub())
+                case 2 => m_options = m_options ?? OneofOptions(); m_options?.unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1100,7 +1100,7 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -1194,14 +1194,14 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
-                case 2 => value.add().unpack(src.sub())
-                case 3 => m_options = m_options ?? EnumOptions(); m_options?.unpack(src.sub())
-                case 4 => reservedRange.add().unpack(src.sub())
+                case 2 => value.add().unpack(subReader(src))
+                case 3 => m_options = m_options ?? EnumOptions(); m_options?.unpack(subReader(src))
+                case 4 => reservedRange.add().unpack(subReader(src))
                 case 5 => reservedName.append(src.parseString())
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
@@ -1291,13 +1291,13 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
                 case 2 => m_number = src.parseInt32()
-                case 3 => m_options = m_options ?? EnumValueOptions(); m_options?.unpack(src.sub())
+                case 3 => m_options = m_options ?? EnumValueOptions(); m_options?.unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1378,13 +1378,13 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
-                case 2 => method.add().unpack(src.sub())
-                case 3 => m_options = m_options ?? ServiceOptions(); m_options?.unpack(src.sub())
+                case 2 => method.add().unpack(subReader(src))
+                case 3 => m_options = m_options ?? ServiceOptions(); m_options?.unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1505,14 +1505,14 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => m_name = src.parseString()
                 case 2 => m_inputType = src.parseString()
                 case 3 => m_outputType = src.parseString()
-                case 4 => m_options = m_options ?? MethodOptions(); m_options?.unpack(src.sub())
+                case 4 => m_options = m_options ?? MethodOptions(); m_options?.unpack(subReader(src))
                 case 5 => clientStreaming = src.parseBool()
                 case 6 => serverStreaming = src.parseBool()
                 case 9999 => m_funcName = src.parseString()
@@ -1576,8 +1576,8 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
         }
     }
 
-    public operator func==(e: FileOptions_OptimizeMode) {
-        match((this, e)) {
+    public operator func==(value: FileOptions_OptimizeMode) {
+        match((this, value)) {
             case (SPEED, SPEED) => true
             case (CODE_SIZE, CODE_SIZE) => true
             case (LITE_RUNTIME, LITE_RUNTIME) => true
@@ -1590,7 +1590,7 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
             case 1 => SPEED
             case 2 => CODE_SIZE
             case 3 => LITE_RUNTIME
-            case e => throw InvalidEnumValueException("FileOptions_OptimizeMode", e)
+            case _ => throw InvalidEnumValueException("FileOptions_OptimizeMode", value)
         }
     }
 
@@ -1599,7 +1599,7 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
             case "SPEED" => SPEED
             case "CODE_SIZE" => CODE_SIZE
             case "LITE_RUNTIME" => LITE_RUNTIME
-            case e => throw UnmatchedEnumStringException("FileOptions_OptimizeMode", e)
+            case _ => throw UnmatchedEnumStringException("FileOptions_OptimizeMode", value)
         }
     }
 }
@@ -1813,7 +1813,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -1837,7 +1837,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
                 case 41 => m_phpNamespace = src.parseString()
                 case 44 => m_phpMetadataNamespace = src.parseString()
                 case 45 => m_rubyPackage = src.parseString()
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -1972,7 +1972,7 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -1980,7 +1980,7 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
                 case 2 => noStandardDescriptorAccessor = src.parseBool()
                 case 3 => deprecated = src.parseBool()
                 case 7 => m_mapEntry = src.parseBool()
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2037,8 +2037,8 @@ public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
         }
     }
 
-    public operator func==(e: FieldOptions_CType) {
-        match((this, e)) {
+    public operator func==(value: FieldOptions_CType) {
+        match((this, value)) {
             case (STRING, STRING) => true
             case (CORD, CORD) => true
             case (STRING_PIECE, STRING_PIECE) => true
@@ -2051,7 +2051,7 @@ public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
             case 0 => STRING
             case 1 => CORD
             case 2 => STRING_PIECE
-            case e => throw InvalidEnumValueException("FieldOptions_CType", e)
+            case _ => throw InvalidEnumValueException("FieldOptions_CType", value)
         }
     }
 
@@ -2060,7 +2060,7 @@ public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
             case "STRING" => STRING
             case "CORD" => CORD
             case "STRING_PIECE" => STRING_PIECE
-            case e => throw UnmatchedEnumStringException("FieldOptions_CType", e)
+            case _ => throw UnmatchedEnumStringException("FieldOptions_CType", value)
         }
     }
 }
@@ -2084,8 +2084,8 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
         }
     }
 
-    public operator func==(e: FieldOptions_JSType) {
-        match((this, e)) {
+    public operator func==(value: FieldOptions_JSType) {
+        match((this, value)) {
             case (JS_NORMAL, JS_NORMAL) => true
             case (JS_STRING, JS_STRING) => true
             case (JS_NUMBER, JS_NUMBER) => true
@@ -2098,7 +2098,7 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case 0 => JS_NORMAL
             case 1 => JS_STRING
             case 2 => JS_NUMBER
-            case e => throw InvalidEnumValueException("FieldOptions_JSType", e)
+            case _ => throw InvalidEnumValueException("FieldOptions_JSType", value)
         }
     }
 
@@ -2107,7 +2107,7 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case "JS_NORMAL" => JS_NORMAL
             case "JS_STRING" => JS_STRING
             case "JS_NUMBER" => JS_NUMBER
-            case e => throw UnmatchedEnumStringException("FieldOptions_JSType", e)
+            case _ => throw UnmatchedEnumStringException("FieldOptions_JSType", value)
         }
     }
 }
@@ -2204,7 +2204,7 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -2215,7 +2215,7 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
                 case 15 => unverifiedLazy = src.parseBool()
                 case 3 => deprecated = src.parseBool()
                 case 10 => weak = src.parseBool()
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2288,11 +2288,11 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2369,13 +2369,13 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 2 => m_allowAlias = src.parseBool()
                 case 3 => deprecated = src.parseBool()
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2447,12 +2447,12 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 1 => deprecated = src.parseBool()
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2522,12 +2522,12 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 33 => deprecated = src.parseBool()
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2578,8 +2578,8 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
         }
     }
 
-    public operator func==(e: MethodOptions_IdempotencyLevel) {
-        match((this, e)) {
+    public operator func==(value: MethodOptions_IdempotencyLevel) {
+        match((this, value)) {
             case (IDEMPOTENCY_UNKNOWN, IDEMPOTENCY_UNKNOWN) => true
             case (NO_SIDE_EFFECTS, NO_SIDE_EFFECTS) => true
             case (IDEMPOTENT, IDEMPOTENT) => true
@@ -2592,7 +2592,7 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
             case 0 => IDEMPOTENCY_UNKNOWN
             case 1 => NO_SIDE_EFFECTS
             case 2 => IDEMPOTENT
-            case e => throw InvalidEnumValueException("MethodOptions_IdempotencyLevel", e)
+            case _ => throw InvalidEnumValueException("MethodOptions_IdempotencyLevel", value)
         }
     }
 
@@ -2601,7 +2601,7 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
             case "IDEMPOTENCY_UNKNOWN" => IDEMPOTENCY_UNKNOWN
             case "NO_SIDE_EFFECTS" => NO_SIDE_EFFECTS
             case "IDEMPOTENT" => IDEMPOTENT
-            case e => throw UnmatchedEnumStringException("MethodOptions_IdempotencyLevel", e)
+            case _ => throw UnmatchedEnumStringException("MethodOptions_IdempotencyLevel", value)
         }
     }
 }
@@ -2653,13 +2653,13 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
                 case 33 => deprecated = src.parseBool()
                 case 34 => idempotencyLevel = MethodOptions_IdempotencyLevel.parse(src.parseInt32())
-                case 999 => uninterpretedOption.add().unpack(src.sub())
+                case 999 => uninterpretedOption.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -2735,7 +2735,7 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
@@ -2857,11 +2857,11 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 2 => name.add().unpack(src.sub())
+                case 2 => name.add().unpack(subReader(src))
                 case 3 => m_identifierValue = src.parseString()
                 case 4 => m_positiveIntValue = src.parseUInt64()
                 case 5 => m_negativeIntValue = src.parseInt64()
@@ -2966,12 +2966,12 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { path.append(i_stmp.parseInt32()) }
-                case 2 => let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { span.append(i_stmp.parseInt32()) }
+                case 1 => let i_stmp = subReader(src); while (!i_stmp.isEmpty()) { path.append(i_stmp.parseInt32()) }
+                case 2 => let i_stmp = subReader(src); while (!i_stmp.isEmpty()) { span.append(i_stmp.parseInt32()) }
                 case 3 => m_leadingComments = src.parseString()
                 case 4 => m_trailingComments = src.parseString()
                 case 6 => leadingDetachedComments.append(src.parseString())
@@ -3041,11 +3041,11 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => location.add().unpack(src.sub())
+                case 1 => location.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }
@@ -3131,11 +3131,11 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => let i_stmp = src.sub(); while (!i_stmp.isEmpty()) { path.append(i_stmp.parseInt32()) }
+                case 1 => let i_stmp = subReader(src); while (!i_stmp.isEmpty()) { path.append(i_stmp.parseInt32()) }
                 case 2 => m_sourceFile = src.parseString()
                 case 3 => m_begin = src.parseInt32()
                 case 4 => m_end = src.parseInt32()
@@ -3203,11 +3203,11 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
         return i_tmp
     }
 
-    public func unpack<T>(src: T): Unit where T <: BytesReader & SubReader<T> {
+    public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => annotation.add().unpack(src.sub())
+                case 1 => annotation.add().unpack(subReader(src))
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }
         }

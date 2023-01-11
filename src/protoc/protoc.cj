@@ -313,7 +313,7 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     append("        }\n    }\n")
 
     // operator ==
-    append("\n    public operator func==(e: ${typeName}) {\n        match((this, e)) {\n")
+    append("\n    public operator func==(value: ${typeName}) {\n        match((this, value)) {\n")
     for (v in values) { append("            case (${getEnumItemName(v.name)}, ${getEnumItemName(v.name)}) => true\n") }
     append("            case _ => false\n        }\n    }\n")
 
@@ -326,12 +326,12 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     // parse
     append("\n    public static func parse(value: Int32): ${typeName} {\n        match(value) {\n")
     for (v in values) { append("            case ${v.number} => ${getEnumItemName(v.name)}\n") }
-    append("            case e => throw InvalidEnumValueException(\"${typeName}\", e)\n        }\n    }\n")
+    append("            case _ => throw InvalidEnumValueException(\"${typeName}\", value)\n        }\n    }\n")
 
     // parse, from string
     append("\n    public static func parse(value: String): ${typeName} {\n        match(value) {\n")
     for (v in values) { append("            case \"${v.name}\" => ${getEnumItemName(v.name)}\n") }
-    append("            case e => throw UnmatchedEnumStringException(\"${typeName}\", e)\n        }\n    }\n")
+    append("            case _ => throw UnmatchedEnumStringException(\"${typeName}\", value)\n        }\n    }\n")
 
     // done
     append("}\n")
@@ -537,7 +537,7 @@ func namedParseSrc(name: String, src: String, field: FieldDescriptorProto) {
         case TYPE_ENUM => " = ${field.typeName}.parse(${src}.parseInt32())"
         case TYPE_BOOL => " = ${src}.parseBool()"
         case TYPE_STRING => " = ${src}.parseString()"
-        case TYPE_MESSAGE => ".unpack(${src}.sub())"
+        case TYPE_MESSAGE => ".unpack(subReader(${src}))"
         case TYPE_BYTES => " = ${src}.parseBytes()"
         case TYPE_FIXED64 => " = ${src}.parseFixed64()"
         case TYPE_FIXED32 => " = ${src}.parseFixed32()"

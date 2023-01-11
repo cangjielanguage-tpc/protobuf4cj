@@ -26,12 +26,12 @@ public class MessageUnknownField <: ToString {
         out.appendBytes(data)
     }
 
-    public static func unpack<T>(tag: Tag, wt: WireNum, src: T) where T <: BytesReader & SubReader<T> {
+    public static func unpack<T>(tag: Tag, wt: WireNum, src: T) where T <: BytesReader {
         MessageUnknownField(tag, WireType.parse(wt), match (wt) {
             case 0 => src.parseVarintData()
-            case 1 => src.read(8).data().toArray()
-            case 2 => src.sub().data().toArray()
-            case 5 => src.read(4).data().toArray()
+            case 1 => src.read(8).toArray()
+            case 2 => src.parseBytes()
+            case 5 => src.read(4).toArray()
             case _ => throw ParseValueExecption("UnknownField")
         })
     }
