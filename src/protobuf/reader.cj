@@ -189,7 +189,7 @@ public interface BytesReader {
     }
 
     func parseString() {
-        String.fromUtf8(unsafe { read(parseInt64()).getRawArray() })
+        unsafe { String.fromUtf8Unchecked((read(parseInt64()).getRawArray())) }
     }
 }
 
