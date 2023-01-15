@@ -12,19 +12,19 @@ public class Version <: Message & TypedMessage<Version> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearMajor() { m_major = None }
-    public prop let hasMajor: Bool { get() { match (m_major) { case None => false case _ => true } } }
+    public prop let hasMajor: Bool { get() { isPresent(m_major) } }
     public prop var major: Int32 { get() { m_major.getOrThrow() } set(i_tmp) { m_major = i_tmp } }
 
     public func clearMinor() { m_minor = None }
-    public prop let hasMinor: Bool { get() { match (m_minor) { case None => false case _ => true } } }
+    public prop let hasMinor: Bool { get() { isPresent(m_minor) } }
     public prop var minor: Int32 { get() { m_minor.getOrThrow() } set(i_tmp) { m_minor = i_tmp } }
 
     public func clearPatch() { m_patch = None }
-    public prop let hasPatch: Bool { get() { match (m_patch) { case None => false case _ => true } } }
+    public prop let hasPatch: Bool { get() { isPresent(m_patch) } }
     public prop var patch: Int32 { get() { m_patch.getOrThrow() } set(i_tmp) { m_patch = i_tmp } }
 
     public func clearSuffix() { m_suffix = None }
-    public prop let hasSuffix: Bool { get() { match (m_suffix) { case None => false case _ => true } } }
+    public prop let hasSuffix: Bool { get() { isPresent(m_suffix) } }
     public prop var suffix: String { get() { m_suffix.getOrThrow() } set(i_tmp) { m_suffix = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -111,11 +111,11 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearParameter() { m_parameter = None }
-    public prop let hasParameter: Bool { get() { match (m_parameter) { case None => false case _ => true } } }
+    public prop let hasParameter: Bool { get() { isPresent(m_parameter) } }
     public prop var parameter: String { get() { m_parameter.getOrThrow() } set(i_tmp) { m_parameter = i_tmp } }
 
     public func clearCompilerVersion() { m_compilerVersion = None }
-    public prop let hasCompilerVersion: Bool { get() { match (m_compilerVersion) { case None => false case _ => true } } }
+    public prop let hasCompilerVersion: Bool { get() { isPresent(m_compilerVersion) } }
     public prop var compilerVersion: Version { get() { m_compilerVersion.getOrThrow() } set(i_tmp) { m_compilerVersion = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -202,19 +202,19 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearInsertionPoint() { m_insertionPoint = None }
-    public prop let hasInsertionPoint: Bool { get() { match (m_insertionPoint) { case None => false case _ => true } } }
+    public prop let hasInsertionPoint: Bool { get() { isPresent(m_insertionPoint) } }
     public prop var insertionPoint: String { get() { m_insertionPoint.getOrThrow() } set(i_tmp) { m_insertionPoint = i_tmp } }
 
     public func clearContent() { m_content = None }
-    public prop let hasContent: Bool { get() { match (m_content) { case None => false case _ => true } } }
+    public prop let hasContent: Bool { get() { isPresent(m_content) } }
     public prop var content: String { get() { m_content.getOrThrow() } set(i_tmp) { m_content = i_tmp } }
 
     public func clearGeneratedCodeInfo() { m_generatedCodeInfo = None }
-    public prop let hasGeneratedCodeInfo: Bool { get() { match (m_generatedCodeInfo) { case None => false case _ => true } } }
+    public prop let hasGeneratedCodeInfo: Bool { get() { isPresent(m_generatedCodeInfo) } }
     public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { m_generatedCodeInfo.getOrThrow() } set(i_tmp) { m_generatedCodeInfo = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -342,11 +342,11 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearError() { m_error = None }
-    public prop let hasError: Bool { get() { match (m_error) { case None => false case _ => true } } }
+    public prop let hasError: Bool { get() { isPresent(m_error) } }
     public prop var error: String { get() { m_error.getOrThrow() } set(i_tmp) { m_error = i_tmp } }
 
     public func clearSupportedFeatures() { m_supportedFeatures = None }
-    public prop let hasSupportedFeatures: Bool { get() { match (m_supportedFeatures) { case None => false case _ => true } } }
+    public prop let hasSupportedFeatures: Bool { get() { isPresent(m_supportedFeatures) } }
     public prop var supportedFeatures: UInt64 { get() { m_supportedFeatures.getOrThrow() } set(i_tmp) { m_supportedFeatures = i_tmp } }
 
     public prop let size: Int64 { get() {

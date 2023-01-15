@@ -141,7 +141,7 @@ func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorPro
     // normal field props
     for (field in fields where field.label != LABEL_REPEATED && !field.hasOneofIndex) {
         append("\n    public func clear${upperCamelCase(field.jsonName)}() { m_${field.jsonName} = None }")
-        append("\n    public prop let has${upperCamelCase(field.jsonName)}: Bool { get() { match (m_${field.jsonName}) { case None => false case _ => true } } }")
+        append("\n    public prop let has${upperCamelCase(field.jsonName)}: Bool { get() { isPresent(m_${field.jsonName}) } }")
         append("\n    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { ${getFieldPropVarExpr2(field)} }\n")
     }
 
@@ -194,7 +194,7 @@ func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorPro
 
     // func check
     append("\n    public func check(): Unit /* throws RequiredFieldNotSetException */ {\n")
-    for (field in fields where !field.hasDefaultValue && field.label == LABEL_REQUIRED) { append("        match (m_${field.jsonName}) { case None => throw RequiredFieldNotSetException(\"${field.jsonName}\") case _ => () }\n") }
+    for (field in fields where !field.hasDefaultValue && field.label == LABEL_REQUIRED) { append("        if (isNone(m_${field.jsonName})) { throw RequiredFieldNotSetException(\"${field.jsonName}\") }\n") }
     append("    }\n")
 
     // func toString

@@ -81,23 +81,23 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearPackage() { m_package = None }
-    public prop let hasPackage: Bool { get() { match (m_package) { case None => false case _ => true } } }
+    public prop let hasPackage: Bool { get() { isPresent(m_package) } }
     public prop var package_: String { get() { m_package.getOrThrow() } set(i_tmp) { m_package = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: FileOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public func clearSourceCodeInfo() { m_sourceCodeInfo = None }
-    public prop let hasSourceCodeInfo: Bool { get() { match (m_sourceCodeInfo) { case None => false case _ => true } } }
+    public prop let hasSourceCodeInfo: Bool { get() { isPresent(m_sourceCodeInfo) } }
     public prop var sourceCodeInfo: SourceCodeInfo { get() { m_sourceCodeInfo.getOrThrow() } set(i_tmp) { m_sourceCodeInfo = i_tmp } }
 
     public func clearSyntax() { m_syntax = None }
-    public prop let hasSyntax: Bool { get() { match (m_syntax) { case None => false case _ => true } } }
+    public prop let hasSyntax: Bool { get() { isPresent(m_syntax) } }
     public prop var syntax: String { get() { m_syntax.getOrThrow() } set(i_tmp) { m_syntax = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -233,15 +233,15 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearStart() { m_start = None }
-    public prop let hasStart: Bool { get() { match (m_start) { case None => false case _ => true } } }
+    public prop let hasStart: Bool { get() { isPresent(m_start) } }
     public prop var start: Int32 { get() { m_start.getOrThrow() } set(i_tmp) { m_start = i_tmp } }
 
     public func clearEnd() { m_end = None }
-    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop let hasEnd: Bool { get() { isPresent(m_end) } }
     public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: ExtensionRangeOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -320,11 +320,11 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearStart() { m_start = None }
-    public prop let hasStart: Bool { get() { match (m_start) { case None => false case _ => true } } }
+    public prop let hasStart: Bool { get() { isPresent(m_start) } }
     public prop var start: Int32 { get() { m_start.getOrThrow() } set(i_tmp) { m_start = i_tmp } }
 
     public func clearEnd() { m_end = None }
-    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop let hasEnd: Bool { get() { isPresent(m_end) } }
     public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -405,11 +405,11 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: MessageOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -775,47 +775,47 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearNumber() { m_number = None }
-    public prop let hasNumber: Bool { get() { match (m_number) { case None => false case _ => true } } }
+    public prop let hasNumber: Bool { get() { isPresent(m_number) } }
     public prop var number: Int32 { get() { m_number.getOrThrow() } set(i_tmp) { m_number = i_tmp } }
 
     public func clearLabel() { m_label = None }
-    public prop let hasLabel: Bool { get() { match (m_label) { case None => false case _ => true } } }
+    public prop let hasLabel: Bool { get() { isPresent(m_label) } }
     public prop var label: FieldDescriptorProto_Label { get() { m_label.getOrThrow() } set(i_tmp) { m_label = i_tmp } }
 
     public func clearType() { m_type = None }
-    public prop let hasType: Bool { get() { match (m_type) { case None => false case _ => true } } }
+    public prop let hasType: Bool { get() { isPresent(m_type) } }
     public prop var type_: FieldDescriptorProto_Type { get() { m_type.getOrThrow() } set(i_tmp) { m_type = i_tmp } }
 
     public func clearTypeName() { m_typeName = None }
-    public prop let hasTypeName: Bool { get() { match (m_typeName) { case None => false case _ => true } } }
+    public prop let hasTypeName: Bool { get() { isPresent(m_typeName) } }
     public prop var typeName: String { get() { m_typeName.getOrThrow() } set(i_tmp) { m_typeName = i_tmp } }
 
     public func clearExtendee() { m_extendee = None }
-    public prop let hasExtendee: Bool { get() { match (m_extendee) { case None => false case _ => true } } }
+    public prop let hasExtendee: Bool { get() { isPresent(m_extendee) } }
     public prop var extendee: String { get() { m_extendee.getOrThrow() } set(i_tmp) { m_extendee = i_tmp } }
 
     public func clearDefaultValue() { m_defaultValue = None }
-    public prop let hasDefaultValue: Bool { get() { match (m_defaultValue) { case None => false case _ => true } } }
+    public prop let hasDefaultValue: Bool { get() { isPresent(m_defaultValue) } }
     public prop var defaultValue: String { get() { m_defaultValue.getOrThrow() } set(i_tmp) { m_defaultValue = i_tmp } }
 
     public func clearOneofIndex() { m_oneofIndex = None }
-    public prop let hasOneofIndex: Bool { get() { match (m_oneofIndex) { case None => false case _ => true } } }
+    public prop let hasOneofIndex: Bool { get() { isPresent(m_oneofIndex) } }
     public prop var oneofIndex: Int32 { get() { m_oneofIndex.getOrThrow() } set(i_tmp) { m_oneofIndex = i_tmp } }
 
     public func clearJsonName() { m_jsonName = None }
-    public prop let hasJsonName: Bool { get() { match (m_jsonName) { case None => false case _ => true } } }
+    public prop let hasJsonName: Bool { get() { isPresent(m_jsonName) } }
     public prop var jsonName: String { get() { m_jsonName.getOrThrow() } set(i_tmp) { m_jsonName = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: FieldOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public func clearProto3Optional() { m_proto3Optional = None }
-    public prop let hasProto3Optional: Bool { get() { match (m_proto3Optional) { case None => false case _ => true } } }
+    public prop let hasProto3Optional: Bool { get() { isPresent(m_proto3Optional) } }
     public prop var proto3Optional: Bool { get() { m_proto3Optional.getOrThrow() } set(i_tmp) { m_proto3Optional = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -950,11 +950,11 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: OneofOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1027,11 +1027,11 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearStart() { m_start = None }
-    public prop let hasStart: Bool { get() { match (m_start) { case None => false case _ => true } } }
+    public prop let hasStart: Bool { get() { isPresent(m_start) } }
     public prop var start: Int32 { get() { m_start.getOrThrow() } set(i_tmp) { m_start = i_tmp } }
 
     public func clearEnd() { m_end = None }
-    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop let hasEnd: Bool { get() { isPresent(m_end) } }
     public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1107,11 +1107,11 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: EnumOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1203,15 +1203,15 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearNumber() { m_number = None }
-    public prop let hasNumber: Bool { get() { match (m_number) { case None => false case _ => true } } }
+    public prop let hasNumber: Bool { get() { isPresent(m_number) } }
     public prop var number: Int32 { get() { m_number.getOrThrow() } set(i_tmp) { m_number = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: EnumValueOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1291,11 +1291,11 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: ServiceOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1379,31 +1379,31 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { match (m_name) { case None => false case _ => true } } }
+    public prop let hasName: Bool { get() { isPresent(m_name) } }
     public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
 
     public func clearInputType() { m_inputType = None }
-    public prop let hasInputType: Bool { get() { match (m_inputType) { case None => false case _ => true } } }
+    public prop let hasInputType: Bool { get() { isPresent(m_inputType) } }
     public prop var inputType: String { get() { m_inputType.getOrThrow() } set(i_tmp) { m_inputType = i_tmp } }
 
     public func clearOutputType() { m_outputType = None }
-    public prop let hasOutputType: Bool { get() { match (m_outputType) { case None => false case _ => true } } }
+    public prop let hasOutputType: Bool { get() { isPresent(m_outputType) } }
     public prop var outputType: String { get() { m_outputType.getOrThrow() } set(i_tmp) { m_outputType = i_tmp } }
 
     public func clearOptions() { m_options = None }
-    public prop let hasOptions: Bool { get() { match (m_options) { case None => false case _ => true } } }
+    public prop let hasOptions: Bool { get() { isPresent(m_options) } }
     public prop var options: MethodOptions { get() { m_options.getOrThrow() } set(i_tmp) { m_options = i_tmp } }
 
     public func clearClientStreaming() { m_clientStreaming = None }
-    public prop let hasClientStreaming: Bool { get() { match (m_clientStreaming) { case None => false case _ => true } } }
+    public prop let hasClientStreaming: Bool { get() { isPresent(m_clientStreaming) } }
     public prop var clientStreaming: Bool { get() { m_clientStreaming ?? false } set(i_tmp) { m_clientStreaming = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearServerStreaming() { m_serverStreaming = None }
-    public prop let hasServerStreaming: Bool { get() { match (m_serverStreaming) { case None => false case _ => true } } }
+    public prop let hasServerStreaming: Bool { get() { isPresent(m_serverStreaming) } }
     public prop var serverStreaming: Bool { get() { m_serverStreaming ?? false } set(i_tmp) { m_serverStreaming = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearFuncName() { m_funcName = None }
-    public prop let hasFuncName: Bool { get() { match (m_funcName) { case None => false case _ => true } } }
+    public prop let hasFuncName: Bool { get() { isPresent(m_funcName) } }
     public prop var funcName: String { get() { m_funcName.getOrThrow() } set(i_tmp) { m_funcName = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1573,83 +1573,83 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearJavaPackage() { m_javaPackage = None }
-    public prop let hasJavaPackage: Bool { get() { match (m_javaPackage) { case None => false case _ => true } } }
+    public prop let hasJavaPackage: Bool { get() { isPresent(m_javaPackage) } }
     public prop var javaPackage: String { get() { m_javaPackage.getOrThrow() } set(i_tmp) { m_javaPackage = i_tmp } }
 
     public func clearJavaOuterClassname() { m_javaOuterClassname = None }
-    public prop let hasJavaOuterClassname: Bool { get() { match (m_javaOuterClassname) { case None => false case _ => true } } }
+    public prop let hasJavaOuterClassname: Bool { get() { isPresent(m_javaOuterClassname) } }
     public prop var javaOuterClassname: String { get() { m_javaOuterClassname.getOrThrow() } set(i_tmp) { m_javaOuterClassname = i_tmp } }
 
     public func clearJavaMultipleFiles() { m_javaMultipleFiles = None }
-    public prop let hasJavaMultipleFiles: Bool { get() { match (m_javaMultipleFiles) { case None => false case _ => true } } }
+    public prop let hasJavaMultipleFiles: Bool { get() { isPresent(m_javaMultipleFiles) } }
     public prop var javaMultipleFiles: Bool { get() { m_javaMultipleFiles ?? false } set(i_tmp) { m_javaMultipleFiles = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearJavaGenerateEqualsAndHash() { m_javaGenerateEqualsAndHash = None }
-    public prop let hasJavaGenerateEqualsAndHash: Bool { get() { match (m_javaGenerateEqualsAndHash) { case None => false case _ => true } } }
+    public prop let hasJavaGenerateEqualsAndHash: Bool { get() { isPresent(m_javaGenerateEqualsAndHash) } }
     public prop var javaGenerateEqualsAndHash: Bool { get() { m_javaGenerateEqualsAndHash.getOrThrow() } set(i_tmp) { m_javaGenerateEqualsAndHash = i_tmp } }
 
     public func clearJavaStringCheckUtf8() { m_javaStringCheckUtf8 = None }
-    public prop let hasJavaStringCheckUtf8: Bool { get() { match (m_javaStringCheckUtf8) { case None => false case _ => true } } }
+    public prop let hasJavaStringCheckUtf8: Bool { get() { isPresent(m_javaStringCheckUtf8) } }
     public prop var javaStringCheckUtf8: Bool { get() { m_javaStringCheckUtf8 ?? false } set(i_tmp) { m_javaStringCheckUtf8 = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearOptimizeFor() { m_optimizeFor = None }
-    public prop let hasOptimizeFor: Bool { get() { match (m_optimizeFor) { case None => false case _ => true } } }
+    public prop let hasOptimizeFor: Bool { get() { isPresent(m_optimizeFor) } }
     public prop var optimizeFor: FileOptions_OptimizeMode { get() { m_optimizeFor ?? SPEED } set(i_tmp) { m_optimizeFor = if (i_tmp == SPEED) { None } else { i_tmp } } }
 
     public func clearGoPackage() { m_goPackage = None }
-    public prop let hasGoPackage: Bool { get() { match (m_goPackage) { case None => false case _ => true } } }
+    public prop let hasGoPackage: Bool { get() { isPresent(m_goPackage) } }
     public prop var goPackage: String { get() { m_goPackage.getOrThrow() } set(i_tmp) { m_goPackage = i_tmp } }
 
     public func clearCcGenericServices() { m_ccGenericServices = None }
-    public prop let hasCcGenericServices: Bool { get() { match (m_ccGenericServices) { case None => false case _ => true } } }
+    public prop let hasCcGenericServices: Bool { get() { isPresent(m_ccGenericServices) } }
     public prop var ccGenericServices: Bool { get() { m_ccGenericServices ?? false } set(i_tmp) { m_ccGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearJavaGenericServices() { m_javaGenericServices = None }
-    public prop let hasJavaGenericServices: Bool { get() { match (m_javaGenericServices) { case None => false case _ => true } } }
+    public prop let hasJavaGenericServices: Bool { get() { isPresent(m_javaGenericServices) } }
     public prop var javaGenericServices: Bool { get() { m_javaGenericServices ?? false } set(i_tmp) { m_javaGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearPyGenericServices() { m_pyGenericServices = None }
-    public prop let hasPyGenericServices: Bool { get() { match (m_pyGenericServices) { case None => false case _ => true } } }
+    public prop let hasPyGenericServices: Bool { get() { isPresent(m_pyGenericServices) } }
     public prop var pyGenericServices: Bool { get() { m_pyGenericServices ?? false } set(i_tmp) { m_pyGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearPhpGenericServices() { m_phpGenericServices = None }
-    public prop let hasPhpGenericServices: Bool { get() { match (m_phpGenericServices) { case None => false case _ => true } } }
+    public prop let hasPhpGenericServices: Bool { get() { isPresent(m_phpGenericServices) } }
     public prop var phpGenericServices: Bool { get() { m_phpGenericServices ?? false } set(i_tmp) { m_phpGenericServices = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearCcEnableArenas() { m_ccEnableArenas = None }
-    public prop let hasCcEnableArenas: Bool { get() { match (m_ccEnableArenas) { case None => false case _ => true } } }
+    public prop let hasCcEnableArenas: Bool { get() { isPresent(m_ccEnableArenas) } }
     public prop var ccEnableArenas: Bool { get() { m_ccEnableArenas ?? true } set(i_tmp) { m_ccEnableArenas = if (i_tmp == true) { None } else { i_tmp } } }
 
     public func clearObjcClassPrefix() { m_objcClassPrefix = None }
-    public prop let hasObjcClassPrefix: Bool { get() { match (m_objcClassPrefix) { case None => false case _ => true } } }
+    public prop let hasObjcClassPrefix: Bool { get() { isPresent(m_objcClassPrefix) } }
     public prop var objcClassPrefix: String { get() { m_objcClassPrefix.getOrThrow() } set(i_tmp) { m_objcClassPrefix = i_tmp } }
 
     public func clearCsharpNamespace() { m_csharpNamespace = None }
-    public prop let hasCsharpNamespace: Bool { get() { match (m_csharpNamespace) { case None => false case _ => true } } }
+    public prop let hasCsharpNamespace: Bool { get() { isPresent(m_csharpNamespace) } }
     public prop var csharpNamespace: String { get() { m_csharpNamespace.getOrThrow() } set(i_tmp) { m_csharpNamespace = i_tmp } }
 
     public func clearSwiftPrefix() { m_swiftPrefix = None }
-    public prop let hasSwiftPrefix: Bool { get() { match (m_swiftPrefix) { case None => false case _ => true } } }
+    public prop let hasSwiftPrefix: Bool { get() { isPresent(m_swiftPrefix) } }
     public prop var swiftPrefix: String { get() { m_swiftPrefix.getOrThrow() } set(i_tmp) { m_swiftPrefix = i_tmp } }
 
     public func clearPhpClassPrefix() { m_phpClassPrefix = None }
-    public prop let hasPhpClassPrefix: Bool { get() { match (m_phpClassPrefix) { case None => false case _ => true } } }
+    public prop let hasPhpClassPrefix: Bool { get() { isPresent(m_phpClassPrefix) } }
     public prop var phpClassPrefix: String { get() { m_phpClassPrefix.getOrThrow() } set(i_tmp) { m_phpClassPrefix = i_tmp } }
 
     public func clearPhpNamespace() { m_phpNamespace = None }
-    public prop let hasPhpNamespace: Bool { get() { match (m_phpNamespace) { case None => false case _ => true } } }
+    public prop let hasPhpNamespace: Bool { get() { isPresent(m_phpNamespace) } }
     public prop var phpNamespace: String { get() { m_phpNamespace.getOrThrow() } set(i_tmp) { m_phpNamespace = i_tmp } }
 
     public func clearPhpMetadataNamespace() { m_phpMetadataNamespace = None }
-    public prop let hasPhpMetadataNamespace: Bool { get() { match (m_phpMetadataNamespace) { case None => false case _ => true } } }
+    public prop let hasPhpMetadataNamespace: Bool { get() { isPresent(m_phpMetadataNamespace) } }
     public prop var phpMetadataNamespace: String { get() { m_phpMetadataNamespace.getOrThrow() } set(i_tmp) { m_phpMetadataNamespace = i_tmp } }
 
     public func clearRubyPackage() { m_rubyPackage = None }
-    public prop let hasRubyPackage: Bool { get() { match (m_rubyPackage) { case None => false case _ => true } } }
+    public prop let hasRubyPackage: Bool { get() { isPresent(m_rubyPackage) } }
     public prop var rubyPackage: String { get() { m_rubyPackage.getOrThrow() } set(i_tmp) { m_rubyPackage = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -1845,19 +1845,19 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearMessageSetWireFormat() { m_messageSetWireFormat = None }
-    public prop let hasMessageSetWireFormat: Bool { get() { match (m_messageSetWireFormat) { case None => false case _ => true } } }
+    public prop let hasMessageSetWireFormat: Bool { get() { isPresent(m_messageSetWireFormat) } }
     public prop var messageSetWireFormat: Bool { get() { m_messageSetWireFormat ?? false } set(i_tmp) { m_messageSetWireFormat = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearNoStandardDescriptorAccessor() { m_noStandardDescriptorAccessor = None }
-    public prop let hasNoStandardDescriptorAccessor: Bool { get() { match (m_noStandardDescriptorAccessor) { case None => false case _ => true } } }
+    public prop let hasNoStandardDescriptorAccessor: Bool { get() { isPresent(m_noStandardDescriptorAccessor) } }
     public prop var noStandardDescriptorAccessor: Bool { get() { m_noStandardDescriptorAccessor ?? false } set(i_tmp) { m_noStandardDescriptorAccessor = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearMapEntry() { m_mapEntry = None }
-    public prop let hasMapEntry: Bool { get() { match (m_mapEntry) { case None => false case _ => true } } }
+    public prop let hasMapEntry: Bool { get() { isPresent(m_mapEntry) } }
     public prop var mapEntry: Bool { get() { m_mapEntry.getOrThrow() } set(i_tmp) { m_mapEntry = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -2049,31 +2049,31 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearCtype() { m_ctype = None }
-    public prop let hasCtype: Bool { get() { match (m_ctype) { case None => false case _ => true } } }
+    public prop let hasCtype: Bool { get() { isPresent(m_ctype) } }
     public prop var ctype: FieldOptions_CType { get() { m_ctype ?? STRING } set(i_tmp) { m_ctype = if (i_tmp == STRING) { None } else { i_tmp } } }
 
     public func clearPacked() { m_packed = None }
-    public prop let hasPacked: Bool { get() { match (m_packed) { case None => false case _ => true } } }
+    public prop let hasPacked: Bool { get() { isPresent(m_packed) } }
     public prop var packed: Bool { get() { m_packed.getOrThrow() } set(i_tmp) { m_packed = i_tmp } }
 
     public func clearJstype() { m_jstype = None }
-    public prop let hasJstype: Bool { get() { match (m_jstype) { case None => false case _ => true } } }
+    public prop let hasJstype: Bool { get() { isPresent(m_jstype) } }
     public prop var jstype: FieldOptions_JSType { get() { m_jstype ?? JS_NORMAL } set(i_tmp) { m_jstype = if (i_tmp == JS_NORMAL) { None } else { i_tmp } } }
 
     public func clearLazy() { m_lazy = None }
-    public prop let hasLazy: Bool { get() { match (m_lazy) { case None => false case _ => true } } }
+    public prop let hasLazy: Bool { get() { isPresent(m_lazy) } }
     public prop var lazy: Bool { get() { m_lazy ?? false } set(i_tmp) { m_lazy = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearUnverifiedLazy() { m_unverifiedLazy = None }
-    public prop let hasUnverifiedLazy: Bool { get() { match (m_unverifiedLazy) { case None => false case _ => true } } }
+    public prop let hasUnverifiedLazy: Bool { get() { isPresent(m_unverifiedLazy) } }
     public prop var unverifiedLazy: Bool { get() { m_unverifiedLazy ?? false } set(i_tmp) { m_unverifiedLazy = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearWeak() { m_weak = None }
-    public prop let hasWeak: Bool { get() { match (m_weak) { case None => false case _ => true } } }
+    public prop let hasWeak: Bool { get() { isPresent(m_weak) } }
     public prop var weak: Bool { get() { m_weak ?? false } set(i_tmp) { m_weak = if (i_tmp == false) { None } else { i_tmp } } }
 
     public prop let size: Int64 { get() {
@@ -2246,11 +2246,11 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearAllowAlias() { m_allowAlias = None }
-    public prop let hasAllowAlias: Bool { get() { match (m_allowAlias) { case None => false case _ => true } } }
+    public prop let hasAllowAlias: Bool { get() { isPresent(m_allowAlias) } }
     public prop var allowAlias: Bool { get() { m_allowAlias.getOrThrow() } set(i_tmp) { m_allowAlias = i_tmp } }
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public prop let size: Int64 { get() {
@@ -2329,7 +2329,7 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public prop let size: Int64 { get() {
@@ -2402,7 +2402,7 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public prop let size: Int64 { get() {
@@ -2523,11 +2523,11 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearDeprecated() { m_deprecated = None }
-    public prop let hasDeprecated: Bool { get() { match (m_deprecated) { case None => false case _ => true } } }
+    public prop let hasDeprecated: Bool { get() { isPresent(m_deprecated) } }
     public prop var deprecated: Bool { get() { m_deprecated ?? false } set(i_tmp) { m_deprecated = if (i_tmp == false) { None } else { i_tmp } } }
 
     public func clearIdempotencyLevel() { m_idempotencyLevel = None }
-    public prop let hasIdempotencyLevel: Bool { get() { match (m_idempotencyLevel) { case None => false case _ => true } } }
+    public prop let hasIdempotencyLevel: Bool { get() { isPresent(m_idempotencyLevel) } }
     public prop var idempotencyLevel: MethodOptions_IdempotencyLevel { get() { m_idempotencyLevel ?? IDEMPOTENCY_UNKNOWN } set(i_tmp) { m_idempotencyLevel = if (i_tmp == IDEMPOTENCY_UNKNOWN) { None } else { i_tmp } } }
 
     public prop let size: Int64 { get() {
@@ -2606,11 +2606,11 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearNamePart() { m_namePart = None }
-    public prop let hasNamePart: Bool { get() { match (m_namePart) { case None => false case _ => true } } }
+    public prop let hasNamePart: Bool { get() { isPresent(m_namePart) } }
     public prop var namePart: String { get() { m_namePart.getOrThrow() } set(i_tmp) { m_namePart = i_tmp } }
 
     public func clearIsExtension() { m_isExtension = None }
-    public prop let hasIsExtension: Bool { get() { match (m_isExtension) { case None => false case _ => true } } }
+    public prop let hasIsExtension: Bool { get() { isPresent(m_isExtension) } }
     public prop var isExtension: Bool { get() { m_isExtension.getOrThrow() } set(i_tmp) { m_isExtension = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -2659,8 +2659,8 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     }
 
     public func check(): Unit /* throws RequiredFieldNotSetException */ {
-        match (m_namePart) { case None => throw RequiredFieldNotSetException("namePart") case _ => () }
-        match (m_isExtension) { case None => throw RequiredFieldNotSetException("isExtension") case _ => () }
+        if (isNone(m_namePart)) { throw RequiredFieldNotSetException("namePart") }
+        if (isNone(m_isExtension)) { throw RequiredFieldNotSetException("isExtension") }
     }
 
     public func toString(): String {
@@ -2690,27 +2690,27 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearIdentifierValue() { m_identifierValue = None }
-    public prop let hasIdentifierValue: Bool { get() { match (m_identifierValue) { case None => false case _ => true } } }
+    public prop let hasIdentifierValue: Bool { get() { isPresent(m_identifierValue) } }
     public prop var identifierValue: String { get() { m_identifierValue.getOrThrow() } set(i_tmp) { m_identifierValue = i_tmp } }
 
     public func clearPositiveIntValue() { m_positiveIntValue = None }
-    public prop let hasPositiveIntValue: Bool { get() { match (m_positiveIntValue) { case None => false case _ => true } } }
+    public prop let hasPositiveIntValue: Bool { get() { isPresent(m_positiveIntValue) } }
     public prop var positiveIntValue: UInt64 { get() { m_positiveIntValue.getOrThrow() } set(i_tmp) { m_positiveIntValue = i_tmp } }
 
     public func clearNegativeIntValue() { m_negativeIntValue = None }
-    public prop let hasNegativeIntValue: Bool { get() { match (m_negativeIntValue) { case None => false case _ => true } } }
+    public prop let hasNegativeIntValue: Bool { get() { isPresent(m_negativeIntValue) } }
     public prop var negativeIntValue: Int64 { get() { m_negativeIntValue.getOrThrow() } set(i_tmp) { m_negativeIntValue = i_tmp } }
 
     public func clearDoubleValue() { m_doubleValue = None }
-    public prop let hasDoubleValue: Bool { get() { match (m_doubleValue) { case None => false case _ => true } } }
+    public prop let hasDoubleValue: Bool { get() { isPresent(m_doubleValue) } }
     public prop var doubleValue: Float64 { get() { m_doubleValue.getOrThrow() } set(i_tmp) { m_doubleValue = i_tmp } }
 
     public func clearStringValue() { m_stringValue = None }
-    public prop let hasStringValue: Bool { get() { match (m_stringValue) { case None => false case _ => true } } }
+    public prop let hasStringValue: Bool { get() { isPresent(m_stringValue) } }
     public prop var stringValue: Bytes { get() { m_stringValue.getOrThrow() } set(i_tmp) { m_stringValue = i_tmp } }
 
     public func clearAggregateValue() { m_aggregateValue = None }
-    public prop let hasAggregateValue: Bool { get() { match (m_aggregateValue) { case None => false case _ => true } } }
+    public prop let hasAggregateValue: Bool { get() { isPresent(m_aggregateValue) } }
     public prop var aggregateValue: String { get() { m_aggregateValue.getOrThrow() } set(i_tmp) { m_aggregateValue = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -2817,11 +2817,11 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearLeadingComments() { m_leadingComments = None }
-    public prop let hasLeadingComments: Bool { get() { match (m_leadingComments) { case None => false case _ => true } } }
+    public prop let hasLeadingComments: Bool { get() { isPresent(m_leadingComments) } }
     public prop var leadingComments: String { get() { m_leadingComments.getOrThrow() } set(i_tmp) { m_leadingComments = i_tmp } }
 
     public func clearTrailingComments() { m_trailingComments = None }
-    public prop let hasTrailingComments: Bool { get() { match (m_trailingComments) { case None => false case _ => true } } }
+    public prop let hasTrailingComments: Bool { get() { isPresent(m_trailingComments) } }
     public prop var trailingComments: String { get() { m_trailingComments.getOrThrow() } set(i_tmp) { m_trailingComments = i_tmp } }
 
     public prop let size: Int64 { get() {
@@ -2977,15 +2977,15 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
     public var unknownFields = ArrayList<MessageUnknownField>()
 
     public func clearSourceFile() { m_sourceFile = None }
-    public prop let hasSourceFile: Bool { get() { match (m_sourceFile) { case None => false case _ => true } } }
+    public prop let hasSourceFile: Bool { get() { isPresent(m_sourceFile) } }
     public prop var sourceFile: String { get() { m_sourceFile.getOrThrow() } set(i_tmp) { m_sourceFile = i_tmp } }
 
     public func clearBegin() { m_begin = None }
-    public prop let hasBegin: Bool { get() { match (m_begin) { case None => false case _ => true } } }
+    public prop let hasBegin: Bool { get() { isPresent(m_begin) } }
     public prop var begin: Int32 { get() { m_begin.getOrThrow() } set(i_tmp) { m_begin = i_tmp } }
 
     public func clearEnd() { m_end = None }
-    public prop let hasEnd: Bool { get() { match (m_end) { case None => false case _ => true } } }
+    public prop let hasEnd: Bool { get() { isPresent(m_end) } }
     public prop var end: Int32 { get() { m_end.getOrThrow() } set(i_tmp) { m_end = i_tmp } }
 
     public prop let size: Int64 { get() {
