@@ -15,9 +15,8 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
     } }
 
     public func isEmpty(): Bool {
-        if (!file.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        file.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -120,20 +119,10 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (let Some(i_vtmp) = m_package) { return false }
-        if (!dependency.isEmpty()) { return false }
-        if (!publicDependency.isEmpty()) { return false }
-        if (!weakDependency.isEmpty()) { return false }
-        if (!messageType.isEmpty()) { return false }
-        if (!enumType.isEmpty()) { return false }
-        if (!service.isEmpty()) { return false }
-        if (!extension.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (let Some(i_vtmp) = m_sourceCodeInfo) { return false }
-        if (let Some(i_vtmp) = m_syntax) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && isNone(m_package) && dependency.isEmpty() && publicDependency.isEmpty() &&
+        weakDependency.isEmpty() && messageType.isEmpty() && enumType.isEmpty() && service.isEmpty() &&
+        extension.isEmpty() && isNone(m_options) && isNone(m_sourceCodeInfo) && isNone(m_syntax) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -265,11 +254,8 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_start) { return false }
-        if (let Some(i_vtmp) = m_end) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_start) && isNone(m_end) && isNone(m_options) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -350,10 +336,8 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_start) { return false }
-        if (let Some(i_vtmp) = m_end) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_start) && isNone(m_end) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -445,18 +429,10 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (!field.isEmpty()) { return false }
-        if (!extension.isEmpty()) { return false }
-        if (!nestedType.isEmpty()) { return false }
-        if (!enumType.isEmpty()) { return false }
-        if (!extensionRange.isEmpty()) { return false }
-        if (!oneofDecl.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (!reservedRange.isEmpty()) { return false }
-        if (!reservedName.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && field.isEmpty() && extension.isEmpty() && nestedType.isEmpty() && enumType.isEmpty() &&
+        extensionRange.isEmpty() && oneofDecl.isEmpty() && isNone(m_options) && reservedRange.isEmpty() &&
+        reservedName.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -562,9 +538,8 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
     } }
 
     public func isEmpty(): Bool {
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -862,20 +837,10 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (let Some(i_vtmp) = m_number) { return false }
-        if (let Some(i_vtmp) = m_label) { return false }
-        if (let Some(i_vtmp) = m_type) { return false }
-        if (let Some(i_vtmp) = m_typeName) { return false }
-        if (let Some(i_vtmp) = m_extendee) { return false }
-        if (let Some(i_vtmp) = m_defaultValue) { return false }
-        if (let Some(i_vtmp) = m_oneofIndex) { return false }
-        if (let Some(i_vtmp) = m_jsonName) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (let Some(i_vtmp) = m_proto3Optional) { return false }
-        if (!mapEntry.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && isNone(m_number) && isNone(m_label) && isNone(m_type) && isNone(m_typeName) &&
+        isNone(m_extendee) && isNone(m_defaultValue) && isNone(m_oneofIndex) && isNone(m_jsonName) &&
+        isNone(m_options) && isNone(m_proto3Optional) && mapEntry.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1001,10 +966,8 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && isNone(m_options) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1080,10 +1043,8 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_start) { return false }
-        if (let Some(i_vtmp) = m_end) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_start) && isNone(m_end) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1165,13 +1126,8 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (!value.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (!reservedRange.isEmpty()) { return false }
-        if (!reservedName.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && value.isEmpty() && isNone(m_options) && reservedRange.isEmpty() && reservedName.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1268,11 +1224,8 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (let Some(i_vtmp) = m_number) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && isNone(m_number) && isNone(m_options) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1355,11 +1308,8 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (!method.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && method.isEmpty() && isNone(m_options) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1470,15 +1420,9 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (let Some(i_vtmp) = m_inputType) { return false }
-        if (let Some(i_vtmp) = m_outputType) { return false }
-        if (let Some(i_vtmp) = m_options) { return false }
-        if (let Some(i_vtmp) = m_clientStreaming) { return false }
-        if (let Some(i_vtmp) = m_serverStreaming) { return false }
-        if (let Some(i_vtmp) = m_funcName) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && isNone(m_inputType) && isNone(m_outputType) && isNone(m_options) &&
+        isNone(m_clientStreaming) && isNone(m_serverStreaming) && isNone(m_funcName) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1736,29 +1680,14 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_javaPackage) { return false }
-        if (let Some(i_vtmp) = m_javaOuterClassname) { return false }
-        if (let Some(i_vtmp) = m_javaMultipleFiles) { return false }
-        if (let Some(i_vtmp) = m_javaGenerateEqualsAndHash) { return false }
-        if (let Some(i_vtmp) = m_javaStringCheckUtf8) { return false }
-        if (let Some(i_vtmp) = m_optimizeFor) { return false }
-        if (let Some(i_vtmp) = m_goPackage) { return false }
-        if (let Some(i_vtmp) = m_ccGenericServices) { return false }
-        if (let Some(i_vtmp) = m_javaGenericServices) { return false }
-        if (let Some(i_vtmp) = m_pyGenericServices) { return false }
-        if (let Some(i_vtmp) = m_phpGenericServices) { return false }
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (let Some(i_vtmp) = m_ccEnableArenas) { return false }
-        if (let Some(i_vtmp) = m_objcClassPrefix) { return false }
-        if (let Some(i_vtmp) = m_csharpNamespace) { return false }
-        if (let Some(i_vtmp) = m_swiftPrefix) { return false }
-        if (let Some(i_vtmp) = m_phpClassPrefix) { return false }
-        if (let Some(i_vtmp) = m_phpNamespace) { return false }
-        if (let Some(i_vtmp) = m_phpMetadataNamespace) { return false }
-        if (let Some(i_vtmp) = m_rubyPackage) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_javaPackage) && isNone(m_javaOuterClassname) && isNone(m_javaMultipleFiles) &&
+        isNone(m_javaGenerateEqualsAndHash) && isNone(m_javaStringCheckUtf8) && isNone(m_optimizeFor) &&
+        isNone(m_goPackage) && isNone(m_ccGenericServices) && isNone(m_javaGenericServices) &&
+        isNone(m_pyGenericServices) && isNone(m_phpGenericServices) && isNone(m_deprecated) &&
+        isNone(m_ccEnableArenas) && isNone(m_objcClassPrefix) && isNone(m_csharpNamespace) && isNone(m_swiftPrefix) &&
+        isNone(m_phpClassPrefix) && isNone(m_phpNamespace) && isNone(m_phpMetadataNamespace) && isNone(m_rubyPackage) &&
+        uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -1943,13 +1872,9 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_messageSetWireFormat) { return false }
-        if (let Some(i_vtmp) = m_noStandardDescriptorAccessor) { return false }
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (let Some(i_vtmp) = m_mapEntry) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_messageSetWireFormat) && isNone(m_noStandardDescriptorAccessor) && isNone(m_deprecated) &&
+        isNone(m_mapEntry) && uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2166,16 +2091,9 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_ctype) { return false }
-        if (let Some(i_vtmp) = m_packed) { return false }
-        if (let Some(i_vtmp) = m_jstype) { return false }
-        if (let Some(i_vtmp) = m_lazy) { return false }
-        if (let Some(i_vtmp) = m_unverifiedLazy) { return false }
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (let Some(i_vtmp) = m_weak) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_ctype) && isNone(m_packed) && isNone(m_jstype) && isNone(m_lazy) && isNone(m_unverifiedLazy) &&
+        isNone(m_deprecated) && isNone(m_weak) && uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2271,9 +2189,8 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2346,11 +2263,8 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_allowAlias) { return false }
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_allowAlias) && isNone(m_deprecated) && uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2427,10 +2341,8 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_deprecated) && uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2502,10 +2414,8 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_deprecated) && uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2630,11 +2540,8 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_deprecated) { return false }
-        if (let Some(i_vtmp) = m_idempotencyLevel) { return false }
-        if (!uninterpretedOption.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_deprecated) && isNone(m_idempotencyLevel) && uninterpretedOption.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2715,10 +2622,8 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_namePart) { return false }
-        if (let Some(i_vtmp) = m_isExtension) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_namePart) && isNone(m_isExtension) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2822,15 +2727,9 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
     } }
 
     public func isEmpty(): Bool {
-        if (!name.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_identifierValue) { return false }
-        if (let Some(i_vtmp) = m_positiveIntValue) { return false }
-        if (let Some(i_vtmp) = m_negativeIntValue) { return false }
-        if (let Some(i_vtmp) = m_doubleValue) { return false }
-        if (let Some(i_vtmp) = m_stringValue) { return false }
-        if (let Some(i_vtmp) = m_aggregateValue) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        name.isEmpty() && isNone(m_identifierValue) && isNone(m_positiveIntValue) && isNone(m_negativeIntValue) &&
+        isNone(m_doubleValue) && isNone(m_stringValue) && isNone(m_aggregateValue) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -2937,13 +2836,9 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
     } }
 
     public func isEmpty(): Bool {
-        if (!path.isEmpty()) { return false }
-        if (!span.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_leadingComments) { return false }
-        if (let Some(i_vtmp) = m_trailingComments) { return false }
-        if (!leadingDetachedComments.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        path.isEmpty() && span.isEmpty() && isNone(m_leadingComments) && isNone(m_trailingComments) &&
+        leadingDetachedComments.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -3024,9 +2919,8 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
     } }
 
     public func isEmpty(): Bool {
-        if (!location.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        location.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -3105,12 +2999,8 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
     } }
 
     public func isEmpty(): Bool {
-        if (!path.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_sourceFile) { return false }
-        if (let Some(i_vtmp) = m_begin) { return false }
-        if (let Some(i_vtmp) = m_end) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        path.isEmpty() && isNone(m_sourceFile) && isNone(m_begin) && isNone(m_end) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -3186,9 +3076,8 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
     } }
 
     public func isEmpty(): Bool {
-        if (!annotation.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        annotation.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {

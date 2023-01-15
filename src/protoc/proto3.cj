@@ -231,6 +231,51 @@ func getFieldOneofPropGetExpr(name: String, field: FieldDescriptorProto) {
     "}"
 }
 
+/* proto3 message func isEmpty impl */
+func implFuncIsEmpty(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper) {
+    let append: (String) -> StringBuilder = helper.outbuf.append
+    let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
+
+    append("\n    public func isEmpty(): Bool {\n")
+
+    /* normal fields */
+    for (field in fields where !field.hasOneofIndex) {
+        let name = getMessagePropName(field.jsonName)
+
+        sepOut.append(if (field.label == LABEL_REPEATED) {
+            "${name}.isEmpty()"
+        } else {
+            match (field.type_) {
+                case TYPE_DOUBLE | TYPE_FLOAT => "${name} == .0"
+                case TYPE_BOOL => "${name} == false"
+                case TYPE_ENUM | TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => "${name}.isEmpty()"
+                case _ => "${name} == 0"
+            }
+        })
+    }
+
+    if (!fields.isEmpty()) {
+        append(" &&\n")
+    }
+
+    /* oneof fields */
+    for ((name, ofields) in helper.oneofDecl) {
+        append("        match (${getMessagePropName(name)}) {\n")
+        for (field in ofields) {
+            let isEmpty = match (field.type_) {
+                case TYPE_DOUBLE | TYPE_FLOAT => "i_vtmp == .0"
+                case TYPE_BOOL => "i_vtmp == false"
+                case TYPE_ENUM | TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => "i_vtmp.isEmpty()"
+                case _ => "i_vtmp == 0"
+            }
+            append("            case ${titleCase(field.jsonName)}(i_vtmp) => ${isEmpty}\n")
+        }
+        append("            case None => true\n        } &&\n")
+    }
+
+    append("        unknownFields.isEmpty()\n    }\n")
+}
+
 /* gen proto3 message codes */
 func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> StringBuilder = helper.outbuf.append
@@ -262,14 +307,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     append("        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }\n        return i_tmp\n    } }\n")
 
     // func isEmpty
-    append("\n    public func isEmpty(): Bool {\n")
-    for (field in fields where !field.hasOneofIndex) { append("        if (${getFieldNoEmptyExpr(field)}) { return false }\n") }
-    for ((name, ofields) in helper.oneofDecl) {
-        append("        match (${getMessagePropName(name)}) {\n")
-        for (field in ofields) { append("            case ${titleCase(field.jsonName)}(i_vtmp) where ${namedNoEmpty("i_vtmp", field)} => return false\n") }
-        append("            case _ => ()\n        }\n")
-    }
-    append("        if (!unknownFields.isEmpty()) { return false }\n        return true\n    }\n")
+    implFuncIsEmpty(fields, helper)
 
     // func clear
     append("\n    public func clear(): Unit {\n")

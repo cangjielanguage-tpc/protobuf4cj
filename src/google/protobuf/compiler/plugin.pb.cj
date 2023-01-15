@@ -38,12 +38,8 @@ public class Version <: Message & TypedMessage<Version> {
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_major) { return false }
-        if (let Some(i_vtmp) = m_minor) { return false }
-        if (let Some(i_vtmp) = m_patch) { return false }
-        if (let Some(i_vtmp) = m_suffix) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_major) && isNone(m_minor) && isNone(m_patch) && isNone(m_suffix) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -133,12 +129,8 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
     } }
 
     public func isEmpty(): Bool {
-        if (!fileToGenerate.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_parameter) { return false }
-        if (!protoFile.isEmpty()) { return false }
-        if (let Some(i_vtmp) = m_compilerVersion) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        fileToGenerate.isEmpty() && isNone(m_parameter) && protoFile.isEmpty() && isNone(m_compilerVersion) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -236,12 +228,8 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_name) { return false }
-        if (let Some(i_vtmp) = m_insertionPoint) { return false }
-        if (let Some(i_vtmp) = m_content) { return false }
-        if (let Some(i_vtmp) = m_generatedCodeInfo) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_name) && isNone(m_insertionPoint) && isNone(m_content) && isNone(m_generatedCodeInfo) &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {
@@ -371,11 +359,8 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
     } }
 
     public func isEmpty(): Bool {
-        if (let Some(i_vtmp) = m_error) { return false }
-        if (let Some(i_vtmp) = m_supportedFeatures) { return false }
-        if (!file.isEmpty()) { return false }
-        if (!unknownFields.isEmpty()) { return false }
-        return true
+        isNone(m_error) && isNone(m_supportedFeatures) && file.isEmpty() &&
+        unknownFields.isEmpty()
     }
 
     public func clear(): Unit {

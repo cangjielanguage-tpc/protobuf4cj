@@ -96,6 +96,34 @@ func getFieldPropVarExpr2(field: FieldDescriptorProto) {
     "get() { m_${field.jsonName} ?? ${field.defaultValue} } set(i_tmp) { m_${field.jsonName} = if (i_tmp == ${field.defaultValue}) { None } else { i_tmp } }"
 }
 
+/* proto2 message func isEmpty impl */
+func implFuncIsEmpty2(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper) {
+    let append: (String) -> StringBuilder = helper.outbuf.append
+    let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
+
+    append("\n    public func isEmpty(): Bool {\n")
+
+    /* normal fields */
+    for (field in fields where !field.hasOneofIndex) {
+        sepOut.append(if (field.label == LABEL_REPEATED) {
+            "${getMessagePropName(field.jsonName)}.isEmpty()"
+        } else {
+            "isNone(m_${field.jsonName})"
+        })
+    }
+
+    if (!fields.isEmpty()) {
+        append(" &&\n")
+    }
+
+    /* oneof fields */
+    for ((name, ofields) in helper.oneofDecl) {
+        append("        match (${getMessagePropName(name)}) { case None => true case _ => false } &&\n")
+    }
+
+    append("        unknownFields.isEmpty()\n    }\n")
+}
+
 /* gen proto2 message codes */
 func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> StringBuilder = helper.outbuf.append
@@ -134,14 +162,7 @@ func genCodeMessageField2(typeName: String, fields: ArrayList<FieldDescriptorPro
     append("        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }\n        return i_tmp\n    } }\n")
 
     // func isEmpty
-    append("\n    public func isEmpty(): Bool {\n")
-    for (field in fields where !field.hasOneofIndex) { append("        if (${getFieldNoEmptyExpr2(field)}) { return false }\n") }
-    for ((name, ofields) in helper.oneofDecl) {
-        append("        match (${getMessagePropName(name)}) {\n")
-        for (field in ofields) { append("            case ${titleCase(field.jsonName)}(i_vtmp) => return false\n") }
-        append("            case _ => ()\n        }\n")
-    }
-    append("        if (!unknownFields.isEmpty()) { return false }\n        return true\n    }\n")
+    implFuncIsEmpty2(fields, helper)
 
     // func clear
     append("\n    public func clear(): Unit {\n")
