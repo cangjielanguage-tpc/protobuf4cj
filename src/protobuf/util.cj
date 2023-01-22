@@ -33,7 +33,8 @@ public struct StructPrinter <: ToString {
         stb.append(']')
     }
 
-    public mut func append(key: String, map: HashMap<String, String>): Unit {
+    /* cangjie 0.36.4, compile blocked if change to TreeMap */
+    public mut func append(key: String, map: Map<String, String>): Unit {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append("\"${k}\"", v)
@@ -41,7 +42,7 @@ public struct StructPrinter <: ToString {
         sp.done()
     }
 
-    public mut func append<T>(key: String, map: HashMap<T, String>): Unit where T <: ToString & Hashable & Equatable<T> {
+    public mut func append<T>(key: String, map: TreeMap<T, String>): Unit where T <: ToString & Less<T> & Equatable<T> {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append(k.toString(), v)
@@ -49,7 +50,7 @@ public struct StructPrinter <: ToString {
         sp.done()
     }
 
-    public mut func append<T>(key: String, map: HashMap<String, T>): Unit where T <: ToString {
+    public mut func append<T>(key: String, map: TreeMap<String, T>): Unit where T <: ToString {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append("\"${k}\"", v)
@@ -68,7 +69,7 @@ public struct StructPrinter <: ToString {
     public func toString() { stb.toString() }
 }
 
-public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K>, V <: TypedMessage<V> {
+public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K>, V <: TypedMessage<V> {
     let map = val.clone()
     for ((k, v) in map) {
         map[k] = v.clone()
@@ -76,7 +77,7 @@ public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K
     return map
 }
 
-public func mapClone<K>(val: HashMap<K, Bytes>) where K <: Hashable & Equatable<K> {
+public func mapClone<K>(val: TreeMap<K, Bytes>) where K <: Less<K> & Equatable<K> {
     let map = val.clone()
     for ((k, v) in map) {
         map[k] = v.clone()
@@ -84,7 +85,7 @@ public func mapClone<K>(val: HashMap<K, Bytes>) where K <: Hashable & Equatable<
     return map
 }
 
-public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K> {
+public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K> {
     val.clone()
 }
 
