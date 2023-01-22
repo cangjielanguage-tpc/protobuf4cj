@@ -33,8 +33,8 @@ public struct StructPrinter <: ToString {
         stb.append(']')
     }
 
-    /* cangjie 0.36.4, compile blocked if change to TreeMap */
-    public mut func append(key: String, map: Map<String, String>): Unit {
+    /* cangjie 0.36.4, -O2 compile blocked if use TreeMap */
+    public mut func append(key: String, map: TreeMap<String, String>): Unit {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append("\"${k}\"", v)
