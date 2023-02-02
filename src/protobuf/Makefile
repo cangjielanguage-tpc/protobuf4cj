@@ -15,7 +15,7 @@ LIB_TYPE		= static
 ifeq ($(LIB_TYPE), static)
 	LIB_POSTFIX	= a
 	FFI_TYPECAST= ffi-typecast.o
-	FFI_GCCOPT	= -fPIE
+	FFI_GCCOPT	= -fPIC
 else
 	LIB_POSTFIX = so
 	FFI_TYPECAST= libffi-typecast.so

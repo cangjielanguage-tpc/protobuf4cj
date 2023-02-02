@@ -23,7 +23,7 @@ $(TARGET): ./*.cj $(FFI_STDIO)
 
 $(FFI_STDIO): ./stdio.ffi.c
 	install -d $(OUTPUT)
-	gcc -g -c -fPIE $^ -o $@
+	gcc -g -c -fPIC $^ -o $@
 
 install:
 	-cp -a $(TARGET) $(BIN_DESTDIR)
