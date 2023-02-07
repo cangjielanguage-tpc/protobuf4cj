@@ -100,11 +100,13 @@ func getFieldPropVarExpr2(field: FieldDescriptorProto) {
 func implFuncIsEmpty2(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper) {
     let append: (String) -> StringBuilder = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
+    var hasNormalField = false
 
     append("\n    public func isEmpty(): Bool {\n")
 
     /* normal fields */
     for (field in fields where !field.hasOneofIndex) {
+        hasNormalField = true
         sepOut.append(if (field.label == LABEL_REPEATED) {
             "${getMessagePropName(field.jsonName)}.isEmpty()"
         } else {
@@ -112,7 +114,7 @@ func implFuncIsEmpty2(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHe
         })
     }
 
-    if (!fields.isEmpty()) {
+    if (hasNormalField) {
         append(" &&\n")
     }
 

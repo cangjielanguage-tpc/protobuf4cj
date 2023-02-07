@@ -235,12 +235,14 @@ func getFieldOneofPropGetExpr(name: String, field: FieldDescriptorProto) {
 func implFuncIsEmpty(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper) {
     let append: (String) -> StringBuilder = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
+    var hasNormalField = false
 
     append("\n    public func isEmpty(): Bool {\n")
 
     /* normal fields */
     for (field in fields where !field.hasOneofIndex) {
         let name = getMessagePropName(field.jsonName)
+        hasNormalField = true
 
         sepOut.append(if (field.label == LABEL_REPEATED) {
             "${name}.isEmpty()"
@@ -254,7 +256,7 @@ func implFuncIsEmpty(fields: ArrayList<FieldDescriptorProto>, helper: GenCodeHel
         })
     }
 
-    if (!fields.isEmpty()) {
+    if (hasNormalField) {
         append(" &&\n")
     }
 
