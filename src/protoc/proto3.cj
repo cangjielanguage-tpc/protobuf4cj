@@ -217,10 +217,8 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
 /* oneof field prop get expr */
 func getFieldOneofPropGetExpr(name: String, field: FieldDescriptorProto) {
     let group = getMessagePropName(name)
-    let setRet = "${group} = ${titleCase(field.jsonName)}(i_vtmp); i_vtmp"
     let noneExpr = match (field.type_) {
-        case TYPE_MESSAGE => "let i_vtmp = ${field.typeName}(); ${setRet}"
-        case TYPE_BYTES => "let i_vtmp = Bytes(); ${setRet}"
+        case TYPE_MESSAGE => "let i_vtmp = ${field.typeName}(); ${getMessagePropName(field.jsonName)} = i_vtmp; i_vtmp"
         case _ => zeroValue(field)
     }
 
