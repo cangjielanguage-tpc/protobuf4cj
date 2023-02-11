@@ -38,5 +38,5 @@ public class MessageUnknownField <: ToString {
 
     public func toString() { "{tag: ${tag}, wireType: ${wireType}, data: ${data}}" }
 
-    public func clone() { MessageUnknownField(tag, wireType, data.clone()) }
+    public func clone() { this }
 }

@@ -319,7 +319,7 @@ func genCodeMessageField(typeName: String, fields: ArrayList<FieldDescriptorProt
     append("\n    public func clone(): ${typeName} {\n        let i_tmp = ${typeName}()\n")
     for (field in fields where !field.hasOneofIndex) { append("        i_tmp.${getFieldCloneExpr(field)}\n") }
     for ((name, _) in helper.oneofDecl) { append("        i_tmp.${getMessagePropName(name)} = ${getMessagePropName(name)}.clone()\n") }
-    append("        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }\n        return i_tmp\n    }\n")
+    append("        i_tmp.unknownFields = unknownFields.clone()\n        return i_tmp\n    }\n")
 
     // func unpack
     append("\n    public func unpack<T>(src: T): Unit where T <: BytesReader {\n        while (!src.isEmpty()) {\n            let i_tmp = src.parseTag()\n            match (i_tmp[0]) {\n")

@@ -415,7 +415,7 @@ func getImplIterfaceApi(typeName: String) {
     "\n" +
     "    public static func empty() { ${typeName}() }\n" +
     "    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }\n" +
-    "    public static func fromBytes(src: BytesReader) { let i_tmp = ${typeName}(); i_tmp.unpacki(src); i_tmp }\n"
+    "    public static func fromBytes(src: BytesReader) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }\n"
 }
 
 /* convert pb type to cj type */
