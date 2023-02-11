@@ -359,7 +359,7 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         // gen clone()
         append("    public func clone(): ${groupType} {\n")
         append("        match (this) {\n")
-        for (field in fields where field.type_ == TYPE_BYTES || field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => ${titleCase(field.jsonName)}(v.clone())\n") }
+        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => ${titleCase(field.jsonName)}(v.clone())\n") }
         append("            case _ => this\n")
         append("        }\n")
         append("    }\n")
@@ -397,7 +397,7 @@ func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescrip
         case TYPE_ENUM => "${field.typeName}.parse(src.parseInt32())"
         case TYPE_BOOL => "src.parseBool()"
         case TYPE_STRING => "src.parseString()"
-        case TYPE_BYTES => "src.parseBytes()"
+        case TYPE_BYTES => "src.parseBytesSlice()"
         case TYPE_FIXED64 => "src.parseFixed64()"
         case TYPE_FIXED32 => "src.parseFixed32()"
         case TYPE_SFIXED32 => "src.parseSFixed32()"
@@ -431,7 +431,7 @@ func typeConvert(field: FieldDescriptorProto) {
         case TYPE_BOOL => "Bool"
         case TYPE_STRING => "String"
         case TYPE_MESSAGE => "${field.typeName}"
-        case TYPE_BYTES => "Bytes"
+        case TYPE_BYTES => "BytesSlice"
         case TYPE_FIXED64 => "UInt64"
         case TYPE_FIXED32 => "UInt32"
         case TYPE_SFIXED32 => "Int32"
@@ -455,7 +455,7 @@ func initValue(field: FieldDescriptorProto) {
         case TYPE_BOOL => "false"
         case TYPE_STRING => "\"\""
         case TYPE_MESSAGE => "${field.typeName}()"
-        case TYPE_BYTES => "Bytes()"
+        case TYPE_BYTES => "BytesSlice()"
         case TYPE_FIXED64 => "UInt64(0)"
         case TYPE_FIXED32 => "UInt32(0)"
         case TYPE_SFIXED32 => "Int32(0)"
@@ -473,7 +473,7 @@ func zeroValue(field: FieldDescriptorProto) {
         case TYPE_BOOL => "false"
         case TYPE_ENUM => "${field.typeName}.empty()"
         case TYPE_MESSAGE => "${field.typeName}()"
-        case TYPE_BYTES => "Bytes()"
+        case TYPE_BYTES => "BytesSlice()"
         case TYPE_STRING => "\"\""
         case _=> "0"
     }
@@ -538,7 +538,7 @@ func namedParseSrc(name: String, src: String, field: FieldDescriptorProto) {
         case TYPE_BOOL => " = ${src}.parseBool()"
         case TYPE_STRING => " = ${src}.parseString()"
         case TYPE_MESSAGE => ".unpack(subReader(${src}))"
-        case TYPE_BYTES => " = ${src}.parseBytes()"
+        case TYPE_BYTES => " = ${src}.parseBytesSlice()"
         case TYPE_FIXED64 => " = ${src}.parseFixed64()"
         case TYPE_FIXED32 => " = ${src}.parseFixed32()"
         case TYPE_SFIXED32 => " = ${src}.parseSFixed32()"

@@ -11,7 +11,7 @@ public class MessageUnknownField <: ToString {
         /** The wire type of the field. */
         public let wireType: WireType,
         /** Field data. */
-        public let data: Bytes
+        public let data: BytesSlice
     ) {}
 
     @overflowWrapping
@@ -23,15 +23,15 @@ public class MessageUnknownField <: ToString {
     public func pack<T>(out: T) where T <: BytesWriter {
         out.packTag(tag, wireType)
         if (wireType.value == PREFIXED) { out.packVarint(data.size) }
-        out.appendBytes(data)
+        out.appendBytes(unsafe { data.getRawArray() })
     }
 
     public static func unpack<T>(tag: Tag, wt: WireNum, src: T) where T <: BytesReader {
         MessageUnknownField(tag, WireType.parse(wt), match (wt) {
             case 0 => src.parseVarintData()
-            case 1 => src.read(8).toArray()
-            case 2 => src.parseBytes()
-            case 5 => src.read(4).toArray()
+            case 1 => src.read(8)
+            case 2 => src.parseBytesSlice()
+            case 5 => src.read(4)
             case _ => throw ParseValueExecption("UnknownField")
         })
     }

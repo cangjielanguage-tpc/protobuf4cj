@@ -11,11 +11,6 @@ public interface BytesWriter {
     /* append bytes to writer */
     func appendBytes(val: Bytes): Unit
 
-    /* append string utf8 view to writer */
-    func appendUtf8View(val: Utf8View): Unit { unsafe { appendBytes(val.getRawBytes()) } }
-    /* append slice to writer */
-    func appendSlice(val: BytesSlice): Unit { unsafe { appendBytes(val.getRawArray()) } }
-
     /* pack a tag(with wire-type) out. */
     @overflowWrapping
     func packTag(tag: Tag, wt: WireType) {
@@ -152,15 +147,15 @@ public interface BytesWriter {
         unsafe { packFixed(ftoi(val)) }
     }
 
-    func packBin(val: Bytes) {
+    func packBin(val: BytesSlice) {
         packVarint(val.size)
-        appendBytes(val)
+        appendBytes(unsafe { val.getRawArray() })
     }
 
     func packBin(val: String) {
         let view = val.utf8View
         packVarint(view.size)
-        appendUtf8View(view)
+        appendBytes(unsafe { view.getRawBytes() })
     }
 }
 

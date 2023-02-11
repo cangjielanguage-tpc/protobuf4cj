@@ -77,14 +77,6 @@ public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K>
     return map
 }
 
-public func mapClone<K>(val: TreeMap<K, Bytes>) where K <: Less<K> & Equatable<K> {
-    let map = val.clone()
-    for ((k, v) in map) {
-        map[k] = v.clone()
-    }
-    return map
-}
-
 public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K> {
     val.clone()
 }
@@ -99,14 +91,14 @@ func parseEnum<E>(src: Json) where E <: Enum<E> {
 }
 
 /* parse bytes from json, support base64 and uint8 array. */
-func parseBytes(src: Json) {
+func parseBytesSlice(src: Json) {
     /* parse as base64 string */
     if (src.isString) {
-        return fromBase64String(src.asString()).getOrThrow()
+        return unsafe { BytesSlice.grab(fromBase64String(src.asString()).getOrThrow()) }
     }
 
     let arr = src.asArray()
-    Bytes(arr.size) { i => UInt8(arr[i].asNumber()) }
+    BytesSlice(arr.size) { i => UInt8(arr[i].asNumber()) }
 }
 
 extend UInt64 {

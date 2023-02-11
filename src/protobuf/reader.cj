@@ -51,7 +51,7 @@ public interface BytesReader {
     func parseVarintData() {
         var byte = read()
         if (byte < 0x80) {
-            return [byte]
+            return unsafe { BytesSlice.grab([byte]) }
         }
 
         let data: Bytes = [byte, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -60,7 +60,7 @@ public interface BytesReader {
             byte = read()
             data[i] = byte
             if (byte < 0x80) {
-                return data[.. i + 1]
+                return unsafe { BytesSlice.grab(data[.. i + 1]) }
             }
         }
 
@@ -184,8 +184,8 @@ public interface BytesReader {
         unsafe { itof(parseFixed32()) }
     }
 
-    func parseBytes() {
-        read(parseInt64()).toArray()
+    func parseBytesSlice() {
+        read(parseInt64())
     }
 
     func parseString() {

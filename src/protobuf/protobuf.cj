@@ -137,7 +137,7 @@ public func sintSize(val: Int32) {
 }
 
 @overflowWrapping
-public func binSize(val: Bytes) {
+public func binSize(val: BytesSlice) {
     let size = val.size
     varintSize(size) + size
 }

@@ -43,7 +43,7 @@ func getFieldClearExpr(field: FieldDescriptorProto) {
         case TYPE_ENUM => "${name} = ${field.typeName}.empty()"
         case TYPE_STRING => "${name} = \"\""
         case TYPE_MESSAGE => "${name} = ${field.typeName}()"
-        case TYPE_BYTES => "${name} = Bytes()"
+        case TYPE_BYTES => "${name} = BytesSlice()"
         case _=> "${name} = 0"
     }
 }
@@ -60,14 +60,14 @@ func getFieldCloneExpr(field: FieldDescriptorProto) {
     /* normal fields */
     if (field.label != LABEL_REPEATED) {
         return "${name} = ${name}" + match (field.type_) {
-            case TYPE_MESSAGE | TYPE_BYTES => ".clone()"
+            case TYPE_MESSAGE => ".clone()"
             case _ => ""
         }
     }
 
     /* repeated fields */
     match (field.type_) {
-        case TYPE_MESSAGE | TYPE_BYTES => "${name} = ArrayList(${name}.size, { i => ${name}[i].clone() })"
+        case TYPE_MESSAGE => "${name} = ArrayList(${name}.size, { i => ${name}[i].clone() })"
         case _ => "${name} = ${name}.clone()"
     }
 }
@@ -203,7 +203,7 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
         case TYPE_BOOL => "${name}.append(src.parseBool())"
         case TYPE_STRING => "${name}.append(src.parseString())"
         case TYPE_MESSAGE => "${name}.add().unpack(subReader(src))"
-        case TYPE_BYTES => "${name}.append(src.parseBytes())"
+        case TYPE_BYTES => "${name}.append(src.parseBytesSlice())"
         case TYPE_FIXED64 => "${name}.append(src.parseFixed64())"
         case TYPE_FIXED32 => "${name}.append(src.parseFixed32())"
         case TYPE_SFIXED32 => "${name}.append(src.parseSFixed32())"

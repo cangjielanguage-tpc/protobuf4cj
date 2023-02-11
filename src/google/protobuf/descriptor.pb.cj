@@ -2685,7 +2685,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
     private var m_positiveIntValue: ?UInt64 = None
     private var m_negativeIntValue: ?Int64 = None
     private var m_doubleValue: ?Float64 = None
-    private var m_stringValue: ?Bytes = None
+    private var m_stringValue: ?BytesSlice = None
     private var m_aggregateValue: ?String = None
     public var unknownFields = ArrayList<MessageUnknownField>()
 
@@ -2707,7 +2707,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
 
     public func clearStringValue() { m_stringValue = None }
     public prop let hasStringValue: Bool { get() { isPresent(m_stringValue) } }
-    public prop var stringValue: Bytes { get() { m_stringValue.getOrThrow() } set(i_tmp) { m_stringValue = i_tmp } }
+    public prop var stringValue: BytesSlice { get() { m_stringValue.getOrThrow() } set(i_tmp) { m_stringValue = i_tmp } }
 
     public func clearAggregateValue() { m_aggregateValue = None }
     public prop let hasAggregateValue: Bool { get() { isPresent(m_aggregateValue) } }
@@ -2750,7 +2750,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         i_tmp.m_positiveIntValue = m_positiveIntValue
         i_tmp.m_negativeIntValue = m_negativeIntValue
         i_tmp.m_doubleValue = m_doubleValue
-        i_tmp.m_stringValue = m_stringValue?.clone()
+        i_tmp.m_stringValue = m_stringValue
         i_tmp.m_aggregateValue = m_aggregateValue
         i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
         return i_tmp
@@ -2765,7 +2765,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
                 case 4 => m_positiveIntValue = src.parseUInt64()
                 case 5 => m_negativeIntValue = src.parseInt64()
                 case 6 => m_doubleValue = src.parseFloat64()
-                case 7 => m_stringValue = src.parseBytes()
+                case 7 => m_stringValue = src.parseBytesSlice()
                 case 8 => m_aggregateValue = src.parseString()
                 case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
             }

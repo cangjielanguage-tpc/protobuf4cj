@@ -36,7 +36,7 @@ func getFieldCloneExpr2(field: FieldDescriptorProto) {
     }
 
     "m_${field.jsonName} = m_${field.jsonName}" + match (field.type_) {
-        case TYPE_MESSAGE | TYPE_BYTES => "?.clone()"
+        case TYPE_MESSAGE => "?.clone()"
         case _ => ""
     }
 }
