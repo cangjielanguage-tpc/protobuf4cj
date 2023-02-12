@@ -1,0 +1,334 @@
+package protobuf
+
+public class RepeatedField<T> <: Collection<T> {
+    private var parent: ?AbstractMessage
+    private var data: ArrayList<T>
+
+    public init() {
+        parent = None
+        data = ArrayList()
+    }
+
+    public init(capacity: Int64) {
+        parent = None
+        data = ArrayList(capacity)
+    }
+
+    public init(size: Int64, initElement: (Int64) -> T) {
+        parent = None
+        data = ArrayList(size, initElement)
+    }
+
+    public init(elements: Array<T>) {
+        parent = None
+        data = ArrayList(elements)
+    }
+
+    public init(elements: Collection<T>) {
+        parent = None
+        data = ArrayList(elements)
+    }
+
+    public func get(index: Int64): ?T {
+        data.get(index)
+    }
+
+    public func set(index: Int64, element: T): Unit {
+        data.set(index, element)
+        parent?.markDirty()
+    }
+
+    public func append(element: T): Unit {
+        data.append(element)
+        parent?.markDirty()
+    }
+
+    public func appendAll(elements: Collection<T>): Unit {
+        data.appendAll(elements)
+        parent?.markDirty()
+    }
+
+    public func insert(index: Int64, element: T): Unit {
+        data.insert(index, element)
+        parent?.markDirty()
+    }
+
+    public func insertAll(index: Int64, elements: Collection<T>): Unit {
+        data.insertAll(index, elements)
+        parent?.markDirty()
+    }
+
+    public func prepend(element: T): Unit {
+        data.prepend(element)
+        parent?.markDirty()
+    }
+
+    public func prependAll(elements: Collection<T>): Unit {
+        data.prependAll(elements)
+        parent?.markDirty()
+    }
+
+    public func remove(index: Int64): T {
+        parent?.markDirty()
+        data.remove(index)
+    }
+
+    public func remove(range: Range<Int64>): Unit {
+        data.remove(range)
+        parent?.markDirty()
+    }
+
+    public func removeIf(predicate: (T) -> Bool): Unit {
+        data.removeIf(predicate)
+        parent?.markDirty()
+    }
+
+    public func clear(): Unit {
+        data.clear()
+        parent?.markDirty()
+    }
+
+    public func copyFrom(rf: RepeatedField<T>): Unit {
+        data = rf.data.clone()
+        parent?.markDirty()
+    }
+
+    public func moveFrom(rf: RepeatedField<T>): Unit {
+        let temp = rf.data
+        rf.data = data
+        rf.clear()
+
+        data = temp
+        parent?.markDirty()
+    }
+
+    public func swap(rf: RepeatedField<T>): Unit {
+        let temp = rf.data
+        rf.data = data
+        rf.parent?.markDirty()
+
+        data = temp
+        parent?.markDirty()
+    }
+
+    public func reverse(): Unit { data.reverse() }
+    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
+    public func reserve(additional: Int64): Unit { data.reserve(additional) }
+    public func toArray(): Array<T> { data.toArray() }
+    public func version(): Int64 { data.version() }
+    public func capacity(): Int64 { data.capacity() }
+    public func iterator(): Iterator<T> { data.iterator() }
+    public prop let size: Int64 { get() { data.size } }
+    public func isEmpty(): Bool { data.isEmpty() }
+    public func toArrayList(): ArrayList<T> { data.clone() }
+    public operator func [](index: Int64): T { data[index] }
+    public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty() }
+
+    func appendDirty(element: T): Unit { data.append(element) }
+    func setParent(parent: AbstractMessage): Unit { this.parent = parent }
+    func getRawData() { data }
+}
+
+extend RepeatedField<T> <: ToString where T <: ToString {
+    public func toString(): String {
+        getRawData().toString()
+    }
+}
+
+extend RepeatedField<T> <: Equatable<RepeatedField<T>> where T <: Equatable<T> {
+    public operator func ==(that: RepeatedField<T>): Bool {
+        getRawData() == that.getRawData()
+    }
+
+    public operator func !=(that: RepeatedField<T>): Bool {
+        getRawData() != that.getRawData()
+    }
+
+    public func contains(element: T): Bool {
+        getRawData().contains(element)
+    }
+}
+
+extend RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
+    public operator func ==(that: ArrayList<T>): Bool {
+        getRawData() == that
+    }
+
+    public operator func !=(that: ArrayList<T>): Bool {
+        getRawData() != that
+    }
+}
+
+public class RepeatedMessage<T> <: Collection<T> & ToString where T <: AbstractMessage & TypedMessage<T> {
+    private var parent: ?AbstractMessage
+    private var data: ArrayList<T>
+
+    public init() {
+        parent = None
+        data = ArrayList()
+    }
+
+    public init(capacity: Int64) {
+        parent = None
+        data = ArrayList(capacity)
+    }
+
+    public init(size: Int64, initElement: (Int64) -> T) {
+        parent = None
+        data = ArrayList(size, initElement)
+    }
+
+    public init(elements: Array<T>) {
+        parent = None
+        data = ArrayList(elements)
+    }
+
+    public init(elements: Collection<T>) {
+        parent = None
+        data = ArrayList(elements)
+    }
+
+    public func get(index: Int64): ?T {
+        data.get(index)
+    }
+
+    public func set(index: Int64, element: T): Unit {
+        unlink(this[index])
+        data.set(index, element)
+        parent?.markDirty()
+        link(element)
+    }
+
+    public func add(): T {
+        let m = T.empty()
+        append(m)
+        m
+    }
+
+    public func append(element: T): Unit {
+        data.append(element)
+        parent?.markDirty()
+        link(element)
+    }
+
+    public func appendAll(elements: Collection<T>): Unit {
+        data.appendAll(elements)
+        parent?.markDirty()
+        link(elements)
+    }
+
+    public func insert(index: Int64, element: T): Unit {
+        data.insert(index, element)
+        parent?.markDirty()
+        link(element)
+    }
+
+    public func insertAll(index: Int64, elements: Collection<T>): Unit {
+        data.insertAll(index, elements)
+        parent?.markDirty()
+        link(elements)
+    }
+
+    public func prepend(element: T): Unit {
+        data.prepend(element)
+        parent?.markDirty()
+        link(element)
+    }
+
+    public func prependAll(elements: Collection<T>): Unit {
+        data.prependAll(elements)
+        parent?.markDirty()
+        link(elements)
+    }
+
+    public func remove(index: Int64): T {
+        unlink(data[index])
+        parent?.markDirty()
+        data.remove(index)
+    }
+
+    public func remove(range: Range<Int64>): Unit {
+        unlink(data[range])
+        data.remove(range)
+        parent?.markDirty()
+    }
+
+    public func removeIf(predicate: (T) -> Bool): Unit {
+        data.removeIf { e =>
+            if (predicate(e)) { unlink(e); true } else { false }
+        }
+        parent?.markDirty()
+    }
+
+    public func clear(): Unit {
+        unlink(data)
+        data.clear()
+        parent?.markDirty()
+    }
+
+    public func copyFrom(rf: RepeatedMessage<T>): Unit {
+        unlink(data)
+        data.clear()
+        for (m in rf.data) {
+            let c = m.clone()
+            data.append(c)
+            link(c)
+        }
+        parent?.markDirty()
+    }
+
+    public func moveFrom(rf: RepeatedMessage<T>): Unit {
+        let temp = rf.data
+        rf.unlink(rf.data)
+        rf.data = ArrayList()
+        rf.parent?.markDirty()
+        
+        unlink(data)
+        link(temp)
+        data = temp
+        parent?.markDirty()
+    }
+
+    public func swap(rf: RepeatedMessage<T>): Unit {
+        let temp = rf.data
+        rf.unlink(temp)
+        rf.link(data)
+        rf.data = data
+        rf.parent?.markDirty()
+
+        unlink(data)
+        link(temp)
+        data = temp
+        parent?.markDirty()
+    }
+
+    private func link(element: AbstractMessage) { element.m_parents.insert(parent ?? return) }
+    private func unlink(element: AbstractMessage) { element.m_parents.remove(parent ?? return) }
+
+    private func link(elements: Collection<T>) {
+        let m = parent ?? return ()
+        for (e in elements) { let ee: AbstractMessage = e; ee.m_parents.insert(m) }
+    }
+
+    private func unlink(elements: Collection<T>) {
+        let m = parent ?? return ()
+        for (e in elements) { let ee: AbstractMessage = e; ee.m_parents.remove(m) }
+    }
+
+    public func reverse(): Unit { data.reverse() }
+    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
+    public func reserve(additional: Int64): Unit { data.reserve(additional) }
+    public func toArray(): Array<T> { data.toArray() }
+    public func version(): Int64 { data.version() }
+    public func capacity(): Int64 { data.capacity() }
+    public func iterator(): Iterator<T> { data.iterator() }
+    public prop let size: Int64 { get() { data.size } }
+    public func isEmpty(): Bool { data.isEmpty() }
+    public func toArrayList(): ArrayList<T> { data.clone() }
+    public func toString(): String { data.toString() }
+    public operator func [](index: Int64): T { data[index] }
+    public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty(); link(value) }
+
+    func appendDirty(element: T): Unit { data.append(element); link(element) }
+    func setParent(parent: AbstractMessage): Unit { this.parent = parent }
+}

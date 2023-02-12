@@ -152,6 +152,12 @@ public interface BytesWriter {
         appendBytes(unsafe { val.getRawArray() })
     }
 
+    func packBin(val: BytesString) {
+        let bytes = unsafe { val.getRawBytes() }
+        packVarint(bytes.size)
+        appendBytes(bytes)
+    }
+
     func packBin(val: String) {
         let view = val.utf8View
         packVarint(view.size)

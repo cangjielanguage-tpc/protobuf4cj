@@ -143,6 +143,12 @@ public func binSize(val: BytesSlice) {
 }
 
 @overflowWrapping
+public func binSize(val: BytesString) {
+    let size = val.size
+    varintSize(size) + size
+}
+
+@overflowWrapping
 public func binSize(val: String) {
     let size = val.utf8View.size
     varintSize(size) + size
@@ -211,4 +217,81 @@ public interface AddMessage<M> {
 
 extend ArrayList<M> <: AddMessage<M> where M <: TypedMessage<M> {
     public func add(): M { let m = M.empty(); this.append(m); m }
+}
+
+public interface Parent {
+    func markDirty(): Unit
+}
+
+class ParentNode {
+    var next: ?ParentNode = None
+    ParentNode(let data: AbstractMessage) { }
+}
+
+struct Parents {
+    var header: ?ParentNode = None
+
+    public func markDirty(): Unit {
+        var node = header
+        while (true) { match (node) {
+            case Some(n) => n.data.markDirty(); node = n.next
+            case _ => return
+        } }
+    }
+
+    mut func insert(v: AbstractMessage) {
+        var node = header ?? return header = ParentNode(v)
+        while (true) { match (node.next) {
+            case Some(n) => if (refEq(n.data, v)) { return } else { node = n }
+            case _ => return node.next = ParentNode(v)
+        } }
+    }
+
+    mut func remove(v: AbstractMessage) {
+        var node = header ?? return ()
+        if (refEq(node.data, v)) {
+            return header = node.next
+        }
+        while (true) { match (node.next) {
+            case Some(n) => if (refEq(n.data, v)) { return node.next = n.next } else { node = n }
+            case _ => return
+        } }
+    }
+}
+
+public abstract class AbstractMessage <: Message & Parent {
+    var m_parents = Parents()
+
+    protected var m_cachedSize = -1
+    protected var m_cachedHash = -1 /* [TODO] */
+    public func markDirty(): Unit {
+        if (m_cachedSize != -1 /* || m_cachedHash != -1 */) {   /* any cached */
+            m_cachedSize = -1
+            /* m_cachedHash = -1 */
+
+            m_parents.markDirty()
+        }
+    }
+
+    protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
+    protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseBytesSlice()) }
+    protected static func s_add<R>(fields: RepeatedField<MessageUnknownField>, src: R, tag: (Tag, WireNum)) where R <: BytesReader {
+        fields.appendDirty(MessageUnknownField.unpack(tag[0], tag[1], src))
+    }
+    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: AbstractMessage & TypedMessage<T>, R <: BytesReader {
+        fields.appendDirty(T.fromBytes(subReader(src)))
+    }
+
+    protected static func s_pak<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
+        let app: UInt8 = if (tag <= 15) { UInt8(tag) << 3 | PREFIXED } else { 0 }
+
+        for (s in fields.getRawData()) {
+            if (app > 0) { out.append(app) } else { out.packTag(tag, PREFIXED) }
+            out.packBin(s)
+        }
+    }
+
+    protected func m_rep(rf: RepeatedString) { rf.setParent(this) }
+    protected func m_rep<T>(rf: RepeatedField<T>) { rf.setParent(this) }
+    protected func m_rep<T>(rf: RepeatedMessage<T>) where T <: AbstractMessage & TypedMessage<T> { rf.setParent(this) }
 }
