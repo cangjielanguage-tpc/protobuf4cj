@@ -51,9 +51,7 @@ public enum BytesString <: ToString & Equatable<BytesString> & Equatable<String>
 public struct Pb3String {
     public var data: BytesString
 
-    public init() {
-        data = String("")
-    }
+    public init() { data = String("") }
 
     public mut func get(): String {
         match (data) {
@@ -65,21 +63,18 @@ public struct Pb3String {
         }
     }
 
-    public mut func set(str: String): Unit {
-        data = String(str)
-    }
-
-    public mut func set(sli: BytesSlice): Unit {
-        data = Bytes(sli)
-    }
+    public mut func set(str: String): Unit { data = String(str) }
+    public func toString() { data.toString() }
+    public func isEmpty(): Bool { data.isEmpty() }
+    public mut func clear() { data = String("") }
+    public mut func pack<T>(out: T) where T <: BytesWriter { out.packBin(data) }
+    public mut func unpack<T>(src: T) where T <: BytesReader { data = Bytes(src.parseBytesSlice()) }
 }
 
 public struct Pb2String {
     public var data: ?BytesString
 
-    public init() {
-        data = None
-    }
+    public init() { data = None }
 
     public mut func get(): String {
         match (data.getOrThrow()) {
@@ -91,13 +86,10 @@ public struct Pb2String {
         }
     }
 
-    public mut func set(str: String): Unit {
-        data = String(str)
-    }
-
-    public mut func set(sli: BytesSlice): Unit {
-        data = Bytes(sli)
-    }
+    public mut func set(str: String): Unit { data = String(str) }
+    public func isEmpty(): Bool { isNone(data) }
+    public mut func clear() { data = None }
+    public mut func unpack<T>(src: T) where T <: BytesReader { data = Bytes(src.parseBytesSlice()) }
 }
 
 public class RepeatedString <: Collection<String> & ToString {
