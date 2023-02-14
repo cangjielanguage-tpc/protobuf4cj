@@ -242,7 +242,7 @@ struct Parents {
     mut func insert(v: AbstractMessage) {
         var node = header ?? return header = ParentNode(v)
         while (true) { match (node.next) {
-            case Some(n) => if (refEq(n.data, v)) { return } else { node = n }
+            case Some(n) => node = n
             case _ => return node.next = ParentNode(v)
         } }
     }
@@ -273,16 +273,31 @@ public abstract class AbstractMessage <: Message & Parent {
         }
     }
 
-    protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
-    protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseBytesSlice()) }
-    protected static func s_add<R>(fields: RepeatedField<MessageUnknownField>, src: R, tag: (Tag, WireNum)) where R <: BytesReader {
-        fields.appendDirty(MessageUnknownField.unpack(tag[0], tag[1], src))
-    }
-    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: AbstractMessage & TypedMessage<T>, R <: BytesReader {
-        fields.appendDirty(T.fromBytes(subReader(src)))
+    /* mark message is empty() */
+    protected func m_markEmpty() { m_cachedSize = 0; return true }
+
+    /* unknownFields */
+    public let unknownFields = RepeatedField<MessageUnknownField>()
+
+    /* unpack unknownFields */
+    protected func m_unknown<R>(src: R, tag: (Tag, WireNum)) where R <: BytesReader {
+        unknownFields.appendDirty(MessageUnknownField.unpack(tag[0], tag[1], src))
     }
 
-    protected static func s_pak<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
+    /* pack unknownFields */
+    protected func m_unknown<W>(out: W) where W <: BytesWriter {
+        for (field in unknownFields) { field.pack(out) }
+    }
+
+    /* unpack to repeated fields */
+    protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
+    protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseBytesSlice()) }
+    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: AbstractMessage & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
+
+    /* pack repeated string */
+    protected static func s_pack<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
+        if (fields.isEmpty()) { return }
+        
         let app: UInt8 = if (tag <= 15) { UInt8(tag) << 3 | PREFIXED } else { 0 }
 
         for (s in fields.getRawData()) {
@@ -291,7 +306,30 @@ public abstract class AbstractMessage <: Message & Parent {
         }
     }
 
-    protected func m_rep(rf: RepeatedString) { rf.setParent(this) }
-    protected func m_rep<T>(rf: RepeatedField<T>) { rf.setParent(this) }
-    protected func m_rep<T>(rf: RepeatedMessage<T>) where T <: AbstractMessage & TypedMessage<T> { rf.setParent(this) }
+    /* pack string */
+    protected static func s_pack<W>(tag: Tag, field: Pb3String, out: W) where W <: BytesWriter {
+        if (field.isEmpty()) { return }
+
+        if (tag <= 15) { out.append(UInt8(tag) << 3 | PREFIXED) } else { out.packTag(tag, PREFIXED) }
+
+        out.packBin(field)
+    }
+
+    /* pack string */
+    protected static func s_pack<W>(tag: Tag, field: Pb2String, out: W) where W <: BytesWriter {
+        if (let Some(str) = field.data) {
+            if (tag <= 15) { out.append(UInt8(tag) << 3 | PREFIXED) } else { out.packTag(tag, PREFIXED) }
+
+            out.packBin(field)
+        }
+    }
+
+    /* set member field's parent */
+    protected func m_member(rf: AbstractMessage) { rf.m_parents.insert(this) }
+    protected func m_member(rf: RepeatedString) { rf.setParent(this) }
+    protected func m_member<T>(rf: RepeatedField<T>) { rf.setParent(this) }
+    protected func m_member<T>(rf: RepeatedMessage<T>) where T <: AbstractMessage & TypedMessage<T> { rf.setParent(this) }
+
+    /* assign member old to new, reset their parent */
+    protected func m_assign(old: AbstractMessage, new: AbstractMessage) { old.m_parents.remove(this); new.m_parents.insert(this) }
 }
