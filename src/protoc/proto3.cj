@@ -6,7 +6,7 @@ package protoc
 func getFieldVarDefine(field: FieldDescriptorProto) {
     "public var " + getMessagePropName(field.jsonName) + " = " +
     if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) { /* map */
-        "${field.typeName}()"
+        "${field.typeName}(0)"
     } else if (field.label == LABEL_REPEATED) { /* repeated fields */
         "ArrayList<${typeConvert(field)}>()"
     } else {    /* normal fields */
