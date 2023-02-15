@@ -33,8 +33,8 @@ public struct StructPrinter <: ToString {
         stb.append(']')
     }
 
-    /* cangjie 0.36.4, -O2 compile blocked if use TreeMap */
-    public mut func append(key: String, map: TreeMap<String, String>): Unit {
+    /* cangjie 0.36.4, -O2 compile blocked if use TreeMap, use HashMap */
+    public mut func append(key: String, map: HashMap<String, String>): Unit {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append("\"${k}\"", v)
@@ -42,7 +42,7 @@ public struct StructPrinter <: ToString {
         sp.done()
     }
 
-    public mut func append<T>(key: String, map: TreeMap<T, String>): Unit where T <: ToString & Less<T> & Equatable<T> {
+    public mut func append<T>(key: String, map: HashMap<T, String>): Unit where T <: ToString & Hashable & Equatable<T> {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append(k.toString(), v)
@@ -50,7 +50,7 @@ public struct StructPrinter <: ToString {
         sp.done()
     }
 
-    public mut func append<T>(key: String, map: TreeMap<String, T>): Unit where T <: ToString {
+    public mut func append<T>(key: String, map: HashMap<String, T>): Unit where T <: ToString {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append("\"${k}\"", v)
@@ -69,7 +69,7 @@ public struct StructPrinter <: ToString {
     public func toString() { stb.toString() }
 }
 
-public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K> {
+public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K> {
     let map = val.clone()
     for ((k, v) in map) {
         if (let Some(m) = v as TypedMessage<V>) {

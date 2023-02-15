@@ -185,7 +185,7 @@ class GenCodeHelper {
 
                 // save map entry's fields
                 f.mapEntry = n.field
-                f.typeName = "TreeMap<${typeConvert(n.field[0])}, ${typeConvert(n.field[1])}>"
+                f.typeName = "HashMap<${typeConvert(n.field[0])}, ${typeConvert(n.field[1])}>(0)"
                 return
             }
         } while (false)
