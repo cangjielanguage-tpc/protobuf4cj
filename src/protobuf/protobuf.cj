@@ -204,7 +204,7 @@ public interface Message <: ToString {
     }
 }
 
-public interface TypedMessage<M> where M <: Message {
+public interface TypedMessage<M> {
     func clone(): M
     static func empty(): M
     static func fromBytes(src: Collection<Byte>): M
@@ -297,7 +297,7 @@ public abstract class AbstractMessage <: Message & Parent {
     /* pack repeated string */
     protected static func s_pack<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
         if (fields.isEmpty()) { return }
-        
+
         let app: UInt8 = if (tag <= 15) { UInt8(tag) << 3 | PREFIXED } else { 0 }
 
         for (s in fields.getRawData()) {

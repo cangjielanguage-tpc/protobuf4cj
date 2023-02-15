@@ -69,16 +69,16 @@ public struct StructPrinter <: ToString {
     public func toString() { stb.toString() }
 }
 
-public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K>, V <: TypedMessage<V> {
+public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K> {
     let map = val.clone()
     for ((k, v) in map) {
-        map[k] = v.clone()
+        if (let Some(m) = v as TypedMessage<V>) {
+            map[k] = m.clone()  /* deep clone each element */
+        } else {
+            break
+        }
     }
     return map
-}
-
-public func mapClone<K, V>(val: TreeMap<K, V>) where K <: Less<K> & Equatable<K> {
-    val.clone()
 }
 
 /* parse enum from json */
