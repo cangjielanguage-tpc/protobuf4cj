@@ -56,7 +56,7 @@ public class Version <: Message & TypedMessage<Version> {
         i_tmp.m_minor = m_minor
         i_tmp.m_patch = m_patch
         i_tmp.m_suffix = m_suffix
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -100,7 +100,7 @@ public class Version <: Message & TypedMessage<Version> {
 
     public static func empty() { Version() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = Version(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = Version(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = Version(); i_tmp.unpack(src); i_tmp }
 }
 
 public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest> {
@@ -147,7 +147,7 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
         i_tmp.m_parameter = m_parameter
         i_tmp.protoFile = ArrayList(protoFile.size, { i => protoFile[i].clone() })
         i_tmp.m_compilerVersion = m_compilerVersion?.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -191,7 +191,7 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 
     public static func empty() { CodeGeneratorRequest() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = CodeGeneratorRequest(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorRequest(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorRequest(); i_tmp.unpack(src); i_tmp }
 }
 
 public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorResponse_File> {
@@ -246,7 +246,7 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
         i_tmp.m_insertionPoint = m_insertionPoint
         i_tmp.m_content = m_content
         i_tmp.m_generatedCodeInfo = m_generatedCodeInfo?.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -290,7 +290,7 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
 
     public static func empty() { CodeGeneratorResponse_File() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = CodeGeneratorResponse_File(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorResponse_File(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorResponse_File(); i_tmp.unpack(src); i_tmp }
 }
 
 public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
@@ -375,7 +375,7 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
         i_tmp.m_error = m_error
         i_tmp.m_supportedFeatures = m_supportedFeatures
         i_tmp.file = ArrayList(file.size, { i => file[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -416,5 +416,5 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public static func empty() { CodeGeneratorResponse() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = CodeGeneratorResponse(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorResponse(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorResponse(); i_tmp.unpack(src); i_tmp }
 }

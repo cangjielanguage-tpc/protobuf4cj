@@ -27,7 +27,7 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
     public func clone(): FileDescriptorSet {
         let i_tmp = FileDescriptorSet()
         i_tmp.file = ArrayList(file.size, { i => file[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -62,7 +62,7 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
 
     public static func empty() { FileDescriptorSet() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = FileDescriptorSet(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = FileDescriptorSet(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FileDescriptorSet(); i_tmp.unpack(src); i_tmp }
 }
 
 public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> {
@@ -155,7 +155,7 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         i_tmp.m_options = m_options?.clone()
         i_tmp.m_sourceCodeInfo = m_sourceCodeInfo?.clone()
         i_tmp.m_syntax = m_syntax
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -223,7 +223,7 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
 
     public static func empty() { FileDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = FileDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = FileDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FileDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class DescriptorProto_ExtensionRange <: Message & TypedMessage<DescriptorProto_ExtensionRange> {
@@ -270,7 +270,7 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
         i_tmp.m_start = m_start
         i_tmp.m_end = m_end
         i_tmp.m_options = m_options?.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -311,7 +311,7 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
 
     public static func empty() { DescriptorProto_ExtensionRange() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = DescriptorProto_ExtensionRange(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto_ExtensionRange(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto_ExtensionRange(); i_tmp.unpack(src); i_tmp }
 }
 
 public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorProto_ReservedRange> {
@@ -350,7 +350,7 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
         let i_tmp = DescriptorProto_ReservedRange()
         i_tmp.m_start = m_start
         i_tmp.m_end = m_end
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -388,7 +388,7 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
 
     public static func empty() { DescriptorProto_ReservedRange() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = DescriptorProto_ReservedRange(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto_ReservedRange(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto_ReservedRange(); i_tmp.unpack(src); i_tmp }
 }
 
 public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
@@ -461,7 +461,7 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         i_tmp.m_options = m_options?.clone()
         i_tmp.reservedRange = ArrayList(reservedRange.size, { i => reservedRange[i].clone() })
         i_tmp.reservedName = reservedName.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -523,7 +523,7 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
 
     public static func empty() { DescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = DescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = DescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptions> {
@@ -550,7 +550,7 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
     public func clone(): ExtensionRangeOptions {
         let i_tmp = ExtensionRangeOptions()
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -585,7 +585,7 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
 
     public static func empty() { ExtensionRangeOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = ExtensionRangeOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = ExtensionRangeOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ExtensionRangeOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
@@ -873,7 +873,7 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         i_tmp.m_options = m_options?.clone()
         i_tmp.m_proto3Optional = m_proto3Optional
         i_tmp.mapEntry = ArrayList(mapEntry.size, { i => mapEntry[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -941,7 +941,7 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
 
     public static func empty() { FieldDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = FieldDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = FieldDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FieldDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto> {
@@ -980,7 +980,7 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
         let i_tmp = OneofDescriptorProto()
         i_tmp.m_name = m_name
         i_tmp.m_options = m_options?.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1018,7 +1018,7 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
 
     public static func empty() { OneofDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = OneofDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = OneofDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = OneofDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<EnumDescriptorProto_EnumReservedRange> {
@@ -1057,7 +1057,7 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
         let i_tmp = EnumDescriptorProto_EnumReservedRange()
         i_tmp.m_start = m_start
         i_tmp.m_end = m_end
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1095,7 +1095,7 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
 
     public static func empty() { EnumDescriptorProto_EnumReservedRange() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumDescriptorProto_EnumReservedRange(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = EnumDescriptorProto_EnumReservedRange(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumDescriptorProto_EnumReservedRange(); i_tmp.unpack(src); i_tmp }
 }
 
 public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> {
@@ -1146,7 +1146,7 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         i_tmp.m_options = m_options?.clone()
         i_tmp.reservedRange = ArrayList(reservedRange.size, { i => reservedRange[i].clone() })
         i_tmp.reservedName = reservedName.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1193,7 +1193,7 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
 
     public static func empty() { EnumDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = EnumDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescriptorProto> {
@@ -1240,7 +1240,7 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
         i_tmp.m_name = m_name
         i_tmp.m_number = m_number
         i_tmp.m_options = m_options?.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1281,7 +1281,7 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
 
     public static func empty() { EnumValueDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumValueDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = EnumValueDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumValueDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorProto> {
@@ -1324,7 +1324,7 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
         i_tmp.m_name = m_name
         i_tmp.method = ArrayList(method.size, { i => method[i].clone() })
         i_tmp.m_options = m_options?.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1365,7 +1365,7 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
 
     public static func empty() { ServiceDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = ServiceDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = ServiceDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ServiceDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorProto> {
@@ -1445,7 +1445,7 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
         i_tmp.m_clientStreaming = m_clientStreaming
         i_tmp.m_serverStreaming = m_serverStreaming
         i_tmp.m_funcName = m_funcName
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1498,7 +1498,7 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
 
     public static func empty() { MethodDescriptorProto() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = MethodDescriptorProto(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = MethodDescriptorProto(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = MethodDescriptorProto(); i_tmp.unpack(src); i_tmp }
 }
 
 public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
@@ -1738,7 +1738,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         i_tmp.m_phpMetadataNamespace = m_phpMetadataNamespace
         i_tmp.m_rubyPackage = m_rubyPackage
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1833,7 +1833,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
 
     public static func empty() { FileOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = FileOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = FileOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FileOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public class MessageOptions <: Message & TypedMessage<MessageOptions> {
@@ -1893,7 +1893,7 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
         i_tmp.m_deprecated = m_deprecated
         i_tmp.m_mapEntry = m_mapEntry
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -1940,7 +1940,7 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
 
     public static func empty() { MessageOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = MessageOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = MessageOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = MessageOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
@@ -2118,7 +2118,7 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
         i_tmp.m_deprecated = m_deprecated
         i_tmp.m_weak = m_weak
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2174,7 +2174,7 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     public static func empty() { FieldOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = FieldOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = FieldOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = FieldOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public class OneofOptions <: Message & TypedMessage<OneofOptions> {
@@ -2201,7 +2201,7 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
     public func clone(): OneofOptions {
         let i_tmp = OneofOptions()
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2236,7 +2236,7 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
 
     public static func empty() { OneofOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = OneofOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = OneofOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = OneofOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public class EnumOptions <: Message & TypedMessage<EnumOptions> {
@@ -2279,7 +2279,7 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
         i_tmp.m_allowAlias = m_allowAlias
         i_tmp.m_deprecated = m_deprecated
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2320,7 +2320,7 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
 
     public static func empty() { EnumOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = EnumOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
@@ -2355,7 +2355,7 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
         let i_tmp = EnumValueOptions()
         i_tmp.m_deprecated = m_deprecated
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2393,7 +2393,7 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
 
     public static func empty() { EnumValueOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = EnumValueOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = EnumValueOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = EnumValueOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
@@ -2428,7 +2428,7 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
         let i_tmp = ServiceOptions()
         i_tmp.m_deprecated = m_deprecated
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2466,7 +2466,7 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
 
     public static func empty() { ServiceOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = ServiceOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = ServiceOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ServiceOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
@@ -2556,7 +2556,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
         i_tmp.m_deprecated = m_deprecated
         i_tmp.m_idempotencyLevel = m_idempotencyLevel
         i_tmp.uninterpretedOption = ArrayList(uninterpretedOption.size, { i => uninterpretedOption[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2597,7 +2597,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
 
     public static func empty() { MethodOptions() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = MethodOptions(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = MethodOptions(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = MethodOptions(); i_tmp.unpack(src); i_tmp }
 }
 
 public class UninterpretedOption_NamePart <: Message & TypedMessage<UninterpretedOption_NamePart> {
@@ -2636,7 +2636,7 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
         let i_tmp = UninterpretedOption_NamePart()
         i_tmp.m_namePart = m_namePart
         i_tmp.m_isExtension = m_isExtension
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2676,7 +2676,7 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
 
     public static func empty() { UninterpretedOption_NamePart() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = UninterpretedOption_NamePart(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = UninterpretedOption_NamePart(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = UninterpretedOption_NamePart(); i_tmp.unpack(src); i_tmp }
 }
 
 public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> {
@@ -2752,7 +2752,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         i_tmp.m_doubleValue = m_doubleValue
         i_tmp.m_stringValue = m_stringValue
         i_tmp.m_aggregateValue = m_aggregateValue
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2805,7 +2805,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
 
     public static func empty() { UninterpretedOption() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = UninterpretedOption(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = UninterpretedOption(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = UninterpretedOption(); i_tmp.unpack(src); i_tmp }
 }
 
 public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Location> {
@@ -2857,7 +2857,7 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         i_tmp.m_leadingComments = m_leadingComments
         i_tmp.m_trailingComments = m_trailingComments
         i_tmp.leadingDetachedComments = leadingDetachedComments.clone()
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2904,7 +2904,7 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
 
     public static func empty() { SourceCodeInfo_Location() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = SourceCodeInfo_Location(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = SourceCodeInfo_Location(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = SourceCodeInfo_Location(); i_tmp.unpack(src); i_tmp }
 }
 
 public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
@@ -2931,7 +2931,7 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
     public func clone(): SourceCodeInfo {
         let i_tmp = SourceCodeInfo()
         i_tmp.location = ArrayList(location.size, { i => location[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -2966,7 +2966,7 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
 
     public static func empty() { SourceCodeInfo() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = SourceCodeInfo(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = SourceCodeInfo(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = SourceCodeInfo(); i_tmp.unpack(src); i_tmp }
 }
 
 public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCodeInfo_Annotation> {
@@ -3017,7 +3017,7 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
         i_tmp.m_sourceFile = m_sourceFile
         i_tmp.m_begin = m_begin
         i_tmp.m_end = m_end
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -3061,7 +3061,7 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
 
     public static func empty() { GeneratedCodeInfo_Annotation() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = GeneratedCodeInfo_Annotation(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = GeneratedCodeInfo_Annotation(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = GeneratedCodeInfo_Annotation(); i_tmp.unpack(src); i_tmp }
 }
 
 public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
@@ -3088,7 +3088,7 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
     public func clone(): GeneratedCodeInfo {
         let i_tmp = GeneratedCodeInfo()
         i_tmp.annotation = ArrayList(annotation.size, { i => annotation[i].clone() })
-        i_tmp.unknownFields = ArrayList(unknownFields.size) { i => unknownFields[i].clone() }
+        i_tmp.unknownFields = unknownFields.clone()
         return i_tmp
     }
 
@@ -3123,5 +3123,5 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
 
     public static func empty() { GeneratedCodeInfo() }
     public static func fromBytes(src: Collection<Byte>) { let i_tmp = GeneratedCodeInfo(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = GeneratedCodeInfo(); i_tmp.unpacki(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = GeneratedCodeInfo(); i_tmp.unpack(src); i_tmp }
 }
