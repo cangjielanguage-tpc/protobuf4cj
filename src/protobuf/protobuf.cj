@@ -220,8 +220,8 @@ struct Parents {
 public abstract class Message <: ToString {
     var m_parents = Parents()
 
-    private var m_cachedSize = -1
-    private var m_cachedHash = -1 /* [TODO] */
+    private var m_cachedSize = 0
+    private var m_cachedHash = 0 /* [TODO] */
     public func markDirty(): Unit {
         if (m_cachedSize != -1 /* || m_cachedHash != -1 */) {   /* any cached */
             m_cachedSize = -1
@@ -280,6 +280,11 @@ public abstract class Message <: ToString {
         unknownFields.copyFrom(src.unknownFields)
         m_cachedSize = src.m_cachedSize
         m_parents.markDirty()
+    }
+
+    /* inner init */
+    protected func m_innerInit() {
+        unknownFields.setParent(this)
     }
 
     /* unpack from bytes reader interface */

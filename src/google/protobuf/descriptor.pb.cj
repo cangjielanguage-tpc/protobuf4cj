@@ -8,6 +8,7 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
 
     public init() {
         m_init(file)
+        m_innerInit()
     }
 
     protected func m_size(): Int64 {
@@ -90,6 +91,7 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         m_init(enumType)
         m_init(service)
         m_init(extension)
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -244,6 +246,7 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
     private var p_options = Pb2Message<ExtensionRangeOptions>()
 
     public init() {
+        m_innerInit()
     }
 
     public func clearStart() { p_start = None; markDirty() }
@@ -333,6 +336,7 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
     private var p_end: ?Int32 = None
 
     public init() {
+        m_innerInit()
     }
 
     public func clearStart() { p_start = None; markDirty() }
@@ -428,6 +432,7 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         m_init(oneofDecl)
         m_init(reservedRange)
         m_init(reservedName)
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -557,6 +562,7 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     protected func m_size(): Int64 {
@@ -804,6 +810,7 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
 
     public init() {
         m_init(mapEntry)
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -981,6 +988,7 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
     private var p_options = Pb2Message<OneofOptions>()
 
     public init() {
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -1060,6 +1068,7 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
     private var p_end: ?Int32 = None
 
     public init() {
+        m_innerInit()
     }
 
     public func clearStart() { p_start = None; markDirty() }
@@ -1145,6 +1154,7 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         m_init(value)
         m_init(reservedRange)
         m_init(reservedName)
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -1244,6 +1254,7 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
     private var p_options = Pb2Message<EnumValueOptions>()
 
     public init() {
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -1335,6 +1346,7 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
 
     public init() {
         m_init(method)
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -1425,6 +1437,7 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
     private var p_funcName = Pb2String()
 
     public init() {
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -1622,6 +1635,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearJavaPackage() { p_javaPackage.clear(); markDirty() }
@@ -1897,6 +1911,7 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearMessageSetWireFormat() { p_messageSetWireFormat = None; markDirty() }
@@ -2104,6 +2119,7 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearCtype() { p_ctype = None; markDirty() }
@@ -2240,6 +2256,7 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     protected func m_size(): Int64 {
@@ -2307,6 +2324,7 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearAllowAlias() { p_allowAlias = None; markDirty() }
@@ -2393,6 +2411,7 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
@@ -2469,6 +2488,7 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
@@ -2593,6 +2613,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
 
     public init() {
         m_init(uninterpretedOption)
+        m_innerInit()
     }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
@@ -2678,6 +2699,7 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     private var p_isExtension: ?Bool = None
 
     public init() {
+        m_innerInit()
     }
 
     public func clearNamePart() { p_namePart.clear(); markDirty() }
@@ -2765,6 +2787,7 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
 
     public init() {
         m_init(name)
+        m_innerInit()
     }
 
     public func clearIdentifierValue() { p_identifierValue.clear(); markDirty() }
@@ -2897,6 +2920,7 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         m_init(path)
         m_init(span)
         m_init(leadingDetachedComments)
+        m_innerInit()
     }
 
     public func clearLeadingComments() { p_leadingComments.clear(); markDirty() }
@@ -2995,6 +3019,7 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
 
     public init() {
         m_init(location)
+        m_innerInit()
     }
 
     protected func m_size(): Int64 {
@@ -3063,6 +3088,7 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
 
     public init() {
         m_init(path)
+        m_innerInit()
     }
 
     public func clearSourceFile() { p_sourceFile.clear(); markDirty() }
@@ -3158,6 +3184,7 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
 
     public init() {
         m_init(annotation)
+        m_innerInit()
     }
 
     protected func m_size(): Int64 {

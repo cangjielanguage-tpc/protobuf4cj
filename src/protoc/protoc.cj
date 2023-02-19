@@ -575,6 +575,7 @@ func getImplEmptyMessage(typeName: String) {
 """
 
 public class ${typeName} <: Message & TypedMessage<${typeName}> {
+    protected init() { m_innerInit() }
     protected func m_size(): Int64 { 0 }
     protected func m_isEmpty(): Bool { true }
     protected func m_clear(): Unit { }

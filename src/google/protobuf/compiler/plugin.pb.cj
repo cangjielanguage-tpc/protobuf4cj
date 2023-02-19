@@ -11,6 +11,7 @@ public class Version <: Message & TypedMessage<Version> {
     private var p_suffix = Pb2String()
 
     public init() {
+        m_innerInit()
     }
 
     public func clearMajor() { p_major = None; markDirty() }
@@ -114,6 +115,7 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
     public init() {
         m_init(fileToGenerate)
         m_init(protoFile)
+        m_innerInit()
     }
 
     public func clearParameter() { p_parameter.clear(); markDirty() }
@@ -207,6 +209,7 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
     private var p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>()
 
     public init() {
+        m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
@@ -351,6 +354,7 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public init() {
         m_init(file)
+        m_innerInit()
     }
 
     public func clearError() { p_error.clear(); markDirty() }

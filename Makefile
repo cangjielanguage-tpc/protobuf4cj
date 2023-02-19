@@ -69,6 +69,6 @@ proto_files :=  src/google/protobuf/descriptor.proto \
 
 # 编译.proto文件生成.pb.cj代码
 gencode: $(proto_files)
-	protoc --cj_out=./src -Isrc $^
+	protoc --cj_out=./src --plugin=$(OUTPUT)/protoc-gen-cj -Isrc $^
 
 .PHONY: gencode

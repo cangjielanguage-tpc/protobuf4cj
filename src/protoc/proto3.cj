@@ -291,6 +291,7 @@ func genCodeMessageFieldInit(fields: RepeatedMessage<FieldDescriptorProto>, help
         }
     }
 
+    append("        m_innerInit()\n")
     append("    }\n")
 }
 
