@@ -97,7 +97,7 @@ public struct Pb2String {
     public mut func unpack<T>(src: T) where T <: BytesReader { data = Bytes(src.parseBytesSlice()) }
 }
 
-public class RepeatedString <: Collection<String> & ToString {
+public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & ToString {
     private var parent: ?Message
     private var data: ArrayList<BytesString>
 
@@ -111,19 +111,20 @@ public class RepeatedString <: Collection<String> & ToString {
         data = ArrayList(capacity)
     }
 
-    public init(size: Int64, initElement: (Int64) -> BytesString) {
+    public init(size: Int64, initElement: (Int64) -> String) {
         parent = None
-        data = ArrayList(size, initElement)
+        data = ArrayList(size) { i => String(initElement(i)) }
     }
 
-    public init(elements: Array<BytesString>) {
+    public init(elements: Array<String>) {
         parent = None
-        data = ArrayList(elements)
+        data = ArrayList(elements.size) { i => String(elements[i]) }
     }
 
-    public init(elements: Collection<BytesString>) {
+    public init(elements: Collection<String>) {
         parent = None
-        data = ArrayList(elements)
+        let iter = elements.iterator()
+        data = ArrayList(elements.size) { i => String(iter.next().getOrThrow()) }
     }
 
     public func get(index: Int64): ?String {
@@ -184,6 +185,12 @@ public class RepeatedString <: Collection<String> & ToString {
         parent?.markDirty()
     }
 
+    public func insertAll(index: Int64, elements: Collection<String>): Unit {
+        let iter = elements.iterator()
+        data.insertAll(index, Array(elements.size) { i => String(iter.next().getOrThrow()) })
+        parent?.markDirty()
+    }
+
     public func prepend(element: BytesString): Unit {
         data.prepend(element)
         parent?.markDirty()
@@ -196,6 +203,12 @@ public class RepeatedString <: Collection<String> & ToString {
 
     public func prependAll(elements: Collection<BytesString>): Unit {
         data.prependAll(elements)
+        parent?.markDirty()
+    }
+
+    public func prependAll(elements: Collection<String>): Unit {
+        let iter = elements.iterator()
+        data.prependAll(Array(elements.size) { i => String(iter.next().getOrThrow()) })
         parent?.markDirty()
     }
 
@@ -248,12 +261,7 @@ public class RepeatedString <: Collection<String> & ToString {
     }
 
     public func toArray(): Array<String> {
-        let array = Array<String>(data.size, item: "")
-        for (i in 0..size) {
-            array[i] = this[i]
-        }
-
-        return array
+        Array<String>(data.size) { i => this[i]}
     }
 
     public func toString(): String {
@@ -267,6 +275,7 @@ public class RepeatedString <: Collection<String> & ToString {
     }
 
     public func reverse(): Unit { data.reverse() }
+    public func sortBy(comparator: (String, String) -> Ordering, stable!: Bool = false): Unit { data.sortBy({ a, b => comparator(a.toString(), b.toString()) }, stable: stable) }
     public func sortBy(comparator: (BytesString, BytesString) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func version(): Int64 { data.version() }
@@ -274,11 +283,16 @@ public class RepeatedString <: Collection<String> & ToString {
     public func iterator(): Iterator<String> { RepeatedStringIterator(this) }
     public prop let size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
+    public func contains(element: String): Bool { getRawData().contains(String(element)) }
     public func getBytesString(index: Int64): ?BytesString { data.get(index) }
+    public func rawIterator() { data.iterator() }
 
     public operator func [](index: Int64): String { get(index).getOrThrow() }
     public operator func [](index: Int64, value!: String): Unit { set(index, value) }
     public operator func [](index: Int64, value!: BytesString): Unit { set(index, value) }
+
+    public operator func ==(that: RepeatedString): Bool { data == that.data }
+    public operator func !=(that: RepeatedString): Bool { data != that.data }
 
     func appendDirty(element: BytesSlice): Unit { data.append(Bytes(element)) }
     func setParent(parent: Message): Unit { this.parent = parent }
