@@ -1,0 +1,328 @@
+package protobuf
+
+public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
+    private var parent: ?Message
+    private var data: HashMap<K, V>
+
+    public init() {
+        parent = None
+        data = HashMap()
+    }
+
+    public init(capacity: Int64) {
+        parent = None
+        data = HashMap(capacity)
+    }
+
+    public init(size: Int64, initElement: (Int64) -> (K, V)) {
+        parent = None
+        data = HashMap(size, initElement)
+    }
+
+    public init(elements: Array<(K, V)>) {
+        parent = None
+        data = HashMap(elements)
+    }
+
+    public init(elements: Collection<(K, V)>) {
+        parent = None
+        data = HashMap(elements)
+    }
+
+    public func get(key: K): ?V {
+        data.get(key)
+    }
+
+    public operator func [](key: K): V {
+        data[key]
+    }
+
+    public func contains(key: K): Bool {
+        data.contains(key)
+    }
+
+    public func containsAll(keys: Collection<K>): Bool {
+        data.containsAll(keys)
+    }
+
+    public operator func [](key: K, value!: V): Unit {
+        data[key] = value
+        parent?.markDirty()
+    }
+
+    public func put(key: K, value: V): ?V {
+        parent?.markDirty()
+        data.put(key, value)
+    }
+
+    public func putAll(elements: Collection<(K, V)>): Unit {
+        data.putAll(elements)
+        parent?.markDirty()
+    }
+
+    public func remove(key: K): Option<V> {
+        parent?.markDirty()
+        data.remove(key)
+    }
+
+    public func removeAll(keys: Collection<K>): Unit {
+        data.removeAll(keys)
+        parent?.markDirty()
+    }
+
+    public func removeIf(predicate: (K, V) -> Bool): Unit {
+        data.removeIf(predicate)
+        parent?.markDirty()
+    }
+
+    public func clear(): Unit {
+        data.clear()
+        parent?.markDirty()
+    }
+
+    public func copyFrom(rf: MapField<K, V>): Unit {
+        data = rf.data.clone()
+        parent?.markDirty()
+    }
+
+    public func moveFrom(rf: MapField<K, V>): Unit {
+        let temp = rf.data
+        rf.data = data
+        rf.clear()
+
+        data = temp
+        parent?.markDirty()
+    }
+
+    public func swap(rf: MapField<K, V>): Unit {
+        let temp = rf.data
+        rf.data = data
+        rf.parent?.markDirty()
+
+        data = temp
+        parent?.markDirty()
+    }
+
+    public func version(): Int64 { data.version() }
+    public func reserve(additional: Int64): Unit { data.reserve(additional) }
+    public func capacity(): Int64 { data.capacity() }
+    public func clone(): MapField<K, V> { MapField(this) }
+    public func toHashMap(): HashMap<K, V> { data.clone() }
+    public func keys(): Keys<K> { data.keys() }
+    public func values(): Values<V> { data.values() }
+    public func iterator(): HashMapIterator<K, V> { data.iterator() }
+    public prop let size: Int64 { get() { data.size } }
+    public func isEmpty(): Bool { data.isEmpty() }
+
+    func putDirty(key: K, value: V): Unit { data[key] = value }
+    func setParent(parent: Message): Unit { this.parent = parent }
+    func getRawData() { data }
+}
+
+extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
+    public func toString(): String {
+        getRawData().toString()
+    }
+}
+
+extend MapField<K, V> <: Equatable<MapField<K, V>> where V <: Equatable<V> {
+    public operator func ==(that: MapField<K, V>): Bool {
+        getRawData() == that.getRawData()
+    }
+
+    public operator func !=(that: MapField<K, V>): Bool {
+        getRawData() != that.getRawData()
+    }
+}
+
+extend MapField<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
+    public operator func ==(that: HashMap<K, V>): Bool {
+        getRawData() == that
+    }
+
+    public operator func !=(that: HashMap<K, V>): Bool {
+        getRawData() != that
+    }
+}
+
+public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V <: Message & TypedMessage<V> {
+    private var parent: ?Message
+    private var data: HashMap<K, V>
+
+    public init() {
+        parent = None
+        data = HashMap()
+    }
+
+    public init(capacity: Int64) {
+        parent = None
+        data = HashMap(capacity)
+    }
+
+    public init(size: Int64, initElement: (Int64) -> (K, V)) {
+        parent = None
+        data = HashMap(size, initElement)
+    }
+
+    public init(elements: Array<(K, V)>) {
+        parent = None
+        data = HashMap(elements)
+    }
+
+    public init(elements: Collection<(K, V)>) {
+        parent = None
+        data = HashMap(elements)
+    }
+
+    public func get(key: K): ?V {
+        data.get(key)
+    }
+
+    public operator func [](key: K): V {
+        data[key]
+    }
+
+    public func contains(key: K): Bool {
+        data.contains(key)
+    }
+
+    public func containsAll(keys: Collection<K>): Bool {
+        data.containsAll(keys)
+    }
+
+    public operator func [](key: K, value!: V): Unit {
+        put(key, value)
+    }
+
+    public func put(key: K, value: V): ?V {
+        let old = data.put(key, value)
+        if (let Some(m) = old) { unlink(m) }
+
+        parent?.markDirty()
+        link(value)
+        return old
+    }
+
+    public func putAll(elements: Collection<(K, V)>): Unit {
+        for ((k, v) in elements) {
+            if (let Some(m) = data.put(k, v)) {
+                unlink(m)
+            }
+
+            link(v)
+        }
+
+        parent?.markDirty()
+    }
+
+    public func remove(key: K): Option<V> {
+        if (let Some(m) = data.remove(key)) {
+            parent?.markDirty()
+            unlink(m)
+            return m
+        }
+
+        return None
+    }
+
+    public func removeAll(keys: Collection<K>): Unit {
+        for (key in keys) {
+            if (let Some(m) = data.remove(key)) {
+                unlink(m)
+            }
+        }
+
+        parent?.markDirty()
+    }
+
+    public func removeIf(predicate: (K, V) -> Bool): Unit {
+        data.removeIf { k, v =>
+            if (predicate(k, v)) {
+                unlink(v)
+                return true
+            }
+
+            return false
+        }
+
+        parent?.markDirty()
+    }
+
+    public func clear(): Unit {
+        unlink(data.values())
+        data.clear()
+        parent?.markDirty()
+    }
+
+    public func copyFrom(rf: MapMessage<K, V>): Unit {
+        unlink(data.values())
+        data.clear()
+
+        for ((k, v) in rf.data) {
+            let m = v.clone()
+            data[k] = m
+            link(m)
+        }
+
+        parent?.markDirty()
+    }
+
+    public func moveFrom(rf: MapMessage<K, V>): Unit {
+        let temp = rf.data
+        rf.unlink(rf.data.values())
+        rf.data = HashMap()
+        rf.parent?.markDirty()
+
+        unlink(data.values())
+        link(rf.data.values())
+        data = temp
+        parent?.markDirty()
+    }
+
+    public func swap(rf: MapMessage<K, V>): Unit {
+        let temp = rf.data
+        rf.unlink(temp.values())
+        rf.link(data.values())
+        rf.data = data
+        rf.parent?.markDirty()
+
+        unlink(data.values())
+        link(temp.values())
+        data = temp
+        parent?.markDirty()
+    }
+
+    private func link(element: Message) { element.m_parents.insert(parent ?? return) }
+    private func unlink(element: Message) { element.m_parents.remove(parent ?? return) }
+
+    private func link(elements: Collection<V>) {
+        let m = parent ?? return ()
+        for (e in elements) { let ee: Message = e; ee.m_parents.insert(m) }
+    }
+
+    private func unlink(elements: Collection<V>) {
+        let m = parent ?? return ()
+        for (e in elements) { let ee: Message = e; ee.m_parents.remove(m) }
+    }
+
+    public func version(): Int64 { data.version() }
+    public func reserve(additional: Int64): Unit { data.reserve(additional) }
+    public func capacity(): Int64 { data.capacity() }
+    public func toHashMap(): HashMap<K, V> { data.clone() }
+    public func clone(): MapField<K, V> { MapField(this) }
+    public func keys(): Keys<K> { data.keys() }
+    public func values(): Values<V> { data.values() }
+    public func iterator(): HashMapIterator<K, V> { data.iterator() }
+    public prop let size: Int64 { get() { data.size } }
+    public func isEmpty(): Bool { data.isEmpty() }
+
+    func putDirty(key: K, value: V): Unit { if (let Some(m) = data.put(key, value)) { unlink(m) }; link(value) }
+    func setParent(parent: Message): Unit { this.parent = parent }
+    func getRawData() { data }
+}
+
+extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
+    public func toString(): String {
+        getRawData().toString()
+    }
+}

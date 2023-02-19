@@ -6,7 +6,11 @@ public interface OneofGroup <: ToString {
     func which(): String
 
     /* test which case name of oneof group */
-    func which(one: String): Bool {
-        which() == one
-    }
+    func which(one: String): Bool { which() == one }
+
+    /* return any set mutable message of oneof group */
+    func mutableData(): ?Message
+
+    /* return true if no field is set */
+    func isEmpty(): Bool
 }

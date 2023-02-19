@@ -145,7 +145,7 @@ class GenCodeHelper {
     }
 
     /* set enum/message type name */
-    func setFieldsTypeName(fields: ArrayList<FieldDescriptorProto>, nestedType: ArrayList<DescriptorProto>) {
+    func setFieldsTypeName(fields: RepeatedMessage<FieldDescriptorProto>, nestedType: RepeatedMessage<DescriptorProto>) {
         for (f in fields) {
             match (f.type_) {
                 case TYPE_ENUM => f.typeName = getTypeName(f.typeName)
@@ -168,7 +168,7 @@ class GenCodeHelper {
     }
 
     // special process type_ message if it is a map
-    private func setMessageTypeName(f: FieldDescriptorProto, ns: ArrayList<DescriptorProto>) {
+    private func setMessageTypeName(f: FieldDescriptorProto, ns: RepeatedMessage<DescriptorProto>) {
         do {
             if (f.label != LABEL_REPEATED) { break }
 
@@ -184,8 +184,10 @@ class GenCodeHelper {
                 if (!n.hasOptions || !n.options.hasMapEntry || !n.options.mapEntry) { break }
 
                 // save map entry's fields
-                f.mapEntry = n.field
-                f.typeName = "HashMap<${typeConvert(n.field[0])}, ${typeConvert(n.field[1])}>"
+                f.mapEntry.copyFrom(n.field)
+
+                let mapTypeName = if (n.field[1].type_ == TYPE_MESSAGE) { "MapMessage" } else { "MapField" }
+                f.typeName = "${mapTypeName}<${typeConvert(n.field[0])}, ${typeConvert(n.field[1])}>"
                 return
             }
         } while (false)
@@ -193,12 +195,12 @@ class GenCodeHelper {
         f.typeName = getTypeName(f.typeName)
     }
 
-    let oneofDecl = ArrayList<(String, ArrayList<FieldDescriptorProto>)>()
-    func calcOneofDecl(decls: ArrayList<OneofDescriptorProto>, fields: ArrayList<FieldDescriptorProto>) {
+    let oneofDecl = ArrayList<(String, RepeatedMessage<FieldDescriptorProto>)>()
+    func calcOneofDecl(decls: RepeatedMessage<OneofDescriptorProto>, fields: RepeatedMessage<FieldDescriptorProto>) {
         oneofDecl.clear()
         for (decl in decls) {
             decl.name = lowerCamelCase(decl.name)
-            oneofDecl.append((decl.name, ArrayList<FieldDescriptorProto>()))
+            oneofDecl.append((decl.name, RepeatedMessage<FieldDescriptorProto>()))
         }
         for (field in fields where field.hasOneofIndex) {
             oneofDecl[Int64(field.oneofIndex)][1].append(field)
@@ -248,7 +250,7 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     }
 }
 
-func genCodeMessageExtension(typeName: String, extensions: ArrayList<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+func genCodeMessageExtension(typeName: String, extensions: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     // todo
 }
 
@@ -279,7 +281,11 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     helper.calcOneofDecl(msg.oneofDecl, fields)
 
     // fields
-    if (helper.proto2) { genCodeMessageField2 } else { genCodeMessageField } (typeName, fields, helper)
+    match {
+        case fields.isEmpty() => helper.outbuf.append(getImplEmptyMessage(typeName))
+        case helper.proto2 => genCodeMessageField2(typeName, fields, helper)
+        case _ => genCodeMessageField(typeName, fields, helper)
+    }
 
     // extensions
     genCodeMessageExtension(typeName, extensions, helper)
@@ -359,10 +365,26 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         // gen clone()
         append("    public func clone(): ${groupType} {\n")
         append("        match (this) {\n")
-        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => ${titleCase(field.jsonName)}(v.clone())\n") }
+        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => ${groupType}.${titleCase(field.jsonName)}(v.clone())\n") }
         append("            case _ => this\n")
         append("        }\n")
-        append("    }\n")
+        append("    }\n\n")
+
+        // gen mutableData()
+        append("    public func mutableData(): ?Message {\n")
+        append("        match (this) {\n")
+        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => v\n") }
+        append("            case _ => Option<Message>.None\n")
+        append("        }\n")
+        append("    }\n\n")
+
+        // gen isEmpty()
+        append("    public func isEmpty(): Bool {\n")
+        append("        match (this) {\n")
+        append("            case None => true\n")
+        append("            case _ => false\n")
+        append("        }\n")
+        append("    }\n\n")
 
         // gen toString() and which()
         append("    public func toString() {\n")
@@ -383,10 +405,6 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
 
 /* oneof unpack expr */
 func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescriptorProto) {
-    if (field.type_ == TYPE_MESSAGE) {
-        return "let i_vtmp = ${field.typeName}(); i_vtmp.unpack(src); ${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.jsonName)}(i_vtmp)"
-    }
-
     "${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.jsonName)}(" + match (field.type_) {
         case TYPE_DOUBLE => "src.parseFloat64()"
         case TYPE_FLOAT => "src.parseFloat32()"
@@ -397,6 +415,7 @@ func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescrip
         case TYPE_ENUM => "${field.typeName}.parse(src.parseInt32())"
         case TYPE_BOOL => "src.parseBool()"
         case TYPE_STRING => "src.parseString()"
+        case TYPE_MESSAGE => "${field.typeName}.fromBytes(subReader(src))"
         case TYPE_BYTES => "src.parseBytesSlice()"
         case TYPE_FIXED64 => "src.parseFixed64()"
         case TYPE_FIXED32 => "src.parseFixed32()"
@@ -410,12 +429,14 @@ func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescrip
 
 /* impl interface api */
 func getImplIterfaceApi(typeName: String) {
-    "    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }\n" +
-    "    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }\n" +
-    "\n" +
-    "    public static func empty() { ${typeName}() }\n" +
-    "    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }\n" +
-    "    public static func fromBytes(src: BytesReader) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }\n"
+"""
+    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+
+    public static func empty() { ${typeName}() }
+    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: BytesReader) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }
+"""
 }
 
 /* convert pb type to cj type */
@@ -549,6 +570,29 @@ func namedParseSrc(name: String, src: String, field: FieldDescriptorProto) {
     }
 }
 
+/* impl empty message */
+func getImplEmptyMessage(typeName: String) {
+"""
+
+public class ${typeName} <: Message & TypedMessage<${typeName}> {
+    protected func m_size(): Int64 { 0 }
+    protected func m_isEmpty(): Bool { true }
+    protected func m_clear(): Unit { }
+    public func copyFrom(src: ${typeName}): ${typeName} { m_innerCopyFrom(src); return this }
+    public func clone(): ${typeName} { return ${typeName}().copyFrom(this) }
+    public func unpack<T>(src: T): Unit where T <: BytesReader { while (!src.isEmpty()) { m_unknown(src, src.parseTag()) }; markDirty() }
+    public func pack<T>(out: T): Unit where T <: BytesWriter { m_unknown(out) }
+    public func toString(): String { "{}" }
+    public func packi(out: BytesWriter) { pack(out) }
+    public func unpacki(src: BytesReader) { unpack(src) }
+
+    public static func empty() { ${typeName}() }
+    public static func fromBytes(src: Collection<Byte>) { let m = ${typeName}(); m.unpack(src); m }
+    public static func fromBytes(src: BytesReader) { let m = ${typeName}(); m.unpack(src); m }
+}
+"""
+}
+
 /* Define reserved words */
 let cangjieKeyWords = HashSet<String>([
     "abstract", "as", "break", "case", "catch", "class", "continue", "do",
@@ -574,14 +618,16 @@ func getEnumItemName(name: String) {
     if (cangjieKeyWords.contains(name) || enumRsvdWords.contains(name)) {
         return name + '_'
     }
-    name
+
+    return name
 }
 
 func getMessagePropName(name: String) {
     if (cangjieKeyWords.contains(name) || messageRsvdWords.contains(name)) {
         return name + '_'
     }
-    name
+
+    return name
 }
 
 func titleCase(str: String) {
@@ -596,7 +642,7 @@ func upperCamelCase(name: String) {
         arr[i] = titleCase(arr[i])
     }
 
-    String.join(arr)
+    return String.join(arr)
 }
 
 /* lower camel case */
@@ -607,5 +653,5 @@ func lowerCamelCase(name: String) {
         arr[i] = titleCase(arr[i])
     }
 
-    String.join(arr)
+    return String.join(arr)
 }

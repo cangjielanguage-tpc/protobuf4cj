@@ -3,6 +3,7 @@ package protobuf
 public enum BytesString <: ToString & Equatable<BytesString> & Equatable<String> {
     Bytes(BytesSlice) | String(String)
 
+    /* bytes size */
     public prop let size: Int64 { get() {
         match (this) {
             case Bytes(bytes) => bytes.size
@@ -64,36 +65,40 @@ public struct Pb3String {
     }
 
     public mut func set(str: String): Unit { data = String(str) }
-    public func toString() { data.toString() }
     public func isEmpty(): Bool { data.isEmpty() }
     public mut func clear() { data = String("") }
-    public mut func pack<T>(out: T) where T <: BytesWriter { out.packBin(data) }
     public mut func unpack<T>(src: T) where T <: BytesReader { data = Bytes(src.parseBytesSlice()) }
 }
 
 public struct Pb2String {
     public var data: ?BytesString
+    public let default: ?String
 
-    public init() { data = None }
+    public init() { data = None; default = None }
+
+    public init(default: String) { data = None; this.default = default }
 
     public mut func get(): String {
-        match (data.getOrThrow()) {
-            case Bytes(bytes) =>
+        match (data) {
+            case Some(Bytes(bytes)) =>
                 let string = unsafe { String.fromUtf8Unchecked(bytes.getRawArray()) }
                 data = String(string)
                 return string
-            case String(string) => return string
+            case Some(String(string)) => return string
+            case _ => default.getOrThrow()
         }
     }
 
-    public mut func set(str: String): Unit { data = String(str) }
-    public func isEmpty(): Bool { isNone(data) }
+    public mut func set(str: String): Unit {
+        data = if (default == str) { None } else { String(str) }
+    }
+
     public mut func clear() { data = None }
     public mut func unpack<T>(src: T) where T <: BytesReader { data = Bytes(src.parseBytesSlice()) }
 }
 
 public class RepeatedString <: Collection<String> & ToString {
-    private var parent: ?AbstractMessage
+    private var parent: ?Message
     private var data: ArrayList<BytesString>
 
     public init() {
@@ -256,7 +261,7 @@ public class RepeatedString <: Collection<String> & ToString {
         var sep = false
         for (s in this) {
             if (sep) { buffer.append(", ") } else { sep = true }
-            buffer.append("\"s\"")
+            buffer.append("\"${s}\"")
         }
         return buffer.append(']').toString()
     }
@@ -276,7 +281,7 @@ public class RepeatedString <: Collection<String> & ToString {
     public operator func [](index: Int64, value!: BytesString): Unit { set(index, value) }
 
     func appendDirty(element: BytesSlice): Unit { data.append(Bytes(element)) }
-    func setParent(parent: AbstractMessage): Unit { this.parent = parent }
+    func setParent(parent: Message): Unit { this.parent = parent }
     func getRawData() { data }
 }
 

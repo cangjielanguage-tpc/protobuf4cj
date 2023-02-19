@@ -23,7 +23,7 @@ public struct StructPrinter <: ToString {
         stb.append(key).append(": \"").append(str).append('"')
     }
 
-    public mut func append(key: String, strs: ArrayList<String>): Unit {
+    public mut func append(key: String, strs: RepeatedString): Unit {
         if (sep) { stb.append(", ") } else { sep = true }
         stb.append(key).append(": [")
         for ((i, str) in withIndex(strs)) {
@@ -33,27 +33,10 @@ public struct StructPrinter <: ToString {
         stb.append(']')
     }
 
-    /* cangjie 0.36.4, -O2 compile blocked if use TreeMap, use HashMap */
-    public mut func append(key: String, map: HashMap<String, String>): Unit {
-        var sp = subStruct(key)
-        for ((k, v) in map) {
-            sp.append("\"${k}\"", v)
-        }
-        sp.done()
-    }
-
-    public mut func append<T>(key: String, map: HashMap<T, String>): Unit where T <: ToString & Hashable & Equatable<T> {
+    public mut func append<T>(key: String, map: MapField<T, String>): Unit where T <: ToString & Hashable & Equatable<T> {
         var sp = subStruct(key)
         for ((k, v) in map) {
             sp.append(k.toString(), v)
-        }
-        sp.done()
-    }
-
-    public mut func append<T>(key: String, map: HashMap<String, T>): Unit where T <: ToString {
-        var sp = subStruct(key)
-        for ((k, v) in map) {
-            sp.append("\"${k}\"", v)
         }
         sp.done()
     }
@@ -67,18 +50,6 @@ public struct StructPrinter <: ToString {
     public mut func clear(): Unit { stb.clear().append('{'); sep = false }
     public func done() { stb.append('}'); this }
     public func toString() { stb.toString() }
-}
-
-public func mapClone<K, V>(val: HashMap<K, V>) where K <: Hashable & Equatable<K> {
-    let map = val.clone()
-    for ((k, v) in map) {
-        if (let Some(m) = v as TypedMessage<V>) {
-            map[k] = m.clone()  /* deep clone each element */
-        } else {
-            break
-        }
-    }
-    return map
 }
 
 /* parse enum from json */

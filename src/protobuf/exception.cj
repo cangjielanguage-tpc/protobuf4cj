@@ -80,21 +80,17 @@ public class ParseValueExecption <: ProtobufException {
     }
 }
 
-/**
- * The class is UnmatchedOneofCaseException inherited from ProtobufException
- * @author tutudo
- * @since 0.29.3
- */
-public class UnmatchedOneofCaseException <: ProtobufException {
-    public UnmatchedOneofCaseException(public let exp: String, public let act: String) {}
-
-    public prop let message: String {
-        get() { "Failed to get oneof case `${exp}`, for case `${act}` is set." }
-    }
-}
-
 /* Failed to get oneof case */
 public class UnexpectedOneofException <: ProtobufException { }
+
+/* insufficient buffer space to pack message */
+public class InsufficientSpaceException <: ProtobufException {
+    public InsufficientSpaceException(public let exp: Int64, public let act: Int64) {}
+
+    public prop let message: String {
+        get() { "message size ${exp} > buffer size ${act}" }
+    }
+}
 
 class PBInternalException <: ProtobufException{
     public prop let message: String {

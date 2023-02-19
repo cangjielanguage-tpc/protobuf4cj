@@ -5,93 +5,95 @@ from protobuf import protobuf.*
 import google.protobuf.*
 
 public class Version <: Message & TypedMessage<Version> {
-    private var m_major: ?Int32 = None
-    private var m_minor: ?Int32 = None
-    private var m_patch: ?Int32 = None
-    private var m_suffix: ?String = None
-    public var unknownFields = ArrayList<MessageUnknownField>()
+    private var p_major: ?Int32 = None
+    private var p_minor: ?Int32 = None
+    private var p_patch: ?Int32 = None
+    private var p_suffix = Pb2String()
 
-    public func clearMajor() { m_major = None }
-    public prop let hasMajor: Bool { get() { isPresent(m_major) } }
-    public prop var major: Int32 { get() { m_major.getOrThrow() } set(i_tmp) { m_major = i_tmp } }
-
-    public func clearMinor() { m_minor = None }
-    public prop let hasMinor: Bool { get() { isPresent(m_minor) } }
-    public prop var minor: Int32 { get() { m_minor.getOrThrow() } set(i_tmp) { m_minor = i_tmp } }
-
-    public func clearPatch() { m_patch = None }
-    public prop let hasPatch: Bool { get() { isPresent(m_patch) } }
-    public prop var patch: Int32 { get() { m_patch.getOrThrow() } set(i_tmp) { m_patch = i_tmp } }
-
-    public func clearSuffix() { m_suffix = None }
-    public prop let hasSuffix: Bool { get() { isPresent(m_suffix) } }
-    public prop var suffix: String { get() { m_suffix.getOrThrow() } set(i_tmp) { m_suffix = i_tmp } }
-
-    public prop let size: Int64 { get() {
-        var i_tmp = 0
-        if (let Some(i_vtmp) = m_major) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_minor) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_patch) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_suffix) { i_tmp += 1 + binSize(i_vtmp) }
-        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
-        return i_tmp
-    } }
-
-    public func isEmpty(): Bool {
-        isNone(m_major) && isNone(m_minor) && isNone(m_patch) && isNone(m_suffix) &&
-        unknownFields.isEmpty()
+    public init() {
     }
 
-    public func clear(): Unit {
-        m_major = None
-        m_minor = None
-        m_patch = None
-        m_suffix = None
-        unknownFields.clear()
+    public func clearMajor() { p_major = None; markDirty() }
+    public prop let hasMajor: Bool { get() { isPresent(p_major) } }
+    public prop var major: Int32 { get() { p_major.getOrThrow() } set(i_tmp) { p_major = i_tmp; markDirty() } }
+
+    public func clearMinor() { p_minor = None; markDirty() }
+    public prop let hasMinor: Bool { get() { isPresent(p_minor) } }
+    public prop var minor: Int32 { get() { p_minor.getOrThrow() } set(i_tmp) { p_minor = i_tmp; markDirty() } }
+
+    public func clearPatch() { p_patch = None; markDirty() }
+    public prop let hasPatch: Bool { get() { isPresent(p_patch) } }
+    public prop var patch: Int32 { get() { p_patch.getOrThrow() } set(i_tmp) { p_patch = i_tmp; markDirty() } }
+
+    public func clearSuffix() { p_suffix.clear(); markDirty() }
+    public prop let hasSuffix: Bool { get() { isPresent(p_suffix.data) } }
+    public prop var suffix: String { get() { p_suffix.get() } set(i_vtmp) { p_suffix.set(i_vtmp); markDirty() } }
+
+    protected func m_size(): Int64 {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = p_major) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_minor) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_patch) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_suffix.data) { i_tmp += 1 + binSize(i_vtmp) }
+        return i_tmp
+    }
+
+    protected func m_isEmpty(): Bool {
+        isNone(p_major) && isNone(p_minor) && isNone(p_patch) && isNone(p_suffix.data)
+    }
+
+    protected func m_clear(): Unit {
+        p_major = None
+        p_minor = None
+        p_patch = None
+        p_suffix.clear()
+    }
+
+    public func copyFrom(src: Version): Version {
+        p_major = src.p_major
+        p_minor = src.p_minor
+        p_patch = src.p_patch
+        p_suffix = src.p_suffix
+        m_innerCopyFrom(src)
+        return this
     }
 
     public func clone(): Version {
-        let i_tmp = Version()
-        i_tmp.m_major = m_major
-        i_tmp.m_minor = m_minor
-        i_tmp.m_patch = m_patch
-        i_tmp.m_suffix = m_suffix
-        i_tmp.unknownFields = unknownFields.clone()
-        return i_tmp
+        return Version().copyFrom(this)
     }
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_major = src.parseInt32()
-                case 2 => m_minor = src.parseInt32()
-                case 3 => m_patch = src.parseInt32()
-                case 4 => m_suffix = src.parseString()
-                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+                case 1 => p_major = src.parseInt32()
+                case 2 => p_minor = src.parseInt32()
+                case 3 => p_patch = src.parseInt32()
+                case 4 => p_suffix.unpack(src)
+                case _ => m_unknown(src, i_tmp)
             }
         }
-    }
-
-    public func pack<T>(out: T): Unit where T <: BytesWriter {
-        check()
-        if (let Some(i_vtmp) = m_major) { out.append(8); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_minor) { out.append(16); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_patch) { out.append(24); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = m_suffix) { out.append(34); out.packBin(i_vtmp) }
-        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+        markDirty()
     }
 
     public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = p_major) { out.append(8); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = p_minor) { out.append(16); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = p_patch) { out.append(24); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = p_suffix.data) { out.append(34); out.packBin(i_vtmp) }
+        m_unknown(out)
+    }
+
     public func toString(): String {
         var i_tmp = StructPrinter()
-        if (let Some(i_vtmp) = m_major) { i_tmp.append("major", i_vtmp) }
-        if (let Some(i_vtmp) = m_minor) { i_tmp.append("minor", i_vtmp) }
-        if (let Some(i_vtmp) = m_patch) { i_tmp.append("patch", i_vtmp) }
-        if (let Some(i_vtmp) = m_suffix) { i_tmp.append("suffix", i_vtmp) }
-        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        if (let Some(i_vtmp) = p_major) { i_tmp.append("major", i_vtmp) }
+        if (let Some(i_vtmp) = p_minor) { i_tmp.append("minor", i_vtmp) }
+        if (let Some(i_vtmp) = p_patch) { i_tmp.append("patch", i_vtmp) }
+        if (isPresent(p_suffix.data)) { i_tmp.append("suffix", p_suffix.get()) }
         return i_tmp.done().toString()
     }
 
@@ -104,85 +106,89 @@ public class Version <: Message & TypedMessage<Version> {
 }
 
 public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest> {
-    public var fileToGenerate = ArrayList<String>()
-    private var m_parameter: ?String = None
-    public var protoFile = ArrayList<google.protobuf.FileDescriptorProto>()
-    private var m_compilerVersion: ?Version = None
-    public var unknownFields = ArrayList<MessageUnknownField>()
+    public let fileToGenerate = RepeatedString()
+    private var p_parameter = Pb2String()
+    public let protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>()
+    private var p_compilerVersion = Pb2Message<Version>()
 
-    public func clearParameter() { m_parameter = None }
-    public prop let hasParameter: Bool { get() { isPresent(m_parameter) } }
-    public prop var parameter: String { get() { m_parameter.getOrThrow() } set(i_tmp) { m_parameter = i_tmp } }
-
-    public func clearCompilerVersion() { m_compilerVersion = None }
-    public prop let hasCompilerVersion: Bool { get() { isPresent(m_compilerVersion) } }
-    public prop var compilerVersion: Version { get() { m_compilerVersion.getOrThrow() } set(i_tmp) { m_compilerVersion = i_tmp } }
-
-    public prop let size: Int64 { get() {
-        var i_tmp = 0
-        if (!fileToGenerate.isEmpty()) { for (i_itmp in fileToGenerate) { i_tmp += 1 + binSize(i_itmp) } }
-        if (let Some(i_vtmp) = m_parameter) { i_tmp += 1 + binSize(i_vtmp) }
-        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { i_tmp += 1 + binSize(i_itmp) } }
-        if (let Some(i_vtmp) = m_compilerVersion) { i_tmp += 1 + binSize(i_vtmp) }
-        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
-        return i_tmp
-    } }
-
-    public func isEmpty(): Bool {
-        fileToGenerate.isEmpty() && isNone(m_parameter) && protoFile.isEmpty() && isNone(m_compilerVersion) &&
-        unknownFields.isEmpty()
+    public init() {
+        m_init(fileToGenerate)
+        m_init(protoFile)
     }
 
-    public func clear(): Unit {
+    public func clearParameter() { p_parameter.clear(); markDirty() }
+    public prop let hasParameter: Bool { get() { isPresent(p_parameter.data) } }
+    public prop var parameter: String { get() { p_parameter.get() } set(i_vtmp) { p_parameter.set(i_vtmp); markDirty() } }
+
+    public func clearCompilerVersion() { p_compilerVersion.removeFrom(this); markDirty() }
+    public prop let hasCompilerVersion: Bool { get() { isPresent(p_compilerVersion.data) } }
+    public prop var compilerVersion: Version { get() { p_compilerVersion.data.getOrThrow() } set(i_vtmp) { p_compilerVersion.set(this, i_vtmp); markDirty() } }
+
+    protected func m_size(): Int64 {
+        var i_tmp = 0
+        if (!fileToGenerate.isEmpty()) { i_tmp += m_size(fileToGenerate, 1) }
+        if (let Some(i_vtmp) = p_parameter.data) { i_tmp += 1 + binSize(i_vtmp) }
+        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { i_tmp += 1 + binSize(i_itmp) } }
+        if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp += 1 + binSize(i_vtmp) }
+        return i_tmp
+    }
+
+    protected func m_isEmpty(): Bool {
+        fileToGenerate.isEmpty() && isNone(p_parameter.data) && protoFile.isEmpty() && isNone(p_compilerVersion.data)
+    }
+
+    protected func m_clear(): Unit {
         fileToGenerate.clear()
-        m_parameter = None
+        p_parameter.clear()
         protoFile.clear()
-        m_compilerVersion = None
-        unknownFields.clear()
+        p_compilerVersion.removeFrom(this)
+    }
+
+    public func copyFrom(src: CodeGeneratorRequest): CodeGeneratorRequest {
+        fileToGenerate.copyFrom(src.fileToGenerate)
+        p_parameter = src.p_parameter
+        protoFile.copyFrom(src.protoFile)
+        p_compilerVersion.copyFrom(this, src.p_compilerVersion.data)
+        m_innerCopyFrom(src)
+        return this
     }
 
     public func clone(): CodeGeneratorRequest {
-        let i_tmp = CodeGeneratorRequest()
-        i_tmp.fileToGenerate = fileToGenerate.clone()
-        i_tmp.m_parameter = m_parameter
-        i_tmp.protoFile = ArrayList(protoFile.size, { i => protoFile[i].clone() })
-        i_tmp.m_compilerVersion = m_compilerVersion?.clone()
-        i_tmp.unknownFields = unknownFields.clone()
-        return i_tmp
+        return CodeGeneratorRequest().copyFrom(this)
     }
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => fileToGenerate.append(src.parseString())
-                case 2 => m_parameter = src.parseString()
-                case 15 => protoFile.add().unpack(subReader(src))
-                case 3 => m_compilerVersion = m_compilerVersion ?? Version(); m_compilerVersion?.unpack(subReader(src))
-                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+                case 1 => s_add(fileToGenerate, src)
+                case 2 => p_parameter.unpack(src)
+                case 15 => s_add(protoFile, src)
+                case 3 => p_compilerVersion.getOrDefault(this).unpack(subReader(src))
+                case _ => m_unknown(src, i_tmp)
             }
         }
-    }
-
-    public func pack<T>(out: T): Unit where T <: BytesWriter {
-        check()
-        if (!fileToGenerate.isEmpty()) { for (i_itmp in fileToGenerate) { out.append(10); out.packBin(i_itmp) } }
-        if (let Some(i_vtmp) = m_parameter) { out.append(18); out.packBin(i_vtmp) }
-        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = m_compilerVersion) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+        markDirty()
     }
 
     public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (!fileToGenerate.isEmpty()) { s_pack(1, fileToGenerate, out) }
+        if (let Some(i_vtmp) = p_parameter.data) { out.append(18); out.packBin(i_vtmp) }
+        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(i_vtmp) = p_compilerVersion.data) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        m_unknown(out)
+    }
+
     public func toString(): String {
         var i_tmp = StructPrinter()
         if (!fileToGenerate.isEmpty()) { i_tmp.append("fileToGenerate", fileToGenerate) }
-        if (let Some(i_vtmp) = m_parameter) { i_tmp.append("parameter", i_vtmp) }
+        if (isPresent(p_parameter.data)) { i_tmp.append("parameter", p_parameter.get()) }
         if (!protoFile.isEmpty()) { i_tmp.append("protoFile", protoFile) }
-        if (let Some(i_vtmp) = m_compilerVersion) { i_tmp.append("compilerVersion", i_vtmp) }
-        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp.append("compilerVersion", i_vtmp) }
         return i_tmp.done().toString()
     }
 
@@ -195,93 +201,96 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 }
 
 public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorResponse_File> {
-    private var m_name: ?String = None
-    private var m_insertionPoint: ?String = None
-    private var m_content: ?String = None
-    private var m_generatedCodeInfo: ?google.protobuf.GeneratedCodeInfo = None
-    public var unknownFields = ArrayList<MessageUnknownField>()
+    private var p_name = Pb2String()
+    private var p_insertionPoint = Pb2String()
+    private var p_content = Pb2String()
+    private var p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>()
 
-    public func clearName() { m_name = None }
-    public prop let hasName: Bool { get() { isPresent(m_name) } }
-    public prop var name: String { get() { m_name.getOrThrow() } set(i_tmp) { m_name = i_tmp } }
-
-    public func clearInsertionPoint() { m_insertionPoint = None }
-    public prop let hasInsertionPoint: Bool { get() { isPresent(m_insertionPoint) } }
-    public prop var insertionPoint: String { get() { m_insertionPoint.getOrThrow() } set(i_tmp) { m_insertionPoint = i_tmp } }
-
-    public func clearContent() { m_content = None }
-    public prop let hasContent: Bool { get() { isPresent(m_content) } }
-    public prop var content: String { get() { m_content.getOrThrow() } set(i_tmp) { m_content = i_tmp } }
-
-    public func clearGeneratedCodeInfo() { m_generatedCodeInfo = None }
-    public prop let hasGeneratedCodeInfo: Bool { get() { isPresent(m_generatedCodeInfo) } }
-    public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { m_generatedCodeInfo.getOrThrow() } set(i_tmp) { m_generatedCodeInfo = i_tmp } }
-
-    public prop let size: Int64 { get() {
-        var i_tmp = 0
-        if (let Some(i_vtmp) = m_name) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_insertionPoint) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_content) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_generatedCodeInfo) { i_tmp += 2 + binSize(i_vtmp) }
-        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
-        return i_tmp
-    } }
-
-    public func isEmpty(): Bool {
-        isNone(m_name) && isNone(m_insertionPoint) && isNone(m_content) && isNone(m_generatedCodeInfo) &&
-        unknownFields.isEmpty()
+    public init() {
     }
 
-    public func clear(): Unit {
-        m_name = None
-        m_insertionPoint = None
-        m_content = None
-        m_generatedCodeInfo = None
-        unknownFields.clear()
+    public func clearName() { p_name.clear(); markDirty() }
+    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
+    public prop var name: String { get() { p_name.get() } set(i_vtmp) { p_name.set(i_vtmp); markDirty() } }
+
+    public func clearInsertionPoint() { p_insertionPoint.clear(); markDirty() }
+    public prop let hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint.data) } }
+    public prop var insertionPoint: String { get() { p_insertionPoint.get() } set(i_vtmp) { p_insertionPoint.set(i_vtmp); markDirty() } }
+
+    public func clearContent() { p_content.clear(); markDirty() }
+    public prop let hasContent: Bool { get() { isPresent(p_content.data) } }
+    public prop var content: String { get() { p_content.get() } set(i_vtmp) { p_content.set(i_vtmp); markDirty() } }
+
+    public func clearGeneratedCodeInfo() { p_generatedCodeInfo.removeFrom(this); markDirty() }
+    public prop let hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
+    public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(i_vtmp) { p_generatedCodeInfo.set(this, i_vtmp); markDirty() } }
+
+    protected func m_size(): Int64 {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = p_name.data) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_insertionPoint.data) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_content.data) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { i_tmp += 2 + binSize(i_vtmp) }
+        return i_tmp
+    }
+
+    protected func m_isEmpty(): Bool {
+        isNone(p_name.data) && isNone(p_insertionPoint.data) && isNone(p_content.data) &&
+        isNone(p_generatedCodeInfo.data)
+    }
+
+    protected func m_clear(): Unit {
+        p_name.clear()
+        p_insertionPoint.clear()
+        p_content.clear()
+        p_generatedCodeInfo.removeFrom(this)
+    }
+
+    public func copyFrom(src: CodeGeneratorResponse_File): CodeGeneratorResponse_File {
+        p_name = src.p_name
+        p_insertionPoint = src.p_insertionPoint
+        p_content = src.p_content
+        p_generatedCodeInfo.copyFrom(this, src.p_generatedCodeInfo.data)
+        m_innerCopyFrom(src)
+        return this
     }
 
     public func clone(): CodeGeneratorResponse_File {
-        let i_tmp = CodeGeneratorResponse_File()
-        i_tmp.m_name = m_name
-        i_tmp.m_insertionPoint = m_insertionPoint
-        i_tmp.m_content = m_content
-        i_tmp.m_generatedCodeInfo = m_generatedCodeInfo?.clone()
-        i_tmp.unknownFields = unknownFields.clone()
-        return i_tmp
+        return CodeGeneratorResponse_File().copyFrom(this)
     }
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_name = src.parseString()
-                case 2 => m_insertionPoint = src.parseString()
-                case 15 => m_content = src.parseString()
-                case 16 => m_generatedCodeInfo = m_generatedCodeInfo ?? google.protobuf.GeneratedCodeInfo(); m_generatedCodeInfo?.unpack(subReader(src))
-                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+                case 1 => p_name.unpack(src)
+                case 2 => p_insertionPoint.unpack(src)
+                case 15 => p_content.unpack(src)
+                case 16 => p_generatedCodeInfo.getOrDefault(this).unpack(subReader(src))
+                case _ => m_unknown(src, i_tmp)
             }
         }
-    }
-
-    public func pack<T>(out: T): Unit where T <: BytesWriter {
-        check()
-        if (let Some(i_vtmp) = m_name) { out.append(10); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_insertionPoint) { out.append(18); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_content) { out.append(122); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_generatedCodeInfo) { out.packTag(16, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
-        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+        markDirty()
     }
 
     public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = p_name.data) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = p_insertionPoint.data) { out.append(18); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = p_content.data) { out.append(122); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { out.packTag(16, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        m_unknown(out)
+    }
+
     public func toString(): String {
         var i_tmp = StructPrinter()
-        if (let Some(i_vtmp) = m_name) { i_tmp.append("name", i_vtmp) }
-        if (let Some(i_vtmp) = m_insertionPoint) { i_tmp.append("insertionPoint", i_vtmp) }
-        if (let Some(i_vtmp) = m_content) { i_tmp.append("content", i_vtmp) }
-        if (let Some(i_vtmp) = m_generatedCodeInfo) { i_tmp.append("generatedCodeInfo", i_vtmp) }
-        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
+        if (isPresent(p_name.data)) { i_tmp.append("name", p_name.get()) }
+        if (isPresent(p_insertionPoint.data)) { i_tmp.append("insertionPoint", p_insertionPoint.get()) }
+        if (isPresent(p_content.data)) { i_tmp.append("content", p_content.get()) }
+        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { i_tmp.append("generatedCodeInfo", i_vtmp) }
         return i_tmp.done().toString()
     }
 
@@ -336,78 +345,81 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
 }
 
 public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorResponse> {
-    private var m_error: ?String = None
-    private var m_supportedFeatures: ?UInt64 = None
-    public var file = ArrayList<CodeGeneratorResponse_File>()
-    public var unknownFields = ArrayList<MessageUnknownField>()
+    private var p_error = Pb2String()
+    private var p_supportedFeatures: ?UInt64 = None
+    public let file = RepeatedMessage<CodeGeneratorResponse_File>()
 
-    public func clearError() { m_error = None }
-    public prop let hasError: Bool { get() { isPresent(m_error) } }
-    public prop var error: String { get() { m_error.getOrThrow() } set(i_tmp) { m_error = i_tmp } }
-
-    public func clearSupportedFeatures() { m_supportedFeatures = None }
-    public prop let hasSupportedFeatures: Bool { get() { isPresent(m_supportedFeatures) } }
-    public prop var supportedFeatures: UInt64 { get() { m_supportedFeatures.getOrThrow() } set(i_tmp) { m_supportedFeatures = i_tmp } }
-
-    public prop let size: Int64 { get() {
-        var i_tmp = 0
-        if (let Some(i_vtmp) = m_error) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = m_supportedFeatures) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (!file.isEmpty()) { for (i_itmp in file) { i_tmp += 1 + binSize(i_itmp) } }
-        for (i_itmp in unknownFields) { i_tmp += i_itmp.packSize() }
-        return i_tmp
-    } }
-
-    public func isEmpty(): Bool {
-        isNone(m_error) && isNone(m_supportedFeatures) && file.isEmpty() &&
-        unknownFields.isEmpty()
+    public init() {
+        m_init(file)
     }
 
-    public func clear(): Unit {
-        m_error = None
-        m_supportedFeatures = None
+    public func clearError() { p_error.clear(); markDirty() }
+    public prop let hasError: Bool { get() { isPresent(p_error.data) } }
+    public prop var error: String { get() { p_error.get() } set(i_vtmp) { p_error.set(i_vtmp); markDirty() } }
+
+    public func clearSupportedFeatures() { p_supportedFeatures = None; markDirty() }
+    public prop let hasSupportedFeatures: Bool { get() { isPresent(p_supportedFeatures) } }
+    public prop var supportedFeatures: UInt64 { get() { p_supportedFeatures.getOrThrow() } set(i_tmp) { p_supportedFeatures = i_tmp; markDirty() } }
+
+    protected func m_size(): Int64 {
+        var i_tmp = 0
+        if (let Some(i_vtmp) = p_error.data) { i_tmp += 1 + binSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_supportedFeatures) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (!file.isEmpty()) { for (i_itmp in file) { i_tmp += 1 + binSize(i_itmp) } }
+        return i_tmp
+    }
+
+    protected func m_isEmpty(): Bool {
+        isNone(p_error.data) && isNone(p_supportedFeatures) && file.isEmpty()
+    }
+
+    protected func m_clear(): Unit {
+        p_error.clear()
+        p_supportedFeatures = None
         file.clear()
-        unknownFields.clear()
+    }
+
+    public func copyFrom(src: CodeGeneratorResponse): CodeGeneratorResponse {
+        p_error = src.p_error
+        p_supportedFeatures = src.p_supportedFeatures
+        file.copyFrom(src.file)
+        m_innerCopyFrom(src)
+        return this
     }
 
     public func clone(): CodeGeneratorResponse {
-        let i_tmp = CodeGeneratorResponse()
-        i_tmp.m_error = m_error
-        i_tmp.m_supportedFeatures = m_supportedFeatures
-        i_tmp.file = ArrayList(file.size, { i => file[i].clone() })
-        i_tmp.unknownFields = unknownFields.clone()
-        return i_tmp
+        return CodeGeneratorResponse().copyFrom(this)
     }
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
             let i_tmp = src.parseTag()
             match (i_tmp[0]) {
-                case 1 => m_error = src.parseString()
-                case 2 => m_supportedFeatures = src.parseUInt64()
-                case 15 => file.add().unpack(subReader(src))
-                case _ => unknownFields.append(MessageUnknownField.unpack(i_tmp[0], i_tmp[1], src))
+                case 1 => p_error.unpack(src)
+                case 2 => p_supportedFeatures = src.parseUInt64()
+                case 15 => s_add(file, src)
+                case _ => m_unknown(src, i_tmp)
             }
         }
-    }
-
-    public func pack<T>(out: T): Unit where T <: BytesWriter {
-        check()
-        if (let Some(i_vtmp) = m_error) { out.append(10); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = m_supportedFeatures) { out.append(16); out.packVarint(i_vtmp) }
-        if (!file.isEmpty()) { for (i_itmp in file) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (!unknownFields.isEmpty()) { for (i_itmp in unknownFields) { i_itmp.pack(out) } }
+        markDirty()
     }
 
     public func check(): Unit /* throws RequiredFieldNotSetException */ {
     }
 
+    public func pack<T>(out: T): Unit where T <: BytesWriter {
+        check()
+        if (let Some(i_vtmp) = p_error.data) { out.append(10); out.packBin(i_vtmp) }
+        if (let Some(i_vtmp) = p_supportedFeatures) { out.append(16); out.packVarint(i_vtmp) }
+        if (!file.isEmpty()) { for (i_itmp in file) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        m_unknown(out)
+    }
+
     public func toString(): String {
         var i_tmp = StructPrinter()
-        if (let Some(i_vtmp) = m_error) { i_tmp.append("error", i_vtmp) }
-        if (let Some(i_vtmp) = m_supportedFeatures) { i_tmp.append("supportedFeatures", i_vtmp) }
+        if (isPresent(p_error.data)) { i_tmp.append("error", p_error.get()) }
+        if (let Some(i_vtmp) = p_supportedFeatures) { i_tmp.append("supportedFeatures", i_vtmp) }
         if (!file.isEmpty()) { i_tmp.append("file", file) }
-        if (!unknownFields.isEmpty()) { i_tmp.append("unknownFields", unknownFields) }
         return i_tmp.done().toString()
     }
 

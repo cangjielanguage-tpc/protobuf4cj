@@ -1,7 +1,7 @@
 package protobuf
 
 public class RepeatedField<T> <: Collection<T> {
-    private var parent: ?AbstractMessage
+    private var parent: ?Message
     private var data: ArrayList<T>
 
     public init() {
@@ -125,7 +125,7 @@ public class RepeatedField<T> <: Collection<T> {
     public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty() }
 
     func appendDirty(element: T): Unit { data.append(element) }
-    func setParent(parent: AbstractMessage): Unit { this.parent = parent }
+    func setParent(parent: Message): Unit { this.parent = parent }
     func getRawData() { data }
 }
 
@@ -159,8 +159,8 @@ extend RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
     }
 }
 
-public class RepeatedMessage<T> <: Collection<T> & ToString where T <: AbstractMessage & TypedMessage<T> {
-    private var parent: ?AbstractMessage
+public class RepeatedMessage<T> <: Collection<T> & ToString where T <: Message & TypedMessage<T> {
+    private var parent: ?Message
     private var data: ArrayList<T>
 
     public init() {
@@ -282,7 +282,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString where T <: AbstractM
         rf.unlink(rf.data)
         rf.data = ArrayList()
         rf.parent?.markDirty()
-        
+
         unlink(data)
         link(temp)
         data = temp
@@ -302,17 +302,17 @@ public class RepeatedMessage<T> <: Collection<T> & ToString where T <: AbstractM
         parent?.markDirty()
     }
 
-    private func link(element: AbstractMessage) { element.m_parents.insert(parent ?? return) }
-    private func unlink(element: AbstractMessage) { element.m_parents.remove(parent ?? return) }
+    private func link(element: Message) { element.m_parents.insert(parent ?? return) }
+    private func unlink(element: Message) { element.m_parents.remove(parent ?? return) }
 
     private func link(elements: Collection<T>) {
         let m = parent ?? return ()
-        for (e in elements) { let ee: AbstractMessage = e; ee.m_parents.insert(m) }
+        for (e in elements) { let ee: Message = e; ee.m_parents.insert(m) }
     }
 
     private func unlink(elements: Collection<T>) {
         let m = parent ?? return ()
-        for (e in elements) { let ee: AbstractMessage = e; ee.m_parents.remove(m) }
+        for (e in elements) { let ee: Message = e; ee.m_parents.remove(m) }
     }
 
     public func reverse(): Unit { data.reverse() }
@@ -330,5 +330,5 @@ public class RepeatedMessage<T> <: Collection<T> & ToString where T <: AbstractM
     public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty(); link(value) }
 
     func appendDirty(element: T): Unit { data.append(element); link(element) }
-    func setParent(parent: AbstractMessage): Unit { this.parent = parent }
+    func setParent(parent: Message): Unit { this.parent = parent }
 }

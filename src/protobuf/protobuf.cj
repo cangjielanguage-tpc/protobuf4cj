@@ -155,7 +155,7 @@ public func binSize(val: String) {
 }
 
 @overflowWrapping
-public func binSize<M>(val: M) where M <: Message {
+public func binSize(val: Message) {
     let size = val.size
     varintSize(size) + size
 }
@@ -172,60 +172,17 @@ public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
     static func parse(v: Int32): E
     static func parse(v: String): E
 }
-
-public interface Message <: ToString {
-    prop let size: Int64
-    func isEmpty(): Bool
-    func clear(): Unit
-    func clone(): Message
-
-    /* abstract generic function is not allowed in interface */
-    /* func unpack<T>(src: T): Unit where T <: BytesReader */
-    /* func pack<T>(out: T): Unit where T <: BytesWriter */
-
-    func unpacki(src: BytesReader): Unit
-    func packi(out: BytesWriter): Unit
-
-    /* unpack from collection. */
-    func unpack(src: Collection<Byte>): Unit {
-        unpacki(SimpleReader(src))
-    }
-
-    /* unpack from bytes slice */
-    func unpack(src: BytesSlice): Unit {
-        unpacki(SimpleReader(src))
-    }
-
-    /* pack message to bytes */
-    func pack(): Bytes {
-        let out = SimpleWriter(size)
-        packi(out)
-        out.data
-    }
-}
-
 public interface TypedMessage<M> {
     func clone(): M
+    func copyFrom(that: M): M { throw Exception() }
     static func empty(): M
     static func fromBytes(src: Collection<Byte>): M
     static func fromBytes(src: BytesReader): M
 }
 
-public interface AddMessage<M> {
-    func add(): M
-}
-
-extend ArrayList<M> <: AddMessage<M> where M <: TypedMessage<M> {
-    public func add(): M { let m = M.empty(); this.append(m); m }
-}
-
-public interface Parent {
-    func markDirty(): Unit
-}
-
 class ParentNode {
     var next: ?ParentNode = None
-    ParentNode(let data: AbstractMessage) { }
+    ParentNode(let data: Message) { }
 }
 
 struct Parents {
@@ -239,7 +196,7 @@ struct Parents {
         } }
     }
 
-    mut func insert(v: AbstractMessage) {
+    mut func insert(v: Message) {
         var node = header ?? return header = ParentNode(v)
         while (true) { match (node.next) {
             case Some(n) => node = n
@@ -247,7 +204,7 @@ struct Parents {
         } }
     }
 
-    mut func remove(v: AbstractMessage) {
+    mut func remove(v: Message) {
         var node = header ?? return ()
         if (refEq(node.data, v)) {
             return header = node.next
@@ -259,11 +216,12 @@ struct Parents {
     }
 }
 
-public abstract class AbstractMessage <: Message & Parent {
+/* abstract class of all the protobuf message. */
+public abstract class Message <: ToString {
     var m_parents = Parents()
 
-    protected var m_cachedSize = -1
-    protected var m_cachedHash = -1 /* [TODO] */
+    private var m_cachedSize = -1
+    private var m_cachedHash = -1 /* [TODO] */
     public func markDirty(): Unit {
         if (m_cachedSize != -1 /* || m_cachedHash != -1 */) {   /* any cached */
             m_cachedSize = -1
@@ -273,8 +231,85 @@ public abstract class AbstractMessage <: Message & Parent {
         }
     }
 
-    /* mark message is empty() */
-    protected func m_markEmpty() { m_cachedSize = 0; return true }
+    /* message packed size */
+    protected func m_size(): Int64
+    public prop let size: Int64 { get() {
+        if (m_cachedSize == -1) {
+            var sum = m_size()
+            for (u in unknownFields.getRawData()) {
+                sum += u.packSize()
+            }
+
+            m_cachedSize = sum
+        }
+
+        return m_cachedSize
+    } }
+
+    /* message is empty */
+    protected func m_isEmpty(): Bool
+    public func isEmpty(): Bool {
+        if (m_cachedSize == 0) {
+            return true
+        }
+
+        if (m_cachedSize == -1 && m_isEmpty() && unknownFields.isEmpty()) {
+            m_cachedSize = 0
+            return true
+        }
+
+        return false
+    }
+
+    /* message clear */
+    protected func m_clear(): Unit
+    public func clear() {
+        if (m_cachedSize == 0) {
+            return
+        }
+
+        m_clear()
+        unknownFields.getRawData().clear()
+        m_cachedSize = 0
+        m_parents.markDirty()
+        return
+    }
+
+    /* copy inner data from `src` */
+    protected func m_innerCopyFrom(src: Message) {
+        unknownFields.copyFrom(src.unknownFields)
+        m_cachedSize = src.m_cachedSize
+        m_parents.markDirty()
+    }
+
+    /* unpack from bytes reader interface */
+    public func unpacki(src: BytesReader): Unit
+
+    /* pack to bytes writer interface */
+    public func packi(out: BytesWriter): Unit
+
+    /* unpack from collection. */
+    public func unpack(src: Collection<Byte>): Unit { unpacki(SimpleReader(src)) }
+
+    /* unpack from bytes slice */
+    public func unpack(src: BytesSlice): Unit { unpacki(SimpleReader(src)) }
+
+    /* pack message to bytes */
+    public func pack(): Bytes {
+        let out = SimpleWriter(size)
+        packi(out)
+
+        return out.data
+    }
+
+    /* pack message to bytes */
+    public func pack(out: Bytes): Unit {
+        if (size > out.size) {
+            throw InsufficientSpaceException(size, out.size)
+        }
+
+        packi(SimpleWriter(out))
+    }
 
     /* unknownFields */
     public let unknownFields = RepeatedField<MessageUnknownField>()
@@ -286,13 +321,15 @@ public abstract class AbstractMessage <: Message & Parent {
 
     /* pack unknownFields */
     protected func m_unknown<W>(out: W) where W <: BytesWriter {
-        for (field in unknownFields) { field.pack(out) }
+        for (field in unknownFields.getRawData()) { field.pack(out) }
     }
 
     /* unpack to repeated fields */
     protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
     protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseBytesSlice()) }
-    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: AbstractMessage & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
+    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: Message & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
+    protected static func s_add<K, V>(map: MapField<K, V>, key: K, val: V) where K <: Hashable & Equatable<K> { map.putDirty(key, val) }
+    protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Hashable & Equatable<K>, M <: Message & TypedMessage<M> { map.putDirty(key, val) }
 
     /* pack repeated string */
     protected static func s_pack<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
@@ -306,30 +343,74 @@ public abstract class AbstractMessage <: Message & Parent {
         }
     }
 
-    /* pack string */
-    protected static func s_pack<W>(tag: Tag, field: Pb3String, out: W) where W <: BytesWriter {
-        if (field.isEmpty()) { return }
+    /* packed size of fields */
+    protected func m_size(rf: RepeatedString, tagSize: Int64) {
+        var sum = tagSize * rf.size
 
-        if (tag <= 15) { out.append(UInt8(tag) << 3 | PREFIXED) } else { out.packTag(tag, PREFIXED) }
+        for (bs in rf.getRawData()) {
+            sum += binSize(bs)
+        }
 
-        out.packBin(field)
+        return sum
     }
 
-    /* pack string */
-    protected static func s_pack<W>(tag: Tag, field: Pb2String, out: W) where W <: BytesWriter {
-        if (let Some(str) = field.data) {
-            if (tag <= 15) { out.append(UInt8(tag) << 3 | PREFIXED) } else { out.packTag(tag, PREFIXED) }
+    /* init member field's parent */
+    protected func m_init(rf: Message) { rf.m_parents.insert(this) }
+    protected func m_init(rf: RepeatedString) { rf.setParent(this) }
+    protected func m_init<T>(rf: RepeatedField<T>) { rf.setParent(this) }
+    protected func m_init<T>(rf: RepeatedMessage<T>) where T <: Message & TypedMessage<T> { rf.setParent(this) }
+    protected func m_init<T>(rf: T): T where T <: OneofGroup { rf.mutableData()?.m_parents.insert(this); rf }
+    protected func m_init<K, V>(rf: MapField<K, V>) where K <: Hashable & Equatable<K> { rf.setParent(this) }
+    protected func m_init<K, V>(rf: MapMessage<K, V>) where K <: Hashable & Equatable<K>, V <: Message & TypedMessage<V> { rf.setParent(this) }
 
-            out.packBin(field)
+    /* assign member old to new, reset their parent */
+    protected func m_assign(old: Message, new: Message) { old.m_parents.remove(this); new.m_parents.insert(this) }
+    protected func m_assign(old: Message) { old.m_parents.remove(this) }
+    protected func m_assign(old: OneofGroup, new: OneofGroup) { old.mutableData()?.m_parents.remove(this); new.mutableData()?.m_parents.insert(this) }
+    protected func m_assign(old: OneofGroup, new: Message) { old.mutableData()?.m_parents.remove(this); new.m_parents.insert(this) }
+    protected func m_assign(old: OneofGroup) { old.mutableData()?.m_parents.remove(this) }
+}
+
+/* proto2 optional message */
+public struct Pb2Message<M> where M <: Message & TypedMessage<M> {
+    public var data: ?M = None
+
+    public mut func set(parent: Message, that: M): Unit {
+        if (let Some(m) = data) {
+            let am: Message = m
+            am.m_parents.remove(parent)
+        }
+
+        let am: Message = that
+        am.m_parents.insert(parent)
+        data = that
+    }
+
+    public mut func getOrDefault(parent: Message): M {
+        if (let Some(m) = data) {
+            return m
+        }
+
+        let m = M.empty()
+        let am: Message = m
+        am.m_parents.insert(parent)
+        data = m
+        return m
+    }
+
+    public mut func removeFrom(parent: Message) {
+        if (let Some(m) = data) {
+            let am: Message = m
+            am.m_parents.remove(parent)
+            data = None
         }
     }
 
-    /* set member field's parent */
-    protected func m_member(rf: AbstractMessage) { rf.m_parents.insert(this) }
-    protected func m_member(rf: RepeatedString) { rf.setParent(this) }
-    protected func m_member<T>(rf: RepeatedField<T>) { rf.setParent(this) }
-    protected func m_member<T>(rf: RepeatedMessage<T>) where T <: AbstractMessage & TypedMessage<T> { rf.setParent(this) }
+    public mut func copyFrom(parent: Message, that: ?M) {
+        if (let Some(m) = that) {
+            return getOrDefault(parent).copyFrom(m)
+        }
 
-    /* assign member old to new, reset their parent */
-    protected func m_assign(old: AbstractMessage, new: AbstractMessage) { old.m_parents.remove(this); new.m_parents.insert(this) }
+        removeFrom(parent)
+    }
 }
