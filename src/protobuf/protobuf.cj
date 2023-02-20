@@ -174,7 +174,7 @@ public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
 }
 public interface TypedMessage<M> {
     func clone(): M
-    func copyFrom(that: M): M { throw Exception() }
+    func copyFrom(that: M): M
     static func empty(): M
     static func fromBytes(src: Collection<Byte>): M
     static func fromBytes(src: BytesReader): M
@@ -282,7 +282,7 @@ public abstract class Message <: ToString {
         m_parents.markDirty()
     }
 
-    /* inner init */
+    /* inner init, init after all member variable inited */
     protected func m_innerInit() {
         unknownFields.setParent(this)
     }
