@@ -231,6 +231,8 @@ public abstract class Message <: ToString {
         }
     }
 
+    public func toString(): String { "" }   /* cangjie bug in windows */
+
     /* message packed size */
     protected func m_size(): Int64
     public prop let size: Int64 { get() {
