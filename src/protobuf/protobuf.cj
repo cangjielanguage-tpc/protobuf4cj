@@ -231,7 +231,7 @@ public abstract class Message <: ToString {
         }
     }
 
-    public func toString(): String { "" }   /* cangjie bug in windows */
+    public open func toString(): String { "" }   /* cangjie bug in windows */
 
     /* message packed size */
     protected func m_size(): Int64

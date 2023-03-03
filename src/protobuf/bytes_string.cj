@@ -18,7 +18,7 @@ public enum BytesString <: ToString & Equatable<BytesString> & Equatable<String>
         }
     }
 
-    public unsafe func getRawBytes(): Bytes {
+    public unsafe func getRawBytes(): protobuf.Bytes {
         match (this) {
             case Bytes(bytes) => bytes.getRawArray()
             case String(string) => string.utf8View.getRawBytes()
@@ -27,7 +27,7 @@ public enum BytesString <: ToString & Equatable<BytesString> & Equatable<String>
 
     public func toString() {
         match (this) {
-            case Bytes(bytes) => unsafe { String.fromUtf8Unchecked(bytes.getRawArray()) }
+            case Bytes(bytes) => unsafe { core.String.fromUtf8Unchecked(bytes.getRawArray()) }
             case String(string) => string
         }
     }

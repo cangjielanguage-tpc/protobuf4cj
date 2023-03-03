@@ -167,8 +167,7 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
     if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) {
         let ek = field.mapEntry[0]
         let ev = field.mapEntry[1]
-        return
-        "let i_stmp = subReader(src); " +
+        return "let i_stmp = subReader(src); " +
         "var i_ktmp = ${initValue(ek)}; " +
         "var i_vtmp = ${initValue(ev)}; " +
         "while (!i_stmp.isEmpty()) { " +
