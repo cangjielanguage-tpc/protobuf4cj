@@ -160,9 +160,8 @@ public func binSize(val: Message) {
     varintSize(size) + size
 }
 
-public interface Int32Enum <: ToString & ToJson {
+public interface Int32Enum <: ToString {
     func value(): Int32
-    func toJson(): Json { toString() }
 }
 
 public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {

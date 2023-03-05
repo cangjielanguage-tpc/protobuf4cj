@@ -1,8 +1,6 @@
 package protobuf
 
 from encoding import base64.*
-from json import json.{ Json, ToJson, JsonString, JsonArray, JsonNumber }
-public from json import json.{ JsonReader, JsonStringReader, JsonObject }
 
 public struct StructPrinter <: ToString {
     private StructPrinter (
@@ -50,58 +48,6 @@ public struct StructPrinter <: ToString {
     public mut func clear(): Unit { stb.clear().append('{'); sep = false }
     public func done() { stb.append('}'); this }
     public func toString() { stb.toString() }
-}
-
-/* parse enum from json */
-func parseEnum<E>(src: Json) where E <: Enum<E> {
-    match (src) {
-        case c: JsonString => E.parse(c)
-        case c: JsonNumber => E.parse(Int32(c))
-        case _ => throw ParseValueExecption("Enum")
-    }
-}
-
-/* parse bytes from json, support base64 and uint8 array. */
-func parseBytesSlice(src: Json) {
-    /* parse as base64 string */
-    if (src.isString) {
-        return unsafe { BytesSlice.grab(fromBase64String(src.asString()).getOrThrow()) }
-    }
-
-    let arr = src.asArray()
-    BytesSlice(arr.size) { i => UInt8(arr[i].asNumber()) }
-}
-
-extend UInt64 {
-    @overflowWrapping
-    static func parse(src: Json) {
-        UInt64(Int64.parse(src))
-    }
-}
-
-extend Int64 {
-    @overflowWrapping
-    static func parse(src: Json) {
-        match (src) {
-            case c: JsonNumber => Int64(c)
-            case c: JsonString => c.toInt64().getOrThrow()
-            case _ => throw ParseValueExecption("Int64")
-        }
-    }
-}
-
-extend UInt32 {
-    @overflowWrapping
-    static func parse(src: Json) {
-        UInt32(Int64.parse(src))
-    }
-}
-
-extend Int32 {
-    @overflowWrapping
-    static func parse(src: Json) {
-        Int32(Int64.parse(src))
-    }
 }
 
 public func subReader<T>(reader: T) where T <: BytesReader {
