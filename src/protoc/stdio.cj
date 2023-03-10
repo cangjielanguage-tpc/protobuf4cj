@@ -2,40 +2,43 @@ package protoc
 
 /* 通过ffi进行stdio */
 
+foreign func memcpy_s(dest: CPointer<UInt8>, dest_max: IntNative, src: CPointer<UInt8>, count: IntNative): IntNative
+foreign func free(ptr: CPointer<UInt8>): Unit
+
 @c
-struct rbuf {
-    var data: CPointer<UInt8> = CPointer<UInt8>()
-    var size: Int64 = 0
+struct Buffer {
+    var data = CPointer<UInt8>()
+    var size: IntNative = 0
 }
 
-foreign func stdin_read(buf: CPointer<rbuf>): Unit
-foreign func stdout_write(buf: CPointer<rbuf>): Unit
-foreign func rbuf_new(): CPointer<rbuf>
-foreign func rbuf_malloc(size: Int64): CPointer<rbuf>
-foreign func rbuf_free(buf: CPointer<rbuf>): Unit
+foreign func stdin_read(): Buffer
+foreign func stdout_write(data: CPointer<UInt8>, size: IntNative): Unit
 
-func stdin(b: ArrayList<UInt8>) {
+func stdin(): Array<UInt8> {
     unsafe {
-        let ptr = rbuf_new()
-        stdin_read(ptr)
-        let buf = ptr.read()
-        for (i in 0..buf.size) {
-            b.append(buf.data.read(i))
+        let buffer = stdin_read()
+        if (buffer.data.isNull()) {
+            throw Exception()
         }
-        rbuf_free(ptr)
+
+        let array = Array<UInt8>(Int64(buffer.size), item: 0)
+        let rawData = acquireArrayRawData(array)
+        let err = memcpy_s(rawData.pointer, buffer.size, buffer.data, buffer.size)
+        releaseArrayRawData(rawData)
+        free(buffer.data)
+
+        if (err != 0) {
+            throw Exception()
+        }
+
+        return array
     }
 }
 
-func stdout(c: Collection<UInt8>) {
+func stdout(c: Array<UInt8>) {
     unsafe {
-        let ptr = rbuf_malloc(c.size)
-        let buf = ptr.read()
-        var i = 0
-        for (b in c) {
-            buf.data.write(i, b)
-            i++
-        }
-        stdout_write(ptr)
-        rbuf_free(ptr)
+        let rawData = acquireArrayRawData(c)
+        stdout_write(rawData.pointer, IntNative(rawData.array.size))
+        releaseArrayRawData(rawData)
     }
 }

@@ -23,7 +23,7 @@ from std import unicode.*
  * @return Type of Unit
  * @since 0.29.3
  */
-public func cj_generator(input: ArrayList<UInt8>): Array<UInt8> {
+public func cj_generator(input: Array<UInt8>): Array<UInt8> {
     let req = CodeGeneratorRequest()
     req.unpack(input)
 
