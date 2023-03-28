@@ -8,6 +8,11 @@
 #include <malloc.h>
 #include <assert.h>
 
+#ifdef WIN32
+#include <fcntl.h>
+#include <io.h>
+#endif
+
 typedef struct {
     unsigned char* data;
     size_t size;
@@ -23,7 +28,11 @@ Buffer stdin_read()
     unsigned char* res = (unsigned char*)malloc(size);
     assert(res != NULL);
 
+#ifdef WIN32
+    assert(_setmode(_fileno(stdin), _O_BINARY) != -1);
+#else
     assert(freopen(NULL, "rb", stdin) == stdin);
+#endif
     while (1) {
         resSize += fread(res + resSize, 1, size - resSize, stdin);
         if (resSize < size) {
@@ -50,7 +59,11 @@ void stdout_write(unsigned char* data, size_t size)
 {
     assert(data);
 
+#ifdef WIN32
+    assert(_setmode(_fileno(stdout), _O_BINARY) != -1);
+#else
     assert(freopen(NULL, "wb", stdout) == stdout);
+#endif
 
     assert(fwrite(data, 1, size, stdout) == size);
 
