@@ -12,19 +12,19 @@ public interface BytesWriter {
     func appendBytes(val: Bytes): Unit
 
     /* pack a tag(with wire-type) out. */
-    @overflowWrapping
+    @OverflowWrapping
     func packTag(tag: Tag, wt: WireType) {
         packVarint(tag << 3 | UInt32(wt.value))
     }
 
     /* pack a tag(with wire-type) out. */
-    @overflowWrapping
+    @OverflowWrapping
     func packTag(tag: Tag, wn: WireNum) {
         packVarint(tag << 3 | UInt32(wn))
     }
 
     /* pack out by varint encoding. */
-    @overflowWrapping
+    @OverflowWrapping
     func packVarint(val: UInt64) {
         var v = val
         while (v >= 0x80) {
@@ -35,13 +35,13 @@ public interface BytesWriter {
     }
 
     /* pack out by varint encoding. */
-    @overflowWrapping
+    @OverflowWrapping
     func packVarint(val: Int64) {
         packVarint(UInt64(val))
     }
 
     /* pack out by varint encoding. */
-    @overflowWrapping
+    @OverflowWrapping
     func packVarint(val: UInt32) {
         var value = val
         if (value >= 0x80) {
@@ -66,7 +66,7 @@ public interface BytesWriter {
     }
 
     /* pack out by varint encoding. */
-    @overflowWrapping
+    @OverflowWrapping
     func packVarint(val: Int32) {
         if (val >= 0) {
             return packVarint(UInt32(val))
@@ -99,7 +99,7 @@ public interface BytesWriter {
         packVarint(zigzag(val))
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func packFixed(val: UInt64) {
         append(UInt8(val))
         append(UInt8(val >> 8))
@@ -111,7 +111,7 @@ public interface BytesWriter {
         append(UInt8(val >> 56))
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func packFixed(val: Int64) {
         append(UInt8(val))
         append(UInt8(val >> 8))
@@ -123,7 +123,7 @@ public interface BytesWriter {
         append(UInt8(val >> 56))
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func packFixed(val: UInt32) {
         append(UInt8(val))
         append(UInt8(val >> 8))
@@ -131,7 +131,7 @@ public interface BytesWriter {
         append(UInt8(val >> 24))
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func packFixed(val: Int32) {
         append(UInt8(val))
         append(UInt8(val >> 8))
@@ -184,13 +184,13 @@ public class SimpleWriter <: BytesWriter {
     public func clear() { offset = 0 }
     public func isFull() { offset >= data.size }
 
-    @overflowWrapping
+    @OverflowWrapping
     public func append(val: Byte) {
         data[offset] = val
         offset++
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     public func appendBytes(val: Bytes) {
         val.copyTo(data, 0, offset, val.size)
         offset += val.size

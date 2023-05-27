@@ -18,7 +18,7 @@ public interface BytesReader {
     func read(len: Int64): BytesSlice
 
     /* parse a tag(with wire-type) from  */
-    @overflowWrapping
+    @OverflowWrapping
     func parseTag(): (Tag, WireNum) {
         var byte = read()
         if ((byte & 0xf8) == 0) {
@@ -47,7 +47,7 @@ public interface BytesReader {
     }
 
     /* get varint data from bytes reader */
-    @overflowWrapping
+    @OverflowWrapping
     func parseVarintData() {
         var byte = read()
         if (byte < 0x80) {
@@ -68,7 +68,7 @@ public interface BytesReader {
     }
 
     /* parse uint64 from varint encoded  */
-    @overflowWrapping
+    @OverflowWrapping
     func parseUInt64() {
         var byte = read()
         var rv = UInt64(byte & 0x7f)
@@ -91,13 +91,13 @@ public interface BytesReader {
     }
 
     /* parse int64 from varint encoded  */
-    @overflowWrapping
+    @OverflowWrapping
     func parseInt64() {
         Int64(parseUInt64())
     }
 
     /* parse uint32 from varint encoded  */
-    @overflowWrapping
+    @OverflowWrapping
     func parseUInt32() {
         var byte = read()
         var rv = UInt32(byte & 0x7f)
@@ -134,7 +134,7 @@ public interface BytesReader {
     }
 
     /* parse int32 from varint encoded  */
-    @overflowWrapping
+    @OverflowWrapping
     func parseInt32() {
         Int32(parseUInt32())
     }
@@ -144,34 +144,34 @@ public interface BytesReader {
     }
 
     /* parse sint64. */
-    @overflowWrapping
+    @OverflowWrapping
     func parseSInt64() {
         unzigzag((parseUInt64()))
     }
 
     /* parse sint32. */
-    @overflowWrapping
+    @OverflowWrapping
     func parseSInt32() {
         unzigzag((parseUInt32()))
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func parseFixed64() {
         UInt64(read()) | (UInt64(read()) << 8) | (UInt64(read()) << 16) | (UInt64(read()) << 24) |
         (UInt64(read()) << 32) | (UInt64(read()) << 40) | (UInt64(read()) << 48) | (UInt64(read()) << 56)
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func parseSFixed64() {
         Int64(parseFixed64())
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func parseFixed32() {
         UInt32(read()) | (UInt32(read()) << 8) | (UInt32(read()) << 16) | (UInt32(read()) << 24)
     }
 
-    @overflowWrapping
+    @OverflowWrapping
     func parseSFixed32() {
         Int32(parseFixed32())
     }
@@ -218,14 +218,14 @@ public class SimpleReader <: BytesReader {
     }
 
     /** read a byte, increase the offset */
-    @overflowWrapping
+    @OverflowWrapping
     public func read() {
         offset++
         bytes[offset - 1]
     }
 
     /** read length of `len` bytes, return its reader. */
-    @overflowWrapping
+    @OverflowWrapping
     public func read(len: Int64) {
         offset += len
         bytes.slice(offset - len, len)

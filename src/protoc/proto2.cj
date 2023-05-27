@@ -217,7 +217,7 @@ func genCodeMessageFieldIsEmpty2(fields: RepeatedMessage<FieldDescriptorProto>, 
     }
 
     /* oneof fields */
-    for ((name, ofields) in helper.oneofDecl) {
+    for ((name, _) in helper.oneofDecl) {
         sepOut.append("p_${name}.isEmpty()")
     }
 
@@ -407,7 +407,7 @@ func genCodeMessageField2(typeName: String, fields: RepeatedMessage<FieldDescrip
     genCodeMessageFieldCopyFrom2(typeName, fields, helper)
 
     // func clone
-    genCodeMessageFieldClone(typeName, fields, helper)
+    genCodeMessageFieldClone(typeName, helper)
 
     // func unpack
     genCodeMessageFieldUnpack2(typeName, fields, helper)

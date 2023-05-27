@@ -124,7 +124,7 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
     public init(elements: Collection<String>) {
         parent = None
         let iter = elements.iterator()
-        data = ArrayList(elements.size) { i => String(iter.next().getOrThrow()) }
+        data = ArrayList(elements.size) { _ => String(iter.next().getOrThrow()) }
     }
 
     public func get(index: Int64): ?String {
@@ -187,7 +187,7 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
 
     public func insertAll(index: Int64, elements: Collection<String>): Unit {
         let iter = elements.iterator()
-        data.insertAll(index, Array(elements.size) { i => String(iter.next().getOrThrow()) })
+        data.insertAll(index, Array(elements.size) { _ => String(iter.next().getOrThrow()) })
         parent?.markDirty()
     }
 
@@ -208,7 +208,7 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
 
     public func prependAll(elements: Collection<String>): Unit {
         let iter = elements.iterator()
-        data.prependAll(Array(elements.size) { i => String(iter.next().getOrThrow()) })
+        data.prependAll(Array(elements.size) { _ => String(iter.next().getOrThrow()) })
         parent?.markDirty()
     }
 

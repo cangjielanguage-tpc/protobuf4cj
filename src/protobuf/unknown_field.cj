@@ -14,7 +14,7 @@ public class MessageUnknownField <: ToString {
         public let data: BytesSlice
     ) {}
 
-    @overflowWrapping
+    @OverflowWrapping
     public func packSize() {
         tagSize(tag) + if (wireType.value == PREFIXED) { varintSize(data.size) + data.size } else { data.size }
     }

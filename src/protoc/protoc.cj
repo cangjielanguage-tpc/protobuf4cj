@@ -90,12 +90,6 @@ class LineSepOut {
             outbuf.append(' ').append(s)
         }
     }
-
-    /* Reset */
-    func reset() {
-        cn = sn
-        first = true
-    }
 }
 
 /* save or process context of every proto file */
@@ -484,19 +478,6 @@ func initValue(field: FieldDescriptorProto) {
         case TYPE_SINT32 => "Int32(0)"
         case TYPE_SINT64 => "0"
         case _=> throw Exception("UNSUPPORTED TYPE")
-    }
-}
-
-/* auto type zero value */
-func zeroValue(field: FieldDescriptorProto) {
-    match (field.type_) {
-        case TYPE_DOUBLE | TYPE_FLOAT => ".0"
-        case TYPE_BOOL => "false"
-        case TYPE_ENUM => "${field.typeName}.empty()"
-        case TYPE_MESSAGE => "${field.typeName}()"
-        case TYPE_BYTES => "BytesSlice()"
-        case TYPE_STRING => "\"\""
-        case _=> "0"
     }
 }
 

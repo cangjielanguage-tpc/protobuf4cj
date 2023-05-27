@@ -23,7 +23,7 @@ public struct RoArray<T> {
     }
 
     /* [Private] constuct ro-array from array reference. */
-    private init(data: Array<T>, placeholder: Unit) {
+    private init(data: Array<T>, _: Unit) {
         this.data = data
     }
 

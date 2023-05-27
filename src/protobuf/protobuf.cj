@@ -33,7 +33,7 @@ public class WireType <: ToString {
             case 1 => BIT64
             case 2 => PREFIXED
             case 5 => BIT32
-            case v => throw ParseValueExecption("WireType")
+            case _ => throw ParseValueExecption("WireType")
         }
     }
 
@@ -67,7 +67,7 @@ public func varintSize(val: UInt64) {
 }
 
 /* packed size by varint encoding. */
-@overflowWrapping
+@OverflowWrapping
 public func varintSize(val: Int64) {
     if (val < 0) { return 10 }
     if (val < (1 << 7)) { return 1 }
@@ -82,7 +82,7 @@ public func varintSize(val: Int64) {
 }
 
 /* packed size by varint encoding. */
-@overflowWrapping
+@OverflowWrapping
 public func varintSize(val: UInt32) {
     if (val < (1 << 7)) { return 1 }
     if (val < (1 << 14)) { return 2 }
@@ -92,7 +92,7 @@ public func varintSize(val: UInt32) {
 }
 
 /* packed size by varint encoding. */
-@overflowWrapping
+@OverflowWrapping
 public func varintSize(val: Int32) {
     if (val < 0) { return 10 }
     if (val < (1 << 7)) { return 1 }
@@ -103,25 +103,25 @@ public func varintSize(val: Int32) {
 }
 
 /* the zigzag-encoded 64-bit unsigned integer form of a 64-bit signed integer. */
-@overflowWrapping
+@OverflowWrapping
 public func zigzag(val: Int64) {
     (UInt64(val) << 1) ^ UInt64(val >> 63)
 }
 
 /* the zigzag-encoded 32-bit unsigned integer form of a 32-bit signed integer. */
-@overflowWrapping
+@OverflowWrapping
 public func zigzag(val: Int32) {
     (UInt32(val) << 1) ^ UInt32(val >> 31)
 }
 
 /* unzigzag a zigzag-encoded 64-bit unsigned integer to a 64-bit signed integer. */
-@overflowWrapping
+@OverflowWrapping
 public func unzigzag(val: UInt64) {
     Int64((val >> 1) ^ -(val & 1))
 }
 
 /* unzigzag a zigzag-encoded 32-bit unsigned integer to a 32-bit signed integer. */
-@overflowWrapping
+@OverflowWrapping
 public func unzigzag(val: UInt32) {
     Int32((val >> 1) ^ -(val & 1))
 }
@@ -136,25 +136,25 @@ public func sintSize(val: Int32) {
     varintSize(zigzag(val))
 }
 
-@overflowWrapping
+@OverflowWrapping
 public func binSize(val: BytesSlice) {
     let size = val.size
     varintSize(size) + size
 }
 
-@overflowWrapping
+@OverflowWrapping
 public func binSize(val: BytesString) {
     let size = val.size
     varintSize(size) + size
 }
 
-@overflowWrapping
+@OverflowWrapping
 public func binSize(val: String) {
     let size = val.utf8View.size
     varintSize(size) + size
 }
 
-@overflowWrapping
+@OverflowWrapping
 public func binSize(val: Message) {
     let size = val.size
     varintSize(size) + size
