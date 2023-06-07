@@ -28,7 +28,7 @@ public struct RoArray<T> {
     }
 
     /* [unsafe] constuct ro-array from an array reference that will not be modified. */
-    public unsafe static func grab(data: Array<T>) {
+    public unsafe static func move(data: Array<T>) {
         RoArray<T>(data, ())
     }
 
