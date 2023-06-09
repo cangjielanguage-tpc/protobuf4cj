@@ -23,13 +23,13 @@ public struct RoArray<T> {
     }
 
     /* [Private] constuct ro-array from array reference. */
-    private init(data: Array<T>, _: Unit) {
+    private init(data: Array<T>) {
         this.data = data
     }
 
     /* [unsafe] constuct ro-array from an array reference that will not be modified. */
     public unsafe static func move(data: Array<T>) {
-        RoArray<T>(data, ())
+        RoArray<T>(data)
     }
 
     /* [unsafe] get the raw array of this ro-array */
@@ -50,11 +50,11 @@ public struct RoArray<T> {
     }
 
     public operator func [](range: Range<Int64>) {
-        RoArray(data[range], ())
+        RoArray(data[range])
     }
 
     public func slice(start: Int64, len: Int64) {
-        RoArray(data.slice(start, len), ())
+        RoArray(data.slice(start, len))
     }
 
     public func copyTo(dst: Array<T>, dstStart: Int64) {
@@ -62,7 +62,7 @@ public struct RoArray<T> {
     }
 
     public func clone(): RoArray<T> {
-        RoArray(data.clone(), ())
+        RoArray(data.clone())
     }
 }
 
@@ -98,16 +98,36 @@ extend RoArray<T> <: ToString where T <: ToString {
     }
 }
 
+extend RoArray<T> <: Hashable where T <: Byte {
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for (v in data) {
+            hasher.write(v)
+        }
+        return hasher.finish()
+    }
+}
+
 extend RoArray<T> <: Equatable<RoArray<T>> where T <: Equatable<T> {
     public operator func ==(that: RoArray<T>): Bool {
         this.data == that.data
     }
 
     public operator func !=(that: RoArray<T>): Bool {
-        !(this == that)
+        this.data != that.data
     }
 
     public func contains(element: T): Bool {
         data.contains(element)
+    }
+}
+
+extend RoArray<T> <: Equatable<Array<T>> where T <: Equatable<T> {
+    public operator func ==(that: Array<T>): Bool {
+        this.data == that
+    }
+
+    public operator func !=(that: Array<T>): Bool {
+        this.data != that
     }
 }

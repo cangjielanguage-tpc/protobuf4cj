@@ -39,6 +39,15 @@ public class Version <: Message & TypedMessage<Version> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_major) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_minor) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_patch) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_suffix.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_major) && isNone(p_minor) && isNone(p_patch) && isNone(p_suffix.data)
     }
@@ -48,6 +57,13 @@ public class Version <: Message & TypedMessage<Version> {
         p_minor = None
         p_patch = None
         p_suffix.clear()
+    }
+
+    public operator func !=(src: Version): Bool { !(this == src) }
+    public operator func ==(src: Version): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_major == src.p_major && p_minor == src.p_minor && p_patch == src.p_patch &&
+        p_suffix.data == src.p_suffix.data
     }
 
     public func copyFrom(src: Version): Version {
@@ -135,6 +151,15 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!fileToGenerate.isEmpty()) { i_tmp.write(fileToGenerate.hashCode()) }
+        if (let Some(i_vtmp) = p_parameter.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!protoFile.isEmpty()) { i_tmp.write(protoFile.hashCode()) }
+        if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         fileToGenerate.isEmpty() && isNone(p_parameter.data) && protoFile.isEmpty() && isNone(p_compilerVersion.data)
     }
@@ -144,6 +169,13 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
         p_parameter.clear()
         protoFile.clear()
         p_compilerVersion.removeFrom(this)
+    }
+
+    public operator func !=(src: CodeGeneratorRequest): Bool { !(this == src) }
+    public operator func ==(src: CodeGeneratorRequest): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        fileToGenerate == src.fileToGenerate && p_parameter.data == src.p_parameter.data &&
+        protoFile == src.protoFile && p_compilerVersion.data == src.p_compilerVersion.data
     }
 
     public func copyFrom(src: CodeGeneratorRequest): CodeGeneratorRequest {
@@ -237,6 +269,15 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_insertionPoint.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_content.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && isNone(p_insertionPoint.data) && isNone(p_content.data) &&
         isNone(p_generatedCodeInfo.data)
@@ -247,6 +288,13 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
         p_insertionPoint.clear()
         p_content.clear()
         p_generatedCodeInfo.removeFrom(this)
+    }
+
+    public operator func !=(src: CodeGeneratorResponse_File): Bool { !(this == src) }
+    public operator func ==(src: CodeGeneratorResponse_File): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && p_insertionPoint.data == src.p_insertionPoint.data &&
+        p_content.data == src.p_content.data && p_generatedCodeInfo.data == src.p_generatedCodeInfo.data
     }
 
     public func copyFrom(src: CodeGeneratorResponse_File): CodeGeneratorResponse_File {
@@ -373,6 +421,14 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_error.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_supportedFeatures) { i_tmp.write(i_vtmp) }
+        if (!file.isEmpty()) { i_tmp.write(file.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_error.data) && isNone(p_supportedFeatures) && file.isEmpty()
     }
@@ -381,6 +437,12 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
         p_error.clear()
         p_supportedFeatures = None
         file.clear()
+    }
+
+    public operator func !=(src: CodeGeneratorResponse): Bool { !(this == src) }
+    public operator func ==(src: CodeGeneratorResponse): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_error.data == src.p_error.data && p_supportedFeatures == src.p_supportedFeatures && file == src.file
     }
 
     public func copyFrom(src: CodeGeneratorResponse): CodeGeneratorResponse {

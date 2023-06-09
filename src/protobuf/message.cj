@@ -1,21 +1,19 @@
 package protobuf
 
 /* abstract class of all the protobuf message. */
-public abstract class Message <: ToString {
+public abstract class Message <: ToString & Hashable {
     var m_parents = Parents()
 
     private var m_cachedSize = 0
-    private var m_cachedHash = 0 /* [TODO] */
+    private var m_cachedHash = 0
     public func markDirty(): Unit {
-        if (m_cachedSize != -1 /* || m_cachedHash != -1 */) {   /* any cached */
+        if (m_cachedSize != -1 || m_cachedHash != -1) {   /* any cached */
             m_cachedSize = -1
-            /* m_cachedHash = -1 */
+            m_cachedHash = -1
 
             m_parents.markDirty()
         }
     }
-
-    public open func toString(): String { "" }   /* cangjie bug in windows */
 
     /* message packed size */
     protected func m_size(): Int64
@@ -31,6 +29,29 @@ public abstract class Message <: ToString {
 
         return m_cachedSize
     } }
+
+    /* message hashCode, return `0` if isEmpty */
+    protected func m_hashCode(): Int64
+    public func hashCode(): Int64 {
+        if (m_cachedHash == -1) {
+            if (m_cachedSize == 0) {
+                m_cachedHash = 0
+                return 0
+            }
+
+            var hasher = DefaultHasher(res: m_hashCode())
+            if (!unknownFields.isEmpty()) {
+                hasher.write(unknownFields.hashCode())
+            }
+            m_cachedHash = match (hasher.finish()) {
+                case -0x8000_0000_0000_0000 => 0x7fff_ffff_ffff_ffff
+                case h where h < 0 => -h
+                case h => h
+            }
+        }
+
+        return m_cachedHash
+    }
 
     /* message is empty */
     protected func m_isEmpty(): Bool
@@ -57,6 +78,7 @@ public abstract class Message <: ToString {
         m_clear()
         unknownFields.getRawData().clear()
         m_cachedSize = 0
+        m_cachedHash = 0
         m_parents.markDirty()
         return
     }
@@ -65,6 +87,7 @@ public abstract class Message <: ToString {
     protected func m_innerCopyFrom(src: Message) {
         unknownFields.copyFrom(src.unknownFields)
         m_cachedSize = src.m_cachedSize
+        m_cachedHash = src.m_cachedHash
         m_parents.markDirty()
     }
 
@@ -189,7 +212,7 @@ public struct Pb2Message<M> where M <: Message & TypedMessage<M> {
         return m
     }
 
-    public mut func removeFrom(parent: Message) {
+    public mut func removeFrom(parent: Message): Unit {
         if (let Some(m) = data) {
             let am: Message = m
             am.m_parents.remove(parent)
@@ -197,11 +220,10 @@ public struct Pb2Message<M> where M <: Message & TypedMessage<M> {
         }
     }
 
-    public mut func copyFrom(parent: Message, that: ?M) {
-        if (let Some(m) = that) {
-            return getOrDefault(parent).copyFrom(m)
+    public mut func copyFrom(parent: Message, that: ?M): Unit {
+        match (that) {
+            case Some(m) => getOrDefault(parent).copyFrom(m)
+            case _ => removeFrom(parent)
         }
-
-        removeFrom(parent)
     }
 }

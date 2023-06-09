@@ -135,6 +135,16 @@ extend RepeatedField<T> <: ToString where T <: ToString {
     }
 }
 
+extend RepeatedField<T> <: Hashable where T <: Hashable {
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for (v in getRawData()) {
+            hasher.write(v.hashCode())
+        }
+        return hasher.finish()
+    }
+}
+
 extend RepeatedField<T> <: Equatable<RepeatedField<T>> where T <: Equatable<T> {
     public operator func ==(that: RepeatedField<T>): Bool {
         getRawData() == that.getRawData()
@@ -159,7 +169,21 @@ extend RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
     }
 }
 
-public class RepeatedMessage<T> <: Collection<T> & ToString where T <: Message & TypedMessage<T> {
+extend RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
+    public operator func ==(that: Bytes): Bool {
+        for (s in getRawData() where s != that) {
+            return false
+        }
+
+        return true
+    }
+
+    public operator func !=(that: Bytes): Bool {
+        !(this == that)
+    }
+}
+
+public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <: Message & TypedMessage<T> {
     private var parent: ?Message
     private var data: ArrayList<T>
 
@@ -315,6 +339,14 @@ public class RepeatedMessage<T> <: Collection<T> & ToString where T <: Message &
         for (e in elements) { let ee: Message = e; ee.m_parents.remove(m) }
     }
 
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for (m in data) {
+            hasher.write(m.hashCode())
+        }
+        return hasher.finish()
+    }
+
     public func reverse(): Unit { data.reverse() }
     public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
@@ -329,11 +361,14 @@ public class RepeatedMessage<T> <: Collection<T> & ToString where T <: Message &
     public operator func [](index: Int64): T { data[index] }
     public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty(); link(value) }
 
+    public operator func ==(that: RepeatedMessage<T>): Bool { data == that.data }
+    public operator func !=(that: RepeatedMessage<T>): Bool { data != that.data }
+
     func appendDirty(element: T): Unit { data.append(element); link(element) }
     func setParent(parent: Message): Unit { this.parent = parent }
 }
 
-public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & ToString {
+public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & ToString & Hashable {
     private var parent: ?Message
     private var data: ArrayList<BytesString>
 
@@ -508,6 +543,14 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
             buffer.append("\"${s}\"")
         }
         return buffer.append(']').toString()
+    }
+
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for (s in data) {
+            hasher.write(s.hashCode())
+        }
+        return hasher.finish()
     }
 
     public func reverse(): Unit { data.reverse() }

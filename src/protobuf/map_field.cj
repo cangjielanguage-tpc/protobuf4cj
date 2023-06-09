@@ -125,6 +125,17 @@ extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable 
     }
 }
 
+extend MapField<K, V> <: Hashable where V <: Hashable {
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for ((k,v) in getRawData()) {
+            hasher.write(k.hashCode())
+            hasher.write(v.hashCode())
+        }
+        return hasher.finish()
+    }
+}
+
 extend MapField<K, V> <: Equatable<MapField<K, V>> where V <: Equatable<V> {
     public operator func ==(that: MapField<K, V>): Bool {
         getRawData() == that.getRawData()
@@ -316,6 +327,9 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public prop let size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
 
+    public operator func ==(that: MapMessage<K, V>): Bool { data == that.data }
+    public operator func !=(that: MapMessage<K, V>): Bool { data != that.data }
+
     func putDirty(key: K, value: V): Unit { if (let Some(m) = data.put(key, value)) { unlink(m) }; link(value) }
     func setParent(parent: Message): Unit { this.parent = parent }
     func getRawData() { data }
@@ -324,5 +338,16 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
 extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
     public func toString(): String {
         getRawData().toString()
+    }
+}
+
+extend MapMessage<K, V> <: Hashable {
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for ((k,v) in getRawData()) {
+            hasher.write(k.hashCode())
+            hasher.write(v.hashCode())
+        }
+        return hasher.finish()
     }
 }

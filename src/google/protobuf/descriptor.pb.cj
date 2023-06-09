@@ -17,12 +17,23 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!file.isEmpty()) { i_tmp.write(file.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         file.isEmpty()
     }
 
     protected func m_clear(): Unit {
         file.clear()
+    }
+
+    public operator func !=(src: FileDescriptorSet): Bool { !(this == src) }
+    public operator func ==(src: FileDescriptorSet): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && file == src.file
     }
 
     public func copyFrom(src: FileDescriptorSet): FileDescriptorSet {
@@ -131,6 +142,23 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_package.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!dependency.isEmpty()) { i_tmp.write(dependency.hashCode()) }
+        if (!publicDependency.isEmpty()) { i_tmp.write(publicDependency.hashCode()) }
+        if (!weakDependency.isEmpty()) { i_tmp.write(weakDependency.hashCode()) }
+        if (!messageType.isEmpty()) { i_tmp.write(messageType.hashCode()) }
+        if (!enumType.isEmpty()) { i_tmp.write(enumType.hashCode()) }
+        if (!service.isEmpty()) { i_tmp.write(service.hashCode()) }
+        if (!extension.isEmpty()) { i_tmp.write(extension.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_sourceCodeInfo.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_syntax.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && isNone(p_package.data) && dependency.isEmpty() && publicDependency.isEmpty() &&
         weakDependency.isEmpty() && messageType.isEmpty() && enumType.isEmpty() && service.isEmpty() &&
@@ -150,6 +178,16 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         p_options.removeFrom(this)
         p_sourceCodeInfo.removeFrom(this)
         p_syntax.clear()
+    }
+
+    public operator func !=(src: FileDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: FileDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && p_package.data == src.p_package.data && dependency == src.dependency &&
+        publicDependency == src.publicDependency && weakDependency == src.weakDependency &&
+        messageType == src.messageType && enumType == src.enumType && service == src.service &&
+        extension == src.extension && p_options.data == src.p_options.data &&
+        p_sourceCodeInfo.data == src.p_sourceCodeInfo.data && p_syntax.data == src.p_syntax.data
     }
 
     public func copyFrom(src: FileDescriptorProto): FileDescriptorProto {
@@ -269,6 +307,14 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_start) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_end) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_start) && isNone(p_end) && isNone(p_options.data)
     }
@@ -277,6 +323,12 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
         p_start = None
         p_end = None
         p_options.removeFrom(this)
+    }
+
+    public operator func !=(src: DescriptorProto_ExtensionRange): Bool { !(this == src) }
+    public operator func ==(src: DescriptorProto_ExtensionRange): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_start == src.p_start && p_end == src.p_end && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: DescriptorProto_ExtensionRange): DescriptorProto_ExtensionRange {
@@ -354,6 +406,13 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_start) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_end) { i_tmp.write(i_vtmp) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_start) && isNone(p_end)
     }
@@ -361,6 +420,12 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
     protected func m_clear(): Unit {
         p_start = None
         p_end = None
+    }
+
+    public operator func !=(src: DescriptorProto_ReservedRange): Bool { !(this == src) }
+    public operator func ==(src: DescriptorProto_ReservedRange): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_start == src.p_start && p_end == src.p_end
     }
 
     public func copyFrom(src: DescriptorProto_ReservedRange): DescriptorProto_ReservedRange {
@@ -458,6 +523,21 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!field.isEmpty()) { i_tmp.write(field.hashCode()) }
+        if (!extension.isEmpty()) { i_tmp.write(extension.hashCode()) }
+        if (!nestedType.isEmpty()) { i_tmp.write(nestedType.hashCode()) }
+        if (!enumType.isEmpty()) { i_tmp.write(enumType.hashCode()) }
+        if (!extensionRange.isEmpty()) { i_tmp.write(extensionRange.hashCode()) }
+        if (!oneofDecl.isEmpty()) { i_tmp.write(oneofDecl.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!reservedRange.isEmpty()) { i_tmp.write(reservedRange.hashCode()) }
+        if (!reservedName.isEmpty()) { i_tmp.write(reservedName.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && field.isEmpty() && extension.isEmpty() && nestedType.isEmpty() && enumType.isEmpty() &&
         extensionRange.isEmpty() && oneofDecl.isEmpty() && isNone(p_options.data) && reservedRange.isEmpty() &&
@@ -475,6 +555,15 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         p_options.removeFrom(this)
         reservedRange.clear()
         reservedName.clear()
+    }
+
+    public operator func !=(src: DescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: DescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && field == src.field && extension == src.extension &&
+        nestedType == src.nestedType && enumType == src.enumType && extensionRange == src.extensionRange &&
+        oneofDecl == src.oneofDecl && p_options.data == src.p_options.data && reservedRange == src.reservedRange &&
+        reservedName == src.reservedName
     }
 
     public func copyFrom(src: DescriptorProto): DescriptorProto {
@@ -571,12 +660,24 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         uninterpretedOption.isEmpty()
     }
 
     protected func m_clear(): Unit {
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: ExtensionRangeOptions): Bool { !(this == src) }
+    public operator func ==(src: ExtensionRangeOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: ExtensionRangeOptions): ExtensionRangeOptions {
@@ -874,6 +975,23 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_number) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_label) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_type) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_typeName.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_extendee.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_defaultValue.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_oneofIndex) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_jsonName.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_proto3Optional) { i_tmp.write(i_vtmp) }
+        if (!mapEntry.isEmpty()) { i_tmp.write(mapEntry.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && isNone(p_number) && isNone(p_label) && isNone(p_type) && isNone(p_typeName.data) &&
         isNone(p_extendee.data) && isNone(p_defaultValue.data) && isNone(p_oneofIndex) && isNone(p_jsonName.data) &&
@@ -893,6 +1011,16 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         p_options.removeFrom(this)
         p_proto3Optional = None
         mapEntry.clear()
+    }
+
+    public operator func !=(src: FieldDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: FieldDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && p_number == src.p_number && p_label == src.p_label && p_type == src.p_type &&
+        p_typeName.data == src.p_typeName.data && p_extendee.data == src.p_extendee.data &&
+        p_defaultValue.data == src.p_defaultValue.data && p_oneofIndex == src.p_oneofIndex &&
+        p_jsonName.data == src.p_jsonName.data && p_options.data == src.p_options.data &&
+        p_proto3Optional == src.p_proto3Optional && mapEntry == src.mapEntry
     }
 
     public func copyFrom(src: FieldDescriptorProto): FieldDescriptorProto {
@@ -1006,6 +1134,13 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && isNone(p_options.data)
     }
@@ -1013,6 +1148,12 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
     protected func m_clear(): Unit {
         p_name.clear()
         p_options.removeFrom(this)
+    }
+
+    public operator func !=(src: OneofDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: OneofDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: OneofDescriptorProto): OneofDescriptorProto {
@@ -1086,6 +1227,13 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_start) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_end) { i_tmp.write(i_vtmp) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_start) && isNone(p_end)
     }
@@ -1093,6 +1241,12 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
     protected func m_clear(): Unit {
         p_start = None
         p_end = None
+    }
+
+    public operator func !=(src: EnumDescriptorProto_EnumReservedRange): Bool { !(this == src) }
+    public operator func ==(src: EnumDescriptorProto_EnumReservedRange): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_start == src.p_start && p_end == src.p_end
     }
 
     public func copyFrom(src: EnumDescriptorProto_EnumReservedRange): EnumDescriptorProto_EnumReservedRange {
@@ -1175,6 +1329,16 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!value.isEmpty()) { i_tmp.write(value.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!reservedRange.isEmpty()) { i_tmp.write(reservedRange.hashCode()) }
+        if (!reservedName.isEmpty()) { i_tmp.write(reservedName.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && value.isEmpty() && isNone(p_options.data) && reservedRange.isEmpty() &&
         reservedName.isEmpty()
@@ -1186,6 +1350,13 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         p_options.removeFrom(this)
         reservedRange.clear()
         reservedName.clear()
+    }
+
+    public operator func !=(src: EnumDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: EnumDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && value == src.value && p_options.data == src.p_options.data &&
+        reservedRange == src.reservedRange && reservedName == src.reservedName
     }
 
     public func copyFrom(src: EnumDescriptorProto): EnumDescriptorProto {
@@ -1277,6 +1448,14 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_number) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && isNone(p_number) && isNone(p_options.data)
     }
@@ -1285,6 +1464,12 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
         p_name.clear()
         p_number = None
         p_options.removeFrom(this)
+    }
+
+    public operator func !=(src: EnumValueDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: EnumValueDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && p_number == src.p_number && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: EnumValueDescriptorProto): EnumValueDescriptorProto {
@@ -1365,6 +1550,14 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!method.isEmpty()) { i_tmp.write(method.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && method.isEmpty() && isNone(p_options.data)
     }
@@ -1373,6 +1566,12 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
         p_name.clear()
         method.clear()
         p_options.removeFrom(this)
+    }
+
+    public operator func !=(src: ServiceDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: ServiceDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && method == src.method && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: ServiceDescriptorProto): ServiceDescriptorProto {
@@ -1480,6 +1679,18 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_inputType.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_outputType.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_options.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_clientStreaming) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_serverStreaming) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_funcName.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_name.data) && isNone(p_inputType.data) && isNone(p_outputType.data) && isNone(p_options.data) &&
         isNone(p_clientStreaming) && isNone(p_serverStreaming) && isNone(p_funcName.data)
@@ -1493,6 +1704,15 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
         p_clientStreaming = None
         p_serverStreaming = None
         p_funcName.clear()
+    }
+
+    public operator func !=(src: MethodDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MethodDescriptorProto): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_name.data == src.p_name.data && p_inputType.data == src.p_inputType.data &&
+        p_outputType.data == src.p_outputType.data && p_options.data == src.p_options.data &&
+        p_clientStreaming == src.p_clientStreaming && p_serverStreaming == src.p_serverStreaming &&
+        p_funcName.data == src.p_funcName.data
     }
 
     public func copyFrom(src: MethodDescriptorProto): MethodDescriptorProto {
@@ -1744,6 +1964,32 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_javaPackage.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_javaOuterClassname.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_javaMultipleFiles) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_javaGenerateEqualsAndHash) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_javaStringCheckUtf8) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_optimizeFor) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_goPackage.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_ccGenericServices) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_javaGenericServices) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_pyGenericServices) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_phpGenericServices) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_ccEnableArenas) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_objcClassPrefix.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_csharpNamespace.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_swiftPrefix.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_phpClassPrefix.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_phpNamespace.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_phpMetadataNamespace.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_rubyPackage.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_javaPackage.data) && isNone(p_javaOuterClassname.data) && isNone(p_javaMultipleFiles) &&
         isNone(p_javaGenerateEqualsAndHash) && isNone(p_javaStringCheckUtf8) && isNone(p_optimizeFor) &&
@@ -1776,6 +2022,23 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         p_phpMetadataNamespace.clear()
         p_rubyPackage.clear()
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: FileOptions): Bool { !(this == src) }
+    public operator func ==(src: FileOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_javaPackage.data == src.p_javaPackage.data && p_javaOuterClassname.data == src.p_javaOuterClassname.data &&
+        p_javaMultipleFiles == src.p_javaMultipleFiles &&
+        p_javaGenerateEqualsAndHash == src.p_javaGenerateEqualsAndHash &&
+        p_javaStringCheckUtf8 == src.p_javaStringCheckUtf8 && p_optimizeFor == src.p_optimizeFor &&
+        p_goPackage.data == src.p_goPackage.data && p_ccGenericServices == src.p_ccGenericServices &&
+        p_javaGenericServices == src.p_javaGenericServices && p_pyGenericServices == src.p_pyGenericServices &&
+        p_phpGenericServices == src.p_phpGenericServices && p_deprecated == src.p_deprecated &&
+        p_ccEnableArenas == src.p_ccEnableArenas && p_objcClassPrefix.data == src.p_objcClassPrefix.data &&
+        p_csharpNamespace.data == src.p_csharpNamespace.data && p_swiftPrefix.data == src.p_swiftPrefix.data &&
+        p_phpClassPrefix.data == src.p_phpClassPrefix.data && p_phpNamespace.data == src.p_phpNamespace.data &&
+        p_phpMetadataNamespace.data == src.p_phpMetadataNamespace.data &&
+        p_rubyPackage.data == src.p_rubyPackage.data && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: FileOptions): FileOptions {
@@ -1940,6 +2203,16 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_messageSetWireFormat) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_noStandardDescriptorAccessor) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_mapEntry) { i_tmp.write(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_messageSetWireFormat) && isNone(p_noStandardDescriptorAccessor) && isNone(p_deprecated) &&
         isNone(p_mapEntry) && uninterpretedOption.isEmpty()
@@ -1951,6 +2224,14 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
         p_deprecated = None
         p_mapEntry = None
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: MessageOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_messageSetWireFormat == src.p_messageSetWireFormat &&
+        p_noStandardDescriptorAccessor == src.p_noStandardDescriptorAccessor && p_deprecated == src.p_deprecated &&
+        p_mapEntry == src.p_mapEntry && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: MessageOptions): MessageOptions {
@@ -2163,6 +2444,19 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_ctype) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_packed) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_jstype) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_lazy) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_unverifiedLazy) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_weak) { i_tmp.write(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_ctype) && isNone(p_packed) && isNone(p_jstype) && isNone(p_lazy) && isNone(p_unverifiedLazy) &&
         isNone(p_deprecated) && isNone(p_weak) && uninterpretedOption.isEmpty()
@@ -2177,6 +2471,14 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
         p_deprecated = None
         p_weak = None
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: FieldOptions): Bool { !(this == src) }
+    public operator func ==(src: FieldOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_ctype == src.p_ctype && p_packed == src.p_packed && p_jstype == src.p_jstype && p_lazy == src.p_lazy &&
+        p_unverifiedLazy == src.p_unverifiedLazy && p_deprecated == src.p_deprecated && p_weak == src.p_weak &&
+        uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: FieldOptions): FieldOptions {
@@ -2265,12 +2567,24 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         uninterpretedOption.isEmpty()
     }
 
     protected func m_clear(): Unit {
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: OneofOptions): Bool { !(this == src) }
+    public operator func ==(src: OneofOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: OneofOptions): OneofOptions {
@@ -2343,6 +2657,14 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_allowAlias) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_allowAlias) && isNone(p_deprecated) && uninterpretedOption.isEmpty()
     }
@@ -2351,6 +2673,13 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
         p_allowAlias = None
         p_deprecated = None
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: EnumOptions): Bool { !(this == src) }
+    public operator func ==(src: EnumOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_allowAlias == src.p_allowAlias && p_deprecated == src.p_deprecated &&
+        uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: EnumOptions): EnumOptions {
@@ -2425,6 +2754,13 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_deprecated) && uninterpretedOption.isEmpty()
     }
@@ -2432,6 +2768,12 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
     protected func m_clear(): Unit {
         p_deprecated = None
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: EnumValueOptions): Bool { !(this == src) }
+    public operator func ==(src: EnumValueOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: EnumValueOptions): EnumValueOptions {
@@ -2502,6 +2844,13 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_deprecated) && uninterpretedOption.isEmpty()
     }
@@ -2509,6 +2858,12 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
     protected func m_clear(): Unit {
         p_deprecated = None
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: ServiceOptions): Bool { !(this == src) }
+    public operator func ==(src: ServiceOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: ServiceOptions): ServiceOptions {
@@ -2632,6 +2987,14 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_idempotencyLevel) { i_tmp.write(i_vtmp.value()) }
+        if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_deprecated) && isNone(p_idempotencyLevel) && uninterpretedOption.isEmpty()
     }
@@ -2640,6 +3003,13 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
         p_deprecated = None
         p_idempotencyLevel = None
         uninterpretedOption.clear()
+    }
+
+    public operator func !=(src: MethodOptions): Bool { !(this == src) }
+    public operator func ==(src: MethodOptions): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_deprecated == src.p_deprecated && p_idempotencyLevel == src.p_idempotencyLevel &&
+        uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: MethodOptions): MethodOptions {
@@ -2717,6 +3087,13 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (let Some(i_vtmp) = p_namePart.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_isExtension) { i_tmp.write(i_vtmp) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         isNone(p_namePart.data) && isNone(p_isExtension)
     }
@@ -2724,6 +3101,12 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     protected func m_clear(): Unit {
         p_namePart.clear()
         p_isExtension = None
+    }
+
+    public operator func !=(src: UninterpretedOption_NamePart): Bool { !(this == src) }
+    public operator func ==(src: UninterpretedOption_NamePart): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        p_namePart.data == src.p_namePart.data && p_isExtension == src.p_isExtension
     }
 
     public func copyFrom(src: UninterpretedOption_NamePart): UninterpretedOption_NamePart {
@@ -2826,6 +3209,18 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!name.isEmpty()) { i_tmp.write(name.hashCode()) }
+        if (let Some(i_vtmp) = p_identifierValue.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_positiveIntValue) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_negativeIntValue) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_doubleValue) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_stringValue) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_aggregateValue.data) { i_tmp.write(i_vtmp.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         name.isEmpty() && isNone(p_identifierValue.data) && isNone(p_positiveIntValue) && isNone(p_negativeIntValue) &&
         isNone(p_doubleValue) && isNone(p_stringValue) && isNone(p_aggregateValue.data)
@@ -2839,6 +3234,14 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         p_doubleValue = None
         p_stringValue = None
         p_aggregateValue.clear()
+    }
+
+    public operator func !=(src: UninterpretedOption): Bool { !(this == src) }
+    public operator func ==(src: UninterpretedOption): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && name == src.name &&
+        p_identifierValue.data == src.p_identifierValue.data && p_positiveIntValue == src.p_positiveIntValue &&
+        p_negativeIntValue == src.p_negativeIntValue && p_doubleValue == src.p_doubleValue &&
+        p_stringValue == src.p_stringValue && p_aggregateValue.data == src.p_aggregateValue.data
     }
 
     public func copyFrom(src: UninterpretedOption): UninterpretedOption {
@@ -2941,6 +3344,16 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!path.isEmpty()) { i_tmp.write(path.hashCode()) }
+        if (!span.isEmpty()) { i_tmp.write(span.hashCode()) }
+        if (let Some(i_vtmp) = p_leadingComments.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_trailingComments.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (!leadingDetachedComments.isEmpty()) { i_tmp.write(leadingDetachedComments.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         path.isEmpty() && span.isEmpty() && isNone(p_leadingComments.data) && isNone(p_trailingComments.data) &&
         leadingDetachedComments.isEmpty()
@@ -2952,6 +3365,14 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         p_leadingComments.clear()
         p_trailingComments.clear()
         leadingDetachedComments.clear()
+    }
+
+    public operator func !=(src: SourceCodeInfo_Location): Bool { !(this == src) }
+    public operator func ==(src: SourceCodeInfo_Location): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && path == src.path &&
+        span == src.span && p_leadingComments.data == src.p_leadingComments.data &&
+        p_trailingComments.data == src.p_trailingComments.data &&
+        leadingDetachedComments == src.leadingDetachedComments
     }
 
     public func copyFrom(src: SourceCodeInfo_Location): SourceCodeInfo_Location {
@@ -3028,12 +3449,24 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!location.isEmpty()) { i_tmp.write(location.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         location.isEmpty()
     }
 
     protected func m_clear(): Unit {
         location.clear()
+    }
+
+    public operator func !=(src: SourceCodeInfo): Bool { !(this == src) }
+    public operator func ==(src: SourceCodeInfo): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        location == src.location
     }
 
     public func copyFrom(src: SourceCodeInfo): SourceCodeInfo {
@@ -3112,6 +3545,15 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!path.isEmpty()) { i_tmp.write(path.hashCode()) }
+        if (let Some(i_vtmp) = p_sourceFile.data) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_begin) { i_tmp.write(i_vtmp) }
+        if (let Some(i_vtmp) = p_end) { i_tmp.write(i_vtmp) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         path.isEmpty() && isNone(p_sourceFile.data) && isNone(p_begin) && isNone(p_end)
     }
@@ -3121,6 +3563,12 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
         p_sourceFile.clear()
         p_begin = None
         p_end = None
+    }
+
+    public operator func !=(src: GeneratedCodeInfo_Annotation): Bool { !(this == src) }
+    public operator func ==(src: GeneratedCodeInfo_Annotation): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && path == src.path &&
+        p_sourceFile.data == src.p_sourceFile.data && p_begin == src.p_begin && p_end == src.p_end
     }
 
     public func copyFrom(src: GeneratedCodeInfo_Annotation): GeneratedCodeInfo_Annotation {
@@ -3193,12 +3641,24 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
         return i_tmp
     }
 
+    protected func m_hashCode(): Int64 {
+        var i_tmp = DefaultHasher()
+        if (!annotation.isEmpty()) { i_tmp.write(annotation.hashCode()) }
+        return i_tmp.finish()
+    }
+
     protected func m_isEmpty(): Bool {
         annotation.isEmpty()
     }
 
     protected func m_clear(): Unit {
         annotation.clear()
+    }
+
+    public operator func !=(src: GeneratedCodeInfo): Bool { !(this == src) }
+    public operator func ==(src: GeneratedCodeInfo): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
+        annotation == src.annotation
     }
 
     public func copyFrom(src: GeneratedCodeInfo): GeneratedCodeInfo {

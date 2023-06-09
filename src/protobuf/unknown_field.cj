@@ -4,7 +4,7 @@
 
 package protobuf
 
-public class MessageUnknownField <: ToString {
+public class MessageUnknownField <: ToString & Hashable & Equatable<MessageUnknownField> {
     public MessageUnknownField(
         /** The tag number. */
         public let tag: Tag,
@@ -37,6 +37,22 @@ public class MessageUnknownField <: ToString {
     }
 
     public func toString() { "{tag: ${tag}, wireType: ${wireType}, data: ${data}}" }
+
+    public func hashCode() {
+        var hasher = DefaultHasher()
+        hasher.write(tag)
+        hasher.write(wireType.value)
+        hasher.write(data.hashCode())
+        return hasher.finish()
+    }
+
+    public operator func ==(that: MessageUnknownField): Bool {
+        tag == that.tag && wireType.value == that.wireType.value && data == that.data
+    }
+
+    public operator func !=(that: MessageUnknownField): Bool {
+        !(this == that)
+    }
 
     public func clone() { this }
 }

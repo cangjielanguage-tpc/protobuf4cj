@@ -1,6 +1,6 @@
 package protobuf
 
-public enum BytesString <: ToString & Equatable<BytesString> & Equatable<String> {
+public enum BytesString <: ToString & Hashable & Equatable<BytesString> & Equatable<String> {
     Bytes(BytesSlice) | String(String)
 
     /* bytes size */
@@ -29,6 +29,18 @@ public enum BytesString <: ToString & Equatable<BytesString> & Equatable<String>
         match (this) {
             case Bytes(bytes) => unsafe { core.String.fromUtf8Unchecked(bytes.getRawArray()) }
             case String(string) => string
+        }
+    }
+
+    public func hashCode(): Int64 {
+        match (this) {
+            case Bytes(bytes) => bytes.hashCode()
+            case String(string) =>
+                var hasher = DefaultHasher()
+                for (v in unsafe { string.utf8View.getRawBytes() }) {
+                    hasher.write(v)
+                }
+                hasher.finish()
         }
     }
 

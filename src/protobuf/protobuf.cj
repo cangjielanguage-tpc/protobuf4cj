@@ -171,7 +171,8 @@ public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
     static func parse(v: Int32): E
     static func parse(v: String): E
 }
-public interface TypedMessage<M> {
+
+public interface TypedMessage<M> <: Equatable<M> {
     func clone(): M
     func copyFrom(that: M): M
     static func empty(): M

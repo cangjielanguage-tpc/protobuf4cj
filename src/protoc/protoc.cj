@@ -352,7 +352,7 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         let sepOut = LineSepOut(helper.outbuf, sep: " |", sn: 4)
         let groupType = "${typeName}_Oneof_${titleCase(name)}"
 
-        append("\npublic enum ${groupType} <: OneofGroup {\n")
+        append("\npublic enum ${groupType} <: OneofGroup & Equatable<${groupType}> {\n")
         for (f in fields) { sepOut.append("${titleCase(f.jsonName)}(${typeConvert(f)})") }
         sepOut.append("None\n\n")
 
@@ -380,11 +380,27 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         append("        }\n")
         append("    }\n\n")
 
+        // operator == !=
+        append("    public operator func !=(that: ${groupType}): Bool { !(this == that) }\n")
+        append("    public operator func ==(that: ${groupType}): Bool {\n")
+        append("        match ((this, that)) {\n")
+        for (field in fields) { append("            case (${titleCase(field.jsonName)}(v1), ${titleCase(field.jsonName)}(v2)) => v1 == v2\n") }
+        append("            case (None, None) => true\n")
+        append("            case _ => false\n")
+        append("        }\n")
+        append("    }\n")
+
         // gen toString() and which()
         append("    public func toString() {\n")
         append("        match (this) {\n")
         for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => \"${titleCase(field.jsonName)}(\${v})\"\n") }
         append("            case None => \"None\"\n")
+        append("        }\n")
+        append("    }\n\n")
+        append("    public func hashCode(): Int64 {\n")
+        append("        match (this) {\n")
+        for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => v.hashCode()\n") }
+        append("            case None => 0\n")
         append("        }\n")
         append("    }\n\n")
         append("    public func which() {\n")

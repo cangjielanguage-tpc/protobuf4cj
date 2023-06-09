@@ -59,6 +59,21 @@ func getFieldSizeExpr2(field: FieldDescriptorProto) {
     return "i_tmp += ${tagSize(UInt32(field.number))} + " + namedSize("i_vtmp", field)
 }
 
+/* field hashCode expr */
+func getFieldHashExpr2(field: FieldDescriptorProto) {
+    if (field.label == LABEL_REPEATED) {
+        return "i_tmp.write(${getMessagePropName(field.jsonName)}.hashCode())"
+    }
+
+    let arg = match (field.type_) {
+        case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE => "i_vtmp.hashCode()"
+        case TYPE_ENUM => "i_vtmp.value()"
+        case _ => "i_vtmp"
+    }
+
+    return "i_tmp.write(${arg})"
+}
+
 /* field unpack expr */
 func getFieldUnpackExpr2(field: FieldDescriptorProto) {
     if (field.label == LABEL_REPEATED) {
@@ -199,6 +214,28 @@ func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, hel
     append("    }\n")
 }
 
+/* message m_size */
+func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    let append: (String) -> StringBuilder = helper.outbuf.append
+
+    append("\n")
+    append("    protected func m_hashCode(): Int64 {\n")
+    append("        var i_tmp = DefaultHasher()\n")
+
+    /* normal fields size */
+    for (field in fields where !field.hasOneofIndex) {
+        append("        if (${getFieldNoEmptyExpr2(field)}) { ${getFieldHashExpr2(field)} }\n")
+    }
+
+    /* oneof fields size */
+    for ((name, ofields) in helper.oneofDecl) {
+        append("        if (!p_${name}.isEmpty()) { i_tmp.write(p_${name}.hashCode()) }\n")
+    }
+
+    append("        return i_tmp.finish()\n")
+    append("    }\n")
+}
+
 /* message m_isEmpty */
 func genCodeMessageFieldIsEmpty2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper) {
     let append: (String) -> StringBuilder = helper.outbuf.append
@@ -242,6 +279,35 @@ func genCodeMessageFieldClear2(fields: RepeatedMessage<FieldDescriptorProto>, he
         append("        m_assign(p_${name}); p_${name} = None\n")
     }
 
+    append("    }\n")
+}
+
+/* message m_isEmpty */
+func genCodeMessageFieldEquat2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper) {
+    let append: (String) -> StringBuilder = helper.outbuf.append
+    let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
+
+    append("\n")
+    append("    public operator func !=(src: ${typeName}): Bool { !(this == src) }\n")
+    append("    public operator func ==(src: ${typeName}): Bool {\n")
+    /* common pre compare */
+    sepOut.append("hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields")
+
+    /* normal fields */
+    for (field in fields where !field.hasOneofIndex) {
+        sepOut.append(match {
+            case field.label == LABEL_REPEATED => "${getMessagePropName(field.jsonName)} == src.${getMessagePropName(field.jsonName)}"
+            case field.type_ == TYPE_STRING || field.type_ == TYPE_MESSAGE => "p_${field.jsonName}.data == src.p_${field.jsonName}.data"
+            case _ => "p_${field.jsonName} == src.p_${field.jsonName}"
+        })
+    }
+
+    /* oneof fields */
+    for ((name, _) in helper.oneofDecl) {
+        sepOut.append("p_${name} == src.p_${name}")
+    }
+
+    append("\n")
     append("    }\n")
 }
 
@@ -397,11 +463,17 @@ func genCodeMessageField2(typeName: String, fields: RepeatedMessage<FieldDescrip
     // func m_size
     genCodeMessageFieldSize2(fields, helper)
 
+    // func m_hashCode
+    genCodeMessageFieldHash2(fields, helper)
+
     // func m_isEmpty
     genCodeMessageFieldIsEmpty2(fields, helper)
 
     // func m_clear
     genCodeMessageFieldClear2(fields, helper)
+
+    // operator == !=
+    genCodeMessageFieldEquat2(typeName, fields, helper)
 
     // func copyFrom
     genCodeMessageFieldCopyFrom2(typeName, fields, helper)
