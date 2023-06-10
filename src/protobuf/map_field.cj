@@ -121,7 +121,18 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
     public func toString(): String {
-        getRawData().toString()
+        var res = StructPrinter()
+        for ((k, v) in getRawData()) {
+            let key = match(k) {
+                case k: String where k.contains(' ') => "\"${k}\""
+                case _ => k.toString()
+            }
+            match (v) {
+                case v: String => res.append(key, v)
+                case _ => res.append(key, v)
+            }
+        }
+        res.done().toString()
     }
 }
 
@@ -337,7 +348,14 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
 
 extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
     public func toString(): String {
-        getRawData().toString()
+        var res = StructPrinter()
+        for ((k, v) in getRawData()) {
+            res.append(match(k) {
+                case k: String where k.contains(' ') => "\"${k}\""
+                case _ => k.toString()
+            }, v)
+        }
+        res.done().toString()
     }
 }
 
