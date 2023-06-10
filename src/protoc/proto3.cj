@@ -95,7 +95,6 @@ func getFieldSizeExpr(field: FieldDescriptorProto) {
             case TYPE_BOOL => "let i_stmp = ${name}.size"
             case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "let i_stmp = 8 * ${name}.size"
             case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "let i_stmp = 4 * ${name}.size"
-            case TYPE_ENUM => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp.value()) }"
             case TYPE_SINT32 | TYPE_SINT64 => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += sintSize(i_itmp) }"
             case _ => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp) }"
         } + "; i_tmp += ${tsize} + varintSize(i_stmp) + i_stmp"
@@ -107,7 +106,6 @@ func getFieldSizeExpr(field: FieldDescriptorProto) {
         case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "i_tmp += (${tsize} + 8) * ${name}.size"
         case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "i_tmp += (${tsize} + 4) * ${name}.size"
         case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE => "for (i_itmp in ${name}) { i_tmp += ${tsize} + binSize(i_itmp) }"
-        case TYPE_ENUM => "for (i_itmp in ${name}) { i_tmp += ${tsize} + varintSize(i_itmp.value()) }"
         case TYPE_SINT32 | TYPE_SINT64 => "for (i_itmp in ${name}) { i_tmp += ${tsize} + sintSize(i_itmp) }"
         case _ => "for (i_itmp in ${name}) { i_tmp += ${tsize} + varintSize(i_itmp) }"
     }
@@ -120,9 +118,8 @@ func getFieldHashExpr(field: FieldDescriptorProto) {
     }
 
     let arg = match (field.type_) {
-        case TYPE_BYTES | TYPE_MESSAGE => "p_${field.jsonName}.hashCode()"
+        case TYPE_BYTES | TYPE_MESSAGE | TYPE_ENUM => "p_${field.jsonName}.hashCode()"
         case TYPE_STRING => "p_${field.jsonName}.data.hashCode()"
-        case TYPE_ENUM => "p_${field.jsonName}.value()"
         case _ => "p_${field.jsonName}"
     }
 
@@ -155,7 +152,6 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
             case TYPE_BOOL => "out.packVarint(${name}.size); for (i_itmp in ${name}) { out.packBool(i_itmp) }"
             case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "out.packVarint(8 * ${name}.size); for (i_itmp in ${name}) { out.packFixed(i_itmp) }"
             case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "out.packVarint(4 * ${name}.size); for (i_itmp in ${name}) { out.packFixed(i_itmp) }"
-            case TYPE_ENUM => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp.value()) }; out.packVarint(i_stmp); for (i_itmp in ${name}) { out.packVarint(i_itmp.value()) }"
             case TYPE_SINT32 | TYPE_SINT64 => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += sintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in ${name}) { out.packSInt(i_itmp) }"
             case _ => "var i_stmp = 0; for (i_itmp in ${name}) { i_stmp += varintSize(i_itmp) }; out.packVarint(i_stmp); for (i_itmp in ${name}) { out.packVarint(i_itmp) }"
         }
@@ -168,8 +164,7 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
         case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "for (i_itmp in ${name}) { ${packTagOut(field.number, BIT32)}; out.packFixed(i_itmp) }"
         case TYPE_BYTES => "for (i_itmp in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packBin(i_itmp) }"
         case TYPE_STRING => "s_pack(${field.number}, ${name}, out)"
-        case TYPE_MESSAGE => "for (i_itmp in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packVarint(i_itmp.size); i_itmp.pack(out) }"
-        case TYPE_ENUM => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packVarint(i_itmp.value()) }"
+        case TYPE_MESSAGE => "for (i_itmp in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packVarint(i_itmp.size); i_itmp.pack(out) }" /* for performance */
         case TYPE_SINT32 | TYPE_SINT64 => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packSInt(i_itmp) }"
         case _ => "for (i_itmp in ${name}) { ${packTagOut(field.number, VARINT)}; out.packVarint(i_itmp) }"
     }
@@ -373,7 +368,7 @@ func genCodeMessageFieldSize(fields: RepeatedMessage<FieldDescriptorProto>, help
     append("    }\n")
 }
 
-/* message m_size */
+/* message m_hashCode */
 func genCodeMessageFieldHash(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> StringBuilder = helper.outbuf.append
 
@@ -381,12 +376,12 @@ func genCodeMessageFieldHash(fields: RepeatedMessage<FieldDescriptorProto>, help
     append("    protected func m_hashCode(): Int64 {\n")
     append("        var i_tmp = DefaultHasher()\n")
 
-    /* normal fields size */
+    /* normal fields hashCode */
     for (field in fields where !field.hasOneofIndex) {
         append("        if (${getFieldNoEmptyExpr(field)}) { ${getFieldHashExpr(field)} }\n")
     }
 
-    /* oneof fields size */
+    /* oneof fields hashCode */
     for ((name, ofields) in helper.oneofDecl) {
         append("        if (!p_${name}.isEmpty()) { i_tmp.write(p_${name}.hashCode()) }\n")
     }
@@ -589,11 +584,7 @@ func genCodeMessageFieldToString(fields: RepeatedMessage<FieldDescriptorProto>, 
     }
 
     for ((name, ofields) in helper.oneofDecl) {
-        append("        match (p_${name}) {\n")
-        for (field in ofields) {
-            append("            case ${titleCase(field.jsonName)}(i_vtmp) => i_tmp.append(\"${field.jsonName}\", i_vtmp)\n")
-        }
-        append("            case _ => ()\n        }\n")
+        append("        if (!p_${name}.isEmpty()) { i_tmp.append(p_${name}.which(), p_${name}) }\n")
     }
 
     append("        return i_tmp.done().toString()\n")

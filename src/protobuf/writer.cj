@@ -84,6 +84,12 @@ public interface BytesWriter {
         append(0x01)
     }
 
+    /* pack out enum by varint encoding. */
+    @OverflowWrapping
+    func packVarint(val: Int32Enum) {
+        packVarint(val.value())
+    }
+
     /* pack out bool */
     func packBool(val: Bool) {
         append(if (val) { 1 } else { 0 })

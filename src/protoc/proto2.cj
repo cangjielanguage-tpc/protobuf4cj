@@ -66,8 +66,7 @@ func getFieldHashExpr2(field: FieldDescriptorProto) {
     }
 
     let arg = match (field.type_) {
-        case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE => "i_vtmp.hashCode()"
-        case TYPE_ENUM => "i_vtmp.value()"
+        case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE | TYPE_ENUM => "i_vtmp.hashCode()"
         case _ => "i_vtmp"
     }
 
@@ -214,7 +213,7 @@ func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, hel
     append("    }\n")
 }
 
-/* message m_size */
+/* message m_hashCode */
 func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> StringBuilder = helper.outbuf.append
 
@@ -222,12 +221,12 @@ func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, hel
     append("    protected func m_hashCode(): Int64 {\n")
     append("        var i_tmp = DefaultHasher()\n")
 
-    /* normal fields size */
+    /* normal fields hashCode */
     for (field in fields where !field.hasOneofIndex) {
         append("        if (${getFieldNoEmptyExpr2(field)}) { ${getFieldHashExpr2(field)} }\n")
     }
 
-    /* oneof fields size */
+    /* oneof fields hashCode */
     for ((name, ofields) in helper.oneofDecl) {
         append("        if (!p_${name}.isEmpty()) { i_tmp.write(p_${name}.hashCode()) }\n")
     }
@@ -436,11 +435,7 @@ func genCodeMessageFieldToString2(fields: RepeatedMessage<FieldDescriptorProto>,
     }
 
     for ((name, ofields) in helper.oneofDecl) {
-        append("        match (p_${name}) {\n")
-        for (field in ofields) {
-            append("            case ${titleCase(field.jsonName)}(i_vtmp) => i_tmp.append(\"${field.jsonName}\", i_vtmp)\n")
-        }
-        append("            case _ => ()\n        }\n")
+        append("        if (!p_${name}.isEmpty()) { i_tmp.append(p_${name}.which(), p_${name}) }\n")
     }
 
     append("        return i_tmp.done().toString()\n")

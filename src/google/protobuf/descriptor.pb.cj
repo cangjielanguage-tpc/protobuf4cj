@@ -962,8 +962,8 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         var i_tmp = 0
         if (let Some(i_vtmp) = p_name.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (let Some(i_vtmp) = p_number) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_label) { i_tmp += 1 + varintSize(i_vtmp.value()) }
-        if (let Some(i_vtmp) = p_type) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_label) { i_tmp += 1 + varintSize(i_vtmp) }
+        if (let Some(i_vtmp) = p_type) { i_tmp += 1 + varintSize(i_vtmp) }
         if (let Some(i_vtmp) = p_typeName.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (let Some(i_vtmp) = p_extendee.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (let Some(i_vtmp) = p_defaultValue.data) { i_tmp += 1 + binSize(i_vtmp) }
@@ -979,8 +979,8 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         var i_tmp = DefaultHasher()
         if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_number) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_label) { i_tmp.write(i_vtmp.value()) }
-        if (let Some(i_vtmp) = p_type) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_label) { i_tmp.write(i_vtmp.hashCode()) }
+        if (let Some(i_vtmp) = p_type) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_typeName.data) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_extendee.data) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_defaultValue.data) { i_tmp.write(i_vtmp.hashCode()) }
@@ -1073,8 +1073,8 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         check()
         if (let Some(i_vtmp) = p_name.data) { out.append(10); out.packBin(i_vtmp) }
         if (let Some(i_vtmp) = p_number) { out.append(24); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = p_label) { out.append(32); out.packVarint(i_vtmp.value()) }
-        if (let Some(i_vtmp) = p_type) { out.append(40); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_label) { out.append(32); out.packVarint(i_vtmp) }
+        if (let Some(i_vtmp) = p_type) { out.append(40); out.packVarint(i_vtmp) }
         if (let Some(i_vtmp) = p_typeName.data) { out.append(50); out.packBin(i_vtmp) }
         if (let Some(i_vtmp) = p_extendee.data) { out.append(18); out.packBin(i_vtmp) }
         if (let Some(i_vtmp) = p_defaultValue.data) { out.append(58); out.packBin(i_vtmp) }
@@ -1945,7 +1945,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         if (let Some(i_vtmp) = p_javaMultipleFiles) { i_tmp += 1 + 1 }
         if (let Some(i_vtmp) = p_javaGenerateEqualsAndHash) { i_tmp += 2 + 1 }
         if (let Some(i_vtmp) = p_javaStringCheckUtf8) { i_tmp += 2 + 1 }
-        if (let Some(i_vtmp) = p_optimizeFor) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_optimizeFor) { i_tmp += 1 + varintSize(i_vtmp) }
         if (let Some(i_vtmp) = p_goPackage.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (let Some(i_vtmp) = p_ccGenericServices) { i_tmp += 2 + 1 }
         if (let Some(i_vtmp) = p_javaGenericServices) { i_tmp += 2 + 1 }
@@ -1971,7 +1971,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         if (let Some(i_vtmp) = p_javaMultipleFiles) { i_tmp.write(i_vtmp) }
         if (let Some(i_vtmp) = p_javaGenerateEqualsAndHash) { i_tmp.write(i_vtmp) }
         if (let Some(i_vtmp) = p_javaStringCheckUtf8) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_optimizeFor) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_optimizeFor) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_goPackage.data) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_ccGenericServices) { i_tmp.write(i_vtmp) }
         if (let Some(i_vtmp) = p_javaGenericServices) { i_tmp.write(i_vtmp) }
@@ -2112,7 +2112,7 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         if (let Some(i_vtmp) = p_javaMultipleFiles) { out.append(80); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = p_javaGenerateEqualsAndHash) { out.packTag(20, VARINT); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = p_javaStringCheckUtf8) { out.packTag(27, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = p_optimizeFor) { out.append(72); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_optimizeFor) { out.append(72); out.packVarint(i_vtmp) }
         if (let Some(i_vtmp) = p_goPackage.data) { out.append(90); out.packBin(i_vtmp) }
         if (let Some(i_vtmp) = p_ccGenericServices) { out.packTag(16, VARINT); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = p_javaGenericServices) { out.packTag(17, VARINT); out.packBool(i_vtmp) }
@@ -2433,9 +2433,9 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     protected func m_size(): Int64 {
         var i_tmp = 0
-        if (let Some(i_vtmp) = p_ctype) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_ctype) { i_tmp += 1 + varintSize(i_vtmp) }
         if (let Some(i_vtmp) = p_packed) { i_tmp += 1 + 1 }
-        if (let Some(i_vtmp) = p_jstype) { i_tmp += 1 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_jstype) { i_tmp += 1 + varintSize(i_vtmp) }
         if (let Some(i_vtmp) = p_lazy) { i_tmp += 1 + 1 }
         if (let Some(i_vtmp) = p_unverifiedLazy) { i_tmp += 1 + 1 }
         if (let Some(i_vtmp) = p_deprecated) { i_tmp += 1 + 1 }
@@ -2446,9 +2446,9 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     protected func m_hashCode(): Int64 {
         var i_tmp = DefaultHasher()
-        if (let Some(i_vtmp) = p_ctype) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_ctype) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_packed) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_jstype) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_jstype) { i_tmp.write(i_vtmp.hashCode()) }
         if (let Some(i_vtmp) = p_lazy) { i_tmp.write(i_vtmp) }
         if (let Some(i_vtmp) = p_unverifiedLazy) { i_tmp.write(i_vtmp) }
         if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
@@ -2521,9 +2521,9 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = p_ctype) { out.append(8); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_ctype) { out.append(8); out.packVarint(i_vtmp) }
         if (let Some(i_vtmp) = p_packed) { out.append(16); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = p_jstype) { out.append(48); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_jstype) { out.append(48); out.packVarint(i_vtmp) }
         if (let Some(i_vtmp) = p_lazy) { out.append(40); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = p_unverifiedLazy) { out.append(120); out.packBool(i_vtmp) }
         if (let Some(i_vtmp) = p_deprecated) { out.append(24); out.packBool(i_vtmp) }
@@ -2982,7 +2982,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
     protected func m_size(): Int64 {
         var i_tmp = 0
         if (let Some(i_vtmp) = p_deprecated) { i_tmp += 2 + 1 }
-        if (let Some(i_vtmp) = p_idempotencyLevel) { i_tmp += 2 + varintSize(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_idempotencyLevel) { i_tmp += 2 + varintSize(i_vtmp) }
         if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { i_tmp += 2 + binSize(i_itmp) } }
         return i_tmp
     }
@@ -2990,7 +2990,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
     protected func m_hashCode(): Int64 {
         var i_tmp = DefaultHasher()
         if (let Some(i_vtmp) = p_deprecated) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_idempotencyLevel) { i_tmp.write(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_idempotencyLevel) { i_tmp.write(i_vtmp.hashCode()) }
         if (!uninterpretedOption.isEmpty()) { i_tmp.write(uninterpretedOption.hashCode()) }
         return i_tmp.finish()
     }
@@ -3043,7 +3043,7 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
         if (let Some(i_vtmp) = p_deprecated) { out.packTag(33, VARINT); out.packBool(i_vtmp) }
-        if (let Some(i_vtmp) = p_idempotencyLevel) { out.packTag(34, VARINT); out.packVarint(i_vtmp.value()) }
+        if (let Some(i_vtmp) = p_idempotencyLevel) { out.packTag(34, VARINT); out.packVarint(i_vtmp) }
         if (!uninterpretedOption.isEmpty()) { for (i_itmp in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
         m_unknown(out)
     }

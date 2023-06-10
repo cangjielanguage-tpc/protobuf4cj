@@ -102,6 +102,12 @@ public func varintSize(val: Int32) {
     return 5
 }
 
+/* packed size by varint encoding. */
+@OverflowWrapping
+public func varintSize(val: Int32Enum) {
+    varintSize(val.value())
+}
+
 /* the zigzag-encoded 64-bit unsigned integer form of a 64-bit signed integer. */
 @OverflowWrapping
 public func zigzag(val: Int64) {
@@ -160,8 +166,9 @@ public func binSize(val: Message) {
     varintSize(size) + size
 }
 
-public interface Int32Enum <: ToString {
+public interface Int32Enum <: ToString & Hashable {
     func value(): Int32
+    func hashCode(): Int64 { Int64(value()) }
 }
 
 public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {

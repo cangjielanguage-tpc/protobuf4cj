@@ -357,58 +357,40 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         sepOut.append("None\n\n")
 
         // gen clone()
-        append("    public func clone(): ${groupType} {\n")
-        append("        match (this) {\n")
+        append("    public func clone(): ${groupType} {\n        match (this) {\n")
         for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => ${groupType}.${titleCase(field.jsonName)}(v.clone())\n") }
-        append("            case _ => this\n")
-        append("        }\n")
-        append("    }\n\n")
+        append("            case _ => this\n        }\n    }\n\n")
 
         // gen mutableData()
-        append("    public func mutableData(): ?Message {\n")
-        append("        match (this) {\n")
+        append("    public func mutableData(): ?Message {\n        match (this) {\n")
         for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => v\n") }
-        append("            case _ => Option<Message>.None\n")
-        append("        }\n")
-        append("    }\n\n")
+        append("            case _ => Option<Message>.None\n        }\n    }\n\n")
 
         // gen isEmpty()
-        append("    public func isEmpty(): Bool {\n")
-        append("        match (this) {\n")
-        append("            case None => true\n")
-        append("            case _ => false\n")
-        append("        }\n")
-        append("    }\n\n")
+        append(getImplOneofGroupIsEmpty())
 
         // operator == !=
         append("    public operator func !=(that: ${groupType}): Bool { !(this == that) }\n")
-        append("    public operator func ==(that: ${groupType}): Bool {\n")
-        append("        match ((this, that)) {\n")
+        append("    public operator func ==(that: ${groupType}): Bool {\n        match ((this, that)) {\n")
         for (field in fields) { append("            case (${titleCase(field.jsonName)}(v1), ${titleCase(field.jsonName)}(v2)) => v1 == v2\n") }
-        append("            case (None, None) => true\n")
-        append("            case _ => false\n")
-        append("        }\n")
-        append("    }\n")
+        append("            case (None, None) => true\n            case _ => false\n        }\n    }\n\n")
 
-        // gen toString() and which()
-        append("    public func toString() {\n")
-        append("        match (this) {\n")
-        for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => \"${titleCase(field.jsonName)}(\${v})\"\n") }
-        append("            case None => \"None\"\n")
-        append("        }\n")
-        append("    }\n\n")
-        append("    public func hashCode(): Int64 {\n")
-        append("        match (this) {\n")
+        // gen toString()
+        append("    public func toString() {\n        match (this) {\n")
+        for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => ${if (field.type_ == TYPE_STRING) { "\" + v + \"" } else { "v.toString()" }}\n") }
+        append("            case None => \"\"\n        }\n    }\n\n")
+
+        // gen hashCode()
+        append("    public func hashCode(): Int64 {\n        match (this) {\n")
         for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => v.hashCode()\n") }
-        append("            case None => 0\n")
-        append("        }\n")
-        append("    }\n\n")
-        append("    public func which() {\n")
-        append("        match (this) {\n")
+        append("            case None => 0\n        }\n    }\n\n")
+
+        // gen which()
+        append("    public func which() {\n        match (this) {\n")
         for (field in fields) { append("            case ${titleCase(field.jsonName)}(_) => \"${field.jsonName}\"\n") }
-        append("            case None => \"\"\n")
-        append("        }\n")
-        append("    }\n")
+        append("            case None => \"\"\n        }\n    }\n")
+
+        // done
         append("}\n")
     }
 }
@@ -435,6 +417,19 @@ func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescrip
         case TYPE_SINT64 => "src.parseSInt64()"
         case _ => throw Exception("UNSUPPORTED TYPE")
     } + ")"
+}
+
+/* impl oneof group isEmpty */
+func getImplOneofGroupIsEmpty() {
+"""
+    public func isEmpty(): Bool {
+        match (this) {
+            case None => true
+            case _ => false
+        }
+    }
+
+"""
 }
 
 /* impl interface api */
@@ -523,7 +518,6 @@ func namedSize(name: String, field: FieldDescriptorProto) {
         case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "8"
         case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "4"
         case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE => "binSize(${name})"
-        case TYPE_ENUM => "varintSize(${name}.value())"
         case TYPE_SINT32 | TYPE_SINT64 => "sintSize(${name})"
         case _ => "varintSize(${name})"
     }
@@ -536,8 +530,7 @@ func namedPack(name: String, field: FieldDescriptorProto) {
         case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "${packTagOut(field.number, BIT64)}; out.packFixed(${name})"
         case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "${packTagOut(field.number, BIT32)}; out.packFixed(${name})"
         case TYPE_BYTES | TYPE_STRING => "${packTagOut(field.number, PREFIXED)}; out.packBin(${name})"
-        case TYPE_MESSAGE => "${packTagOut(field.number, PREFIXED)}; out.packVarint(${name}.size); ${name}.pack(out)"
-        case TYPE_ENUM => "${packTagOut(field.number, VARINT)}; out.packVarint(${name}.value())"
+        case TYPE_MESSAGE => "${packTagOut(field.number, PREFIXED)}; out.packVarint(${name}.size); ${name}.pack(out)" /* for performance */
         case TYPE_SINT32 | TYPE_SINT64 => "${packTagOut(field.number, VARINT)}; out.packSInt(${name})"
         case _ => "${packTagOut(field.number, VARINT)}; out.packVarint(${name})"
     }
