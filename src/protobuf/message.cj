@@ -158,7 +158,7 @@ public abstract class Message <: ToString & Hashable {
     }
 
     /* packed size of fields */
-    protected func m_size(rf: RepeatedString, tagSize: Int64) {
+    protected static func s_size(rf: RepeatedString, tagSize: Int64) {
         var sum = tagSize * rf.size
 
         for (bs in rf.getRawData()) {

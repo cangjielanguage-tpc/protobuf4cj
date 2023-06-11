@@ -129,7 +129,7 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         var i_tmp = 0
         if (let Some(i_vtmp) = p_name.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (let Some(i_vtmp) = p_package.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (!dependency.isEmpty()) { i_tmp += m_size(dependency, 1) }
+        if (!dependency.isEmpty()) { i_tmp += s_size(dependency, 1) }
         if (!publicDependency.isEmpty()) { for (i_itmp in publicDependency) { i_tmp += 1 + varintSize(i_itmp) } }
         if (!weakDependency.isEmpty()) { for (i_itmp in weakDependency) { i_tmp += 1 + varintSize(i_itmp) } }
         if (!messageType.isEmpty()) { for (i_itmp in messageType) { i_tmp += 1 + binSize(i_itmp) } }
@@ -519,7 +519,7 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         if (!oneofDecl.isEmpty()) { for (i_itmp in oneofDecl) { i_tmp += 1 + binSize(i_itmp) } }
         if (let Some(i_vtmp) = p_options.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { i_tmp += 1 + binSize(i_itmp) } }
-        if (!reservedName.isEmpty()) { i_tmp += m_size(reservedName, 1) }
+        if (!reservedName.isEmpty()) { i_tmp += s_size(reservedName, 1) }
         return i_tmp
     }
 
@@ -1325,7 +1325,7 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         if (!value.isEmpty()) { for (i_itmp in value) { i_tmp += 1 + binSize(i_itmp) } }
         if (let Some(i_vtmp) = p_options.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (!reservedRange.isEmpty()) { for (i_itmp in reservedRange) { i_tmp += 1 + binSize(i_itmp) } }
-        if (!reservedName.isEmpty()) { i_tmp += m_size(reservedName, 1) }
+        if (!reservedName.isEmpty()) { i_tmp += s_size(reservedName, 1) }
         return i_tmp
     }
 
@@ -3340,7 +3340,7 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         if (!span.isEmpty()) { var i_stmp = 0; for (i_itmp in span) { i_stmp += varintSize(i_itmp) }; i_tmp += 1 + varintSize(i_stmp) + i_stmp }
         if (let Some(i_vtmp) = p_leadingComments.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (let Some(i_vtmp) = p_trailingComments.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (!leadingDetachedComments.isEmpty()) { i_tmp += m_size(leadingDetachedComments, 1) }
+        if (!leadingDetachedComments.isEmpty()) { i_tmp += s_size(leadingDetachedComments, 1) }
         return i_tmp
     }
 

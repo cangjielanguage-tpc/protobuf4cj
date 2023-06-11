@@ -194,7 +194,7 @@ func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, hel
     for (field in fields where !field.hasOneofIndex) {
         if (field.type_ == TYPE_STRING && field.label == LABEL_REPEATED) {
             let name = getMessagePropName(field.jsonName)
-            append("        if (!${name}.isEmpty()) { i_tmp += m_size(${name}, ${tagSize(UInt32(field.number))}) }\n")
+            append("        if (!${name}.isEmpty()) { i_tmp += s_size(${name}, ${tagSize(UInt32(field.number))}) }\n")
         } else {
             append("        if (${getFieldNoEmptyExpr2(field)}) { ${getFieldSizeExpr2(field)} }\n")
         }

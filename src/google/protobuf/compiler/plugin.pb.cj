@@ -144,7 +144,7 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 
     protected func m_size(): Int64 {
         var i_tmp = 0
-        if (!fileToGenerate.isEmpty()) { i_tmp += m_size(fileToGenerate, 1) }
+        if (!fileToGenerate.isEmpty()) { i_tmp += s_size(fileToGenerate, 1) }
         if (let Some(i_vtmp) = p_parameter.data) { i_tmp += 1 + binSize(i_vtmp) }
         if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { i_tmp += 1 + binSize(i_itmp) } }
         if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp += 1 + binSize(i_vtmp) }
