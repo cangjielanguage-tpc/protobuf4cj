@@ -567,8 +567,11 @@ func getImplEmptyMessage(typeName: String) {
 public class ${typeName} <: Message & TypedMessage<${typeName}> {
     public init() { m_innerInit() }
     protected func m_size(): Int64 { 0 }
+    protected func m_hashCode(): Int64 { 0 }
     protected func m_isEmpty(): Bool { true }
     protected func m_clear(): Unit { }
+    public operator func !=(src: ${typeName}): Bool { !(this == src) }
+    public operator func ==(src: ${typeName}): Bool { hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields }
     public func copyFrom(src: ${typeName}): ${typeName} { m_innerCopyFrom(src); return this }
     public func clone(): ${typeName} { return ${typeName}().copyFrom(this) }
     public func unpack<T>(src: T): Unit where T <: BytesReader { while (!src.isEmpty()) { m_unknown(src, src.parseTag()) }; markDirty() }
