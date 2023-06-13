@@ -4,20 +4,31 @@ package protoc
 
 /* field variable define */
 func getFieldVarDefine2(field: FieldDescriptorProto) {
-    if (field.label == LABEL_REPEATED) {
-        return getFieldVarDefine(field)
+    match {
+        case field.label == LABEL_REPEATED => getFieldVarDefine(field)
+        case field.type_ == TYPE_STRING => "private var p_${field.jsonName}: Pb2String"
+        case field.type_ == TYPE_MESSAGE => "private var p_${field.jsonName}: Pb2Message<${field.typeName}>"
+        case _ => "private var p_${field.jsonName}: ?${typeConvert(field)}"
     }
+}
 
-    if (field.type_ == TYPE_STRING) {
-        let defaultValue = if (field.hasDefaultValue) { "\"${field.defaultValue}\"" } else { "" }
-        return "private var p_${field.jsonName} = Pb2String(${defaultValue})"
+/* field variable default */
+func getFieldVarDefault2(field: FieldDescriptorProto) {
+    match {
+        case field.label == LABEL_REPEATED => getFieldVarDefault(field)
+        case _ => "?${typeConvert(field)} = None"
     }
+}
 
-    if (field.type_ == TYPE_MESSAGE) {
-        return "private var p_${field.jsonName} = Pb2Message<${field.typeName}>()"
+/* field variable init */
+func getFieldVarInit2(field: FieldDescriptorProto) {
+    match {
+        case field.label == LABEL_REPEATED => getFieldVarInit(field)
+        case field.type_ == TYPE_STRING && field.hasDefaultValue => "p_${field.jsonName} = Pb2String(${getMessagePropName(field.jsonName)}, \"${field.defaultValue}\")"
+        case field.type_ == TYPE_STRING => "p_${field.jsonName} = Pb2String(${getMessagePropName(field.jsonName)})"
+        case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = Pb2Message<${field.typeName}>(${getMessagePropName(field.jsonName)})"
+        case _ => "p_${field.jsonName} = ${getMessagePropName(field.jsonName)}"
     }
-
-    return "private var p_${field.jsonName}: ?${typeConvert(field)} = None"
 }
 
 /* field is not empty expr */
@@ -27,10 +38,10 @@ func getFieldNoEmptyExpr2(field: FieldDescriptorProto) {
     }
 
     if (field.type_ == TYPE_STRING || field.type_ == TYPE_MESSAGE) {
-        return "let Some(i_vtmp) = p_${field.jsonName}.data"
+        return "let Some(_v) = p_${field.jsonName}.data"
     }
 
-    return "let Some(i_vtmp) = p_${field.jsonName}"
+    return "let Some(_v) = p_${field.jsonName}"
 }
 
 /* field clear expr */
@@ -56,21 +67,21 @@ func getFieldSizeExpr2(field: FieldDescriptorProto) {
         return getFieldSizeExpr(field)
     }
 
-    return "i_tmp += ${tagSize(UInt32(field.number))} + " + namedSize("i_vtmp", field)
+    return "_x += ${tagSize(UInt32(field.number))} + " + namedSize("_v", field)
 }
 
 /* field hashCode expr */
 func getFieldHashExpr2(field: FieldDescriptorProto) {
     if (field.label == LABEL_REPEATED) {
-        return "i_tmp.write(${getMessagePropName(field.jsonName)}.hashCode())"
+        return "_x.write(${getMessagePropName(field.jsonName)}.hashCode())"
     }
 
     let arg = match (field.type_) {
-        case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE | TYPE_ENUM => "i_vtmp.hashCode()"
-        case _ => "i_vtmp"
+        case TYPE_BYTES | TYPE_STRING | TYPE_MESSAGE | TYPE_ENUM => "_v.hashCode()"
+        case _ => "_v"
     }
 
-    return "i_tmp.write(${arg})"
+    return "_x.write(${arg})"
 }
 
 /* field unpack expr */
@@ -97,7 +108,7 @@ func getFieldUnpackExpr2(field: FieldDescriptorProto) {
 /* normal field prop var expr */
 func getFieldPropVarExpr2(field: FieldDescriptorProto) {
     if (!field.hasDefaultValue) {
-        return "get() { p_${field.jsonName}.getOrThrow() } set(i_tmp) { p_${field.jsonName} = i_tmp; markDirty() }"
+        return "get() { p_${field.jsonName}.getOrThrow() } set(_x) { p_${field.jsonName} = _x; markDirty() }"
     }
 
     match (field.type_) {
@@ -107,7 +118,7 @@ func getFieldPropVarExpr2(field: FieldDescriptorProto) {
         case _=> ()
     }
 
-    return "get() { p_${field.jsonName} ?? ${field.defaultValue} } set(i_tmp) { p_${field.jsonName} = if (i_tmp == ${field.defaultValue}) { None } else { i_tmp }; markDirty() }"
+    return "get() { p_${field.jsonName} ?? ${field.defaultValue} } set(_x) { p_${field.jsonName} = if (_x == ${field.defaultValue}) { None } else { _x }; markDirty() }"
 }
 
 /* message class and member variable define */
@@ -122,22 +133,53 @@ func genCodeMessageFieldClass2(typeName: String, fields: RepeatedMessage<FieldDe
     }
 
     for ((name, _) in helper.oneofDecl) {
-        append("    private var p_${name} = ${typeName}_Oneof_${titleCase(name)}.None\n")
+        append("    private var p_${name}: ${typeName}_Oneof_${titleCase(name)}\n")
     }
 }
 
 /* message init */
-func genCodeMessageFieldInit2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> StringBuilder = helper.outbuf.append
 
-    append("\n")
-    append("    public init() {\n")
+    append("\n    public init(")
 
+    /* args */
+    var flag = false
+    for (field in fields where !field.hasOneofIndex) {
+        if (flag) { append(",\n") } else { flag = true; append("\n") }
+        append("        ${getMessagePropName(field.jsonName)}!: ${getFieldVarDefault2(field)}")
+    }
+
+    for ((name, _) in helper.oneofDecl) {
+        if (flag) { append(",\n") } else { flag = true; append("\n") }
+        append("        ${getMessagePropName(name)}!: ${typeName}_Oneof_${titleCase(name)} = ${typeName}_Oneof_${titleCase(name)}.None")
+    }
+
+    if (flag) {
+        append("\n    ")
+    }
+    append(") {\n")
+
+    /* init */
+    for (field in fields where !field.hasOneofIndex) {
+        append("        this.${getFieldVarInit2(field)}\n")
+    }
+
+    for ((name, _) in helper.oneofDecl) {
+        append("        this.p_${name} = ${getMessagePropName(name)}\n")
+    }
+
+    /* m_init */
     for (field in fields where !field.hasOneofIndex) {
         if (field.label == LABEL_REPEATED) {
-            append("        m_init(${getMessagePropName(field.jsonName)})\n")
-            continue
+            append("        m_init(this.${getMessagePropName(field.jsonName)})\n")
+        } else if (field.type_ == TYPE_MESSAGE) {
+            append("        if (let Some(_v) = ${getMessagePropName(field.jsonName)}) { m_init(_v) }\n")
         }
+    }
+
+    for ((name, _) in helper.oneofDecl) {
+        append("        m_init(${getMessagePropName(name)})\n")
     }
 
     append("        m_innerInit()\n")
@@ -158,11 +200,11 @@ func genCodeMessageFieldProps2(typeName: String, fields: RepeatedMessage<FieldDe
         if (field.type_ == TYPE_STRING) {
             append("    public func clear${uName}() { ${pName}.clear(); markDirty() }\n")
             append("    public prop let has${uName}: Bool { get() { isPresent(${pName}.data) } }\n")
-            append("    public prop var ${name}: ${typeConvert(field)} { get() { ${pName}.get() } set(i_vtmp) { ${pName}.set(i_vtmp); markDirty() } }\n")
+            append("    public prop var ${name}: ${typeConvert(field)} { get() { ${pName}.get() } set(_v) { ${pName}.set(_v); markDirty() } }\n")
         } else if (field.type_ == TYPE_MESSAGE) {
             append("    public func clear${uName}() { ${pName}.removeFrom(this); markDirty() }\n")
             append("    public prop let has${uName}: Bool { get() { isPresent(${pName}.data) } }\n")
-            append("    public prop var ${name}: ${field.typeName} { get() { ${pName}.data.getOrThrow() } set(i_vtmp) { ${pName}.set(this, i_vtmp); markDirty() } }\n")
+            append("    public prop var ${name}: ${field.typeName} { get() { ${pName}.data.getOrThrow() } set(_v) { ${pName}.set(this, _v); markDirty() } }\n")
         } else {
             append("    public func clear${uName}() { ${pName} = None; markDirty() }\n")
             append("    public prop let has${uName}: Bool { get() { isPresent(${pName}) } }\n")
@@ -173,11 +215,11 @@ func genCodeMessageFieldProps2(typeName: String, fields: RepeatedMessage<FieldDe
     // oneof field props
     for ((name, ofields) in helper.oneofDecl) {
         append("\n")
-        append("    public prop var ${name}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(i_vtmp) { m_assign(p_${name}, i_vtmp); p_${name} = i_vtmp; markDirty() } }\n")
+        append("    public prop var ${getMessagePropName(name)}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(_v) { m_assign(p_${name}, _v); p_${name} = _v; markDirty() } }\n")
         for (field in ofields) {
             append("\n")
             append("    public prop let has${titleCase(field.jsonName)}: Bool { get() { match(p_${name}) { case ${titleCase(field.jsonName)}(_) => true case _ => false } } }\n")
-            append("    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(i_vtmp) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
+            append("    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
         }
     }
 }
@@ -188,13 +230,13 @@ func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, hel
 
     append("\n")
     append("    protected func m_size(): Int64 {\n")
-    append("        var i_tmp = 0\n")
+    append("        var _x = 0\n")
 
     /* normal fields size */
     for (field in fields where !field.hasOneofIndex) {
         if (field.type_ == TYPE_STRING && field.label == LABEL_REPEATED) {
             let name = getMessagePropName(field.jsonName)
-            append("        if (!${name}.isEmpty()) { i_tmp += s_size(${name}, ${tagSize(UInt32(field.number))}) }\n")
+            append("        if (!${name}.isEmpty()) { _x += s_size(${name}, ${tagSize(UInt32(field.number))}) }\n")
         } else {
             append("        if (${getFieldNoEmptyExpr2(field)}) { ${getFieldSizeExpr2(field)} }\n")
         }
@@ -204,12 +246,12 @@ func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, hel
     for ((name, ofields) in helper.oneofDecl) {
         append("        match (p_${name}) {\n")
         for (field in ofields) {
-            append("            case ${titleCase(field.jsonName)}(i_vtmp) => i_tmp += ${tagSize(UInt32(field.number))} + ${namedSize("i_vtmp", field)}\n")
+            append("            case ${titleCase(field.jsonName)}(_v) => _x += ${tagSize(UInt32(field.number))} + ${namedSize("_v", field)}\n")
         }
         append("            case _ => ()\n        }\n")
     }
 
-    append("        return i_tmp\n")
+    append("        return _x\n")
     append("    }\n")
 }
 
@@ -219,7 +261,7 @@ func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, hel
 
     append("\n")
     append("    protected func m_hashCode(): Int64 {\n")
-    append("        var i_tmp = DefaultHasher()\n")
+    append("        var _x = DefaultHasher()\n")
 
     /* normal fields hashCode */
     for (field in fields where !field.hasOneofIndex) {
@@ -228,10 +270,10 @@ func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, hel
 
     /* oneof fields hashCode */
     for ((name, ofields) in helper.oneofDecl) {
-        append("        if (!p_${name}.isEmpty()) { i_tmp.write(p_${name}.hashCode()) }\n")
+        append("        if (!p_${name}.isEmpty()) { _x.write(p_${name}.hashCode()) }\n")
     }
 
-    append("        return i_tmp.finish()\n")
+    append("        return _x.finish()\n")
     append("    }\n")
 }
 
@@ -281,7 +323,7 @@ func genCodeMessageFieldClear2(fields: RepeatedMessage<FieldDescriptorProto>, he
     append("    }\n")
 }
 
-/* message m_isEmpty */
+/* message == != */
 func genCodeMessageFieldEquat2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper) {
     let append: (String) -> StringBuilder = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
@@ -348,8 +390,8 @@ func genCodeMessageFieldUnpack2(typeName: String, fields: RepeatedMessage<FieldD
     append("\n")
     append("    public func unpack<T>(src: T): Unit where T <: BytesReader {\n")
     append("        while (!src.isEmpty()) {\n")
-    append("            let i_tmp = src.parseTag()\n")
-    append("            match (i_tmp[0]) {\n")
+    append("            let _x = src.parseTag()\n")
+    append("            match (_x[0]) {\n")
 
     for (field in fields where !field.hasOneofIndex) {
         append("                case ${field.number} => ${getFieldUnpackExpr2(field)}\n")
@@ -361,7 +403,7 @@ func genCodeMessageFieldUnpack2(typeName: String, fields: RepeatedMessage<FieldD
         }
     }
 
-    append("                case _ => m_unknown(src, i_tmp)\n")
+    append("                case _ => m_unknown(src, _x)\n")
     append("            }\n")
     append("        }\n")
     append("        markDirty()\n")
@@ -399,14 +441,14 @@ func genCodeMessageFieldPack2(fields: RepeatedMessage<FieldDescriptorProto>, hel
         if (field.label == LABEL_REPEATED) {
             append("        if (!${getMessagePropName(field.jsonName)}.isEmpty()) { ${getFieldPackExpr(field)} }\n")
         } else {
-            append("        if (${getFieldNoEmptyExpr2(field)}) { ${namedPack("i_vtmp", field)} }\n")
+            append("        if (${getFieldNoEmptyExpr2(field)}) { ${namedPack("_v", field)} }\n")
         }
     }
 
     for ((name, ofields) in helper.oneofDecl) {
         append("        match (p_${name}) {\n")
         for (field in ofields) {
-            append("            case ${titleCase(field.jsonName)}(i_vtmp) => ${namedPack("i_vtmp", field)}\n")
+            append("            case ${titleCase(field.jsonName)}(_v) => ${namedPack("_v", field)}\n")
         }
         append("            case _ => ()\n")
         append("        }\n")
@@ -421,24 +463,24 @@ func genCodeMessageFieldToString2(fields: RepeatedMessage<FieldDescriptorProto>,
 
     append("\n")
     append("    public func toString(): String {\n")
-    append("        var i_tmp = StructPrinter()\n")
+    append("        var _x = StructPrinter()\n")
 
     for (field in fields where !field.hasOneofIndex) {
         if (field.label == LABEL_REPEATED) {
             let name = getMessagePropName(field.jsonName)
-            append("        if (!${name}.isEmpty()) { i_tmp.append(\"${field.jsonName}\", ${name}) }\n")
+            append("        if (!${name}.isEmpty()) { _x.append(\"${field.jsonName}\", ${name}) }\n")
         } else if (field.type_ == TYPE_STRING) {
-            append("        if (isPresent(p_${field.jsonName}.data)) { i_tmp.append(\"${field.jsonName}\", p_${field.jsonName}.get()) }\n")
+            append("        if (isPresent(p_${field.jsonName}.data)) { _x.append(\"${field.jsonName}\", p_${field.jsonName}.get()) }\n")
         } else {
-            append("        if (${getFieldNoEmptyExpr2(field)}) { i_tmp.append(\"${field.jsonName}\", i_vtmp) }\n")
+            append("        if (${getFieldNoEmptyExpr2(field)}) { _x.append(\"${field.jsonName}\", _v) }\n")
         }
     }
 
     for ((name, ofields) in helper.oneofDecl) {
-        append("        if (!p_${name}.isEmpty()) { i_tmp.append(p_${name}.which(), p_${name}) }\n")
+        append("        if (!p_${name}.isEmpty()) { _x.append(p_${name}.which(), p_${name}) }\n")
     }
 
-    append("        return i_tmp.done().toString()\n")
+    append("        return _x.done().toString()\n")
     append("    }\n\n")
 }
 
@@ -450,7 +492,7 @@ func genCodeMessageField2(typeName: String, fields: RepeatedMessage<FieldDescrip
     genCodeMessageFieldClass2(typeName, fields, helper)
 
     // init define
-    genCodeMessageFieldInit2(fields, helper)
+    genCodeMessageFieldInit2(typeName, fields, helper)
 
     // props define
     genCodeMessageFieldProps2(typeName, fields, helper)

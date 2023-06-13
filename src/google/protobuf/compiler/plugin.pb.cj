@@ -5,47 +5,56 @@ from protobuf import protobuf.*
 import google.protobuf.*
 
 public class Version <: Message & TypedMessage<Version> {
-    private var p_major: ?Int32 = None
-    private var p_minor: ?Int32 = None
-    private var p_patch: ?Int32 = None
-    private var p_suffix = Pb2String()
+    private var p_major: ?Int32
+    private var p_minor: ?Int32
+    private var p_patch: ?Int32
+    private var p_suffix: Pb2String
 
-    public init() {
+    public init(
+        major!: ?Int32 = None,
+        minor!: ?Int32 = None,
+        patch!: ?Int32 = None,
+        suffix!: ?String = None
+    ) {
+        this.p_major = major
+        this.p_minor = minor
+        this.p_patch = patch
+        this.p_suffix = Pb2String(suffix)
         m_innerInit()
     }
 
     public func clearMajor() { p_major = None; markDirty() }
     public prop let hasMajor: Bool { get() { isPresent(p_major) } }
-    public prop var major: Int32 { get() { p_major.getOrThrow() } set(i_tmp) { p_major = i_tmp; markDirty() } }
+    public prop var major: Int32 { get() { p_major.getOrThrow() } set(_x) { p_major = _x; markDirty() } }
 
     public func clearMinor() { p_minor = None; markDirty() }
     public prop let hasMinor: Bool { get() { isPresent(p_minor) } }
-    public prop var minor: Int32 { get() { p_minor.getOrThrow() } set(i_tmp) { p_minor = i_tmp; markDirty() } }
+    public prop var minor: Int32 { get() { p_minor.getOrThrow() } set(_x) { p_minor = _x; markDirty() } }
 
     public func clearPatch() { p_patch = None; markDirty() }
     public prop let hasPatch: Bool { get() { isPresent(p_patch) } }
-    public prop var patch: Int32 { get() { p_patch.getOrThrow() } set(i_tmp) { p_patch = i_tmp; markDirty() } }
+    public prop var patch: Int32 { get() { p_patch.getOrThrow() } set(_x) { p_patch = _x; markDirty() } }
 
     public func clearSuffix() { p_suffix.clear(); markDirty() }
     public prop let hasSuffix: Bool { get() { isPresent(p_suffix.data) } }
-    public prop var suffix: String { get() { p_suffix.get() } set(i_vtmp) { p_suffix.set(i_vtmp); markDirty() } }
+    public prop var suffix: String { get() { p_suffix.get() } set(_v) { p_suffix.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
-        var i_tmp = 0
-        if (let Some(i_vtmp) = p_major) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_minor) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_patch) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_suffix.data) { i_tmp += 1 + binSize(i_vtmp) }
-        return i_tmp
+        var _x = 0
+        if (let Some(_v) = p_major) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) = p_minor) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) = p_patch) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) = p_suffix.data) { _x += 1 + binSize(_v) }
+        return _x
     }
 
     protected func m_hashCode(): Int64 {
-        var i_tmp = DefaultHasher()
-        if (let Some(i_vtmp) = p_major) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_minor) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_patch) { i_tmp.write(i_vtmp) }
-        if (let Some(i_vtmp) = p_suffix.data) { i_tmp.write(i_vtmp.hashCode()) }
-        return i_tmp.finish()
+        var _x = DefaultHasher()
+        if (let Some(_v) = p_major) { _x.write(_v) }
+        if (let Some(_v) = p_minor) { _x.write(_v) }
+        if (let Some(_v) = p_patch) { _x.write(_v) }
+        if (let Some(_v) = p_suffix.data) { _x.write(_v.hashCode()) }
+        return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
@@ -81,13 +90,13 @@ public class Version <: Message & TypedMessage<Version> {
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
-            let i_tmp = src.parseTag()
-            match (i_tmp[0]) {
+            let _x = src.parseTag()
+            match (_x[0]) {
                 case 1 => p_major = src.parseInt32()
                 case 2 => p_minor = src.parseInt32()
                 case 3 => p_patch = src.parseInt32()
                 case 4 => p_suffix.unpack(src)
-                case _ => m_unknown(src, i_tmp)
+                case _ => m_unknown(src, _x)
             }
         }
         markDirty()
@@ -98,66 +107,76 @@ public class Version <: Message & TypedMessage<Version> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = p_major) { out.append(8); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = p_minor) { out.append(16); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = p_patch) { out.append(24); out.packVarint(i_vtmp) }
-        if (let Some(i_vtmp) = p_suffix.data) { out.append(34); out.packBin(i_vtmp) }
+        if (let Some(_v) = p_major) { out.append(8); out.packVarint(_v) }
+        if (let Some(_v) = p_minor) { out.append(16); out.packVarint(_v) }
+        if (let Some(_v) = p_patch) { out.append(24); out.packVarint(_v) }
+        if (let Some(_v) = p_suffix.data) { out.append(34); out.packBin(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
-        var i_tmp = StructPrinter()
-        if (let Some(i_vtmp) = p_major) { i_tmp.append("major", i_vtmp) }
-        if (let Some(i_vtmp) = p_minor) { i_tmp.append("minor", i_vtmp) }
-        if (let Some(i_vtmp) = p_patch) { i_tmp.append("patch", i_vtmp) }
-        if (isPresent(p_suffix.data)) { i_tmp.append("suffix", p_suffix.get()) }
-        return i_tmp.done().toString()
+        var _x = StructPrinter()
+        if (let Some(_v) = p_major) { _x.append("major", _v) }
+        if (let Some(_v) = p_minor) { _x.append("minor", _v) }
+        if (let Some(_v) = p_patch) { _x.append("patch", _v) }
+        if (isPresent(p_suffix.data)) { _x.append("suffix", p_suffix.get()) }
+        return _x.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
-    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func packi(out: BytesWriter) { match (out) { case _x: SimpleWriter => pack(_x) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { Version() }
-    public static func fromBytes(src: Collection<Byte>) { let i_tmp = Version(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = Version(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: Collection<Byte>) { let _x = Version(); _x.unpack(src); _x }
+    public static func fromBytes(src: BytesReader) { let _x = Version(); _x.unpack(src); _x }
 }
 
 public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest> {
-    public let fileToGenerate = RepeatedString()
-    private var p_parameter = Pb2String()
-    public let protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>()
-    private var p_compilerVersion = Pb2Message<Version>()
+    public let fileToGenerate: RepeatedString
+    private var p_parameter: Pb2String
+    public let protoFile: RepeatedMessage<google.protobuf.FileDescriptorProto>
+    private var p_compilerVersion: Pb2Message<Version>
 
-    public init() {
-        m_init(fileToGenerate)
-        m_init(protoFile)
+    public init(
+        fileToGenerate!: Array<String> = [],
+        parameter!: ?String = None,
+        protoFile!: Array<google.protobuf.FileDescriptorProto> = [],
+        compilerVersion!: ?Version = None
+    ) {
+        this.fileToGenerate = RepeatedString(fileToGenerate)
+        this.p_parameter = Pb2String(parameter)
+        this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(protoFile)
+        this.p_compilerVersion = Pb2Message<Version>(compilerVersion)
+        m_init(this.fileToGenerate)
+        m_init(this.protoFile)
+        if (let Some(_v) = compilerVersion) { m_init(_v) }
         m_innerInit()
     }
 
     public func clearParameter() { p_parameter.clear(); markDirty() }
     public prop let hasParameter: Bool { get() { isPresent(p_parameter.data) } }
-    public prop var parameter: String { get() { p_parameter.get() } set(i_vtmp) { p_parameter.set(i_vtmp); markDirty() } }
+    public prop var parameter: String { get() { p_parameter.get() } set(_v) { p_parameter.set(_v); markDirty() } }
 
     public func clearCompilerVersion() { p_compilerVersion.removeFrom(this); markDirty() }
     public prop let hasCompilerVersion: Bool { get() { isPresent(p_compilerVersion.data) } }
-    public prop var compilerVersion: Version { get() { p_compilerVersion.data.getOrThrow() } set(i_vtmp) { p_compilerVersion.set(this, i_vtmp); markDirty() } }
+    public prop var compilerVersion: Version { get() { p_compilerVersion.data.getOrThrow() } set(_v) { p_compilerVersion.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
-        var i_tmp = 0
-        if (!fileToGenerate.isEmpty()) { i_tmp += s_size(fileToGenerate, 1) }
-        if (let Some(i_vtmp) = p_parameter.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { i_tmp += 1 + binSize(i_itmp) } }
-        if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp += 1 + binSize(i_vtmp) }
-        return i_tmp
+        var _x = 0
+        if (!fileToGenerate.isEmpty()) { _x += s_size(fileToGenerate, 1) }
+        if (let Some(_v) = p_parameter.data) { _x += 1 + binSize(_v) }
+        if (!protoFile.isEmpty()) { for (_i in protoFile) { _x += 1 + binSize(_i) } }
+        if (let Some(_v) = p_compilerVersion.data) { _x += 1 + binSize(_v) }
+        return _x
     }
 
     protected func m_hashCode(): Int64 {
-        var i_tmp = DefaultHasher()
-        if (!fileToGenerate.isEmpty()) { i_tmp.write(fileToGenerate.hashCode()) }
-        if (let Some(i_vtmp) = p_parameter.data) { i_tmp.write(i_vtmp.hashCode()) }
-        if (!protoFile.isEmpty()) { i_tmp.write(protoFile.hashCode()) }
-        if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp.write(i_vtmp.hashCode()) }
-        return i_tmp.finish()
+        var _x = DefaultHasher()
+        if (!fileToGenerate.isEmpty()) { _x.write(fileToGenerate.hashCode()) }
+        if (let Some(_v) = p_parameter.data) { _x.write(_v.hashCode()) }
+        if (!protoFile.isEmpty()) { _x.write(protoFile.hashCode()) }
+        if (let Some(_v) = p_compilerVersion.data) { _x.write(_v.hashCode()) }
+        return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
@@ -193,13 +212,13 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
-            let i_tmp = src.parseTag()
-            match (i_tmp[0]) {
+            let _x = src.parseTag()
+            match (_x[0]) {
                 case 1 => s_add(fileToGenerate, src)
                 case 2 => p_parameter.unpack(src)
                 case 15 => s_add(protoFile, src)
                 case 3 => p_compilerVersion.getOrDefault(this).unpack(subReader(src))
-                case _ => m_unknown(src, i_tmp)
+                case _ => m_unknown(src, _x)
             }
         }
         markDirty()
@@ -211,71 +230,81 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
         if (!fileToGenerate.isEmpty()) { s_pack(1, fileToGenerate, out) }
-        if (let Some(i_vtmp) = p_parameter.data) { out.append(18); out.packBin(i_vtmp) }
-        if (!protoFile.isEmpty()) { for (i_itmp in protoFile) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
-        if (let Some(i_vtmp) = p_compilerVersion.data) { out.append(26); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(_v) = p_parameter.data) { out.append(18); out.packBin(_v) }
+        if (!protoFile.isEmpty()) { for (_i in protoFile) { out.append(122); out.packVarint(_i.size); _i.pack(out) } }
+        if (let Some(_v) = p_compilerVersion.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
-        var i_tmp = StructPrinter()
-        if (!fileToGenerate.isEmpty()) { i_tmp.append("fileToGenerate", fileToGenerate) }
-        if (isPresent(p_parameter.data)) { i_tmp.append("parameter", p_parameter.get()) }
-        if (!protoFile.isEmpty()) { i_tmp.append("protoFile", protoFile) }
-        if (let Some(i_vtmp) = p_compilerVersion.data) { i_tmp.append("compilerVersion", i_vtmp) }
-        return i_tmp.done().toString()
+        var _x = StructPrinter()
+        if (!fileToGenerate.isEmpty()) { _x.append("fileToGenerate", fileToGenerate) }
+        if (isPresent(p_parameter.data)) { _x.append("parameter", p_parameter.get()) }
+        if (!protoFile.isEmpty()) { _x.append("protoFile", protoFile) }
+        if (let Some(_v) = p_compilerVersion.data) { _x.append("compilerVersion", _v) }
+        return _x.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
-    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func packi(out: BytesWriter) { match (out) { case _x: SimpleWriter => pack(_x) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorRequest() }
-    public static func fromBytes(src: Collection<Byte>) { let i_tmp = CodeGeneratorRequest(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorRequest(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: Collection<Byte>) { let _x = CodeGeneratorRequest(); _x.unpack(src); _x }
+    public static func fromBytes(src: BytesReader) { let _x = CodeGeneratorRequest(); _x.unpack(src); _x }
 }
 
 public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorResponse_File> {
-    private var p_name = Pb2String()
-    private var p_insertionPoint = Pb2String()
-    private var p_content = Pb2String()
-    private var p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>()
+    private var p_name: Pb2String
+    private var p_insertionPoint: Pb2String
+    private var p_content: Pb2String
+    private var p_generatedCodeInfo: Pb2Message<google.protobuf.GeneratedCodeInfo>
 
-    public init() {
+    public init(
+        name!: ?String = None,
+        insertionPoint!: ?String = None,
+        content!: ?String = None,
+        generatedCodeInfo!: ?google.protobuf.GeneratedCodeInfo = None
+    ) {
+        this.p_name = Pb2String(name)
+        this.p_insertionPoint = Pb2String(insertionPoint)
+        this.p_content = Pb2String(content)
+        this.p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>(generatedCodeInfo)
+        if (let Some(_v) = generatedCodeInfo) { m_init(_v) }
         m_innerInit()
     }
 
     public func clearName() { p_name.clear(); markDirty() }
     public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(i_vtmp) { p_name.set(i_vtmp); markDirty() } }
+    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearInsertionPoint() { p_insertionPoint.clear(); markDirty() }
     public prop let hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint.data) } }
-    public prop var insertionPoint: String { get() { p_insertionPoint.get() } set(i_vtmp) { p_insertionPoint.set(i_vtmp); markDirty() } }
+    public prop var insertionPoint: String { get() { p_insertionPoint.get() } set(_v) { p_insertionPoint.set(_v); markDirty() } }
 
     public func clearContent() { p_content.clear(); markDirty() }
     public prop let hasContent: Bool { get() { isPresent(p_content.data) } }
-    public prop var content: String { get() { p_content.get() } set(i_vtmp) { p_content.set(i_vtmp); markDirty() } }
+    public prop var content: String { get() { p_content.get() } set(_v) { p_content.set(_v); markDirty() } }
 
     public func clearGeneratedCodeInfo() { p_generatedCodeInfo.removeFrom(this); markDirty() }
     public prop let hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
-    public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(i_vtmp) { p_generatedCodeInfo.set(this, i_vtmp); markDirty() } }
+    public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(_v) { p_generatedCodeInfo.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
-        var i_tmp = 0
-        if (let Some(i_vtmp) = p_name.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_insertionPoint.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_content.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { i_tmp += 2 + binSize(i_vtmp) }
-        return i_tmp
+        var _x = 0
+        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) = p_insertionPoint.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) = p_content.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) = p_generatedCodeInfo.data) { _x += 2 + binSize(_v) }
+        return _x
     }
 
     protected func m_hashCode(): Int64 {
-        var i_tmp = DefaultHasher()
-        if (let Some(i_vtmp) = p_name.data) { i_tmp.write(i_vtmp.hashCode()) }
-        if (let Some(i_vtmp) = p_insertionPoint.data) { i_tmp.write(i_vtmp.hashCode()) }
-        if (let Some(i_vtmp) = p_content.data) { i_tmp.write(i_vtmp.hashCode()) }
-        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { i_tmp.write(i_vtmp.hashCode()) }
-        return i_tmp.finish()
+        var _x = DefaultHasher()
+        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) = p_insertionPoint.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) = p_content.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) = p_generatedCodeInfo.data) { _x.write(_v.hashCode()) }
+        return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
@@ -312,13 +341,13 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
-            let i_tmp = src.parseTag()
-            match (i_tmp[0]) {
+            let _x = src.parseTag()
+            match (_x[0]) {
                 case 1 => p_name.unpack(src)
                 case 2 => p_insertionPoint.unpack(src)
                 case 15 => p_content.unpack(src)
                 case 16 => p_generatedCodeInfo.getOrDefault(this).unpack(subReader(src))
-                case _ => m_unknown(src, i_tmp)
+                case _ => m_unknown(src, _x)
             }
         }
         markDirty()
@@ -329,28 +358,28 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = p_name.data) { out.append(10); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = p_insertionPoint.data) { out.append(18); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = p_content.data) { out.append(122); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { out.packTag(16, PREFIXED); out.packVarint(i_vtmp.size); i_vtmp.pack(out) }
+        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) = p_insertionPoint.data) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) = p_content.data) { out.append(122); out.packBin(_v) }
+        if (let Some(_v) = p_generatedCodeInfo.data) { out.packTag(16, PREFIXED); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
-        var i_tmp = StructPrinter()
-        if (isPresent(p_name.data)) { i_tmp.append("name", p_name.get()) }
-        if (isPresent(p_insertionPoint.data)) { i_tmp.append("insertionPoint", p_insertionPoint.get()) }
-        if (isPresent(p_content.data)) { i_tmp.append("content", p_content.get()) }
-        if (let Some(i_vtmp) = p_generatedCodeInfo.data) { i_tmp.append("generatedCodeInfo", i_vtmp) }
-        return i_tmp.done().toString()
+        var _x = StructPrinter()
+        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (isPresent(p_insertionPoint.data)) { _x.append("insertionPoint", p_insertionPoint.get()) }
+        if (isPresent(p_content.data)) { _x.append("content", p_content.get()) }
+        if (let Some(_v) = p_generatedCodeInfo.data) { _x.append("generatedCodeInfo", _v) }
+        return _x.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
-    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func packi(out: BytesWriter) { match (out) { case _x: SimpleWriter => pack(_x) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorResponse_File() }
-    public static func fromBytes(src: Collection<Byte>) { let i_tmp = CodeGeneratorResponse_File(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorResponse_File(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: Collection<Byte>) { let _x = CodeGeneratorResponse_File(); _x.unpack(src); _x }
+    public static func fromBytes(src: BytesReader) { let _x = CodeGeneratorResponse_File(); _x.unpack(src); _x }
 }
 
 public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
@@ -396,37 +425,44 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
 }
 
 public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorResponse> {
-    private var p_error = Pb2String()
-    private var p_supportedFeatures: ?UInt64 = None
-    public let file = RepeatedMessage<CodeGeneratorResponse_File>()
+    private var p_error: Pb2String
+    private var p_supportedFeatures: ?UInt64
+    public let file: RepeatedMessage<CodeGeneratorResponse_File>
 
-    public init() {
-        m_init(file)
+    public init(
+        error!: ?String = None,
+        supportedFeatures!: ?UInt64 = None,
+        file!: Array<CodeGeneratorResponse_File> = []
+    ) {
+        this.p_error = Pb2String(error)
+        this.p_supportedFeatures = supportedFeatures
+        this.file = RepeatedMessage<CodeGeneratorResponse_File>(file)
+        m_init(this.file)
         m_innerInit()
     }
 
     public func clearError() { p_error.clear(); markDirty() }
     public prop let hasError: Bool { get() { isPresent(p_error.data) } }
-    public prop var error: String { get() { p_error.get() } set(i_vtmp) { p_error.set(i_vtmp); markDirty() } }
+    public prop var error: String { get() { p_error.get() } set(_v) { p_error.set(_v); markDirty() } }
 
     public func clearSupportedFeatures() { p_supportedFeatures = None; markDirty() }
     public prop let hasSupportedFeatures: Bool { get() { isPresent(p_supportedFeatures) } }
-    public prop var supportedFeatures: UInt64 { get() { p_supportedFeatures.getOrThrow() } set(i_tmp) { p_supportedFeatures = i_tmp; markDirty() } }
+    public prop var supportedFeatures: UInt64 { get() { p_supportedFeatures.getOrThrow() } set(_x) { p_supportedFeatures = _x; markDirty() } }
 
     protected func m_size(): Int64 {
-        var i_tmp = 0
-        if (let Some(i_vtmp) = p_error.data) { i_tmp += 1 + binSize(i_vtmp) }
-        if (let Some(i_vtmp) = p_supportedFeatures) { i_tmp += 1 + varintSize(i_vtmp) }
-        if (!file.isEmpty()) { for (i_itmp in file) { i_tmp += 1 + binSize(i_itmp) } }
-        return i_tmp
+        var _x = 0
+        if (let Some(_v) = p_error.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) = p_supportedFeatures) { _x += 1 + varintSize(_v) }
+        if (!file.isEmpty()) { for (_i in file) { _x += 1 + binSize(_i) } }
+        return _x
     }
 
     protected func m_hashCode(): Int64 {
-        var i_tmp = DefaultHasher()
-        if (let Some(i_vtmp) = p_error.data) { i_tmp.write(i_vtmp.hashCode()) }
-        if (let Some(i_vtmp) = p_supportedFeatures) { i_tmp.write(i_vtmp) }
-        if (!file.isEmpty()) { i_tmp.write(file.hashCode()) }
-        return i_tmp.finish()
+        var _x = DefaultHasher()
+        if (let Some(_v) = p_error.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) = p_supportedFeatures) { _x.write(_v) }
+        if (!file.isEmpty()) { _x.write(file.hashCode()) }
+        return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
@@ -459,12 +495,12 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public func unpack<T>(src: T): Unit where T <: BytesReader {
         while (!src.isEmpty()) {
-            let i_tmp = src.parseTag()
-            match (i_tmp[0]) {
+            let _x = src.parseTag()
+            match (_x[0]) {
                 case 1 => p_error.unpack(src)
                 case 2 => p_supportedFeatures = src.parseUInt64()
                 case 15 => s_add(file, src)
-                case _ => m_unknown(src, i_tmp)
+                case _ => m_unknown(src, _x)
             }
         }
         markDirty()
@@ -475,24 +511,24 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(i_vtmp) = p_error.data) { out.append(10); out.packBin(i_vtmp) }
-        if (let Some(i_vtmp) = p_supportedFeatures) { out.append(16); out.packVarint(i_vtmp) }
-        if (!file.isEmpty()) { for (i_itmp in file) { out.append(122); out.packVarint(i_itmp.size); i_itmp.pack(out) } }
+        if (let Some(_v) = p_error.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) = p_supportedFeatures) { out.append(16); out.packVarint(_v) }
+        if (!file.isEmpty()) { for (_i in file) { out.append(122); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
-        var i_tmp = StructPrinter()
-        if (isPresent(p_error.data)) { i_tmp.append("error", p_error.get()) }
-        if (let Some(i_vtmp) = p_supportedFeatures) { i_tmp.append("supportedFeatures", i_vtmp) }
-        if (!file.isEmpty()) { i_tmp.append("file", file) }
-        return i_tmp.done().toString()
+        var _x = StructPrinter()
+        if (isPresent(p_error.data)) { _x.append("error", p_error.get()) }
+        if (let Some(_v) = p_supportedFeatures) { _x.append("supportedFeatures", _v) }
+        if (!file.isEmpty()) { _x.append("file", file) }
+        return _x.done().toString()
     }
 
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
-    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func packi(out: BytesWriter) { match (out) { case _x: SimpleWriter => pack(_x) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorResponse() }
-    public static func fromBytes(src: Collection<Byte>) { let i_tmp = CodeGeneratorResponse(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = CodeGeneratorResponse(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: Collection<Byte>) { let _x = CodeGeneratorResponse(); _x.unpack(src); _x }
+    public static func fromBytes(src: BytesReader) { let _x = CodeGeneratorResponse(); _x.unpack(src); _x }
 }

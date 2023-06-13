@@ -66,6 +66,8 @@ public struct Pb3String {
 
     public init() { data = String("") }
 
+    public init(value: String) { data = String(value) }
+
     public mut func get(): String {
         match (data) {
             case Bytes(bytes) =>
@@ -86,9 +88,21 @@ public struct Pb2String {
     public var data: ?BytesString
     public let default: ?String
 
-    public init() { data = None; default = None }
+    public init(value: ?String) {
+        data = match (value) {
+            case Some(s) => String(s)
+            case _ => None
+        }
+        this.default = None
+    }
 
-    public init(default: String) { data = None; this.default = default }
+    public init(value: ?String, default: String) {
+        data = match (value) {
+            case Some(s) => String(s)
+            case _ => None
+        }
+        this.default = default
+    }
 
     public mut func get(): String {
         match (data) {

@@ -4,8 +4,8 @@ package protobuf
 public abstract class Message <: ToString & Hashable {
     var m_parents = Parents()
 
-    private var m_cachedSize = 0
-    private var m_cachedHash = 0
+    private var m_cachedSize = -1
+    private var m_cachedHash = -1
     public func markDirty(): Unit {
         if (m_cachedSize != -1 || m_cachedHash != -1) {   /* any cached */
             m_cachedSize = -1
@@ -187,7 +187,7 @@ public abstract class Message <: ToString & Hashable {
 
 /* proto2 optional message */
 public struct Pb2Message<M> where M <: Message & TypedMessage<M> {
-    public var data: ?M = None
+    public Pb2Message(public var data: ?M) { }
 
     public mut func set(parent: Message, that: M): Unit {
         if (let Some(m) = data) {

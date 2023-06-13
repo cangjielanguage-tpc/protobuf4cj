@@ -377,7 +377,7 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
 
         // gen toString()
         append("    public func toString() {\n        match (this) {\n")
-        for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => ${if (field.type_ == TYPE_STRING) { "\" + v + \"" } else { "v.toString()" }}\n") }
+        for (field in fields) { append("            case ${titleCase(field.jsonName)}(v) => ${if (field.type_ == TYPE_STRING) { "\"\\\"\${v}\\\"\"" } else { "v.toString()" }}\n") }
         append("            case None => \"\"\n        }\n    }\n\n")
 
         // gen hashCode()
@@ -435,12 +435,12 @@ func getImplOneofGroupIsEmpty() {
 /* impl interface api */
 func getImplIterfaceApi(typeName: String) {
 """
-    public func packi(out: BytesWriter) { match (out) { case i_tmp: SimpleWriter => pack(i_tmp) case _ => pack(out) } }
-    public func unpacki(src: BytesReader) { match (src) { case i_stmp: SimpleReader => unpack(i_stmp) case _ => unpack(src) } }
+    public func packi(out: BytesWriter) { match (out) { case _x: SimpleWriter => pack(_x) case _ => pack(out) } }
+    public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { ${typeName}() }
-    public static func fromBytes(src: Collection<Byte>) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }
-    public static func fromBytes(src: BytesReader) { let i_tmp = ${typeName}(); i_tmp.unpack(src); i_tmp }
+    public static func fromBytes(src: Collection<Byte>) { let _x = ${typeName}(); _x.unpack(src); _x }
+    public static func fromBytes(src: BytesReader) { let _x = ${typeName}(); _x.unpack(src); _x }
 """
 }
 
