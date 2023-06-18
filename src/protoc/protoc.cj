@@ -435,10 +435,12 @@ func getImplOneofGroupIsEmpty() {
 /* impl interface api */
 func getImplIterfaceApi(typeName: String) {
 """
+
     public func packi(out: BytesWriter) { match (out) { case _x: SimpleWriter => pack(_x) case _ => pack(out) } }
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { ${typeName}() }
+    public static func newBuilder() { ${typeName}__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = ${typeName}(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = ${typeName}(); _x.unpack(src); _x }
 """
@@ -626,17 +628,6 @@ func getMessagePropName(name: String) {
 
 func titleCase(str: String) {
     "${str[0].toUpperCase()}${str.substring(1)}"
-}
-
-/* upper camel case */
-func upperCamelCase(name: String) {
-    let arr = titleCase(name).split('_')
-
-    for (i in 1..arr.size) {
-        arr[i] = titleCase(arr[i])
-    }
-
-    return String.join(arr)
 }
 
 /* lower camel case */

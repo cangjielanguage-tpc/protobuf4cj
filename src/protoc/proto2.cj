@@ -31,6 +31,17 @@ func getFieldVarInit2(field: FieldDescriptorProto) {
     }
 }
 
+/* field variable init from src builder */
+func getFieldVarInitSrc2(field: FieldDescriptorProto) {
+    match {
+        case field.label == LABEL_REPEATED => getFieldVarInitSrc(field)
+        case field.type_ == TYPE_STRING && field.hasDefaultValue => "p_${field.jsonName} = Pb2String(src.${getMessagePropName(field.jsonName)}, \"${field.defaultValue}\")"
+        case field.type_ == TYPE_STRING => "p_${field.jsonName} = Pb2String(src.${getMessagePropName(field.jsonName)})"
+        case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = Pb2Message<${field.typeName}>(src.${getMessagePropName(field.jsonName)})"
+        case _ => "p_${field.jsonName} = src.${getMessagePropName(field.jsonName)}"
+    }
+}
+
 /* field is not empty expr */
 func getFieldNoEmptyExpr2(field: FieldDescriptorProto) {
     if (field.label == LABEL_REPEATED) {
@@ -141,9 +152,8 @@ func genCodeMessageFieldClass2(typeName: String, fields: RepeatedMessage<FieldDe
 func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> StringBuilder = helper.outbuf.append
 
+    /* init with named params */
     append("\n    public init(")
-
-    /* args */
     var flag = false
     for (field in fields where !field.hasOneofIndex) {
         if (flag) { append(",\n") } else { flag = true; append("\n") }
@@ -160,7 +170,6 @@ func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDes
     }
     append(") {\n")
 
-    /* init */
     for (field in fields where !field.hasOneofIndex) {
         append("        this.${getFieldVarInit2(field)}\n")
     }
@@ -169,12 +178,30 @@ func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDes
         append("        this.p_${name} = ${getMessagePropName(name)}\n")
     }
 
+    append("        m_init()\n")
+    append("    }\n")
+
+    /* init from builder */
+    append("\n    public init(src: ${typeName}__Builder) {\n")
+    for (field in fields where !field.hasOneofIndex) {
+        append("        this.${getFieldVarInitSrc2(field)}\n")
+    }
+
+    for ((name, _) in helper.oneofDecl) {
+        append("        this.p_${name} = src.${getMessagePropName(name)}\n")
+    }
+
+    append("        m_init()\n")
+    append("    }\n")
+
     /* m_init */
+    append("\n    private func m_init() {\n")
+
     for (field in fields where !field.hasOneofIndex) {
         if (field.label == LABEL_REPEATED) {
-            append("        m_init(this.${getMessagePropName(field.jsonName)})\n")
+            append("        m_init(${getMessagePropName(field.jsonName)})\n")
         } else if (field.type_ == TYPE_MESSAGE) {
-            append("        if (let Some(_v) = ${getMessagePropName(field.jsonName)}) { m_init(_v) }\n")
+            append("        if (let Some(_v) = p_${field.jsonName}.data) { m_init(_v) }\n")
         }
     }
 
@@ -193,7 +220,7 @@ func genCodeMessageFieldProps2(typeName: String, fields: RepeatedMessage<FieldDe
     // normal field props
     for (field in fields where !field.hasOneofIndex && field.label != LABEL_REPEATED) {
         let name = getMessagePropName(field.jsonName)
-        let uName = upperCamelCase(field.jsonName)
+        let uName = titleCase(field.jsonName)
         let pName = "p_${field.jsonName}"
 
         append("\n")
@@ -481,7 +508,37 @@ func genCodeMessageFieldToString2(fields: RepeatedMessage<FieldDescriptorProto>,
     }
 
     append("        return _x.done().toString()\n")
-    append("    }\n\n")
+    append("    }\n")
+}
+
+/* message builder */
+func genCodeMessageBuilder2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    let append: (String) -> StringBuilder = helper.outbuf.append
+
+    append("\n")
+    append("public class ${typeName}__Builder {\n")
+
+    for (field in fields where !field.hasOneofIndex) {
+        let pName = getMessagePropName(field.jsonName)
+        let type_ = match {
+            case field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">") => "Array<(${field.typeName[field.typeName.indexOf('<').getOrThrow() + 1 .. field.typeName.size - 1]})>"
+            case field.label == LABEL_REPEATED && field.type_ == TYPE_BYTES => "Array<Bytes>"
+            case field.label == LABEL_REPEATED => "Array<${typeConvert(field)}>"
+            case _ => "${typeConvert(field)}"
+        }
+        append("    public var ${pName}: ${getFieldVarDefault2(field)}\n")
+        append("    public func set${titleCase(field.jsonName)}(${pName}: ${type_}) { this.${pName} = ${pName}; return this }\n\n")
+    }
+
+    for ((name, _) in helper.oneofDecl) {
+        let pName = getMessagePropName(name)
+        let type_ = "${typeName}_Oneof_${titleCase(name)}"
+        append("    public var ${pName} = ${type_}.None\n")
+        append("    public func set${titleCase(name)}(${pName}: ${type_}) { this.${pName} = ${pName}; return this }\n\n")
+    }
+
+    append("    public func build() { ${typeName}(this) }\n")
+    append("}\n")
 }
 
 /* gen proto2 message codes */
@@ -535,4 +592,7 @@ func genCodeMessageField2(typeName: String, fields: RepeatedMessage<FieldDescrip
 
     // end
     append("}\n")
+
+    // message builder
+    genCodeMessageBuilder2(typeName, fields, helper)
 }
