@@ -1,7 +1,7 @@
 package protobuf
 
 public class RepeatedField<T> <: Collection<T> {
-    private var parent: ?Message
+    private var parent: ?MessageLite
     private var data: ArrayList<T>
 
     public init() {
@@ -125,7 +125,7 @@ public class RepeatedField<T> <: Collection<T> {
     public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty() }
 
     func appendDirty(element: T): Unit { data.append(element) }
-    func setParent(parent: Message): Unit { this.parent = parent }
+    func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
 }
 
@@ -183,8 +183,8 @@ extend RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
     }
 }
 
-public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <: Message & TypedMessage<T> {
-    private var parent: ?Message
+public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <: MessageLite & TypedMessage<T> {
+    private var parent: ?MessageLite
     private var data: ArrayList<T>
 
     public init() {
@@ -326,17 +326,17 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
         parent?.markDirty()
     }
 
-    private func link(element: Message) { element.m_parents.insert(parent ?? return) }
-    private func unlink(element: Message) { element.m_parents.remove(parent ?? return) }
+    private func link(element: MessageLite) { element.m_parents.insert(parent ?? return) }
+    private func unlink(element: MessageLite) { element.m_parents.remove(parent ?? return) }
 
     private func link(elements: Collection<T>) {
         let m = parent ?? return ()
-        for (e in elements) { let ee: Message = e; ee.m_parents.insert(m) }
+        for (e in elements) { let ee: MessageLite = e; ee.m_parents.insert(m) }
     }
 
     private func unlink(elements: Collection<T>) {
         let m = parent ?? return ()
-        for (e in elements) { let ee: Message = e; ee.m_parents.remove(m) }
+        for (e in elements) { let ee: MessageLite = e; ee.m_parents.remove(m) }
     }
 
     public func hashCode(): Int64 {
@@ -365,11 +365,11 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     public operator func !=(that: RepeatedMessage<T>): Bool { data != that.data }
 
     func appendDirty(element: T): Unit { data.append(element); link(element) }
-    func setParent(parent: Message): Unit { this.parent = parent }
+    func setParent(parent: MessageLite): Unit { this.parent = parent }
 }
 
 public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & ToString & Hashable {
-    private var parent: ?Message
+    private var parent: ?MessageLite
     private var data: ArrayList<BytesString>
 
     public init() {
@@ -574,7 +574,7 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
     public operator func !=(that: RepeatedString): Bool { data != that.data }
 
     func appendDirty(element: BytesSlice): Unit { data.append(Bytes(element)) }
-    func setParent(parent: Message): Unit { this.parent = parent }
+    func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
 }
 

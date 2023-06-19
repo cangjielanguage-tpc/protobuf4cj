@@ -1,7 +1,7 @@
 package protobuf
 
 /* abstract class of all the protobuf message. */
-public abstract class Message <: ToString & Hashable {
+public abstract class MessageLite <: ToString & Hashable {
     var m_parents = Parents()
 
     private var m_cachedSize = -1
@@ -84,7 +84,7 @@ public abstract class Message <: ToString & Hashable {
     }
 
     /* copy inner data from `src` */
-    protected func m_innerCopyFrom(src: Message) {
+    protected func m_innerCopyFrom(src: MessageLite) {
         unknownFields.copyFrom(src.unknownFields)
         m_cachedSize = src.m_cachedSize
         m_cachedHash = src.m_cachedHash
@@ -141,9 +141,9 @@ public abstract class Message <: ToString & Hashable {
     /* unpack to repeated fields */
     protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
     protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseBytesSlice()) }
-    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: Message & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
+    protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: MessageLite & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
     protected static func s_add<K, V>(map: MapField<K, V>, key: K, val: V) where K <: Hashable & Equatable<K> { map.putDirty(key, val) }
-    protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Hashable & Equatable<K>, M <: Message & TypedMessage<M> { map.putDirty(key, val) }
+    protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Hashable & Equatable<K>, M <: MessageLite & TypedMessage<M> { map.putDirty(key, val) }
 
     /* pack repeated string */
     protected static func s_pack<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
@@ -169,58 +169,58 @@ public abstract class Message <: ToString & Hashable {
     }
 
     /* init member field's parent */
-    protected func m_init(rf: Message) { rf.m_parents.insert(this) }
+    protected func m_init(rf: MessageLite) { rf.m_parents.insert(this) }
     protected func m_init(rf: RepeatedString) { rf.setParent(this) }
     protected func m_init<T>(rf: RepeatedField<T>) { rf.setParent(this) }
-    protected func m_init<T>(rf: RepeatedMessage<T>) where T <: Message & TypedMessage<T> { rf.setParent(this) }
+    protected func m_init<T>(rf: RepeatedMessage<T>) where T <: MessageLite & TypedMessage<T> { rf.setParent(this) }
     protected func m_init<T>(rf: T): T where T <: OneofGroup { rf.mutableData()?.m_parents.insert(this); rf }
     protected func m_init<K, V>(rf: MapField<K, V>) where K <: Hashable & Equatable<K> { rf.setParent(this) }
-    protected func m_init<K, V>(rf: MapMessage<K, V>) where K <: Hashable & Equatable<K>, V <: Message & TypedMessage<V> { rf.setParent(this) }
+    protected func m_init<K, V>(rf: MapMessage<K, V>) where K <: Hashable & Equatable<K>, V <: MessageLite & TypedMessage<V> { rf.setParent(this) }
 
     /* assign member old to new, reset their parent */
-    protected func m_assign(old: Message, new: Message) { old.m_parents.remove(this); new.m_parents.insert(this) }
-    protected func m_assign(old: Message) { old.m_parents.remove(this) }
+    protected func m_assign(old: MessageLite, new: MessageLite) { old.m_parents.remove(this); new.m_parents.insert(this) }
+    protected func m_assign(old: MessageLite) { old.m_parents.remove(this) }
     protected func m_assign(old: OneofGroup, new: OneofGroup) { old.mutableData()?.m_parents.remove(this); new.mutableData()?.m_parents.insert(this) }
-    protected func m_assign(old: OneofGroup, new: Message) { old.mutableData()?.m_parents.remove(this); new.m_parents.insert(this) }
+    protected func m_assign(old: OneofGroup, new: MessageLite) { old.mutableData()?.m_parents.remove(this); new.m_parents.insert(this) }
     protected func m_assign(old: OneofGroup) { old.mutableData()?.m_parents.remove(this) }
 }
 
 /* proto2 optional message */
-public struct Pb2Message<M> where M <: Message & TypedMessage<M> {
+public struct Pb2Message<M> where M <: MessageLite & TypedMessage<M> {
     public Pb2Message(public var data: ?M) { }
 
-    public mut func set(parent: Message, that: M): Unit {
+    public mut func set(parent: MessageLite, that: M): Unit {
         if (let Some(m) = data) {
-            let am: Message = m
+            let am: MessageLite = m
             am.m_parents.remove(parent)
         }
 
-        let am: Message = that
+        let am: MessageLite = that
         am.m_parents.insert(parent)
         data = that
     }
 
-    public mut func getOrDefault(parent: Message): M {
+    public mut func getOrDefault(parent: MessageLite): M {
         if (let Some(m) = data) {
             return m
         }
 
         let m = M.empty()
-        let am: Message = m
+        let am: MessageLite = m
         am.m_parents.insert(parent)
         data = m
         return m
     }
 
-    public mut func removeFrom(parent: Message): Unit {
+    public mut func removeFrom(parent: MessageLite): Unit {
         if (let Some(m) = data) {
-            let am: Message = m
+            let am: MessageLite = m
             am.m_parents.remove(parent)
             data = None
         }
     }
 
-    public mut func copyFrom(parent: Message, that: ?M): Unit {
+    public mut func copyFrom(parent: MessageLite, that: ?M): Unit {
         match (that) {
             case Some(m) => getOrDefault(parent).copyFrom(m)
             case _ => removeFrom(parent)

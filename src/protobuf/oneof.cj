@@ -9,7 +9,7 @@ public interface OneofGroup <: ToString & Hashable {
     func which(one: String): Bool { which() == one }
 
     /* return any set mutable message of oneof group */
-    func mutableData(): ?Message
+    func mutableData(): ?MessageLite
 
     /* return true if no field is set */
     func isEmpty(): Bool

@@ -362,9 +362,9 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         append("            case _ => this\n        }\n    }\n\n")
 
         // gen mutableData()
-        append("    public func mutableData(): ?Message {\n        match (this) {\n")
+        append("    public func mutableData(): ?MessageLite {\n        match (this) {\n")
         for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.jsonName)}(v) => v\n") }
-        append("            case _ => Option<Message>.None\n        }\n    }\n\n")
+        append("            case _ => Option<MessageLite>.None\n        }\n    }\n\n")
 
         // gen isEmpty()
         append(getImplOneofGroupIsEmpty())
@@ -566,7 +566,7 @@ func namedParseSrc(name: String, src: String, field: FieldDescriptorProto) {
 func getImplEmptyMessage(typeName: String) {
 """
 
-public class ${typeName} <: Message & TypedMessage<${typeName}> {
+public class ${typeName} <: MessageLite & TypedMessage<${typeName}> {
     public init() { m_innerInit() }
     protected func m_size(): Int64 { 0 }
     protected func m_hashCode(): Int64 { 0 }

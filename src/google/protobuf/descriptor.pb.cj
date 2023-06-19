@@ -3,14 +3,23 @@ package google.protobuf
 from std import collection.*
 from protobuf import protobuf.*
 
-public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
+public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> {
     public let file: RepeatedMessage<FileDescriptorProto>
 
     public init(
         file!: Array<FileDescriptorProto> = []
     ) {
         this.file = RepeatedMessage<FileDescriptorProto>(file)
-        m_init(this.file)
+        m_init()
+    }
+
+    public init(src: FileDescriptorSet__Builder) {
+        this.file = RepeatedMessage<FileDescriptorProto>(src.file)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(file)
         m_innerInit()
     }
 
@@ -79,11 +88,19 @@ public class FileDescriptorSet <: Message & TypedMessage<FileDescriptorSet> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { FileDescriptorSet() }
+    public static func newBuilder() { FileDescriptorSet__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = FileDescriptorSet(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = FileDescriptorSet(); _x.unpack(src); _x }
 }
 
-public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> {
+public class FileDescriptorSet__Builder {
+    public var file: Array<FileDescriptorProto> = []
+    public func setFile(file: Array<FileDescriptorProto>) { this.file = file; return this }
+
+    public func build() { FileDescriptorSet(this) }
+}
+
+public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorProto> {
     private var p_name: Pb2String
     private var p_package: Pb2String
     public let dependency: RepeatedString
@@ -123,15 +140,35 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
         this.p_options = Pb2Message<FileOptions>(options)
         this.p_sourceCodeInfo = Pb2Message<SourceCodeInfo>(sourceCodeInfo)
         this.p_syntax = Pb2String(syntax)
-        m_init(this.dependency)
-        m_init(this.publicDependency)
-        m_init(this.weakDependency)
-        m_init(this.messageType)
-        m_init(this.enumType)
-        m_init(this.service)
-        m_init(this.extension)
-        if (let Some(_v) = options) { m_init(_v) }
-        if (let Some(_v) = sourceCodeInfo) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: FileDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.p_package = Pb2String(src.package_)
+        this.dependency = RepeatedString(src.dependency)
+        this.publicDependency = RepeatedField<Int32>(src.publicDependency)
+        this.weakDependency = RepeatedField<Int32>(src.weakDependency)
+        this.messageType = RepeatedMessage<DescriptorProto>(src.messageType)
+        this.enumType = RepeatedMessage<EnumDescriptorProto>(src.enumType)
+        this.service = RepeatedMessage<ServiceDescriptorProto>(src.service)
+        this.extension = RepeatedMessage<FieldDescriptorProto>(src.extension)
+        this.p_options = Pb2Message<FileOptions>(src.options)
+        this.p_sourceCodeInfo = Pb2Message<SourceCodeInfo>(src.sourceCodeInfo)
+        this.p_syntax = Pb2String(src.syntax)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(dependency)
+        m_init(publicDependency)
+        m_init(weakDependency)
+        m_init(messageType)
+        m_init(enumType)
+        m_init(service)
+        m_init(extension)
+        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) = p_sourceCodeInfo.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -304,11 +341,52 @@ public class FileDescriptorProto <: Message & TypedMessage<FileDescriptorProto> 
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { FileDescriptorProto() }
+    public static func newBuilder() { FileDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = FileDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = FileDescriptorProto(); _x.unpack(src); _x }
 }
 
-public class DescriptorProto_ExtensionRange <: Message & TypedMessage<DescriptorProto_ExtensionRange> {
+public class FileDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var package_: ?String = None
+    public func setPackage(package_: String) { this.package_ = package_; return this }
+
+    public var dependency: Array<String> = []
+    public func setDependency(dependency: Array<String>) { this.dependency = dependency; return this }
+
+    public var publicDependency: Array<Int32> = []
+    public func setPublicDependency(publicDependency: Array<Int32>) { this.publicDependency = publicDependency; return this }
+
+    public var weakDependency: Array<Int32> = []
+    public func setWeakDependency(weakDependency: Array<Int32>) { this.weakDependency = weakDependency; return this }
+
+    public var messageType: Array<DescriptorProto> = []
+    public func setMessageType(messageType: Array<DescriptorProto>) { this.messageType = messageType; return this }
+
+    public var enumType: Array<EnumDescriptorProto> = []
+    public func setEnumType(enumType: Array<EnumDescriptorProto>) { this.enumType = enumType; return this }
+
+    public var service: Array<ServiceDescriptorProto> = []
+    public func setService(service: Array<ServiceDescriptorProto>) { this.service = service; return this }
+
+    public var extension: Array<FieldDescriptorProto> = []
+    public func setExtension(extension: Array<FieldDescriptorProto>) { this.extension = extension; return this }
+
+    public var options: ?FileOptions = None
+    public func setOptions(options: FileOptions) { this.options = options; return this }
+
+    public var sourceCodeInfo: ?SourceCodeInfo = None
+    public func setSourceCodeInfo(sourceCodeInfo: SourceCodeInfo) { this.sourceCodeInfo = sourceCodeInfo; return this }
+
+    public var syntax: ?String = None
+    public func setSyntax(syntax: String) { this.syntax = syntax; return this }
+
+    public func build() { FileDescriptorProto(this) }
+}
+
+public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<DescriptorProto_ExtensionRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
     private var p_options: Pb2Message<ExtensionRangeOptions>
@@ -321,7 +399,18 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
         this.p_start = start
         this.p_end = end
         this.p_options = Pb2Message<ExtensionRangeOptions>(options)
-        if (let Some(_v) = options) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: DescriptorProto_ExtensionRange__Builder) {
+        this.p_start = src.start
+        this.p_end = src.end
+        this.p_options = Pb2Message<ExtensionRangeOptions>(src.options)
+        m_init()
+    }
+
+    private func m_init() {
+        if (let Some(_v) = p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -417,11 +506,25 @@ public class DescriptorProto_ExtensionRange <: Message & TypedMessage<Descriptor
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { DescriptorProto_ExtensionRange() }
+    public static func newBuilder() { DescriptorProto_ExtensionRange__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = DescriptorProto_ExtensionRange(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = DescriptorProto_ExtensionRange(); _x.unpack(src); _x }
 }
 
-public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorProto_ReservedRange> {
+public class DescriptorProto_ExtensionRange__Builder {
+    public var start: ?Int32 = None
+    public func setStart(start: Int32) { this.start = start; return this }
+
+    public var end: ?Int32 = None
+    public func setEnd(end: Int32) { this.end = end; return this }
+
+    public var options: ?ExtensionRangeOptions = None
+    public func setOptions(options: ExtensionRangeOptions) { this.options = options; return this }
+
+    public func build() { DescriptorProto_ExtensionRange(this) }
+}
+
+public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<DescriptorProto_ReservedRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
 
@@ -431,6 +534,16 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
     ) {
         this.p_start = start
         this.p_end = end
+        m_init()
+    }
+
+    public init(src: DescriptorProto_ReservedRange__Builder) {
+        this.p_start = src.start
+        this.p_end = src.end
+        m_init()
+    }
+
+    private func m_init() {
         m_innerInit()
     }
 
@@ -515,11 +628,22 @@ public class DescriptorProto_ReservedRange <: Message & TypedMessage<DescriptorP
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { DescriptorProto_ReservedRange() }
+    public static func newBuilder() { DescriptorProto_ReservedRange__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = DescriptorProto_ReservedRange(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = DescriptorProto_ReservedRange(); _x.unpack(src); _x }
 }
 
-public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
+public class DescriptorProto_ReservedRange__Builder {
+    public var start: ?Int32 = None
+    public func setStart(start: Int32) { this.start = start; return this }
+
+    public var end: ?Int32 = None
+    public func setEnd(end: Int32) { this.end = end; return this }
+
+    public func build() { DescriptorProto_ReservedRange(this) }
+}
+
+public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     private var p_name: Pb2String
     public let field: RepeatedMessage<FieldDescriptorProto>
     public let extension: RepeatedMessage<FieldDescriptorProto>
@@ -553,15 +677,33 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
         this.p_options = Pb2Message<MessageOptions>(options)
         this.reservedRange = RepeatedMessage<DescriptorProto_ReservedRange>(reservedRange)
         this.reservedName = RepeatedString(reservedName)
-        m_init(this.field)
-        m_init(this.extension)
-        m_init(this.nestedType)
-        m_init(this.enumType)
-        m_init(this.extensionRange)
-        m_init(this.oneofDecl)
-        if (let Some(_v) = options) { m_init(_v) }
-        m_init(this.reservedRange)
-        m_init(this.reservedName)
+        m_init()
+    }
+
+    public init(src: DescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.field = RepeatedMessage<FieldDescriptorProto>(src.field)
+        this.extension = RepeatedMessage<FieldDescriptorProto>(src.extension)
+        this.nestedType = RepeatedMessage<DescriptorProto>(src.nestedType)
+        this.enumType = RepeatedMessage<EnumDescriptorProto>(src.enumType)
+        this.extensionRange = RepeatedMessage<DescriptorProto_ExtensionRange>(src.extensionRange)
+        this.oneofDecl = RepeatedMessage<OneofDescriptorProto>(src.oneofDecl)
+        this.p_options = Pb2Message<MessageOptions>(src.options)
+        this.reservedRange = RepeatedMessage<DescriptorProto_ReservedRange>(src.reservedRange)
+        this.reservedName = RepeatedString(src.reservedName)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(field)
+        m_init(extension)
+        m_init(nestedType)
+        m_init(enumType)
+        m_init(extensionRange)
+        m_init(oneofDecl)
+        if (let Some(_v) = p_options.data) { m_init(_v) }
+        m_init(reservedRange)
+        m_init(reservedName)
         m_innerInit()
     }
 
@@ -707,18 +849,62 @@ public class DescriptorProto <: Message & TypedMessage<DescriptorProto> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { DescriptorProto() }
+    public static func newBuilder() { DescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = DescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = DescriptorProto(); _x.unpack(src); _x }
 }
 
-public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptions> {
+public class DescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var field: Array<FieldDescriptorProto> = []
+    public func setField(field: Array<FieldDescriptorProto>) { this.field = field; return this }
+
+    public var extension: Array<FieldDescriptorProto> = []
+    public func setExtension(extension: Array<FieldDescriptorProto>) { this.extension = extension; return this }
+
+    public var nestedType: Array<DescriptorProto> = []
+    public func setNestedType(nestedType: Array<DescriptorProto>) { this.nestedType = nestedType; return this }
+
+    public var enumType: Array<EnumDescriptorProto> = []
+    public func setEnumType(enumType: Array<EnumDescriptorProto>) { this.enumType = enumType; return this }
+
+    public var extensionRange: Array<DescriptorProto_ExtensionRange> = []
+    public func setExtensionRange(extensionRange: Array<DescriptorProto_ExtensionRange>) { this.extensionRange = extensionRange; return this }
+
+    public var oneofDecl: Array<OneofDescriptorProto> = []
+    public func setOneofDecl(oneofDecl: Array<OneofDescriptorProto>) { this.oneofDecl = oneofDecl; return this }
+
+    public var options: ?MessageOptions = None
+    public func setOptions(options: MessageOptions) { this.options = options; return this }
+
+    public var reservedRange: Array<DescriptorProto_ReservedRange> = []
+    public func setReservedRange(reservedRange: Array<DescriptorProto_ReservedRange>) { this.reservedRange = reservedRange; return this }
+
+    public var reservedName: Array<String> = []
+    public func setReservedName(reservedName: Array<String>) { this.reservedName = reservedName; return this }
+
+    public func build() { DescriptorProto(this) }
+}
+
+public class ExtensionRangeOptions <: MessageLite & TypedMessage<ExtensionRangeOptions> {
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
     public init(
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: ExtensionRangeOptions__Builder) {
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -788,8 +974,16 @@ public class ExtensionRangeOptions <: Message & TypedMessage<ExtensionRangeOptio
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { ExtensionRangeOptions() }
+    public static func newBuilder() { ExtensionRangeOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = ExtensionRangeOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = ExtensionRangeOptions(); _x.unpack(src); _x }
+}
+
+public class ExtensionRangeOptions__Builder {
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { ExtensionRangeOptions(this) }
 }
 
 public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
@@ -963,7 +1157,7 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
     }
 }
 
-public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto> {
+public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorProto> {
     private var p_name: Pb2String
     private var p_number: ?Int32
     private var p_label: ?FieldDescriptorProto_Label
@@ -1003,8 +1197,28 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
         this.p_options = Pb2Message<FieldOptions>(options)
         this.p_proto3Optional = proto3Optional
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(mapEntry)
-        if (let Some(_v) = options) { m_init(_v) }
-        m_init(this.mapEntry)
+        m_init()
+    }
+
+    public init(src: FieldDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.p_number = src.number
+        this.p_label = src.label
+        this.p_type = src.type_
+        this.p_typeName = Pb2String(src.typeName)
+        this.p_extendee = Pb2String(src.extendee)
+        this.p_defaultValue = Pb2String(src.defaultValue)
+        this.p_oneofIndex = src.oneofIndex
+        this.p_jsonName = Pb2String(src.jsonName)
+        this.p_options = Pb2Message<FieldOptions>(src.options)
+        this.p_proto3Optional = src.proto3Optional
+        this.mapEntry = RepeatedMessage<FieldDescriptorProto>(src.mapEntry)
+        m_init()
+    }
+
+    private func m_init() {
+        if (let Some(_v) = p_options.data) { m_init(_v) }
+        m_init(mapEntry)
         m_innerInit()
     }
 
@@ -1201,11 +1415,52 @@ public class FieldDescriptorProto <: Message & TypedMessage<FieldDescriptorProto
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { FieldDescriptorProto() }
+    public static func newBuilder() { FieldDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = FieldDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = FieldDescriptorProto(); _x.unpack(src); _x }
 }
 
-public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto> {
+public class FieldDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var number: ?Int32 = None
+    public func setNumber(number: Int32) { this.number = number; return this }
+
+    public var label: ?FieldDescriptorProto_Label = None
+    public func setLabel(label: FieldDescriptorProto_Label) { this.label = label; return this }
+
+    public var type_: ?FieldDescriptorProto_Type = None
+    public func setType(type_: FieldDescriptorProto_Type) { this.type_ = type_; return this }
+
+    public var typeName: ?String = None
+    public func setTypeName(typeName: String) { this.typeName = typeName; return this }
+
+    public var extendee: ?String = None
+    public func setExtendee(extendee: String) { this.extendee = extendee; return this }
+
+    public var defaultValue: ?String = None
+    public func setDefaultValue(defaultValue: String) { this.defaultValue = defaultValue; return this }
+
+    public var oneofIndex: ?Int32 = None
+    public func setOneofIndex(oneofIndex: Int32) { this.oneofIndex = oneofIndex; return this }
+
+    public var jsonName: ?String = None
+    public func setJsonName(jsonName: String) { this.jsonName = jsonName; return this }
+
+    public var options: ?FieldOptions = None
+    public func setOptions(options: FieldOptions) { this.options = options; return this }
+
+    public var proto3Optional: ?Bool = None
+    public func setProto3Optional(proto3Optional: Bool) { this.proto3Optional = proto3Optional; return this }
+
+    public var mapEntry: Array<FieldDescriptorProto> = []
+    public func setMapEntry(mapEntry: Array<FieldDescriptorProto>) { this.mapEntry = mapEntry; return this }
+
+    public func build() { FieldDescriptorProto(this) }
+}
+
+public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorProto> {
     private var p_name: Pb2String
     private var p_options: Pb2Message<OneofOptions>
 
@@ -1215,7 +1470,17 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
     ) {
         this.p_name = Pb2String(name)
         this.p_options = Pb2Message<OneofOptions>(options)
-        if (let Some(_v) = options) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: OneofDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.p_options = Pb2Message<OneofOptions>(src.options)
+        m_init()
+    }
+
+    private func m_init() {
+        if (let Some(_v) = p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -1300,11 +1565,22 @@ public class OneofDescriptorProto <: Message & TypedMessage<OneofDescriptorProto
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { OneofDescriptorProto() }
+    public static func newBuilder() { OneofDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = OneofDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = OneofDescriptorProto(); _x.unpack(src); _x }
 }
 
-public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<EnumDescriptorProto_EnumReservedRange> {
+public class OneofDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var options: ?OneofOptions = None
+    public func setOptions(options: OneofOptions) { this.options = options; return this }
+
+    public func build() { OneofDescriptorProto(this) }
+}
+
+public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage<EnumDescriptorProto_EnumReservedRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
 
@@ -1314,6 +1590,16 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
     ) {
         this.p_start = start
         this.p_end = end
+        m_init()
+    }
+
+    public init(src: EnumDescriptorProto_EnumReservedRange__Builder) {
+        this.p_start = src.start
+        this.p_end = src.end
+        m_init()
+    }
+
+    private func m_init() {
         m_innerInit()
     }
 
@@ -1398,11 +1684,22 @@ public class EnumDescriptorProto_EnumReservedRange <: Message & TypedMessage<Enu
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { EnumDescriptorProto_EnumReservedRange() }
+    public static func newBuilder() { EnumDescriptorProto_EnumReservedRange__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = EnumDescriptorProto_EnumReservedRange(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = EnumDescriptorProto_EnumReservedRange(); _x.unpack(src); _x }
 }
 
-public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> {
+public class EnumDescriptorProto_EnumReservedRange__Builder {
+    public var start: ?Int32 = None
+    public func setStart(start: Int32) { this.start = start; return this }
+
+    public var end: ?Int32 = None
+    public func setEnd(end: Int32) { this.end = end; return this }
+
+    public func build() { EnumDescriptorProto_EnumReservedRange(this) }
+}
+
+public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorProto> {
     private var p_name: Pb2String
     public let value: RepeatedMessage<EnumValueDescriptorProto>
     private var p_options: Pb2Message<EnumOptions>
@@ -1421,10 +1718,23 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
         this.p_options = Pb2Message<EnumOptions>(options)
         this.reservedRange = RepeatedMessage<EnumDescriptorProto_EnumReservedRange>(reservedRange)
         this.reservedName = RepeatedString(reservedName)
-        m_init(this.value)
-        if (let Some(_v) = options) { m_init(_v) }
-        m_init(this.reservedRange)
-        m_init(this.reservedName)
+        m_init()
+    }
+
+    public init(src: EnumDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.value = RepeatedMessage<EnumValueDescriptorProto>(src.value)
+        this.p_options = Pb2Message<EnumOptions>(src.options)
+        this.reservedRange = RepeatedMessage<EnumDescriptorProto_EnumReservedRange>(src.reservedRange)
+        this.reservedName = RepeatedString(src.reservedName)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(value)
+        if (let Some(_v) = p_options.data) { m_init(_v) }
+        m_init(reservedRange)
+        m_init(reservedName)
         m_innerInit()
     }
 
@@ -1532,11 +1842,31 @@ public class EnumDescriptorProto <: Message & TypedMessage<EnumDescriptorProto> 
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { EnumDescriptorProto() }
+    public static func newBuilder() { EnumDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = EnumDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = EnumDescriptorProto(); _x.unpack(src); _x }
 }
 
-public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescriptorProto> {
+public class EnumDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var value: Array<EnumValueDescriptorProto> = []
+    public func setValue(value: Array<EnumValueDescriptorProto>) { this.value = value; return this }
+
+    public var options: ?EnumOptions = None
+    public func setOptions(options: EnumOptions) { this.options = options; return this }
+
+    public var reservedRange: Array<EnumDescriptorProto_EnumReservedRange> = []
+    public func setReservedRange(reservedRange: Array<EnumDescriptorProto_EnumReservedRange>) { this.reservedRange = reservedRange; return this }
+
+    public var reservedName: Array<String> = []
+    public func setReservedName(reservedName: Array<String>) { this.reservedName = reservedName; return this }
+
+    public func build() { EnumDescriptorProto(this) }
+}
+
+public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDescriptorProto> {
     private var p_name: Pb2String
     private var p_number: ?Int32
     private var p_options: Pb2Message<EnumValueOptions>
@@ -1549,7 +1879,18 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
         this.p_name = Pb2String(name)
         this.p_number = number
         this.p_options = Pb2Message<EnumValueOptions>(options)
-        if (let Some(_v) = options) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: EnumValueDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.p_number = src.number
+        this.p_options = Pb2Message<EnumValueOptions>(src.options)
+        m_init()
+    }
+
+    private func m_init() {
+        if (let Some(_v) = p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -1645,11 +1986,25 @@ public class EnumValueDescriptorProto <: Message & TypedMessage<EnumValueDescrip
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { EnumValueDescriptorProto() }
+    public static func newBuilder() { EnumValueDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = EnumValueDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = EnumValueDescriptorProto(); _x.unpack(src); _x }
 }
 
-public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorProto> {
+public class EnumValueDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var number: ?Int32 = None
+    public func setNumber(number: Int32) { this.number = number; return this }
+
+    public var options: ?EnumValueOptions = None
+    public func setOptions(options: EnumValueOptions) { this.options = options; return this }
+
+    public func build() { EnumValueDescriptorProto(this) }
+}
+
+public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescriptorProto> {
     private var p_name: Pb2String
     public let method: RepeatedMessage<MethodDescriptorProto>
     private var p_options: Pb2Message<ServiceOptions>
@@ -1662,8 +2017,19 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
         this.p_name = Pb2String(name)
         this.method = RepeatedMessage<MethodDescriptorProto>(method)
         this.p_options = Pb2Message<ServiceOptions>(options)
-        m_init(this.method)
-        if (let Some(_v) = options) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: ServiceDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.method = RepeatedMessage<MethodDescriptorProto>(src.method)
+        this.p_options = Pb2Message<ServiceOptions>(src.options)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(method)
+        if (let Some(_v) = p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -1755,11 +2121,25 @@ public class ServiceDescriptorProto <: Message & TypedMessage<ServiceDescriptorP
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { ServiceDescriptorProto() }
+    public static func newBuilder() { ServiceDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = ServiceDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = ServiceDescriptorProto(); _x.unpack(src); _x }
 }
 
-public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorProto> {
+public class ServiceDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var method: Array<MethodDescriptorProto> = []
+    public func setMethod(method: Array<MethodDescriptorProto>) { this.method = method; return this }
+
+    public var options: ?ServiceOptions = None
+    public func setOptions(options: ServiceOptions) { this.options = options; return this }
+
+    public func build() { ServiceDescriptorProto(this) }
+}
+
+public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescriptorProto> {
     private var p_name: Pb2String
     private var p_inputType: Pb2String
     private var p_outputType: Pb2String
@@ -1784,7 +2164,22 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
         this.p_clientStreaming = clientStreaming
         this.p_serverStreaming = serverStreaming
         this.p_funcName = Pb2String(funcName)
-        if (let Some(_v) = options) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: MethodDescriptorProto__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.p_inputType = Pb2String(src.inputType)
+        this.p_outputType = Pb2String(src.outputType)
+        this.p_options = Pb2Message<MethodOptions>(src.options)
+        this.p_clientStreaming = src.clientStreaming
+        this.p_serverStreaming = src.serverStreaming
+        this.p_funcName = Pb2String(src.funcName)
+        m_init()
+    }
+
+    private func m_init() {
+        if (let Some(_v) = p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -1928,8 +2323,34 @@ public class MethodDescriptorProto <: Message & TypedMessage<MethodDescriptorPro
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { MethodDescriptorProto() }
+    public static func newBuilder() { MethodDescriptorProto__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = MethodDescriptorProto(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = MethodDescriptorProto(); _x.unpack(src); _x }
+}
+
+public class MethodDescriptorProto__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var inputType: ?String = None
+    public func setInputType(inputType: String) { this.inputType = inputType; return this }
+
+    public var outputType: ?String = None
+    public func setOutputType(outputType: String) { this.outputType = outputType; return this }
+
+    public var options: ?MethodOptions = None
+    public func setOptions(options: MethodOptions) { this.options = options; return this }
+
+    public var clientStreaming: ?Bool = None
+    public func setClientStreaming(clientStreaming: Bool) { this.clientStreaming = clientStreaming; return this }
+
+    public var serverStreaming: ?Bool = None
+    public func setServerStreaming(serverStreaming: Bool) { this.serverStreaming = serverStreaming; return this }
+
+    public var funcName: ?String = None
+    public func setFuncName(funcName: String) { this.funcName = funcName; return this }
+
+    public func build() { MethodDescriptorProto(this) }
 }
 
 public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
@@ -1979,7 +2400,7 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
     }
 }
 
-public class FileOptions <: Message & TypedMessage<FileOptions> {
+public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     private var p_javaPackage: Pb2String
     private var p_javaOuterClassname: Pb2String
     private var p_javaMultipleFiles: ?Bool
@@ -2046,7 +2467,36 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
         this.p_phpMetadataNamespace = Pb2String(phpMetadataNamespace)
         this.p_rubyPackage = Pb2String(rubyPackage)
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: FileOptions__Builder) {
+        this.p_javaPackage = Pb2String(src.javaPackage)
+        this.p_javaOuterClassname = Pb2String(src.javaOuterClassname)
+        this.p_javaMultipleFiles = src.javaMultipleFiles
+        this.p_javaGenerateEqualsAndHash = src.javaGenerateEqualsAndHash
+        this.p_javaStringCheckUtf8 = src.javaStringCheckUtf8
+        this.p_optimizeFor = src.optimizeFor
+        this.p_goPackage = Pb2String(src.goPackage)
+        this.p_ccGenericServices = src.ccGenericServices
+        this.p_javaGenericServices = src.javaGenericServices
+        this.p_pyGenericServices = src.pyGenericServices
+        this.p_phpGenericServices = src.phpGenericServices
+        this.p_deprecated = src.deprecated
+        this.p_ccEnableArenas = src.ccEnableArenas
+        this.p_objcClassPrefix = Pb2String(src.objcClassPrefix)
+        this.p_csharpNamespace = Pb2String(src.csharpNamespace)
+        this.p_swiftPrefix = Pb2String(src.swiftPrefix)
+        this.p_phpClassPrefix = Pb2String(src.phpClassPrefix)
+        this.p_phpNamespace = Pb2String(src.phpNamespace)
+        this.p_phpMetadataNamespace = Pb2String(src.phpMetadataNamespace)
+        this.p_rubyPackage = Pb2String(src.rubyPackage)
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -2353,11 +2803,79 @@ public class FileOptions <: Message & TypedMessage<FileOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { FileOptions() }
+    public static func newBuilder() { FileOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = FileOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = FileOptions(); _x.unpack(src); _x }
 }
 
-public class MessageOptions <: Message & TypedMessage<MessageOptions> {
+public class FileOptions__Builder {
+    public var javaPackage: ?String = None
+    public func setJavaPackage(javaPackage: String) { this.javaPackage = javaPackage; return this }
+
+    public var javaOuterClassname: ?String = None
+    public func setJavaOuterClassname(javaOuterClassname: String) { this.javaOuterClassname = javaOuterClassname; return this }
+
+    public var javaMultipleFiles: ?Bool = None
+    public func setJavaMultipleFiles(javaMultipleFiles: Bool) { this.javaMultipleFiles = javaMultipleFiles; return this }
+
+    public var javaGenerateEqualsAndHash: ?Bool = None
+    public func setJavaGenerateEqualsAndHash(javaGenerateEqualsAndHash: Bool) { this.javaGenerateEqualsAndHash = javaGenerateEqualsAndHash; return this }
+
+    public var javaStringCheckUtf8: ?Bool = None
+    public func setJavaStringCheckUtf8(javaStringCheckUtf8: Bool) { this.javaStringCheckUtf8 = javaStringCheckUtf8; return this }
+
+    public var optimizeFor: ?FileOptions_OptimizeMode = None
+    public func setOptimizeFor(optimizeFor: FileOptions_OptimizeMode) { this.optimizeFor = optimizeFor; return this }
+
+    public var goPackage: ?String = None
+    public func setGoPackage(goPackage: String) { this.goPackage = goPackage; return this }
+
+    public var ccGenericServices: ?Bool = None
+    public func setCcGenericServices(ccGenericServices: Bool) { this.ccGenericServices = ccGenericServices; return this }
+
+    public var javaGenericServices: ?Bool = None
+    public func setJavaGenericServices(javaGenericServices: Bool) { this.javaGenericServices = javaGenericServices; return this }
+
+    public var pyGenericServices: ?Bool = None
+    public func setPyGenericServices(pyGenericServices: Bool) { this.pyGenericServices = pyGenericServices; return this }
+
+    public var phpGenericServices: ?Bool = None
+    public func setPhpGenericServices(phpGenericServices: Bool) { this.phpGenericServices = phpGenericServices; return this }
+
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var ccEnableArenas: ?Bool = None
+    public func setCcEnableArenas(ccEnableArenas: Bool) { this.ccEnableArenas = ccEnableArenas; return this }
+
+    public var objcClassPrefix: ?String = None
+    public func setObjcClassPrefix(objcClassPrefix: String) { this.objcClassPrefix = objcClassPrefix; return this }
+
+    public var csharpNamespace: ?String = None
+    public func setCsharpNamespace(csharpNamespace: String) { this.csharpNamespace = csharpNamespace; return this }
+
+    public var swiftPrefix: ?String = None
+    public func setSwiftPrefix(swiftPrefix: String) { this.swiftPrefix = swiftPrefix; return this }
+
+    public var phpClassPrefix: ?String = None
+    public func setPhpClassPrefix(phpClassPrefix: String) { this.phpClassPrefix = phpClassPrefix; return this }
+
+    public var phpNamespace: ?String = None
+    public func setPhpNamespace(phpNamespace: String) { this.phpNamespace = phpNamespace; return this }
+
+    public var phpMetadataNamespace: ?String = None
+    public func setPhpMetadataNamespace(phpMetadataNamespace: String) { this.phpMetadataNamespace = phpMetadataNamespace; return this }
+
+    public var rubyPackage: ?String = None
+    public func setRubyPackage(rubyPackage: String) { this.rubyPackage = rubyPackage; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { FileOptions(this) }
+}
+
+public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
     private var p_messageSetWireFormat: ?Bool
     private var p_noStandardDescriptorAccessor: ?Bool
     private var p_deprecated: ?Bool
@@ -2376,7 +2894,20 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
         this.p_deprecated = deprecated
         this.p_mapEntry = mapEntry
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: MessageOptions__Builder) {
+        this.p_messageSetWireFormat = src.messageSetWireFormat
+        this.p_noStandardDescriptorAccessor = src.noStandardDescriptorAccessor
+        this.p_deprecated = src.deprecated
+        this.p_mapEntry = src.mapEntry
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -2493,8 +3024,28 @@ public class MessageOptions <: Message & TypedMessage<MessageOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { MessageOptions() }
+    public static func newBuilder() { MessageOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = MessageOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = MessageOptions(); _x.unpack(src); _x }
+}
+
+public class MessageOptions__Builder {
+    public var messageSetWireFormat: ?Bool = None
+    public func setMessageSetWireFormat(messageSetWireFormat: Bool) { this.messageSetWireFormat = messageSetWireFormat; return this }
+
+    public var noStandardDescriptorAccessor: ?Bool = None
+    public func setNoStandardDescriptorAccessor(noStandardDescriptorAccessor: Bool) { this.noStandardDescriptorAccessor = noStandardDescriptorAccessor; return this }
+
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var mapEntry: ?Bool = None
+    public func setMapEntry(mapEntry: Bool) { this.mapEntry = mapEntry; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { MessageOptions(this) }
 }
 
 public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
@@ -2591,7 +3142,7 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
     }
 }
 
-public class FieldOptions <: Message & TypedMessage<FieldOptions> {
+public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
     private var p_ctype: ?FieldOptions_CType
     private var p_packed: ?Bool
     private var p_jstype: ?FieldOptions_JSType
@@ -2619,7 +3170,23 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
         this.p_deprecated = deprecated
         this.p_weak = weak
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: FieldOptions__Builder) {
+        this.p_ctype = src.ctype
+        this.p_packed = src.packed
+        this.p_jstype = src.jstype
+        this.p_lazy = src.lazy
+        this.p_unverifiedLazy = src.unverifiedLazy
+        this.p_deprecated = src.deprecated
+        this.p_weak = src.weak
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -2769,18 +3336,56 @@ public class FieldOptions <: Message & TypedMessage<FieldOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { FieldOptions() }
+    public static func newBuilder() { FieldOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = FieldOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = FieldOptions(); _x.unpack(src); _x }
 }
 
-public class OneofOptions <: Message & TypedMessage<OneofOptions> {
+public class FieldOptions__Builder {
+    public var ctype: ?FieldOptions_CType = None
+    public func setCtype(ctype: FieldOptions_CType) { this.ctype = ctype; return this }
+
+    public var packed: ?Bool = None
+    public func setPacked(packed: Bool) { this.packed = packed; return this }
+
+    public var jstype: ?FieldOptions_JSType = None
+    public func setJstype(jstype: FieldOptions_JSType) { this.jstype = jstype; return this }
+
+    public var lazy: ?Bool = None
+    public func setLazy(lazy: Bool) { this.lazy = lazy; return this }
+
+    public var unverifiedLazy: ?Bool = None
+    public func setUnverifiedLazy(unverifiedLazy: Bool) { this.unverifiedLazy = unverifiedLazy; return this }
+
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var weak: ?Bool = None
+    public func setWeak(weak: Bool) { this.weak = weak; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { FieldOptions(this) }
+}
+
+public class OneofOptions <: MessageLite & TypedMessage<OneofOptions> {
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
     public init(
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: OneofOptions__Builder) {
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -2850,11 +3455,19 @@ public class OneofOptions <: Message & TypedMessage<OneofOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { OneofOptions() }
+    public static func newBuilder() { OneofOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = OneofOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = OneofOptions(); _x.unpack(src); _x }
 }
 
-public class EnumOptions <: Message & TypedMessage<EnumOptions> {
+public class OneofOptions__Builder {
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { OneofOptions(this) }
+}
+
+public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
     private var p_allowAlias: ?Bool
     private var p_deprecated: ?Bool
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
@@ -2867,7 +3480,18 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
         this.p_allowAlias = allowAlias
         this.p_deprecated = deprecated
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: EnumOptions__Builder) {
+        this.p_allowAlias = src.allowAlias
+        this.p_deprecated = src.deprecated
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -2960,11 +3584,25 @@ public class EnumOptions <: Message & TypedMessage<EnumOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { EnumOptions() }
+    public static func newBuilder() { EnumOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = EnumOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = EnumOptions(); _x.unpack(src); _x }
 }
 
-public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
+public class EnumOptions__Builder {
+    public var allowAlias: ?Bool = None
+    public func setAllowAlias(allowAlias: Bool) { this.allowAlias = allowAlias; return this }
+
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { EnumOptions(this) }
+}
+
+public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
     private var p_deprecated: ?Bool
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
@@ -2974,7 +3612,17 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
     ) {
         this.p_deprecated = deprecated
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: EnumValueOptions__Builder) {
+        this.p_deprecated = src.deprecated
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -3055,11 +3703,22 @@ public class EnumValueOptions <: Message & TypedMessage<EnumValueOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { EnumValueOptions() }
+    public static func newBuilder() { EnumValueOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = EnumValueOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = EnumValueOptions(); _x.unpack(src); _x }
 }
 
-public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
+public class EnumValueOptions__Builder {
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { EnumValueOptions(this) }
+}
+
+public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
     private var p_deprecated: ?Bool
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
@@ -3069,7 +3728,17 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
     ) {
         this.p_deprecated = deprecated
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: ServiceOptions__Builder) {
+        this.p_deprecated = src.deprecated
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -3150,8 +3819,19 @@ public class ServiceOptions <: Message & TypedMessage<ServiceOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { ServiceOptions() }
+    public static func newBuilder() { ServiceOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = ServiceOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = ServiceOptions(); _x.unpack(src); _x }
+}
+
+public class ServiceOptions__Builder {
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { ServiceOptions(this) }
 }
 
 public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
@@ -3201,7 +3881,7 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
     }
 }
 
-public class MethodOptions <: Message & TypedMessage<MethodOptions> {
+public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
     private var p_deprecated: ?Bool
     private var p_idempotencyLevel: ?MethodOptions_IdempotencyLevel
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
@@ -3214,7 +3894,18 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
         this.p_deprecated = deprecated
         this.p_idempotencyLevel = idempotencyLevel
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
-        m_init(this.uninterpretedOption)
+        m_init()
+    }
+
+    public init(src: MethodOptions__Builder) {
+        this.p_deprecated = src.deprecated
+        this.p_idempotencyLevel = src.idempotencyLevel
+        this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(uninterpretedOption)
         m_innerInit()
     }
 
@@ -3307,11 +3998,25 @@ public class MethodOptions <: Message & TypedMessage<MethodOptions> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { MethodOptions() }
+    public static func newBuilder() { MethodOptions__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = MethodOptions(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = MethodOptions(); _x.unpack(src); _x }
 }
 
-public class UninterpretedOption_NamePart <: Message & TypedMessage<UninterpretedOption_NamePart> {
+public class MethodOptions__Builder {
+    public var deprecated: ?Bool = None
+    public func setDeprecated(deprecated: Bool) { this.deprecated = deprecated; return this }
+
+    public var idempotencyLevel: ?MethodOptions_IdempotencyLevel = None
+    public func setIdempotencyLevel(idempotencyLevel: MethodOptions_IdempotencyLevel) { this.idempotencyLevel = idempotencyLevel; return this }
+
+    public var uninterpretedOption: Array<UninterpretedOption> = []
+    public func setUninterpretedOption(uninterpretedOption: Array<UninterpretedOption>) { this.uninterpretedOption = uninterpretedOption; return this }
+
+    public func build() { MethodOptions(this) }
+}
+
+public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<UninterpretedOption_NamePart> {
     private var p_namePart: Pb2String
     private var p_isExtension: ?Bool
 
@@ -3321,6 +4026,16 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     ) {
         this.p_namePart = Pb2String(namePart)
         this.p_isExtension = isExtension
+        m_init()
+    }
+
+    public init(src: UninterpretedOption_NamePart__Builder) {
+        this.p_namePart = Pb2String(src.namePart)
+        this.p_isExtension = src.isExtension
+        m_init()
+    }
+
+    private func m_init() {
         m_innerInit()
     }
 
@@ -3407,11 +4122,22 @@ public class UninterpretedOption_NamePart <: Message & TypedMessage<Uninterprete
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { UninterpretedOption_NamePart() }
+    public static func newBuilder() { UninterpretedOption_NamePart__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = UninterpretedOption_NamePart(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = UninterpretedOption_NamePart(); _x.unpack(src); _x }
 }
 
-public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> {
+public class UninterpretedOption_NamePart__Builder {
+    public var namePart: ?String = None
+    public func setNamePart(namePart: String) { this.namePart = namePart; return this }
+
+    public var isExtension: ?Bool = None
+    public func setIsExtension(isExtension: Bool) { this.isExtension = isExtension; return this }
+
+    public func build() { UninterpretedOption_NamePart(this) }
+}
+
+public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOption> {
     public let name: RepeatedMessage<UninterpretedOption_NamePart>
     private var p_identifierValue: Pb2String
     private var p_positiveIntValue: ?UInt64
@@ -3436,7 +4162,22 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
         this.p_doubleValue = doubleValue
         this.p_stringValue = stringValue
         this.p_aggregateValue = Pb2String(aggregateValue)
-        m_init(this.name)
+        m_init()
+    }
+
+    public init(src: UninterpretedOption__Builder) {
+        this.name = RepeatedMessage<UninterpretedOption_NamePart>(src.name)
+        this.p_identifierValue = Pb2String(src.identifierValue)
+        this.p_positiveIntValue = src.positiveIntValue
+        this.p_negativeIntValue = src.negativeIntValue
+        this.p_doubleValue = src.doubleValue
+        this.p_stringValue = src.stringValue
+        this.p_aggregateValue = Pb2String(src.aggregateValue)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(name)
         m_innerInit()
     }
 
@@ -3575,11 +4316,37 @@ public class UninterpretedOption <: Message & TypedMessage<UninterpretedOption> 
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { UninterpretedOption() }
+    public static func newBuilder() { UninterpretedOption__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = UninterpretedOption(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = UninterpretedOption(); _x.unpack(src); _x }
 }
 
-public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Location> {
+public class UninterpretedOption__Builder {
+    public var name: Array<UninterpretedOption_NamePart> = []
+    public func setName(name: Array<UninterpretedOption_NamePart>) { this.name = name; return this }
+
+    public var identifierValue: ?String = None
+    public func setIdentifierValue(identifierValue: String) { this.identifierValue = identifierValue; return this }
+
+    public var positiveIntValue: ?UInt64 = None
+    public func setPositiveIntValue(positiveIntValue: UInt64) { this.positiveIntValue = positiveIntValue; return this }
+
+    public var negativeIntValue: ?Int64 = None
+    public func setNegativeIntValue(negativeIntValue: Int64) { this.negativeIntValue = negativeIntValue; return this }
+
+    public var doubleValue: ?Float64 = None
+    public func setDoubleValue(doubleValue: Float64) { this.doubleValue = doubleValue; return this }
+
+    public var stringValue: ?BytesSlice = None
+    public func setStringValue(stringValue: BytesSlice) { this.stringValue = stringValue; return this }
+
+    public var aggregateValue: ?String = None
+    public func setAggregateValue(aggregateValue: String) { this.aggregateValue = aggregateValue; return this }
+
+    public func build() { UninterpretedOption(this) }
+}
+
+public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInfo_Location> {
     public let path: RepeatedField<Int32>
     public let span: RepeatedField<Int32>
     private var p_leadingComments: Pb2String
@@ -3598,9 +4365,22 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
         this.p_leadingComments = Pb2String(leadingComments)
         this.p_trailingComments = Pb2String(trailingComments)
         this.leadingDetachedComments = RepeatedString(leadingDetachedComments)
-        m_init(this.path)
-        m_init(this.span)
-        m_init(this.leadingDetachedComments)
+        m_init()
+    }
+
+    public init(src: SourceCodeInfo_Location__Builder) {
+        this.path = RepeatedField<Int32>(src.path)
+        this.span = RepeatedField<Int32>(src.span)
+        this.p_leadingComments = Pb2String(src.leadingComments)
+        this.p_trailingComments = Pb2String(src.trailingComments)
+        this.leadingDetachedComments = RepeatedString(src.leadingDetachedComments)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(path)
+        m_init(span)
+        m_init(leadingDetachedComments)
         m_innerInit()
     }
 
@@ -3709,18 +4489,47 @@ public class SourceCodeInfo_Location <: Message & TypedMessage<SourceCodeInfo_Lo
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { SourceCodeInfo_Location() }
+    public static func newBuilder() { SourceCodeInfo_Location__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = SourceCodeInfo_Location(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = SourceCodeInfo_Location(); _x.unpack(src); _x }
 }
 
-public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
+public class SourceCodeInfo_Location__Builder {
+    public var path: Array<Int32> = []
+    public func setPath(path: Array<Int32>) { this.path = path; return this }
+
+    public var span: Array<Int32> = []
+    public func setSpan(span: Array<Int32>) { this.span = span; return this }
+
+    public var leadingComments: ?String = None
+    public func setLeadingComments(leadingComments: String) { this.leadingComments = leadingComments; return this }
+
+    public var trailingComments: ?String = None
+    public func setTrailingComments(trailingComments: String) { this.trailingComments = trailingComments; return this }
+
+    public var leadingDetachedComments: Array<String> = []
+    public func setLeadingDetachedComments(leadingDetachedComments: Array<String>) { this.leadingDetachedComments = leadingDetachedComments; return this }
+
+    public func build() { SourceCodeInfo_Location(this) }
+}
+
+public class SourceCodeInfo <: MessageLite & TypedMessage<SourceCodeInfo> {
     public let location: RepeatedMessage<SourceCodeInfo_Location>
 
     public init(
         location!: Array<SourceCodeInfo_Location> = []
     ) {
         this.location = RepeatedMessage<SourceCodeInfo_Location>(location)
-        m_init(this.location)
+        m_init()
+    }
+
+    public init(src: SourceCodeInfo__Builder) {
+        this.location = RepeatedMessage<SourceCodeInfo_Location>(src.location)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(location)
         m_innerInit()
     }
 
@@ -3790,11 +4599,19 @@ public class SourceCodeInfo <: Message & TypedMessage<SourceCodeInfo> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { SourceCodeInfo() }
+    public static func newBuilder() { SourceCodeInfo__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = SourceCodeInfo(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = SourceCodeInfo(); _x.unpack(src); _x }
 }
 
-public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCodeInfo_Annotation> {
+public class SourceCodeInfo__Builder {
+    public var location: Array<SourceCodeInfo_Location> = []
+    public func setLocation(location: Array<SourceCodeInfo_Location>) { this.location = location; return this }
+
+    public func build() { SourceCodeInfo(this) }
+}
+
+public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<GeneratedCodeInfo_Annotation> {
     public let path: RepeatedField<Int32>
     private var p_sourceFile: Pb2String
     private var p_begin: ?Int32
@@ -3810,7 +4627,19 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
         this.p_sourceFile = Pb2String(sourceFile)
         this.p_begin = begin
         this.p_end = end
-        m_init(this.path)
+        m_init()
+    }
+
+    public init(src: GeneratedCodeInfo_Annotation__Builder) {
+        this.path = RepeatedField<Int32>(src.path)
+        this.p_sourceFile = Pb2String(src.sourceFile)
+        this.p_begin = src.begin
+        this.p_end = src.end
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(path)
         m_innerInit()
     }
 
@@ -3913,18 +4742,44 @@ public class GeneratedCodeInfo_Annotation <: Message & TypedMessage<GeneratedCod
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { GeneratedCodeInfo_Annotation() }
+    public static func newBuilder() { GeneratedCodeInfo_Annotation__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = GeneratedCodeInfo_Annotation(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = GeneratedCodeInfo_Annotation(); _x.unpack(src); _x }
 }
 
-public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
+public class GeneratedCodeInfo_Annotation__Builder {
+    public var path: Array<Int32> = []
+    public func setPath(path: Array<Int32>) { this.path = path; return this }
+
+    public var sourceFile: ?String = None
+    public func setSourceFile(sourceFile: String) { this.sourceFile = sourceFile; return this }
+
+    public var begin: ?Int32 = None
+    public func setBegin(begin: Int32) { this.begin = begin; return this }
+
+    public var end: ?Int32 = None
+    public func setEnd(end: Int32) { this.end = end; return this }
+
+    public func build() { GeneratedCodeInfo_Annotation(this) }
+}
+
+public class GeneratedCodeInfo <: MessageLite & TypedMessage<GeneratedCodeInfo> {
     public let annotation: RepeatedMessage<GeneratedCodeInfo_Annotation>
 
     public init(
         annotation!: Array<GeneratedCodeInfo_Annotation> = []
     ) {
         this.annotation = RepeatedMessage<GeneratedCodeInfo_Annotation>(annotation)
-        m_init(this.annotation)
+        m_init()
+    }
+
+    public init(src: GeneratedCodeInfo__Builder) {
+        this.annotation = RepeatedMessage<GeneratedCodeInfo_Annotation>(src.annotation)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(annotation)
         m_innerInit()
     }
 
@@ -3994,6 +4849,14 @@ public class GeneratedCodeInfo <: Message & TypedMessage<GeneratedCodeInfo> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { GeneratedCodeInfo() }
+    public static func newBuilder() { GeneratedCodeInfo__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = GeneratedCodeInfo(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = GeneratedCodeInfo(); _x.unpack(src); _x }
+}
+
+public class GeneratedCodeInfo__Builder {
+    public var annotation: Array<GeneratedCodeInfo_Annotation> = []
+    public func setAnnotation(annotation: Array<GeneratedCodeInfo_Annotation>) { this.annotation = annotation; return this }
+
+    public func build() { GeneratedCodeInfo(this) }
 }

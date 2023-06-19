@@ -284,7 +284,7 @@ func genCodeMessageFieldClass(typeName: String, fields: RepeatedMessage<FieldDes
     let append: (String) -> StringBuilder = helper.outbuf.append
 
     append("\n")
-    append("public class ${typeName} <: Message & TypedMessage<${typeName}> {\n")
+    append("public class ${typeName} <: MessageLite & TypedMessage<${typeName}> {\n")
 
     for (field in fields where !field.hasOneofIndex) {
         append("    ${getFieldVarDefine(field)}\n")

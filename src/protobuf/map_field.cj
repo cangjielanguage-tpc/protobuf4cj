@@ -1,7 +1,7 @@
 package protobuf
 
 public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
-    private var parent: ?Message
+    private var parent: ?MessageLite
     private var data: HashMap<K, V>
 
     public init() {
@@ -115,7 +115,7 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     public func isEmpty(): Bool { data.isEmpty() }
 
     func putDirty(key: K, value: V): Unit { data[key] = value }
-    func setParent(parent: Message): Unit { this.parent = parent }
+    func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
 }
 
@@ -167,8 +167,8 @@ extend MapField<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     }
 }
 
-public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V <: Message & TypedMessage<V> {
-    private var parent: ?Message
+public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V <: MessageLite & TypedMessage<V> {
+    private var parent: ?MessageLite
     private var data: HashMap<K, V>
 
     public init() {
@@ -314,17 +314,17 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         parent?.markDirty()
     }
 
-    private func link(element: Message) { element.m_parents.insert(parent ?? return) }
-    private func unlink(element: Message) { element.m_parents.remove(parent ?? return) }
+    private func link(element: MessageLite) { element.m_parents.insert(parent ?? return) }
+    private func unlink(element: MessageLite) { element.m_parents.remove(parent ?? return) }
 
     private func link(elements: Collection<V>) {
         let m = parent ?? return ()
-        for (e in elements) { let ee: Message = e; ee.m_parents.insert(m) }
+        for (e in elements) { let ee: MessageLite = e; ee.m_parents.insert(m) }
     }
 
     private func unlink(elements: Collection<V>) {
         let m = parent ?? return ()
-        for (e in elements) { let ee: Message = e; ee.m_parents.remove(m) }
+        for (e in elements) { let ee: MessageLite = e; ee.m_parents.remove(m) }
     }
 
     public func version(): Int64 { data.version() }
@@ -342,7 +342,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public operator func !=(that: MapMessage<K, V>): Bool { data != that.data }
 
     func putDirty(key: K, value: V): Unit { if (let Some(m) = data.put(key, value)) { unlink(m) }; link(value) }
-    func setParent(parent: Message): Unit { this.parent = parent }
+    func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
 }
 

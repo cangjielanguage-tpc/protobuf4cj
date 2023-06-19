@@ -4,7 +4,7 @@ from std import collection.*
 from protobuf import protobuf.*
 import google.protobuf.*
 
-public class Version <: Message & TypedMessage<Version> {
+public class Version <: MessageLite & TypedMessage<Version> {
     private var p_major: ?Int32
     private var p_minor: ?Int32
     private var p_patch: ?Int32
@@ -20,6 +20,18 @@ public class Version <: Message & TypedMessage<Version> {
         this.p_minor = minor
         this.p_patch = patch
         this.p_suffix = Pb2String(suffix)
+        m_init()
+    }
+
+    public init(src: Version__Builder) {
+        this.p_major = src.major
+        this.p_minor = src.minor
+        this.p_patch = src.patch
+        this.p_suffix = Pb2String(src.suffix)
+        m_init()
+    }
+
+    private func m_init() {
         m_innerInit()
     }
 
@@ -127,11 +139,28 @@ public class Version <: Message & TypedMessage<Version> {
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { Version() }
+    public static func newBuilder() { Version__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = Version(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = Version(); _x.unpack(src); _x }
 }
 
-public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest> {
+public class Version__Builder {
+    public var major: ?Int32 = None
+    public func setMajor(major: Int32) { this.major = major; return this }
+
+    public var minor: ?Int32 = None
+    public func setMinor(minor: Int32) { this.minor = minor; return this }
+
+    public var patch: ?Int32 = None
+    public func setPatch(patch: Int32) { this.patch = patch; return this }
+
+    public var suffix: ?String = None
+    public func setSuffix(suffix: String) { this.suffix = suffix; return this }
+
+    public func build() { Version(this) }
+}
+
+public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorRequest> {
     public let fileToGenerate: RepeatedString
     private var p_parameter: Pb2String
     public let protoFile: RepeatedMessage<google.protobuf.FileDescriptorProto>
@@ -147,9 +176,21 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
         this.p_parameter = Pb2String(parameter)
         this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(protoFile)
         this.p_compilerVersion = Pb2Message<Version>(compilerVersion)
-        m_init(this.fileToGenerate)
-        m_init(this.protoFile)
-        if (let Some(_v) = compilerVersion) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: CodeGeneratorRequest__Builder) {
+        this.fileToGenerate = RepeatedString(src.fileToGenerate)
+        this.p_parameter = Pb2String(src.parameter)
+        this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(src.protoFile)
+        this.p_compilerVersion = Pb2Message<Version>(src.compilerVersion)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(fileToGenerate)
+        m_init(protoFile)
+        if (let Some(_v) = p_compilerVersion.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -249,11 +290,28 @@ public class CodeGeneratorRequest <: Message & TypedMessage<CodeGeneratorRequest
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorRequest() }
+    public static func newBuilder() { CodeGeneratorRequest__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = CodeGeneratorRequest(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = CodeGeneratorRequest(); _x.unpack(src); _x }
 }
 
-public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorResponse_File> {
+public class CodeGeneratorRequest__Builder {
+    public var fileToGenerate: Array<String> = []
+    public func setFileToGenerate(fileToGenerate: Array<String>) { this.fileToGenerate = fileToGenerate; return this }
+
+    public var parameter: ?String = None
+    public func setParameter(parameter: String) { this.parameter = parameter; return this }
+
+    public var protoFile: Array<google.protobuf.FileDescriptorProto> = []
+    public func setProtoFile(protoFile: Array<google.protobuf.FileDescriptorProto>) { this.protoFile = protoFile; return this }
+
+    public var compilerVersion: ?Version = None
+    public func setCompilerVersion(compilerVersion: Version) { this.compilerVersion = compilerVersion; return this }
+
+    public func build() { CodeGeneratorRequest(this) }
+}
+
+public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGeneratorResponse_File> {
     private var p_name: Pb2String
     private var p_insertionPoint: Pb2String
     private var p_content: Pb2String
@@ -269,7 +327,19 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
         this.p_insertionPoint = Pb2String(insertionPoint)
         this.p_content = Pb2String(content)
         this.p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>(generatedCodeInfo)
-        if (let Some(_v) = generatedCodeInfo) { m_init(_v) }
+        m_init()
+    }
+
+    public init(src: CodeGeneratorResponse_File__Builder) {
+        this.p_name = Pb2String(src.name)
+        this.p_insertionPoint = Pb2String(src.insertionPoint)
+        this.p_content = Pb2String(src.content)
+        this.p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>(src.generatedCodeInfo)
+        m_init()
+    }
+
+    private func m_init() {
+        if (let Some(_v) = p_generatedCodeInfo.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -378,8 +448,25 @@ public class CodeGeneratorResponse_File <: Message & TypedMessage<CodeGeneratorR
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorResponse_File() }
+    public static func newBuilder() { CodeGeneratorResponse_File__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = CodeGeneratorResponse_File(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = CodeGeneratorResponse_File(); _x.unpack(src); _x }
+}
+
+public class CodeGeneratorResponse_File__Builder {
+    public var name: ?String = None
+    public func setName(name: String) { this.name = name; return this }
+
+    public var insertionPoint: ?String = None
+    public func setInsertionPoint(insertionPoint: String) { this.insertionPoint = insertionPoint; return this }
+
+    public var content: ?String = None
+    public func setContent(content: String) { this.content = content; return this }
+
+    public var generatedCodeInfo: ?google.protobuf.GeneratedCodeInfo = None
+    public func setGeneratedCodeInfo(generatedCodeInfo: google.protobuf.GeneratedCodeInfo) { this.generatedCodeInfo = generatedCodeInfo; return this }
+
+    public func build() { CodeGeneratorResponse_File(this) }
 }
 
 public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
@@ -424,7 +511,7 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
     }
 }
 
-public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorResponse> {
+public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorResponse> {
     private var p_error: Pb2String
     private var p_supportedFeatures: ?UInt64
     public let file: RepeatedMessage<CodeGeneratorResponse_File>
@@ -437,7 +524,18 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
         this.p_error = Pb2String(error)
         this.p_supportedFeatures = supportedFeatures
         this.file = RepeatedMessage<CodeGeneratorResponse_File>(file)
-        m_init(this.file)
+        m_init()
+    }
+
+    public init(src: CodeGeneratorResponse__Builder) {
+        this.p_error = Pb2String(src.error)
+        this.p_supportedFeatures = src.supportedFeatures
+        this.file = RepeatedMessage<CodeGeneratorResponse_File>(src.file)
+        m_init()
+    }
+
+    private func m_init() {
+        m_init(file)
         m_innerInit()
     }
 
@@ -529,6 +627,20 @@ public class CodeGeneratorResponse <: Message & TypedMessage<CodeGeneratorRespon
     public func unpacki(src: BytesReader) { match (src) { case _x: SimpleReader => unpack(_x) case _ => unpack(src) } }
 
     public static func empty() { CodeGeneratorResponse() }
+    public static func newBuilder() { CodeGeneratorResponse__Builder() }
     public static func fromBytes(src: Collection<Byte>) { let _x = CodeGeneratorResponse(); _x.unpack(src); _x }
     public static func fromBytes(src: BytesReader) { let _x = CodeGeneratorResponse(); _x.unpack(src); _x }
+}
+
+public class CodeGeneratorResponse__Builder {
+    public var error: ?String = None
+    public func setError(error: String) { this.error = error; return this }
+
+    public var supportedFeatures: ?UInt64 = None
+    public func setSupportedFeatures(supportedFeatures: UInt64) { this.supportedFeatures = supportedFeatures; return this }
+
+    public var file: Array<CodeGeneratorResponse_File> = []
+    public func setFile(file: Array<CodeGeneratorResponse_File>) { this.file = file; return this }
+
+    public func build() { CodeGeneratorResponse(this) }
 }

@@ -161,7 +161,7 @@ public func binSize(val: String) {
 }
 
 @OverflowWrapping
-public func binSize(val: Message) {
+public func binSize(val: MessageLite) {
     let size = val.size
     varintSize(size) + size
 }
@@ -189,7 +189,7 @@ public interface TypedMessage<M> <: Equatable<M> {
 
 class ParentNode {
     var next: ?ParentNode = None
-    ParentNode(let data: Message) { }
+    ParentNode(let data: MessageLite) { }
 }
 
 struct Parents {
@@ -203,7 +203,7 @@ struct Parents {
         } }
     }
 
-    mut func insert(v: Message) {
+    mut func insert(v: MessageLite) {
         var node = header ?? return header = ParentNode(v)
         while (true) { match (node.next) {
             case Some(n) => node = n
@@ -211,7 +211,7 @@ struct Parents {
         } }
     }
 
-    mut func remove(v: Message) {
+    mut func remove(v: MessageLite) {
         var node = header ?? return ()
         if (refEq(node.data, v)) {
             return header = node.next
