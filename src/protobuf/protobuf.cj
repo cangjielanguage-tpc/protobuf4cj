@@ -189,6 +189,7 @@ public interface TypedMessage<M> <: Equatable<M> {
 
 class ParentNode {
     var next: ?ParentNode = None
+    var count = 1
     ParentNode(let data: MessageLite) { }
 }
 
@@ -197,28 +198,31 @@ struct Parents {
 
     public func markDirty(): Unit {
         var node = header
-        while (true) { match (node) {
-            case Some(n) => n.data.markDirty(); node = n.next
-            case _ => return
-        } }
+        while (let Some(n) = node) {
+            n.data.markDirty()
+            node = n.next
+        }
     }
 
     mut func insert(v: MessageLite) {
         var node = header ?? return header = ParentNode(v)
-        while (true) { match (node.next) {
-            case Some(n) => node = n
-            case _ => return node.next = ParentNode(v)
-        } }
+        while (!refEq(node.data, v)) {
+            node = node.next ?? return node.next = ParentNode(v)
+        }
+
+        node.count++
     }
 
     mut func remove(v: MessageLite) {
         var node = header ?? return ()
         if (refEq(node.data, v)) {
-            return header = node.next
+            return if (node.count > 1) { node.count-- } else { header = node.next }
         }
-        while (true) { match (node.next) {
-            case Some(n) => if (refEq(n.data, v)) { return node.next = n.next } else { node = n }
-            case _ => return
-        } }
+        while (let Some(n) = node.next) {
+            if (refEq(n.data, v)) {
+                return if (n.count > 1) { n.count -- } else { node.next = n.next }
+            }
+            node = n
+        }
     }
 }
