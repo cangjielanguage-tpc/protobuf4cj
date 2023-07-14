@@ -76,7 +76,7 @@ extend RoArray<T> <: Collection<T> {
      * Call 'size' on array type variable will be processed by compiler.
      * Only call based on 'Collection' type will use this function.
      */
-    public prop let size: Int64 {
+    public prop size: Int64 {
         get() {
             data.size
         }

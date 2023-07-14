@@ -116,7 +116,7 @@ func getFieldUnpackExpr2(field: FieldDescriptorProto) {
     return namedParseSrc("p_${field.jsonName}", "src", field)
 }
 
-/* normal field prop var expr */
+/* normal field mut prop expr */
 func getFieldPropVarExpr2(field: FieldDescriptorProto) {
     if (!field.hasDefaultValue) {
         return "get() { p_${field.jsonName}.getOrThrow() } set(_x) { p_${field.jsonName} = _x; markDirty() }"
@@ -226,27 +226,27 @@ func genCodeMessageFieldProps2(typeName: String, fields: RepeatedMessage<FieldDe
         append("\n")
         if (field.type_ == TYPE_STRING) {
             append("    public func clear${uName}() { ${pName}.clear(); markDirty() }\n")
-            append("    public prop let has${uName}: Bool { get() { isPresent(${pName}.data) } }\n")
-            append("    public prop var ${name}: ${typeConvert(field)} { get() { ${pName}.get() } set(_v) { ${pName}.set(_v); markDirty() } }\n")
+            append("    public prop has${uName}: Bool { get() { isPresent(${pName}.data) } }\n")
+            append("    public mut prop ${name}: ${typeConvert(field)} { get() { ${pName}.get() } set(_v) { ${pName}.set(_v); markDirty() } }\n")
         } else if (field.type_ == TYPE_MESSAGE) {
             append("    public func clear${uName}() { ${pName}.removeFrom(this); markDirty() }\n")
-            append("    public prop let has${uName}: Bool { get() { isPresent(${pName}.data) } }\n")
-            append("    public prop var ${name}: ${field.typeName} { get() { ${pName}.data.getOrThrow() } set(_v) { ${pName}.set(this, _v); markDirty() } }\n")
+            append("    public prop has${uName}: Bool { get() { isPresent(${pName}.data) } }\n")
+            append("    public mut prop ${name}: ${field.typeName} { get() { ${pName}.data.getOrThrow() } set(_v) { ${pName}.set(this, _v); markDirty() } }\n")
         } else {
             append("    public func clear${uName}() { ${pName} = None; markDirty() }\n")
-            append("    public prop let has${uName}: Bool { get() { isPresent(${pName}) } }\n")
-            append("    public prop var ${name}: ${typeConvert(field)} { ${getFieldPropVarExpr2(field)} }\n")
+            append("    public prop has${uName}: Bool { get() { isPresent(${pName}) } }\n")
+            append("    public mut prop ${name}: ${typeConvert(field)} { ${getFieldPropVarExpr2(field)} }\n")
         }
     }
 
     // oneof field props
     for ((name, ofields) in helper.oneofDecl) {
         append("\n")
-        append("    public prop var ${getMessagePropName(name)}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(_v) { m_assign(p_${name}, _v); p_${name} = _v; markDirty() } }\n")
+        append("    public mut prop ${getMessagePropName(name)}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(_v) { m_assign(p_${name}, _v); p_${name} = _v; markDirty() } }\n")
         for (field in ofields) {
             append("\n")
-            append("    public prop let has${titleCase(field.jsonName)}: Bool { get() { match(p_${name}) { case ${titleCase(field.jsonName)}(_) => true case _ => false } } }\n")
-            append("    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
+            append("    public prop has${titleCase(field.jsonName)}: Bool { get() { match(p_${name}) { case ${titleCase(field.jsonName)}(_) => true case _ => false } } }\n")
+            append("    public mut prop ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
         }
     }
 }

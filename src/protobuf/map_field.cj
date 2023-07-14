@@ -111,7 +111,7 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     public func keys(): Keys<K> { data.keys() }
     public func values(): Values<V> { data.values() }
     public func iterator(): HashMapIterator<K, V> { data.iterator() }
-    public prop let size: Int64 { get() { data.size } }
+    public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
 
     func putDirty(key: K, value: V): Unit { data[key] = value }
@@ -335,7 +335,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public func keys(): Keys<K> { data.keys() }
     public func values(): Values<V> { data.values() }
     public func iterator(): HashMapIterator<K, V> { data.iterator() }
-    public prop let size: Int64 { get() { data.size } }
+    public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
 
     public operator func ==(that: MapMessage<K, V>): Bool { data == that.data }

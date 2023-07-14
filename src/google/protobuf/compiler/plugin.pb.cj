@@ -36,20 +36,20 @@ public class Version <: MessageLite & TypedMessage<Version> {
     }
 
     public func clearMajor() { p_major = None; markDirty() }
-    public prop let hasMajor: Bool { get() { isPresent(p_major) } }
-    public prop var major: Int32 { get() { p_major.getOrThrow() } set(_x) { p_major = _x; markDirty() } }
+    public prop hasMajor: Bool { get() { isPresent(p_major) } }
+    public mut prop major: Int32 { get() { p_major.getOrThrow() } set(_x) { p_major = _x; markDirty() } }
 
     public func clearMinor() { p_minor = None; markDirty() }
-    public prop let hasMinor: Bool { get() { isPresent(p_minor) } }
-    public prop var minor: Int32 { get() { p_minor.getOrThrow() } set(_x) { p_minor = _x; markDirty() } }
+    public prop hasMinor: Bool { get() { isPresent(p_minor) } }
+    public mut prop minor: Int32 { get() { p_minor.getOrThrow() } set(_x) { p_minor = _x; markDirty() } }
 
     public func clearPatch() { p_patch = None; markDirty() }
-    public prop let hasPatch: Bool { get() { isPresent(p_patch) } }
-    public prop var patch: Int32 { get() { p_patch.getOrThrow() } set(_x) { p_patch = _x; markDirty() } }
+    public prop hasPatch: Bool { get() { isPresent(p_patch) } }
+    public mut prop patch: Int32 { get() { p_patch.getOrThrow() } set(_x) { p_patch = _x; markDirty() } }
 
     public func clearSuffix() { p_suffix.clear(); markDirty() }
-    public prop let hasSuffix: Bool { get() { isPresent(p_suffix.data) } }
-    public prop var suffix: String { get() { p_suffix.get() } set(_v) { p_suffix.set(_v); markDirty() } }
+    public prop hasSuffix: Bool { get() { isPresent(p_suffix.data) } }
+    public mut prop suffix: String { get() { p_suffix.get() } set(_v) { p_suffix.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -195,12 +195,12 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     }
 
     public func clearParameter() { p_parameter.clear(); markDirty() }
-    public prop let hasParameter: Bool { get() { isPresent(p_parameter.data) } }
-    public prop var parameter: String { get() { p_parameter.get() } set(_v) { p_parameter.set(_v); markDirty() } }
+    public prop hasParameter: Bool { get() { isPresent(p_parameter.data) } }
+    public mut prop parameter: String { get() { p_parameter.get() } set(_v) { p_parameter.set(_v); markDirty() } }
 
     public func clearCompilerVersion() { p_compilerVersion.removeFrom(this); markDirty() }
-    public prop let hasCompilerVersion: Bool { get() { isPresent(p_compilerVersion.data) } }
-    public prop var compilerVersion: Version { get() { p_compilerVersion.data.getOrThrow() } set(_v) { p_compilerVersion.set(this, _v); markDirty() } }
+    public prop hasCompilerVersion: Bool { get() { isPresent(p_compilerVersion.data) } }
+    public mut prop compilerVersion: Version { get() { p_compilerVersion.data.getOrThrow() } set(_v) { p_compilerVersion.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -344,20 +344,20 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearInsertionPoint() { p_insertionPoint.clear(); markDirty() }
-    public prop let hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint.data) } }
-    public prop var insertionPoint: String { get() { p_insertionPoint.get() } set(_v) { p_insertionPoint.set(_v); markDirty() } }
+    public prop hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint.data) } }
+    public mut prop insertionPoint: String { get() { p_insertionPoint.get() } set(_v) { p_insertionPoint.set(_v); markDirty() } }
 
     public func clearContent() { p_content.clear(); markDirty() }
-    public prop let hasContent: Bool { get() { isPresent(p_content.data) } }
-    public prop var content: String { get() { p_content.get() } set(_v) { p_content.set(_v); markDirty() } }
+    public prop hasContent: Bool { get() { isPresent(p_content.data) } }
+    public mut prop content: String { get() { p_content.get() } set(_v) { p_content.set(_v); markDirty() } }
 
     public func clearGeneratedCodeInfo() { p_generatedCodeInfo.removeFrom(this); markDirty() }
-    public prop let hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
-    public prop var generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(_v) { p_generatedCodeInfo.set(this, _v); markDirty() } }
+    public prop hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
+    public mut prop generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(_v) { p_generatedCodeInfo.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -540,12 +540,12 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
     }
 
     public func clearError() { p_error.clear(); markDirty() }
-    public prop let hasError: Bool { get() { isPresent(p_error.data) } }
-    public prop var error: String { get() { p_error.get() } set(_v) { p_error.set(_v); markDirty() } }
+    public prop hasError: Bool { get() { isPresent(p_error.data) } }
+    public mut prop error: String { get() { p_error.get() } set(_v) { p_error.set(_v); markDirty() } }
 
     public func clearSupportedFeatures() { p_supportedFeatures = None; markDirty() }
-    public prop let hasSupportedFeatures: Bool { get() { isPresent(p_supportedFeatures) } }
-    public prop var supportedFeatures: UInt64 { get() { p_supportedFeatures.getOrThrow() } set(_x) { p_supportedFeatures = _x; markDirty() } }
+    public prop hasSupportedFeatures: Bool { get() { isPresent(p_supportedFeatures) } }
+    public mut prop supportedFeatures: UInt64 { get() { p_supportedFeatures.getOrThrow() } set(_x) { p_supportedFeatures = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0

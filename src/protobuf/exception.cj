@@ -23,7 +23,7 @@ public abstract class ProtobufException <: Exception {}
 public class InvalidEnumValueException <: ProtobufException {
     public InvalidEnumValueException (public let name: String, public let value: Int32) {}
 
-    public prop let message: String {
+    public prop message: String {
         get() { "The value `${value}` is illegal for the enum type `${name}`" }
     }
 }
@@ -36,7 +36,7 @@ public class InvalidEnumValueException <: ProtobufException {
 public class UnmatchedEnumStringException <: ProtobufException {
     public UnmatchedEnumStringException (public let name: String, public let value: String) {}
 
-    public prop let message: String {
+    public prop message: String {
         get() { "Enum type `${name}` match `${value}` failed." }
     }
 }
@@ -49,7 +49,7 @@ public class UnmatchedEnumStringException <: ProtobufException {
 public class RequiredFieldNotSetException <: ProtobufException {
     public RequiredFieldNotSetException(public let name: String) {}
 
-    public prop let message: String {
+    public prop message: String {
         get() { "The field `${name}` without a default value is required to set before serialize." }
     }
 }
@@ -62,7 +62,7 @@ public class RequiredFieldNotSetException <: ProtobufException {
 public class GetFieldValueException <: ProtobufException {
     public GetFieldValueException(public let name: String) {}
 
-    public prop let message: String {
+    public prop message: String {
         get() { "The failed `${name}` without a default value is not allow read before set." }
     }
 }
@@ -75,7 +75,7 @@ public class GetFieldValueException <: ProtobufException {
 public class ParseValueExecption <: ProtobufException {
     public ParseValueExecption(public let name: String, public let reason!: String = "others") {}
 
-    public prop let message: String {
+    public prop message: String {
         get() { "Failed to parse `${name}`. [${reason}]" }
     }
 }
@@ -87,13 +87,13 @@ public class UnexpectedOneofException <: ProtobufException { }
 public class InsufficientSpaceException <: ProtobufException {
     public InsufficientSpaceException(public let exp: Int64, public let act: Int64) {}
 
-    public prop let message: String {
+    public prop message: String {
         get() { "message size ${exp} > buffer size ${act}" }
     }
 }
 
 class PBInternalException <: ProtobufException{
-    public prop let message: String {
+    public prop message: String {
         get() { "Protobuf Internal exception" }
     }
 }

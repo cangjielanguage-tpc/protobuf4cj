@@ -371,22 +371,22 @@ func genCodeMessageFieldProps(typeName: String, fields: RepeatedMessage<FieldDes
 
         append("\n")
         if (field.type_ == TYPE_STRING) {
-            append("    public prop var ${name}: String { get() { ${pName}.get() } set(_v) { ${pName}.set(_v); markDirty() } }\n")
+            append("    public mut prop ${name}: String { get() { ${pName}.get() } set(_v) { ${pName}.set(_v); markDirty() } }\n")
         } else if (field.type_ == TYPE_MESSAGE) {
-            append("    public prop var ${name}: ${field.typeName} { get() { ${pName} } set(_v) { m_assign(${pName}, _v); ${pName} = _v; markDirty() } }\n")
+            append("    public mut prop ${name}: ${field.typeName} { get() { ${pName} } set(_v) { m_assign(${pName}, _v); ${pName} = _v; markDirty() } }\n")
         } else {
-            append("    public prop var ${name}: ${typeConvert(field)} { get() { ${pName} } set(_v) { ${pName} = _v; markDirty() } }\n")
+            append("    public mut prop ${name}: ${typeConvert(field)} { get() { ${pName} } set(_v) { ${pName} = _v; markDirty() } }\n")
         }
     }
 
     // oneof field props
     for ((name, ofields) in helper.oneofDecl) {
         append("\n")
-        append("    public prop var ${getMessagePropName(name)}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(_v) { m_assign(p_${name}, _v); p_${name} = _v; markDirty() } }\n")
+        append("    public mut prop ${getMessagePropName(name)}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(_v) { m_assign(p_${name}, _v); p_${name} = _v; markDirty() } }\n")
         for (field in ofields) {
             append("\n")
-            append("    public prop let has${titleCase(field.jsonName)}: Bool { get() { match(p_${name}) { case ${titleCase(field.jsonName)}(_) => true case _ => false } } }\n")
-            append("    public prop var ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
+            append("    public prop has${titleCase(field.jsonName)}: Bool { get() { match(p_${name}) { case ${titleCase(field.jsonName)}(_) => true case _ => false } } }\n")
+            append("    public mut prop ${getMessagePropName(field.jsonName)}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
         }
     }
 }

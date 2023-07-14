@@ -17,7 +17,7 @@ public abstract class MessageLite <: ToString & Hashable {
 
     /* message packed size */
     protected func m_size(): Int64
-    public prop let size: Int64 { get() {
+    public prop size: Int64 { get() {
         if (m_cachedSize == -1) {
             var sum = m_size()
             for (u in unknownFields.getRawData()) {

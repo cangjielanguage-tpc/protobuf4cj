@@ -173,24 +173,24 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearPackage() { p_package.clear(); markDirty() }
-    public prop let hasPackage: Bool { get() { isPresent(p_package.data) } }
-    public prop var package_: String { get() { p_package.get() } set(_v) { p_package.set(_v); markDirty() } }
+    public prop hasPackage: Bool { get() { isPresent(p_package.data) } }
+    public mut prop package_: String { get() { p_package.get() } set(_v) { p_package.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: FileOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: FileOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     public func clearSourceCodeInfo() { p_sourceCodeInfo.removeFrom(this); markDirty() }
-    public prop let hasSourceCodeInfo: Bool { get() { isPresent(p_sourceCodeInfo.data) } }
-    public prop var sourceCodeInfo: SourceCodeInfo { get() { p_sourceCodeInfo.data.getOrThrow() } set(_v) { p_sourceCodeInfo.set(this, _v); markDirty() } }
+    public prop hasSourceCodeInfo: Bool { get() { isPresent(p_sourceCodeInfo.data) } }
+    public mut prop sourceCodeInfo: SourceCodeInfo { get() { p_sourceCodeInfo.data.getOrThrow() } set(_v) { p_sourceCodeInfo.set(this, _v); markDirty() } }
 
     public func clearSyntax() { p_syntax.clear(); markDirty() }
-    public prop let hasSyntax: Bool { get() { isPresent(p_syntax.data) } }
-    public prop var syntax: String { get() { p_syntax.get() } set(_v) { p_syntax.set(_v); markDirty() } }
+    public prop hasSyntax: Bool { get() { isPresent(p_syntax.data) } }
+    public mut prop syntax: String { get() { p_syntax.get() } set(_v) { p_syntax.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -415,16 +415,16 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
     }
 
     public func clearStart() { p_start = None; markDirty() }
-    public prop let hasStart: Bool { get() { isPresent(p_start) } }
-    public prop var start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
+    public prop hasStart: Bool { get() { isPresent(p_start) } }
+    public mut prop start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
 
     public func clearEnd() { p_end = None; markDirty() }
-    public prop let hasEnd: Bool { get() { isPresent(p_end) } }
-    public prop var end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public prop hasEnd: Bool { get() { isPresent(p_end) } }
+    public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: ExtensionRangeOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: ExtensionRangeOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -548,12 +548,12 @@ public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<Descrip
     }
 
     public func clearStart() { p_start = None; markDirty() }
-    public prop let hasStart: Bool { get() { isPresent(p_start) } }
-    public prop var start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
+    public prop hasStart: Bool { get() { isPresent(p_start) } }
+    public mut prop start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
 
     public func clearEnd() { p_end = None; markDirty() }
-    public prop let hasEnd: Bool { get() { isPresent(p_end) } }
-    public prop var end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public prop hasEnd: Bool { get() { isPresent(p_end) } }
+    public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -708,12 +708,12 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: MessageOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: MessageOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -1223,48 +1223,48 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearNumber() { p_number = None; markDirty() }
-    public prop let hasNumber: Bool { get() { isPresent(p_number) } }
-    public prop var number: Int32 { get() { p_number.getOrThrow() } set(_x) { p_number = _x; markDirty() } }
+    public prop hasNumber: Bool { get() { isPresent(p_number) } }
+    public mut prop number: Int32 { get() { p_number.getOrThrow() } set(_x) { p_number = _x; markDirty() } }
 
     public func clearLabel() { p_label = None; markDirty() }
-    public prop let hasLabel: Bool { get() { isPresent(p_label) } }
-    public prop var label: FieldDescriptorProto_Label { get() { p_label.getOrThrow() } set(_x) { p_label = _x; markDirty() } }
+    public prop hasLabel: Bool { get() { isPresent(p_label) } }
+    public mut prop label: FieldDescriptorProto_Label { get() { p_label.getOrThrow() } set(_x) { p_label = _x; markDirty() } }
 
     public func clearType() { p_type = None; markDirty() }
-    public prop let hasType: Bool { get() { isPresent(p_type) } }
-    public prop var type_: FieldDescriptorProto_Type { get() { p_type.getOrThrow() } set(_x) { p_type = _x; markDirty() } }
+    public prop hasType: Bool { get() { isPresent(p_type) } }
+    public mut prop type_: FieldDescriptorProto_Type { get() { p_type.getOrThrow() } set(_x) { p_type = _x; markDirty() } }
 
     public func clearTypeName() { p_typeName.clear(); markDirty() }
-    public prop let hasTypeName: Bool { get() { isPresent(p_typeName.data) } }
-    public prop var typeName: String { get() { p_typeName.get() } set(_v) { p_typeName.set(_v); markDirty() } }
+    public prop hasTypeName: Bool { get() { isPresent(p_typeName.data) } }
+    public mut prop typeName: String { get() { p_typeName.get() } set(_v) { p_typeName.set(_v); markDirty() } }
 
     public func clearExtendee() { p_extendee.clear(); markDirty() }
-    public prop let hasExtendee: Bool { get() { isPresent(p_extendee.data) } }
-    public prop var extendee: String { get() { p_extendee.get() } set(_v) { p_extendee.set(_v); markDirty() } }
+    public prop hasExtendee: Bool { get() { isPresent(p_extendee.data) } }
+    public mut prop extendee: String { get() { p_extendee.get() } set(_v) { p_extendee.set(_v); markDirty() } }
 
     public func clearDefaultValue() { p_defaultValue.clear(); markDirty() }
-    public prop let hasDefaultValue: Bool { get() { isPresent(p_defaultValue.data) } }
-    public prop var defaultValue: String { get() { p_defaultValue.get() } set(_v) { p_defaultValue.set(_v); markDirty() } }
+    public prop hasDefaultValue: Bool { get() { isPresent(p_defaultValue.data) } }
+    public mut prop defaultValue: String { get() { p_defaultValue.get() } set(_v) { p_defaultValue.set(_v); markDirty() } }
 
     public func clearOneofIndex() { p_oneofIndex = None; markDirty() }
-    public prop let hasOneofIndex: Bool { get() { isPresent(p_oneofIndex) } }
-    public prop var oneofIndex: Int32 { get() { p_oneofIndex.getOrThrow() } set(_x) { p_oneofIndex = _x; markDirty() } }
+    public prop hasOneofIndex: Bool { get() { isPresent(p_oneofIndex) } }
+    public mut prop oneofIndex: Int32 { get() { p_oneofIndex.getOrThrow() } set(_x) { p_oneofIndex = _x; markDirty() } }
 
     public func clearJsonName() { p_jsonName.clear(); markDirty() }
-    public prop let hasJsonName: Bool { get() { isPresent(p_jsonName.data) } }
-    public prop var jsonName: String { get() { p_jsonName.get() } set(_v) { p_jsonName.set(_v); markDirty() } }
+    public prop hasJsonName: Bool { get() { isPresent(p_jsonName.data) } }
+    public mut prop jsonName: String { get() { p_jsonName.get() } set(_v) { p_jsonName.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: FieldOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: FieldOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     public func clearProto3Optional() { p_proto3Optional = None; markDirty() }
-    public prop let hasProto3Optional: Bool { get() { isPresent(p_proto3Optional) } }
-    public prop var proto3Optional: Bool { get() { p_proto3Optional.getOrThrow() } set(_x) { p_proto3Optional = _x; markDirty() } }
+    public prop hasProto3Optional: Bool { get() { isPresent(p_proto3Optional) } }
+    public mut prop proto3Optional: Bool { get() { p_proto3Optional.getOrThrow() } set(_x) { p_proto3Optional = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -1485,12 +1485,12 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: OneofOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: OneofOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -1604,12 +1604,12 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage
     }
 
     public func clearStart() { p_start = None; markDirty() }
-    public prop let hasStart: Bool { get() { isPresent(p_start) } }
-    public prop var start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
+    public prop hasStart: Bool { get() { isPresent(p_start) } }
+    public mut prop start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
 
     public func clearEnd() { p_end = None; markDirty() }
-    public prop let hasEnd: Bool { get() { isPresent(p_end) } }
-    public prop var end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public prop hasEnd: Bool { get() { isPresent(p_end) } }
+    public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -1739,12 +1739,12 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: EnumOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: EnumOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -1895,16 +1895,16 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearNumber() { p_number = None; markDirty() }
-    public prop let hasNumber: Bool { get() { isPresent(p_number) } }
-    public prop var number: Int32 { get() { p_number.getOrThrow() } set(_x) { p_number = _x; markDirty() } }
+    public prop hasNumber: Bool { get() { isPresent(p_number) } }
+    public mut prop number: Int32 { get() { p_number.getOrThrow() } set(_x) { p_number = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: EnumValueOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: EnumValueOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -2034,12 +2034,12 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: ServiceOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: ServiceOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -2184,32 +2184,32 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
     }
 
     public func clearName() { p_name.clear(); markDirty() }
-    public prop let hasName: Bool { get() { isPresent(p_name.data) } }
-    public prop var name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public prop hasName: Bool { get() { isPresent(p_name.data) } }
+    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
 
     public func clearInputType() { p_inputType.clear(); markDirty() }
-    public prop let hasInputType: Bool { get() { isPresent(p_inputType.data) } }
-    public prop var inputType: String { get() { p_inputType.get() } set(_v) { p_inputType.set(_v); markDirty() } }
+    public prop hasInputType: Bool { get() { isPresent(p_inputType.data) } }
+    public mut prop inputType: String { get() { p_inputType.get() } set(_v) { p_inputType.set(_v); markDirty() } }
 
     public func clearOutputType() { p_outputType.clear(); markDirty() }
-    public prop let hasOutputType: Bool { get() { isPresent(p_outputType.data) } }
-    public prop var outputType: String { get() { p_outputType.get() } set(_v) { p_outputType.set(_v); markDirty() } }
+    public prop hasOutputType: Bool { get() { isPresent(p_outputType.data) } }
+    public mut prop outputType: String { get() { p_outputType.get() } set(_v) { p_outputType.set(_v); markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
-    public prop let hasOptions: Bool { get() { isPresent(p_options.data) } }
-    public prop var options: MethodOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
+    public mut prop options: MethodOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
 
     public func clearClientStreaming() { p_clientStreaming = None; markDirty() }
-    public prop let hasClientStreaming: Bool { get() { isPresent(p_clientStreaming) } }
-    public prop var clientStreaming: Bool { get() { p_clientStreaming ?? false } set(_x) { p_clientStreaming = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasClientStreaming: Bool { get() { isPresent(p_clientStreaming) } }
+    public mut prop clientStreaming: Bool { get() { p_clientStreaming ?? false } set(_x) { p_clientStreaming = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearServerStreaming() { p_serverStreaming = None; markDirty() }
-    public prop let hasServerStreaming: Bool { get() { isPresent(p_serverStreaming) } }
-    public prop var serverStreaming: Bool { get() { p_serverStreaming ?? false } set(_x) { p_serverStreaming = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasServerStreaming: Bool { get() { isPresent(p_serverStreaming) } }
+    public mut prop serverStreaming: Bool { get() { p_serverStreaming ?? false } set(_x) { p_serverStreaming = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearFuncName() { p_funcName.clear(); markDirty() }
-    public prop let hasFuncName: Bool { get() { isPresent(p_funcName.data) } }
-    public prop var funcName: String { get() { p_funcName.get() } set(_v) { p_funcName.set(_v); markDirty() } }
+    public prop hasFuncName: Bool { get() { isPresent(p_funcName.data) } }
+    public mut prop funcName: String { get() { p_funcName.get() } set(_v) { p_funcName.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -2501,84 +2501,84 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     }
 
     public func clearJavaPackage() { p_javaPackage.clear(); markDirty() }
-    public prop let hasJavaPackage: Bool { get() { isPresent(p_javaPackage.data) } }
-    public prop var javaPackage: String { get() { p_javaPackage.get() } set(_v) { p_javaPackage.set(_v); markDirty() } }
+    public prop hasJavaPackage: Bool { get() { isPresent(p_javaPackage.data) } }
+    public mut prop javaPackage: String { get() { p_javaPackage.get() } set(_v) { p_javaPackage.set(_v); markDirty() } }
 
     public func clearJavaOuterClassname() { p_javaOuterClassname.clear(); markDirty() }
-    public prop let hasJavaOuterClassname: Bool { get() { isPresent(p_javaOuterClassname.data) } }
-    public prop var javaOuterClassname: String { get() { p_javaOuterClassname.get() } set(_v) { p_javaOuterClassname.set(_v); markDirty() } }
+    public prop hasJavaOuterClassname: Bool { get() { isPresent(p_javaOuterClassname.data) } }
+    public mut prop javaOuterClassname: String { get() { p_javaOuterClassname.get() } set(_v) { p_javaOuterClassname.set(_v); markDirty() } }
 
     public func clearJavaMultipleFiles() { p_javaMultipleFiles = None; markDirty() }
-    public prop let hasJavaMultipleFiles: Bool { get() { isPresent(p_javaMultipleFiles) } }
-    public prop var javaMultipleFiles: Bool { get() { p_javaMultipleFiles ?? false } set(_x) { p_javaMultipleFiles = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasJavaMultipleFiles: Bool { get() { isPresent(p_javaMultipleFiles) } }
+    public mut prop javaMultipleFiles: Bool { get() { p_javaMultipleFiles ?? false } set(_x) { p_javaMultipleFiles = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearJavaGenerateEqualsAndHash() { p_javaGenerateEqualsAndHash = None; markDirty() }
-    public prop let hasJavaGenerateEqualsAndHash: Bool { get() { isPresent(p_javaGenerateEqualsAndHash) } }
-    public prop var javaGenerateEqualsAndHash: Bool { get() { p_javaGenerateEqualsAndHash.getOrThrow() } set(_x) { p_javaGenerateEqualsAndHash = _x; markDirty() } }
+    public prop hasJavaGenerateEqualsAndHash: Bool { get() { isPresent(p_javaGenerateEqualsAndHash) } }
+    public mut prop javaGenerateEqualsAndHash: Bool { get() { p_javaGenerateEqualsAndHash.getOrThrow() } set(_x) { p_javaGenerateEqualsAndHash = _x; markDirty() } }
 
     public func clearJavaStringCheckUtf8() { p_javaStringCheckUtf8 = None; markDirty() }
-    public prop let hasJavaStringCheckUtf8: Bool { get() { isPresent(p_javaStringCheckUtf8) } }
-    public prop var javaStringCheckUtf8: Bool { get() { p_javaStringCheckUtf8 ?? false } set(_x) { p_javaStringCheckUtf8 = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasJavaStringCheckUtf8: Bool { get() { isPresent(p_javaStringCheckUtf8) } }
+    public mut prop javaStringCheckUtf8: Bool { get() { p_javaStringCheckUtf8 ?? false } set(_x) { p_javaStringCheckUtf8 = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearOptimizeFor() { p_optimizeFor = None; markDirty() }
-    public prop let hasOptimizeFor: Bool { get() { isPresent(p_optimizeFor) } }
-    public prop var optimizeFor: FileOptions_OptimizeMode { get() { p_optimizeFor ?? SPEED } set(_x) { p_optimizeFor = if (_x == SPEED) { None } else { _x }; markDirty() } }
+    public prop hasOptimizeFor: Bool { get() { isPresent(p_optimizeFor) } }
+    public mut prop optimizeFor: FileOptions_OptimizeMode { get() { p_optimizeFor ?? SPEED } set(_x) { p_optimizeFor = if (_x == SPEED) { None } else { _x }; markDirty() } }
 
     public func clearGoPackage() { p_goPackage.clear(); markDirty() }
-    public prop let hasGoPackage: Bool { get() { isPresent(p_goPackage.data) } }
-    public prop var goPackage: String { get() { p_goPackage.get() } set(_v) { p_goPackage.set(_v); markDirty() } }
+    public prop hasGoPackage: Bool { get() { isPresent(p_goPackage.data) } }
+    public mut prop goPackage: String { get() { p_goPackage.get() } set(_v) { p_goPackage.set(_v); markDirty() } }
 
     public func clearCcGenericServices() { p_ccGenericServices = None; markDirty() }
-    public prop let hasCcGenericServices: Bool { get() { isPresent(p_ccGenericServices) } }
-    public prop var ccGenericServices: Bool { get() { p_ccGenericServices ?? false } set(_x) { p_ccGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasCcGenericServices: Bool { get() { isPresent(p_ccGenericServices) } }
+    public mut prop ccGenericServices: Bool { get() { p_ccGenericServices ?? false } set(_x) { p_ccGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearJavaGenericServices() { p_javaGenericServices = None; markDirty() }
-    public prop let hasJavaGenericServices: Bool { get() { isPresent(p_javaGenericServices) } }
-    public prop var javaGenericServices: Bool { get() { p_javaGenericServices ?? false } set(_x) { p_javaGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasJavaGenericServices: Bool { get() { isPresent(p_javaGenericServices) } }
+    public mut prop javaGenericServices: Bool { get() { p_javaGenericServices ?? false } set(_x) { p_javaGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearPyGenericServices() { p_pyGenericServices = None; markDirty() }
-    public prop let hasPyGenericServices: Bool { get() { isPresent(p_pyGenericServices) } }
-    public prop var pyGenericServices: Bool { get() { p_pyGenericServices ?? false } set(_x) { p_pyGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasPyGenericServices: Bool { get() { isPresent(p_pyGenericServices) } }
+    public mut prop pyGenericServices: Bool { get() { p_pyGenericServices ?? false } set(_x) { p_pyGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearPhpGenericServices() { p_phpGenericServices = None; markDirty() }
-    public prop let hasPhpGenericServices: Bool { get() { isPresent(p_phpGenericServices) } }
-    public prop var phpGenericServices: Bool { get() { p_phpGenericServices ?? false } set(_x) { p_phpGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasPhpGenericServices: Bool { get() { isPresent(p_phpGenericServices) } }
+    public mut prop phpGenericServices: Bool { get() { p_phpGenericServices ?? false } set(_x) { p_phpGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearCcEnableArenas() { p_ccEnableArenas = None; markDirty() }
-    public prop let hasCcEnableArenas: Bool { get() { isPresent(p_ccEnableArenas) } }
-    public prop var ccEnableArenas: Bool { get() { p_ccEnableArenas ?? true } set(_x) { p_ccEnableArenas = if (_x == true) { None } else { _x }; markDirty() } }
+    public prop hasCcEnableArenas: Bool { get() { isPresent(p_ccEnableArenas) } }
+    public mut prop ccEnableArenas: Bool { get() { p_ccEnableArenas ?? true } set(_x) { p_ccEnableArenas = if (_x == true) { None } else { _x }; markDirty() } }
 
     public func clearObjcClassPrefix() { p_objcClassPrefix.clear(); markDirty() }
-    public prop let hasObjcClassPrefix: Bool { get() { isPresent(p_objcClassPrefix.data) } }
-    public prop var objcClassPrefix: String { get() { p_objcClassPrefix.get() } set(_v) { p_objcClassPrefix.set(_v); markDirty() } }
+    public prop hasObjcClassPrefix: Bool { get() { isPresent(p_objcClassPrefix.data) } }
+    public mut prop objcClassPrefix: String { get() { p_objcClassPrefix.get() } set(_v) { p_objcClassPrefix.set(_v); markDirty() } }
 
     public func clearCsharpNamespace() { p_csharpNamespace.clear(); markDirty() }
-    public prop let hasCsharpNamespace: Bool { get() { isPresent(p_csharpNamespace.data) } }
-    public prop var csharpNamespace: String { get() { p_csharpNamespace.get() } set(_v) { p_csharpNamespace.set(_v); markDirty() } }
+    public prop hasCsharpNamespace: Bool { get() { isPresent(p_csharpNamespace.data) } }
+    public mut prop csharpNamespace: String { get() { p_csharpNamespace.get() } set(_v) { p_csharpNamespace.set(_v); markDirty() } }
 
     public func clearSwiftPrefix() { p_swiftPrefix.clear(); markDirty() }
-    public prop let hasSwiftPrefix: Bool { get() { isPresent(p_swiftPrefix.data) } }
-    public prop var swiftPrefix: String { get() { p_swiftPrefix.get() } set(_v) { p_swiftPrefix.set(_v); markDirty() } }
+    public prop hasSwiftPrefix: Bool { get() { isPresent(p_swiftPrefix.data) } }
+    public mut prop swiftPrefix: String { get() { p_swiftPrefix.get() } set(_v) { p_swiftPrefix.set(_v); markDirty() } }
 
     public func clearPhpClassPrefix() { p_phpClassPrefix.clear(); markDirty() }
-    public prop let hasPhpClassPrefix: Bool { get() { isPresent(p_phpClassPrefix.data) } }
-    public prop var phpClassPrefix: String { get() { p_phpClassPrefix.get() } set(_v) { p_phpClassPrefix.set(_v); markDirty() } }
+    public prop hasPhpClassPrefix: Bool { get() { isPresent(p_phpClassPrefix.data) } }
+    public mut prop phpClassPrefix: String { get() { p_phpClassPrefix.get() } set(_v) { p_phpClassPrefix.set(_v); markDirty() } }
 
     public func clearPhpNamespace() { p_phpNamespace.clear(); markDirty() }
-    public prop let hasPhpNamespace: Bool { get() { isPresent(p_phpNamespace.data) } }
-    public prop var phpNamespace: String { get() { p_phpNamespace.get() } set(_v) { p_phpNamespace.set(_v); markDirty() } }
+    public prop hasPhpNamespace: Bool { get() { isPresent(p_phpNamespace.data) } }
+    public mut prop phpNamespace: String { get() { p_phpNamespace.get() } set(_v) { p_phpNamespace.set(_v); markDirty() } }
 
     public func clearPhpMetadataNamespace() { p_phpMetadataNamespace.clear(); markDirty() }
-    public prop let hasPhpMetadataNamespace: Bool { get() { isPresent(p_phpMetadataNamespace.data) } }
-    public prop var phpMetadataNamespace: String { get() { p_phpMetadataNamespace.get() } set(_v) { p_phpMetadataNamespace.set(_v); markDirty() } }
+    public prop hasPhpMetadataNamespace: Bool { get() { isPresent(p_phpMetadataNamespace.data) } }
+    public mut prop phpMetadataNamespace: String { get() { p_phpMetadataNamespace.get() } set(_v) { p_phpMetadataNamespace.set(_v); markDirty() } }
 
     public func clearRubyPackage() { p_rubyPackage.clear(); markDirty() }
-    public prop let hasRubyPackage: Bool { get() { isPresent(p_rubyPackage.data) } }
-    public prop var rubyPackage: String { get() { p_rubyPackage.get() } set(_v) { p_rubyPackage.set(_v); markDirty() } }
+    public prop hasRubyPackage: Bool { get() { isPresent(p_rubyPackage.data) } }
+    public mut prop rubyPackage: String { get() { p_rubyPackage.get() } set(_v) { p_rubyPackage.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -2912,20 +2912,20 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
     }
 
     public func clearMessageSetWireFormat() { p_messageSetWireFormat = None; markDirty() }
-    public prop let hasMessageSetWireFormat: Bool { get() { isPresent(p_messageSetWireFormat) } }
-    public prop var messageSetWireFormat: Bool { get() { p_messageSetWireFormat ?? false } set(_x) { p_messageSetWireFormat = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasMessageSetWireFormat: Bool { get() { isPresent(p_messageSetWireFormat) } }
+    public mut prop messageSetWireFormat: Bool { get() { p_messageSetWireFormat ?? false } set(_x) { p_messageSetWireFormat = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearNoStandardDescriptorAccessor() { p_noStandardDescriptorAccessor = None; markDirty() }
-    public prop let hasNoStandardDescriptorAccessor: Bool { get() { isPresent(p_noStandardDescriptorAccessor) } }
-    public prop var noStandardDescriptorAccessor: Bool { get() { p_noStandardDescriptorAccessor ?? false } set(_x) { p_noStandardDescriptorAccessor = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasNoStandardDescriptorAccessor: Bool { get() { isPresent(p_noStandardDescriptorAccessor) } }
+    public mut prop noStandardDescriptorAccessor: Bool { get() { p_noStandardDescriptorAccessor ?? false } set(_x) { p_noStandardDescriptorAccessor = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearMapEntry() { p_mapEntry = None; markDirty() }
-    public prop let hasMapEntry: Bool { get() { isPresent(p_mapEntry) } }
-    public prop var mapEntry: Bool { get() { p_mapEntry.getOrThrow() } set(_x) { p_mapEntry = _x; markDirty() } }
+    public prop hasMapEntry: Bool { get() { isPresent(p_mapEntry) } }
+    public mut prop mapEntry: Bool { get() { p_mapEntry.getOrThrow() } set(_x) { p_mapEntry = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -3191,32 +3191,32 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
     }
 
     public func clearCtype() { p_ctype = None; markDirty() }
-    public prop let hasCtype: Bool { get() { isPresent(p_ctype) } }
-    public prop var ctype: FieldOptions_CType { get() { p_ctype ?? STRING } set(_x) { p_ctype = if (_x == STRING) { None } else { _x }; markDirty() } }
+    public prop hasCtype: Bool { get() { isPresent(p_ctype) } }
+    public mut prop ctype: FieldOptions_CType { get() { p_ctype ?? STRING } set(_x) { p_ctype = if (_x == STRING) { None } else { _x }; markDirty() } }
 
     public func clearPacked() { p_packed = None; markDirty() }
-    public prop let hasPacked: Bool { get() { isPresent(p_packed) } }
-    public prop var packed: Bool { get() { p_packed.getOrThrow() } set(_x) { p_packed = _x; markDirty() } }
+    public prop hasPacked: Bool { get() { isPresent(p_packed) } }
+    public mut prop packed: Bool { get() { p_packed.getOrThrow() } set(_x) { p_packed = _x; markDirty() } }
 
     public func clearJstype() { p_jstype = None; markDirty() }
-    public prop let hasJstype: Bool { get() { isPresent(p_jstype) } }
-    public prop var jstype: FieldOptions_JSType { get() { p_jstype ?? JS_NORMAL } set(_x) { p_jstype = if (_x == JS_NORMAL) { None } else { _x }; markDirty() } }
+    public prop hasJstype: Bool { get() { isPresent(p_jstype) } }
+    public mut prop jstype: FieldOptions_JSType { get() { p_jstype ?? JS_NORMAL } set(_x) { p_jstype = if (_x == JS_NORMAL) { None } else { _x }; markDirty() } }
 
     public func clearLazy() { p_lazy = None; markDirty() }
-    public prop let hasLazy: Bool { get() { isPresent(p_lazy) } }
-    public prop var lazy: Bool { get() { p_lazy ?? false } set(_x) { p_lazy = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasLazy: Bool { get() { isPresent(p_lazy) } }
+    public mut prop lazy: Bool { get() { p_lazy ?? false } set(_x) { p_lazy = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearUnverifiedLazy() { p_unverifiedLazy = None; markDirty() }
-    public prop let hasUnverifiedLazy: Bool { get() { isPresent(p_unverifiedLazy) } }
-    public prop var unverifiedLazy: Bool { get() { p_unverifiedLazy ?? false } set(_x) { p_unverifiedLazy = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasUnverifiedLazy: Bool { get() { isPresent(p_unverifiedLazy) } }
+    public mut prop unverifiedLazy: Bool { get() { p_unverifiedLazy ?? false } set(_x) { p_unverifiedLazy = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearWeak() { p_weak = None; markDirty() }
-    public prop let hasWeak: Bool { get() { isPresent(p_weak) } }
-    public prop var weak: Bool { get() { p_weak ?? false } set(_x) { p_weak = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasWeak: Bool { get() { isPresent(p_weak) } }
+    public mut prop weak: Bool { get() { p_weak ?? false } set(_x) { p_weak = if (_x == false) { None } else { _x }; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -3496,12 +3496,12 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
     }
 
     public func clearAllowAlias() { p_allowAlias = None; markDirty() }
-    public prop let hasAllowAlias: Bool { get() { isPresent(p_allowAlias) } }
-    public prop var allowAlias: Bool { get() { p_allowAlias.getOrThrow() } set(_x) { p_allowAlias = _x; markDirty() } }
+    public prop hasAllowAlias: Bool { get() { isPresent(p_allowAlias) } }
+    public mut prop allowAlias: Bool { get() { p_allowAlias.getOrThrow() } set(_x) { p_allowAlias = _x; markDirty() } }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -3627,8 +3627,8 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
     }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -3743,8 +3743,8 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
     }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -3910,12 +3910,12 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
     }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
-    public prop let hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
-    public prop var deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
+    public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
 
     public func clearIdempotencyLevel() { p_idempotencyLevel = None; markDirty() }
-    public prop let hasIdempotencyLevel: Bool { get() { isPresent(p_idempotencyLevel) } }
-    public prop var idempotencyLevel: MethodOptions_IdempotencyLevel { get() { p_idempotencyLevel ?? IDEMPOTENCY_UNKNOWN } set(_x) { p_idempotencyLevel = if (_x == IDEMPOTENCY_UNKNOWN) { None } else { _x }; markDirty() } }
+    public prop hasIdempotencyLevel: Bool { get() { isPresent(p_idempotencyLevel) } }
+    public mut prop idempotencyLevel: MethodOptions_IdempotencyLevel { get() { p_idempotencyLevel ?? IDEMPOTENCY_UNKNOWN } set(_x) { p_idempotencyLevel = if (_x == IDEMPOTENCY_UNKNOWN) { None } else { _x }; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -4040,12 +4040,12 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
     }
 
     public func clearNamePart() { p_namePart.clear(); markDirty() }
-    public prop let hasNamePart: Bool { get() { isPresent(p_namePart.data) } }
-    public prop var namePart: String { get() { p_namePart.get() } set(_v) { p_namePart.set(_v); markDirty() } }
+    public prop hasNamePart: Bool { get() { isPresent(p_namePart.data) } }
+    public mut prop namePart: String { get() { p_namePart.get() } set(_v) { p_namePart.set(_v); markDirty() } }
 
     public func clearIsExtension() { p_isExtension = None; markDirty() }
-    public prop let hasIsExtension: Bool { get() { isPresent(p_isExtension) } }
-    public prop var isExtension: Bool { get() { p_isExtension.getOrThrow() } set(_x) { p_isExtension = _x; markDirty() } }
+    public prop hasIsExtension: Bool { get() { isPresent(p_isExtension) } }
+    public mut prop isExtension: Bool { get() { p_isExtension.getOrThrow() } set(_x) { p_isExtension = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -4182,28 +4182,28 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
     }
 
     public func clearIdentifierValue() { p_identifierValue.clear(); markDirty() }
-    public prop let hasIdentifierValue: Bool { get() { isPresent(p_identifierValue.data) } }
-    public prop var identifierValue: String { get() { p_identifierValue.get() } set(_v) { p_identifierValue.set(_v); markDirty() } }
+    public prop hasIdentifierValue: Bool { get() { isPresent(p_identifierValue.data) } }
+    public mut prop identifierValue: String { get() { p_identifierValue.get() } set(_v) { p_identifierValue.set(_v); markDirty() } }
 
     public func clearPositiveIntValue() { p_positiveIntValue = None; markDirty() }
-    public prop let hasPositiveIntValue: Bool { get() { isPresent(p_positiveIntValue) } }
-    public prop var positiveIntValue: UInt64 { get() { p_positiveIntValue.getOrThrow() } set(_x) { p_positiveIntValue = _x; markDirty() } }
+    public prop hasPositiveIntValue: Bool { get() { isPresent(p_positiveIntValue) } }
+    public mut prop positiveIntValue: UInt64 { get() { p_positiveIntValue.getOrThrow() } set(_x) { p_positiveIntValue = _x; markDirty() } }
 
     public func clearNegativeIntValue() { p_negativeIntValue = None; markDirty() }
-    public prop let hasNegativeIntValue: Bool { get() { isPresent(p_negativeIntValue) } }
-    public prop var negativeIntValue: Int64 { get() { p_negativeIntValue.getOrThrow() } set(_x) { p_negativeIntValue = _x; markDirty() } }
+    public prop hasNegativeIntValue: Bool { get() { isPresent(p_negativeIntValue) } }
+    public mut prop negativeIntValue: Int64 { get() { p_negativeIntValue.getOrThrow() } set(_x) { p_negativeIntValue = _x; markDirty() } }
 
     public func clearDoubleValue() { p_doubleValue = None; markDirty() }
-    public prop let hasDoubleValue: Bool { get() { isPresent(p_doubleValue) } }
-    public prop var doubleValue: Float64 { get() { p_doubleValue.getOrThrow() } set(_x) { p_doubleValue = _x; markDirty() } }
+    public prop hasDoubleValue: Bool { get() { isPresent(p_doubleValue) } }
+    public mut prop doubleValue: Float64 { get() { p_doubleValue.getOrThrow() } set(_x) { p_doubleValue = _x; markDirty() } }
 
     public func clearStringValue() { p_stringValue = None; markDirty() }
-    public prop let hasStringValue: Bool { get() { isPresent(p_stringValue) } }
-    public prop var stringValue: BytesSlice { get() { p_stringValue.getOrThrow() } set(_x) { p_stringValue = _x; markDirty() } }
+    public prop hasStringValue: Bool { get() { isPresent(p_stringValue) } }
+    public mut prop stringValue: BytesSlice { get() { p_stringValue.getOrThrow() } set(_x) { p_stringValue = _x; markDirty() } }
 
     public func clearAggregateValue() { p_aggregateValue.clear(); markDirty() }
-    public prop let hasAggregateValue: Bool { get() { isPresent(p_aggregateValue.data) } }
-    public prop var aggregateValue: String { get() { p_aggregateValue.get() } set(_v) { p_aggregateValue.set(_v); markDirty() } }
+    public prop hasAggregateValue: Bool { get() { isPresent(p_aggregateValue.data) } }
+    public mut prop aggregateValue: String { get() { p_aggregateValue.get() } set(_v) { p_aggregateValue.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -4385,12 +4385,12 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
     }
 
     public func clearLeadingComments() { p_leadingComments.clear(); markDirty() }
-    public prop let hasLeadingComments: Bool { get() { isPresent(p_leadingComments.data) } }
-    public prop var leadingComments: String { get() { p_leadingComments.get() } set(_v) { p_leadingComments.set(_v); markDirty() } }
+    public prop hasLeadingComments: Bool { get() { isPresent(p_leadingComments.data) } }
+    public mut prop leadingComments: String { get() { p_leadingComments.get() } set(_v) { p_leadingComments.set(_v); markDirty() } }
 
     public func clearTrailingComments() { p_trailingComments.clear(); markDirty() }
-    public prop let hasTrailingComments: Bool { get() { isPresent(p_trailingComments.data) } }
-    public prop var trailingComments: String { get() { p_trailingComments.get() } set(_v) { p_trailingComments.set(_v); markDirty() } }
+    public prop hasTrailingComments: Bool { get() { isPresent(p_trailingComments.data) } }
+    public mut prop trailingComments: String { get() { p_trailingComments.get() } set(_v) { p_trailingComments.set(_v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -4644,16 +4644,16 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     }
 
     public func clearSourceFile() { p_sourceFile.clear(); markDirty() }
-    public prop let hasSourceFile: Bool { get() { isPresent(p_sourceFile.data) } }
-    public prop var sourceFile: String { get() { p_sourceFile.get() } set(_v) { p_sourceFile.set(_v); markDirty() } }
+    public prop hasSourceFile: Bool { get() { isPresent(p_sourceFile.data) } }
+    public mut prop sourceFile: String { get() { p_sourceFile.get() } set(_v) { p_sourceFile.set(_v); markDirty() } }
 
     public func clearBegin() { p_begin = None; markDirty() }
-    public prop let hasBegin: Bool { get() { isPresent(p_begin) } }
-    public prop var begin: Int32 { get() { p_begin.getOrThrow() } set(_x) { p_begin = _x; markDirty() } }
+    public prop hasBegin: Bool { get() { isPresent(p_begin) } }
+    public mut prop begin: Int32 { get() { p_begin.getOrThrow() } set(_x) { p_begin = _x; markDirty() } }
 
     public func clearEnd() { p_end = None; markDirty() }
-    public prop let hasEnd: Bool { get() { isPresent(p_end) } }
-    public prop var end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public prop hasEnd: Bool { get() { isPresent(p_end) } }
+    public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0

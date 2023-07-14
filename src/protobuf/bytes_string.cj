@@ -4,7 +4,7 @@ public enum BytesString <: ToString & Hashable & Equatable<BytesString> & Equata
     Bytes(BytesSlice) | String(String)
 
     /* bytes size */
-    public prop let size: Int64 { get() {
+    public prop size: Int64 { get() {
         match (this) {
             case Bytes(bytes) => bytes.size
             case String(string) => string.utf8View.size

@@ -118,7 +118,7 @@ public class RepeatedField<T> <: Collection<T> {
     public func version(): Int64 { data.version() }
     public func capacity(): Int64 { data.capacity() }
     public func iterator(): Iterator<T> { data.iterator() }
-    public prop let size: Int64 { get() { data.size } }
+    public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
     public func toArrayList(): ArrayList<T> { data.clone() }
     public operator func [](index: Int64): T { data[index] }
@@ -354,7 +354,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     public func version(): Int64 { data.version() }
     public func capacity(): Int64 { data.capacity() }
     public func iterator(): Iterator<T> { data.iterator() }
-    public prop let size: Int64 { get() { data.size } }
+    public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
     public func toArrayList(): ArrayList<T> { data.clone() }
     public func toString(): String { data.toString() }
@@ -560,7 +560,7 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
     public func version(): Int64 { data.version() }
     public func capacity(): Int64 { data.capacity() }
     public func iterator(): Iterator<String> { RepeatedStringIterator(this) }
-    public prop let size: Int64 { get() { data.size } }
+    public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
     public func contains(element: String): Bool { getRawData().contains(String(element)) }
     public func getBytesString(index: Int64): ?BytesString { data.get(index) }

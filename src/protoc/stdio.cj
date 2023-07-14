@@ -5,7 +5,7 @@ package protoc
 foreign func memcpy_s(dest: CPointer<UInt8>, dest_max: IntNative, src: CPointer<UInt8>, count: IntNative): IntNative
 foreign func free(ptr: CPointer<UInt8>): Unit
 
-@c
+@C
 struct Buffer {
     var data = CPointer<UInt8>()
     var size: IntNative = 0
