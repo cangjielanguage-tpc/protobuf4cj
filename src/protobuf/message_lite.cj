@@ -186,8 +186,8 @@ public abstract class MessageLite <: ToString & Hashable {
 }
 
 /* proto2 optional message */
-public struct Pb2Message<M> where M <: MessageLite & TypedMessage<M> {
-    public Pb2Message(public var data: ?M) { }
+public struct PbMessage<M> where M <: MessageLite & TypedMessage<M> {
+    public PbMessage(public var data: ?M) { }
 
     public mut func set(parent: MessageLite, that: M): Unit {
         if (let Some(m) = data) {
@@ -226,4 +226,7 @@ public struct Pb2Message<M> where M <: MessageLite & TypedMessage<M> {
             case _ => removeFrom(parent)
         }
     }
+
+    public func isEmpty(): Bool { return data?.isEmpty() ?? true }
+    public func noEmptyData(): ?M { match (data) { case Some(m) where !m.isEmpty() => m case _ => None } }
 }

@@ -7,7 +7,7 @@ func getFieldVarDefine2(field: FieldDescriptorProto) {
     match {
         case field.label == LABEL_REPEATED => getFieldVarDefine(field)
         case field.type_ == TYPE_STRING => "private var p_${field.jsonName}: Pb2String"
-        case field.type_ == TYPE_MESSAGE => "private var p_${field.jsonName}: Pb2Message<${field.typeName}>"
+        case field.type_ == TYPE_MESSAGE => "private var p_${field.jsonName}: PbMessage<${field.typeName}>"
         case _ => "private var p_${field.jsonName}: ?${typeConvert(field)}"
     }
 }
@@ -26,7 +26,7 @@ func getFieldVarInit2(field: FieldDescriptorProto) {
         case field.label == LABEL_REPEATED => getFieldVarInit(field)
         case field.type_ == TYPE_STRING && field.hasDefaultValue => "p_${field.jsonName} = Pb2String(${getMessagePropName(field.jsonName)}, \"${field.defaultValue}\")"
         case field.type_ == TYPE_STRING => "p_${field.jsonName} = Pb2String(${getMessagePropName(field.jsonName)})"
-        case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = Pb2Message<${field.typeName}>(${getMessagePropName(field.jsonName)})"
+        case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = PbMessage<${field.typeName}>(${getMessagePropName(field.jsonName)})"
         case _ => "p_${field.jsonName} = ${getMessagePropName(field.jsonName)}"
     }
 }
@@ -37,7 +37,7 @@ func getFieldVarInitSrc2(field: FieldDescriptorProto) {
         case field.label == LABEL_REPEATED => getFieldVarInitSrc(field)
         case field.type_ == TYPE_STRING && field.hasDefaultValue => "p_${field.jsonName} = Pb2String(src.${getMessagePropName(field.jsonName)}, \"${field.defaultValue}\")"
         case field.type_ == TYPE_STRING => "p_${field.jsonName} = Pb2String(src.${getMessagePropName(field.jsonName)})"
-        case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = Pb2Message<${field.typeName}>(src.${getMessagePropName(field.jsonName)})"
+        case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = PbMessage<${field.typeName}>(src.${getMessagePropName(field.jsonName)})"
         case _ => "p_${field.jsonName} = src.${getMessagePropName(field.jsonName)}"
     }
 }

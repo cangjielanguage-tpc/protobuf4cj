@@ -110,8 +110,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
     public let enumType: RepeatedMessage<EnumDescriptorProto>
     public let service: RepeatedMessage<ServiceDescriptorProto>
     public let extension: RepeatedMessage<FieldDescriptorProto>
-    private var p_options: Pb2Message<FileOptions>
-    private var p_sourceCodeInfo: Pb2Message<SourceCodeInfo>
+    private var p_options: PbMessage<FileOptions>
+    private var p_sourceCodeInfo: PbMessage<SourceCodeInfo>
     private var p_syntax: Pb2String
 
     public init(
@@ -137,8 +137,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         this.enumType = RepeatedMessage<EnumDescriptorProto>(enumType)
         this.service = RepeatedMessage<ServiceDescriptorProto>(service)
         this.extension = RepeatedMessage<FieldDescriptorProto>(extension)
-        this.p_options = Pb2Message<FileOptions>(options)
-        this.p_sourceCodeInfo = Pb2Message<SourceCodeInfo>(sourceCodeInfo)
+        this.p_options = PbMessage<FileOptions>(options)
+        this.p_sourceCodeInfo = PbMessage<SourceCodeInfo>(sourceCodeInfo)
         this.p_syntax = Pb2String(syntax)
         m_init()
     }
@@ -153,8 +153,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         this.enumType = RepeatedMessage<EnumDescriptorProto>(src.enumType)
         this.service = RepeatedMessage<ServiceDescriptorProto>(src.service)
         this.extension = RepeatedMessage<FieldDescriptorProto>(src.extension)
-        this.p_options = Pb2Message<FileOptions>(src.options)
-        this.p_sourceCodeInfo = Pb2Message<SourceCodeInfo>(src.sourceCodeInfo)
+        this.p_options = PbMessage<FileOptions>(src.options)
+        this.p_sourceCodeInfo = PbMessage<SourceCodeInfo>(src.sourceCodeInfo)
         this.p_syntax = Pb2String(src.syntax)
         m_init()
     }
@@ -389,7 +389,7 @@ public class FileDescriptorProto__Builder {
 public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<DescriptorProto_ExtensionRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
-    private var p_options: Pb2Message<ExtensionRangeOptions>
+    private var p_options: PbMessage<ExtensionRangeOptions>
 
     public init(
         start!: ?Int32 = None,
@@ -398,14 +398,14 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
     ) {
         this.p_start = start
         this.p_end = end
-        this.p_options = Pb2Message<ExtensionRangeOptions>(options)
+        this.p_options = PbMessage<ExtensionRangeOptions>(options)
         m_init()
     }
 
     public init(src: DescriptorProto_ExtensionRange__Builder) {
         this.p_start = src.start
         this.p_end = src.end
-        this.p_options = Pb2Message<ExtensionRangeOptions>(src.options)
+        this.p_options = PbMessage<ExtensionRangeOptions>(src.options)
         m_init()
     }
 
@@ -651,7 +651,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     public let enumType: RepeatedMessage<EnumDescriptorProto>
     public let extensionRange: RepeatedMessage<DescriptorProto_ExtensionRange>
     public let oneofDecl: RepeatedMessage<OneofDescriptorProto>
-    private var p_options: Pb2Message<MessageOptions>
+    private var p_options: PbMessage<MessageOptions>
     public let reservedRange: RepeatedMessage<DescriptorProto_ReservedRange>
     public let reservedName: RepeatedString
 
@@ -674,7 +674,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         this.enumType = RepeatedMessage<EnumDescriptorProto>(enumType)
         this.extensionRange = RepeatedMessage<DescriptorProto_ExtensionRange>(extensionRange)
         this.oneofDecl = RepeatedMessage<OneofDescriptorProto>(oneofDecl)
-        this.p_options = Pb2Message<MessageOptions>(options)
+        this.p_options = PbMessage<MessageOptions>(options)
         this.reservedRange = RepeatedMessage<DescriptorProto_ReservedRange>(reservedRange)
         this.reservedName = RepeatedString(reservedName)
         m_init()
@@ -688,7 +688,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         this.enumType = RepeatedMessage<EnumDescriptorProto>(src.enumType)
         this.extensionRange = RepeatedMessage<DescriptorProto_ExtensionRange>(src.extensionRange)
         this.oneofDecl = RepeatedMessage<OneofDescriptorProto>(src.oneofDecl)
-        this.p_options = Pb2Message<MessageOptions>(src.options)
+        this.p_options = PbMessage<MessageOptions>(src.options)
         this.reservedRange = RepeatedMessage<DescriptorProto_ReservedRange>(src.reservedRange)
         this.reservedName = RepeatedString(src.reservedName)
         m_init()
@@ -1167,7 +1167,7 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     private var p_defaultValue: Pb2String
     private var p_oneofIndex: ?Int32
     private var p_jsonName: Pb2String
-    private var p_options: Pb2Message<FieldOptions>
+    private var p_options: PbMessage<FieldOptions>
     private var p_proto3Optional: ?Bool
     public let mapEntry: RepeatedMessage<FieldDescriptorProto>
 
@@ -1194,7 +1194,7 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         this.p_defaultValue = Pb2String(defaultValue)
         this.p_oneofIndex = oneofIndex
         this.p_jsonName = Pb2String(jsonName)
-        this.p_options = Pb2Message<FieldOptions>(options)
+        this.p_options = PbMessage<FieldOptions>(options)
         this.p_proto3Optional = proto3Optional
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(mapEntry)
         m_init()
@@ -1210,7 +1210,7 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         this.p_defaultValue = Pb2String(src.defaultValue)
         this.p_oneofIndex = src.oneofIndex
         this.p_jsonName = Pb2String(src.jsonName)
-        this.p_options = Pb2Message<FieldOptions>(src.options)
+        this.p_options = PbMessage<FieldOptions>(src.options)
         this.p_proto3Optional = src.proto3Optional
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(src.mapEntry)
         m_init()
@@ -1462,20 +1462,20 @@ public class FieldDescriptorProto__Builder {
 
 public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorProto> {
     private var p_name: Pb2String
-    private var p_options: Pb2Message<OneofOptions>
+    private var p_options: PbMessage<OneofOptions>
 
     public init(
         name!: ?String = None,
         options!: ?OneofOptions = None
     ) {
         this.p_name = Pb2String(name)
-        this.p_options = Pb2Message<OneofOptions>(options)
+        this.p_options = PbMessage<OneofOptions>(options)
         m_init()
     }
 
     public init(src: OneofDescriptorProto__Builder) {
         this.p_name = Pb2String(src.name)
-        this.p_options = Pb2Message<OneofOptions>(src.options)
+        this.p_options = PbMessage<OneofOptions>(src.options)
         m_init()
     }
 
@@ -1702,7 +1702,7 @@ public class EnumDescriptorProto_EnumReservedRange__Builder {
 public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorProto> {
     private var p_name: Pb2String
     public let value: RepeatedMessage<EnumValueDescriptorProto>
-    private var p_options: Pb2Message<EnumOptions>
+    private var p_options: PbMessage<EnumOptions>
     public let reservedRange: RepeatedMessage<EnumDescriptorProto_EnumReservedRange>
     public let reservedName: RepeatedString
 
@@ -1715,7 +1715,7 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
     ) {
         this.p_name = Pb2String(name)
         this.value = RepeatedMessage<EnumValueDescriptorProto>(value)
-        this.p_options = Pb2Message<EnumOptions>(options)
+        this.p_options = PbMessage<EnumOptions>(options)
         this.reservedRange = RepeatedMessage<EnumDescriptorProto_EnumReservedRange>(reservedRange)
         this.reservedName = RepeatedString(reservedName)
         m_init()
@@ -1724,7 +1724,7 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
     public init(src: EnumDescriptorProto__Builder) {
         this.p_name = Pb2String(src.name)
         this.value = RepeatedMessage<EnumValueDescriptorProto>(src.value)
-        this.p_options = Pb2Message<EnumOptions>(src.options)
+        this.p_options = PbMessage<EnumOptions>(src.options)
         this.reservedRange = RepeatedMessage<EnumDescriptorProto_EnumReservedRange>(src.reservedRange)
         this.reservedName = RepeatedString(src.reservedName)
         m_init()
@@ -1869,7 +1869,7 @@ public class EnumDescriptorProto__Builder {
 public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDescriptorProto> {
     private var p_name: Pb2String
     private var p_number: ?Int32
-    private var p_options: Pb2Message<EnumValueOptions>
+    private var p_options: PbMessage<EnumValueOptions>
 
     public init(
         name!: ?String = None,
@@ -1878,14 +1878,14 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
     ) {
         this.p_name = Pb2String(name)
         this.p_number = number
-        this.p_options = Pb2Message<EnumValueOptions>(options)
+        this.p_options = PbMessage<EnumValueOptions>(options)
         m_init()
     }
 
     public init(src: EnumValueDescriptorProto__Builder) {
         this.p_name = Pb2String(src.name)
         this.p_number = src.number
-        this.p_options = Pb2Message<EnumValueOptions>(src.options)
+        this.p_options = PbMessage<EnumValueOptions>(src.options)
         m_init()
     }
 
@@ -2007,7 +2007,7 @@ public class EnumValueDescriptorProto__Builder {
 public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescriptorProto> {
     private var p_name: Pb2String
     public let method: RepeatedMessage<MethodDescriptorProto>
-    private var p_options: Pb2Message<ServiceOptions>
+    private var p_options: PbMessage<ServiceOptions>
 
     public init(
         name!: ?String = None,
@@ -2016,14 +2016,14 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
     ) {
         this.p_name = Pb2String(name)
         this.method = RepeatedMessage<MethodDescriptorProto>(method)
-        this.p_options = Pb2Message<ServiceOptions>(options)
+        this.p_options = PbMessage<ServiceOptions>(options)
         m_init()
     }
 
     public init(src: ServiceDescriptorProto__Builder) {
         this.p_name = Pb2String(src.name)
         this.method = RepeatedMessage<MethodDescriptorProto>(src.method)
-        this.p_options = Pb2Message<ServiceOptions>(src.options)
+        this.p_options = PbMessage<ServiceOptions>(src.options)
         m_init()
     }
 
@@ -2143,7 +2143,7 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
     private var p_name: Pb2String
     private var p_inputType: Pb2String
     private var p_outputType: Pb2String
-    private var p_options: Pb2Message<MethodOptions>
+    private var p_options: PbMessage<MethodOptions>
     private var p_clientStreaming: ?Bool
     private var p_serverStreaming: ?Bool
     private var p_funcName: Pb2String
@@ -2160,7 +2160,7 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         this.p_name = Pb2String(name)
         this.p_inputType = Pb2String(inputType)
         this.p_outputType = Pb2String(outputType)
-        this.p_options = Pb2Message<MethodOptions>(options)
+        this.p_options = PbMessage<MethodOptions>(options)
         this.p_clientStreaming = clientStreaming
         this.p_serverStreaming = serverStreaming
         this.p_funcName = Pb2String(funcName)
@@ -2171,7 +2171,7 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         this.p_name = Pb2String(src.name)
         this.p_inputType = Pb2String(src.inputType)
         this.p_outputType = Pb2String(src.outputType)
-        this.p_options = Pb2Message<MethodOptions>(src.options)
+        this.p_options = PbMessage<MethodOptions>(src.options)
         this.p_clientStreaming = src.clientStreaming
         this.p_serverStreaming = src.serverStreaming
         this.p_funcName = Pb2String(src.funcName)

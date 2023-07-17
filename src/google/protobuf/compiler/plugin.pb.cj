@@ -164,7 +164,7 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     public let fileToGenerate: RepeatedString
     private var p_parameter: Pb2String
     public let protoFile: RepeatedMessage<google.protobuf.FileDescriptorProto>
-    private var p_compilerVersion: Pb2Message<Version>
+    private var p_compilerVersion: PbMessage<Version>
 
     public init(
         fileToGenerate!: Array<String> = [],
@@ -175,7 +175,7 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         this.fileToGenerate = RepeatedString(fileToGenerate)
         this.p_parameter = Pb2String(parameter)
         this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(protoFile)
-        this.p_compilerVersion = Pb2Message<Version>(compilerVersion)
+        this.p_compilerVersion = PbMessage<Version>(compilerVersion)
         m_init()
     }
 
@@ -183,7 +183,7 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         this.fileToGenerate = RepeatedString(src.fileToGenerate)
         this.p_parameter = Pb2String(src.parameter)
         this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(src.protoFile)
-        this.p_compilerVersion = Pb2Message<Version>(src.compilerVersion)
+        this.p_compilerVersion = PbMessage<Version>(src.compilerVersion)
         m_init()
     }
 
@@ -315,7 +315,7 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
     private var p_name: Pb2String
     private var p_insertionPoint: Pb2String
     private var p_content: Pb2String
-    private var p_generatedCodeInfo: Pb2Message<google.protobuf.GeneratedCodeInfo>
+    private var p_generatedCodeInfo: PbMessage<google.protobuf.GeneratedCodeInfo>
 
     public init(
         name!: ?String = None,
@@ -326,7 +326,7 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         this.p_name = Pb2String(name)
         this.p_insertionPoint = Pb2String(insertionPoint)
         this.p_content = Pb2String(content)
-        this.p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>(generatedCodeInfo)
+        this.p_generatedCodeInfo = PbMessage<google.protobuf.GeneratedCodeInfo>(generatedCodeInfo)
         m_init()
     }
 
@@ -334,7 +334,7 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         this.p_name = Pb2String(src.name)
         this.p_insertionPoint = Pb2String(src.insertionPoint)
         this.p_content = Pb2String(src.content)
-        this.p_generatedCodeInfo = Pb2Message<google.protobuf.GeneratedCodeInfo>(src.generatedCodeInfo)
+        this.p_generatedCodeInfo = PbMessage<google.protobuf.GeneratedCodeInfo>(src.generatedCodeInfo)
         m_init()
     }
 

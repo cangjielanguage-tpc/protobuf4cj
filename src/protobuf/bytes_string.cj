@@ -115,10 +115,7 @@ public struct Pb2String {
         }
     }
 
-    public mut func set(str: String): Unit {
-        data = if (default == str) { None } else { String(str) }
-    }
-
+    public mut func set(str: String): Unit { data = if (default == str) { None } else { String(str) } }
     public mut func clear() { data = None }
     public mut func unpack<T>(src: T) where T <: BytesReader { data = Bytes(src.parseBytesSlice()) }
 }
