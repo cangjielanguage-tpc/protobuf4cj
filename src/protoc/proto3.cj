@@ -69,7 +69,7 @@ func getFieldNoEmptyExpr(field: FieldDescriptorProto) {
     }
 
     if (field.type_ == TYPE_MESSAGE) {
-        return "let Some(_v) = p_${field.jsonName}.noEmptyData()"
+        return "let Some(_v) <- p_${field.jsonName}.noEmptyData()"
     }
 
     /* normal fields */
@@ -366,7 +366,7 @@ func genCodeMessageFieldInit(typeName: String, fields: RepeatedMessage<FieldDesc
         if (field.label == LABEL_REPEATED) {
             append("        m_init(${getMessagePropName(field.jsonName)})\n")
         } else if (field.type_ == TYPE_MESSAGE) {
-            append("        if (let Some(_v) = p_${field.jsonName}.data) { m_init(_v) }\n")
+            append("        if (let Some(_v) <- p_${field.jsonName}.data) { m_init(_v) }\n")
         }
     }
 

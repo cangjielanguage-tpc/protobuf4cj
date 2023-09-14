@@ -167,8 +167,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         m_init(enumType)
         m_init(service)
         m_init(extension)
-        if (let Some(_v) = p_options.data) { m_init(_v) }
-        if (let Some(_v) = p_sourceCodeInfo.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_sourceCodeInfo.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -194,8 +194,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_package.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_package.data) { _x += 1 + binSize(_v) }
         if (!dependency.isEmpty()) { _x += s_size(dependency, 1) }
         if (!publicDependency.isEmpty()) { for (_i in publicDependency) { _x += 1 + varintSize(_i) } }
         if (!weakDependency.isEmpty()) { for (_i in weakDependency) { _x += 1 + varintSize(_i) } }
@@ -203,16 +203,16 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!enumType.isEmpty()) { for (_i in enumType) { _x += 1 + binSize(_i) } }
         if (!service.isEmpty()) { for (_i in service) { _x += 1 + binSize(_i) } }
         if (!extension.isEmpty()) { for (_i in extension) { _x += 1 + binSize(_i) } }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_sourceCodeInfo.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_syntax.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_sourceCodeInfo.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_syntax.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_package.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_package.data) { _x.write(_v.hashCode()) }
         if (!dependency.isEmpty()) { _x.write(dependency.hashCode()) }
         if (!publicDependency.isEmpty()) { _x.write(publicDependency.hashCode()) }
         if (!weakDependency.isEmpty()) { _x.write(weakDependency.hashCode()) }
@@ -220,9 +220,9 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!enumType.isEmpty()) { _x.write(enumType.hashCode()) }
         if (!service.isEmpty()) { _x.write(service.hashCode()) }
         if (!extension.isEmpty()) { _x.write(extension.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_sourceCodeInfo.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_syntax.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_sourceCodeInfo.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_syntax.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -305,8 +305,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_package.data) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_package.data) { out.append(18); out.packBin(_v) }
         if (!dependency.isEmpty()) { s_pack(3, dependency, out) }
         if (!publicDependency.isEmpty()) { for (_i in publicDependency) { out.append(80); out.packVarint(_i) } }
         if (!weakDependency.isEmpty()) { for (_i in weakDependency) { out.append(88); out.packVarint(_i) } }
@@ -314,9 +314,9 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!enumType.isEmpty()) { for (_i in enumType) { out.append(42); out.packVarint(_i.size); _i.pack(out) } }
         if (!service.isEmpty()) { for (_i in service) { out.append(50); out.packVarint(_i.size); _i.pack(out) } }
         if (!extension.isEmpty()) { for (_i in extension) { out.append(58); out.packVarint(_i.size); _i.pack(out) } }
-        if (let Some(_v) = p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
-        if (let Some(_v) = p_sourceCodeInfo.data) { out.append(74); out.packVarint(_v.size); _v.pack(out) }
-        if (let Some(_v) = p_syntax.data) { out.append(98); out.packBin(_v) }
+        if (let Some(_v) <- p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_sourceCodeInfo.data) { out.append(74); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_syntax.data) { out.append(98); out.packBin(_v) }
         m_unknown(out)
     }
 
@@ -331,8 +331,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!enumType.isEmpty()) { _x.append("enumType", enumType) }
         if (!service.isEmpty()) { _x.append("service", service) }
         if (!extension.isEmpty()) { _x.append("extension", extension) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
-        if (let Some(_v) = p_sourceCodeInfo.data) { _x.append("sourceCodeInfo", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_sourceCodeInfo.data) { _x.append("sourceCodeInfo", _v) }
         if (isPresent(p_syntax.data)) { _x.append("syntax", p_syntax.get()) }
         return _x.done().toString()
     }
@@ -410,7 +410,7 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
     }
 
     private func m_init() {
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -428,17 +428,17 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_start) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_end) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_start) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_end) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_start) { _x.write(_v) }
-        if (let Some(_v) = p_end) { _x.write(_v) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_start) { _x.write(_v) }
+        if (let Some(_v) <- p_end) { _x.write(_v) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -488,17 +488,17 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_start) { out.append(8); out.packVarint(_v) }
-        if (let Some(_v) = p_end) { out.append(16); out.packVarint(_v) }
-        if (let Some(_v) = p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_start) { out.append(8); out.packVarint(_v) }
+        if (let Some(_v) <- p_end) { out.append(16); out.packVarint(_v) }
+        if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_start) { _x.append("start", _v) }
-        if (let Some(_v) = p_end) { _x.append("end", _v) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_start) { _x.append("start", _v) }
+        if (let Some(_v) <- p_end) { _x.append("end", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
     }
 
@@ -557,15 +557,15 @@ public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<Descrip
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_start) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_end) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_start) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_end) { _x += 1 + varintSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_start) { _x.write(_v) }
-        if (let Some(_v) = p_end) { _x.write(_v) }
+        if (let Some(_v) <- p_start) { _x.write(_v) }
+        if (let Some(_v) <- p_end) { _x.write(_v) }
         return _x.finish()
     }
 
@@ -612,15 +612,15 @@ public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<Descrip
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_start) { out.append(8); out.packVarint(_v) }
-        if (let Some(_v) = p_end) { out.append(16); out.packVarint(_v) }
+        if (let Some(_v) <- p_start) { out.append(8); out.packVarint(_v) }
+        if (let Some(_v) <- p_end) { out.append(16); out.packVarint(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_start) { _x.append("start", _v) }
-        if (let Some(_v) = p_end) { _x.append("end", _v) }
+        if (let Some(_v) <- p_start) { _x.append("start", _v) }
+        if (let Some(_v) <- p_end) { _x.append("end", _v) }
         return _x.done().toString()
     }
 
@@ -701,7 +701,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         m_init(enumType)
         m_init(extensionRange)
         m_init(oneofDecl)
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_init(reservedRange)
         m_init(reservedName)
         m_innerInit()
@@ -717,14 +717,14 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
         if (!field.isEmpty()) { for (_i in field) { _x += 1 + binSize(_i) } }
         if (!extension.isEmpty()) { for (_i in extension) { _x += 1 + binSize(_i) } }
         if (!nestedType.isEmpty()) { for (_i in nestedType) { _x += 1 + binSize(_i) } }
         if (!enumType.isEmpty()) { for (_i in enumType) { _x += 1 + binSize(_i) } }
         if (!extensionRange.isEmpty()) { for (_i in extensionRange) { _x += 1 + binSize(_i) } }
         if (!oneofDecl.isEmpty()) { for (_i in oneofDecl) { _x += 1 + binSize(_i) } }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { _x += 1 + binSize(_i) } }
         if (!reservedName.isEmpty()) { _x += s_size(reservedName, 1) }
         return _x
@@ -732,14 +732,14 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
         if (!field.isEmpty()) { _x.write(field.hashCode()) }
         if (!extension.isEmpty()) { _x.write(extension.hashCode()) }
         if (!nestedType.isEmpty()) { _x.write(nestedType.hashCode()) }
         if (!enumType.isEmpty()) { _x.write(enumType.hashCode()) }
         if (!extensionRange.isEmpty()) { _x.write(extensionRange.hashCode()) }
         if (!oneofDecl.isEmpty()) { _x.write(oneofDecl.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (!reservedRange.isEmpty()) { _x.write(reservedRange.hashCode()) }
         if (!reservedName.isEmpty()) { _x.write(reservedName.hashCode()) }
         return _x.finish()
@@ -817,14 +817,14 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
         if (!field.isEmpty()) { for (_i in field) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
         if (!extension.isEmpty()) { for (_i in extension) { out.append(50); out.packVarint(_i.size); _i.pack(out) } }
         if (!nestedType.isEmpty()) { for (_i in nestedType) { out.append(26); out.packVarint(_i.size); _i.pack(out) } }
         if (!enumType.isEmpty()) { for (_i in enumType) { out.append(34); out.packVarint(_i.size); _i.pack(out) } }
         if (!extensionRange.isEmpty()) { for (_i in extensionRange) { out.append(42); out.packVarint(_i.size); _i.pack(out) } }
         if (!oneofDecl.isEmpty()) { for (_i in oneofDecl) { out.append(66); out.packVarint(_i.size); _i.pack(out) } }
-        if (let Some(_v) = p_options.data) { out.append(58); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_options.data) { out.append(58); out.packVarint(_v.size); _v.pack(out) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { out.append(74); out.packVarint(_i.size); _i.pack(out) } }
         if (!reservedName.isEmpty()) { s_pack(10, reservedName, out) }
         m_unknown(out)
@@ -839,7 +839,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         if (!enumType.isEmpty()) { _x.append("enumType", enumType) }
         if (!extensionRange.isEmpty()) { _x.append("extensionRange", extensionRange) }
         if (!oneofDecl.isEmpty()) { _x.append("oneofDecl", oneofDecl) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (!reservedRange.isEmpty()) { _x.append("reservedRange", reservedRange) }
         if (!reservedName.isEmpty()) { _x.append("reservedName", reservedName) }
         return _x.done().toString()
@@ -1217,7 +1217,7 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     }
 
     private func m_init() {
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_init(mapEntry)
         m_innerInit()
     }
@@ -1268,34 +1268,34 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_number) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_label) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_type) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_typeName.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_extendee.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_defaultValue.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_oneofIndex) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_jsonName.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_proto3Optional) { _x += 2 + 1 }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_number) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_label) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_type) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_typeName.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_extendee.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_defaultValue.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_oneofIndex) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_jsonName.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_proto3Optional) { _x += 2 + 1 }
         if (!mapEntry.isEmpty()) { for (_i in mapEntry) { _x += 3 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_number) { _x.write(_v) }
-        if (let Some(_v) = p_label) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_type) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_typeName.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_extendee.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_defaultValue.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_oneofIndex) { _x.write(_v) }
-        if (let Some(_v) = p_jsonName.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_proto3Optional) { _x.write(_v) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_number) { _x.write(_v) }
+        if (let Some(_v) <- p_label) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_type) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_typeName.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_extendee.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_defaultValue.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_oneofIndex) { _x.write(_v) }
+        if (let Some(_v) <- p_jsonName.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_proto3Optional) { _x.write(_v) }
         if (!mapEntry.isEmpty()) { _x.write(mapEntry.hashCode()) }
         return _x.finish()
     }
@@ -1379,17 +1379,17 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_number) { out.append(24); out.packVarint(_v) }
-        if (let Some(_v) = p_label) { out.append(32); out.packVarint(_v) }
-        if (let Some(_v) = p_type) { out.append(40); out.packVarint(_v) }
-        if (let Some(_v) = p_typeName.data) { out.append(50); out.packBin(_v) }
-        if (let Some(_v) = p_extendee.data) { out.append(18); out.packBin(_v) }
-        if (let Some(_v) = p_defaultValue.data) { out.append(58); out.packBin(_v) }
-        if (let Some(_v) = p_oneofIndex) { out.append(72); out.packVarint(_v) }
-        if (let Some(_v) = p_jsonName.data) { out.append(82); out.packBin(_v) }
-        if (let Some(_v) = p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
-        if (let Some(_v) = p_proto3Optional) { out.packTag(17, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_number) { out.append(24); out.packVarint(_v) }
+        if (let Some(_v) <- p_label) { out.append(32); out.packVarint(_v) }
+        if (let Some(_v) <- p_type) { out.append(40); out.packVarint(_v) }
+        if (let Some(_v) <- p_typeName.data) { out.append(50); out.packBin(_v) }
+        if (let Some(_v) <- p_extendee.data) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_defaultValue.data) { out.append(58); out.packBin(_v) }
+        if (let Some(_v) <- p_oneofIndex) { out.append(72); out.packVarint(_v) }
+        if (let Some(_v) <- p_jsonName.data) { out.append(82); out.packBin(_v) }
+        if (let Some(_v) <- p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_proto3Optional) { out.packTag(17, VARINT); out.packBool(_v) }
         if (!mapEntry.isEmpty()) { for (_i in mapEntry) { out.packTag(9999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
@@ -1397,16 +1397,16 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     public func toString(): String {
         var _x = StructPrinter()
         if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
-        if (let Some(_v) = p_number) { _x.append("number", _v) }
-        if (let Some(_v) = p_label) { _x.append("label", _v) }
-        if (let Some(_v) = p_type) { _x.append("type", _v) }
+        if (let Some(_v) <- p_number) { _x.append("number", _v) }
+        if (let Some(_v) <- p_label) { _x.append("label", _v) }
+        if (let Some(_v) <- p_type) { _x.append("type", _v) }
         if (isPresent(p_typeName.data)) { _x.append("typeName", p_typeName.get()) }
         if (isPresent(p_extendee.data)) { _x.append("extendee", p_extendee.get()) }
         if (isPresent(p_defaultValue.data)) { _x.append("defaultValue", p_defaultValue.get()) }
-        if (let Some(_v) = p_oneofIndex) { _x.append("oneofIndex", _v) }
+        if (let Some(_v) <- p_oneofIndex) { _x.append("oneofIndex", _v) }
         if (isPresent(p_jsonName.data)) { _x.append("jsonName", p_jsonName.get()) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
-        if (let Some(_v) = p_proto3Optional) { _x.append("proto3Optional", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_proto3Optional) { _x.append("proto3Optional", _v) }
         if (!mapEntry.isEmpty()) { _x.append("mapEntry", mapEntry) }
         return _x.done().toString()
     }
@@ -1480,7 +1480,7 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
     }
 
     private func m_init() {
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -1494,15 +1494,15 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -1549,15 +1549,15 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_options.data) { out.append(18); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_options.data) { out.append(18); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
         if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
     }
 
@@ -1613,15 +1613,15 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_start) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_end) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_start) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_end) { _x += 1 + varintSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_start) { _x.write(_v) }
-        if (let Some(_v) = p_end) { _x.write(_v) }
+        if (let Some(_v) <- p_start) { _x.write(_v) }
+        if (let Some(_v) <- p_end) { _x.write(_v) }
         return _x.finish()
     }
 
@@ -1668,15 +1668,15 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_start) { out.append(8); out.packVarint(_v) }
-        if (let Some(_v) = p_end) { out.append(16); out.packVarint(_v) }
+        if (let Some(_v) <- p_start) { out.append(8); out.packVarint(_v) }
+        if (let Some(_v) <- p_end) { out.append(16); out.packVarint(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_start) { _x.append("start", _v) }
-        if (let Some(_v) = p_end) { _x.append("end", _v) }
+        if (let Some(_v) <- p_start) { _x.append("start", _v) }
+        if (let Some(_v) <- p_end) { _x.append("end", _v) }
         return _x.done().toString()
     }
 
@@ -1732,7 +1732,7 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
 
     private func m_init() {
         m_init(value)
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_init(reservedRange)
         m_init(reservedName)
         m_innerInit()
@@ -1748,9 +1748,9 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
         if (!value.isEmpty()) { for (_i in value) { _x += 1 + binSize(_i) } }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { _x += 1 + binSize(_i) } }
         if (!reservedName.isEmpty()) { _x += s_size(reservedName, 1) }
         return _x
@@ -1758,9 +1758,9 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
         if (!value.isEmpty()) { _x.write(value.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (!reservedRange.isEmpty()) { _x.write(reservedRange.hashCode()) }
         if (!reservedName.isEmpty()) { _x.write(reservedName.hashCode()) }
         return _x.finish()
@@ -1820,9 +1820,9 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
         if (!value.isEmpty()) { for (_i in value) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
-        if (let Some(_v) = p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { out.append(34); out.packVarint(_i.size); _i.pack(out) } }
         if (!reservedName.isEmpty()) { s_pack(5, reservedName, out) }
         m_unknown(out)
@@ -1832,7 +1832,7 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
         var _x = StructPrinter()
         if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
         if (!value.isEmpty()) { _x.append("value", value) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (!reservedRange.isEmpty()) { _x.append("reservedRange", reservedRange) }
         if (!reservedName.isEmpty()) { _x.append("reservedName", reservedName) }
         return _x.done().toString()
@@ -1890,7 +1890,7 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
     }
 
     private func m_init() {
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -1908,17 +1908,17 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_number) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_number) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_number) { _x.write(_v) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_number) { _x.write(_v) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -1968,17 +1968,17 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_number) { out.append(16); out.packVarint(_v) }
-        if (let Some(_v) = p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_number) { out.append(16); out.packVarint(_v) }
+        if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
         if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
-        if (let Some(_v) = p_number) { _x.append("number", _v) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_number) { _x.append("number", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
     }
 
@@ -2029,7 +2029,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     private func m_init() {
         m_init(method)
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -2043,17 +2043,17 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
         if (!method.isEmpty()) { for (_i in method) { _x += 1 + binSize(_i) } }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
         if (!method.isEmpty()) { _x.write(method.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -2103,9 +2103,9 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
         if (!method.isEmpty()) { for (_i in method) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
-        if (let Some(_v) = p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
@@ -2113,7 +2113,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
         var _x = StructPrinter()
         if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
         if (!method.isEmpty()) { _x.append("method", method) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
     }
 
@@ -2179,7 +2179,7 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
     }
 
     private func m_init() {
-        if (let Some(_v) = p_options.data) { m_init(_v) }
+        if (let Some(_v) <- p_options.data) { m_init(_v) }
         m_innerInit()
     }
 
@@ -2213,25 +2213,25 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_inputType.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_outputType.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_options.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_clientStreaming) { _x += 1 + 1 }
-        if (let Some(_v) = p_serverStreaming) { _x += 1 + 1 }
-        if (let Some(_v) = p_funcName.data) { _x += 3 + binSize(_v) }
+        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_inputType.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_outputType.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_clientStreaming) { _x += 1 + 1 }
+        if (let Some(_v) <- p_serverStreaming) { _x += 1 + 1 }
+        if (let Some(_v) <- p_funcName.data) { _x += 3 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_inputType.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_outputType.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_options.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_clientStreaming) { _x.write(_v) }
-        if (let Some(_v) = p_serverStreaming) { _x.write(_v) }
-        if (let Some(_v) = p_funcName.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_inputType.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_outputType.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_clientStreaming) { _x.write(_v) }
+        if (let Some(_v) <- p_serverStreaming) { _x.write(_v) }
+        if (let Some(_v) <- p_funcName.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -2297,13 +2297,13 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_inputType.data) { out.append(18); out.packBin(_v) }
-        if (let Some(_v) = p_outputType.data) { out.append(26); out.packBin(_v) }
-        if (let Some(_v) = p_options.data) { out.append(34); out.packVarint(_v.size); _v.pack(out) }
-        if (let Some(_v) = p_clientStreaming) { out.append(40); out.packBool(_v) }
-        if (let Some(_v) = p_serverStreaming) { out.append(48); out.packBool(_v) }
-        if (let Some(_v) = p_funcName.data) { out.packTag(9999, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_inputType.data) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_outputType.data) { out.append(26); out.packBin(_v) }
+        if (let Some(_v) <- p_options.data) { out.append(34); out.packVarint(_v.size); _v.pack(out) }
+        if (let Some(_v) <- p_clientStreaming) { out.append(40); out.packBool(_v) }
+        if (let Some(_v) <- p_serverStreaming) { out.append(48); out.packBool(_v) }
+        if (let Some(_v) <- p_funcName.data) { out.packTag(9999, PREFIXED); out.packBin(_v) }
         m_unknown(out)
     }
 
@@ -2312,9 +2312,9 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
         if (isPresent(p_inputType.data)) { _x.append("inputType", p_inputType.get()) }
         if (isPresent(p_outputType.data)) { _x.append("outputType", p_outputType.get()) }
-        if (let Some(_v) = p_options.data) { _x.append("options", _v) }
-        if (let Some(_v) = p_clientStreaming) { _x.append("clientStreaming", _v) }
-        if (let Some(_v) = p_serverStreaming) { _x.append("serverStreaming", _v) }
+        if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
+        if (let Some(_v) <- p_clientStreaming) { _x.append("clientStreaming", _v) }
+        if (let Some(_v) <- p_serverStreaming) { _x.append("serverStreaming", _v) }
         if (isPresent(p_funcName.data)) { _x.append("funcName", p_funcName.get()) }
         return _x.done().toString()
     }
@@ -2582,52 +2582,52 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_javaPackage.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_javaOuterClassname.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_javaMultipleFiles) { _x += 1 + 1 }
-        if (let Some(_v) = p_javaGenerateEqualsAndHash) { _x += 2 + 1 }
-        if (let Some(_v) = p_javaStringCheckUtf8) { _x += 2 + 1 }
-        if (let Some(_v) = p_optimizeFor) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_goPackage.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_ccGenericServices) { _x += 2 + 1 }
-        if (let Some(_v) = p_javaGenericServices) { _x += 2 + 1 }
-        if (let Some(_v) = p_pyGenericServices) { _x += 2 + 1 }
-        if (let Some(_v) = p_phpGenericServices) { _x += 2 + 1 }
-        if (let Some(_v) = p_deprecated) { _x += 2 + 1 }
-        if (let Some(_v) = p_ccEnableArenas) { _x += 2 + 1 }
-        if (let Some(_v) = p_objcClassPrefix.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) = p_csharpNamespace.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) = p_swiftPrefix.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) = p_phpClassPrefix.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) = p_phpNamespace.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) = p_phpMetadataNamespace.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) = p_rubyPackage.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_javaPackage.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_javaOuterClassname.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_javaMultipleFiles) { _x += 1 + 1 }
+        if (let Some(_v) <- p_javaGenerateEqualsAndHash) { _x += 2 + 1 }
+        if (let Some(_v) <- p_javaStringCheckUtf8) { _x += 2 + 1 }
+        if (let Some(_v) <- p_optimizeFor) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_goPackage.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_ccGenericServices) { _x += 2 + 1 }
+        if (let Some(_v) <- p_javaGenericServices) { _x += 2 + 1 }
+        if (let Some(_v) <- p_pyGenericServices) { _x += 2 + 1 }
+        if (let Some(_v) <- p_phpGenericServices) { _x += 2 + 1 }
+        if (let Some(_v) <- p_deprecated) { _x += 2 + 1 }
+        if (let Some(_v) <- p_ccEnableArenas) { _x += 2 + 1 }
+        if (let Some(_v) <- p_objcClassPrefix.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_csharpNamespace.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_swiftPrefix.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_phpClassPrefix.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_phpNamespace.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_phpMetadataNamespace.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_rubyPackage.data) { _x += 2 + binSize(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_javaPackage.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_javaOuterClassname.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_javaMultipleFiles) { _x.write(_v) }
-        if (let Some(_v) = p_javaGenerateEqualsAndHash) { _x.write(_v) }
-        if (let Some(_v) = p_javaStringCheckUtf8) { _x.write(_v) }
-        if (let Some(_v) = p_optimizeFor) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_goPackage.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_ccGenericServices) { _x.write(_v) }
-        if (let Some(_v) = p_javaGenericServices) { _x.write(_v) }
-        if (let Some(_v) = p_pyGenericServices) { _x.write(_v) }
-        if (let Some(_v) = p_phpGenericServices) { _x.write(_v) }
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
-        if (let Some(_v) = p_ccEnableArenas) { _x.write(_v) }
-        if (let Some(_v) = p_objcClassPrefix.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_csharpNamespace.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_swiftPrefix.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_phpClassPrefix.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_phpNamespace.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_phpMetadataNamespace.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_rubyPackage.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_javaPackage.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_javaOuterClassname.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_javaMultipleFiles) { _x.write(_v) }
+        if (let Some(_v) <- p_javaGenerateEqualsAndHash) { _x.write(_v) }
+        if (let Some(_v) <- p_javaStringCheckUtf8) { _x.write(_v) }
+        if (let Some(_v) <- p_optimizeFor) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_goPackage.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_ccGenericServices) { _x.write(_v) }
+        if (let Some(_v) <- p_javaGenericServices) { _x.write(_v) }
+        if (let Some(_v) <- p_pyGenericServices) { _x.write(_v) }
+        if (let Some(_v) <- p_phpGenericServices) { _x.write(_v) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_ccEnableArenas) { _x.write(_v) }
+        if (let Some(_v) <- p_objcClassPrefix.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_csharpNamespace.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_swiftPrefix.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_phpClassPrefix.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_phpNamespace.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_phpMetadataNamespace.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_rubyPackage.data) { _x.write(_v.hashCode()) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -2749,26 +2749,26 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_javaPackage.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_javaOuterClassname.data) { out.append(66); out.packBin(_v) }
-        if (let Some(_v) = p_javaMultipleFiles) { out.append(80); out.packBool(_v) }
-        if (let Some(_v) = p_javaGenerateEqualsAndHash) { out.packTag(20, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_javaStringCheckUtf8) { out.packTag(27, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_optimizeFor) { out.append(72); out.packVarint(_v) }
-        if (let Some(_v) = p_goPackage.data) { out.append(90); out.packBin(_v) }
-        if (let Some(_v) = p_ccGenericServices) { out.packTag(16, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_javaGenericServices) { out.packTag(17, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_pyGenericServices) { out.packTag(18, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_phpGenericServices) { out.packTag(42, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_deprecated) { out.packTag(23, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_ccEnableArenas) { out.packTag(31, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_objcClassPrefix.data) { out.packTag(36, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) = p_csharpNamespace.data) { out.packTag(37, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) = p_swiftPrefix.data) { out.packTag(39, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) = p_phpClassPrefix.data) { out.packTag(40, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) = p_phpNamespace.data) { out.packTag(41, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) = p_phpMetadataNamespace.data) { out.packTag(44, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) = p_rubyPackage.data) { out.packTag(45, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_javaPackage.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_javaOuterClassname.data) { out.append(66); out.packBin(_v) }
+        if (let Some(_v) <- p_javaMultipleFiles) { out.append(80); out.packBool(_v) }
+        if (let Some(_v) <- p_javaGenerateEqualsAndHash) { out.packTag(20, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_javaStringCheckUtf8) { out.packTag(27, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_optimizeFor) { out.append(72); out.packVarint(_v) }
+        if (let Some(_v) <- p_goPackage.data) { out.append(90); out.packBin(_v) }
+        if (let Some(_v) <- p_ccGenericServices) { out.packTag(16, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_javaGenericServices) { out.packTag(17, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_pyGenericServices) { out.packTag(18, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_phpGenericServices) { out.packTag(42, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_deprecated) { out.packTag(23, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_ccEnableArenas) { out.packTag(31, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_objcClassPrefix.data) { out.packTag(36, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_csharpNamespace.data) { out.packTag(37, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_swiftPrefix.data) { out.packTag(39, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_phpClassPrefix.data) { out.packTag(40, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_phpNamespace.data) { out.packTag(41, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_phpMetadataNamespace.data) { out.packTag(44, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_rubyPackage.data) { out.packTag(45, PREFIXED); out.packBin(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
@@ -2777,17 +2777,17 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
         var _x = StructPrinter()
         if (isPresent(p_javaPackage.data)) { _x.append("javaPackage", p_javaPackage.get()) }
         if (isPresent(p_javaOuterClassname.data)) { _x.append("javaOuterClassname", p_javaOuterClassname.get()) }
-        if (let Some(_v) = p_javaMultipleFiles) { _x.append("javaMultipleFiles", _v) }
-        if (let Some(_v) = p_javaGenerateEqualsAndHash) { _x.append("javaGenerateEqualsAndHash", _v) }
-        if (let Some(_v) = p_javaStringCheckUtf8) { _x.append("javaStringCheckUtf8", _v) }
-        if (let Some(_v) = p_optimizeFor) { _x.append("optimizeFor", _v) }
+        if (let Some(_v) <- p_javaMultipleFiles) { _x.append("javaMultipleFiles", _v) }
+        if (let Some(_v) <- p_javaGenerateEqualsAndHash) { _x.append("javaGenerateEqualsAndHash", _v) }
+        if (let Some(_v) <- p_javaStringCheckUtf8) { _x.append("javaStringCheckUtf8", _v) }
+        if (let Some(_v) <- p_optimizeFor) { _x.append("optimizeFor", _v) }
         if (isPresent(p_goPackage.data)) { _x.append("goPackage", p_goPackage.get()) }
-        if (let Some(_v) = p_ccGenericServices) { _x.append("ccGenericServices", _v) }
-        if (let Some(_v) = p_javaGenericServices) { _x.append("javaGenericServices", _v) }
-        if (let Some(_v) = p_pyGenericServices) { _x.append("pyGenericServices", _v) }
-        if (let Some(_v) = p_phpGenericServices) { _x.append("phpGenericServices", _v) }
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
-        if (let Some(_v) = p_ccEnableArenas) { _x.append("ccEnableArenas", _v) }
+        if (let Some(_v) <- p_ccGenericServices) { _x.append("ccGenericServices", _v) }
+        if (let Some(_v) <- p_javaGenericServices) { _x.append("javaGenericServices", _v) }
+        if (let Some(_v) <- p_pyGenericServices) { _x.append("pyGenericServices", _v) }
+        if (let Some(_v) <- p_phpGenericServices) { _x.append("phpGenericServices", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_ccEnableArenas) { _x.append("ccEnableArenas", _v) }
         if (isPresent(p_objcClassPrefix.data)) { _x.append("objcClassPrefix", p_objcClassPrefix.get()) }
         if (isPresent(p_csharpNamespace.data)) { _x.append("csharpNamespace", p_csharpNamespace.get()) }
         if (isPresent(p_swiftPrefix.data)) { _x.append("swiftPrefix", p_swiftPrefix.get()) }
@@ -2929,20 +2929,20 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_messageSetWireFormat) { _x += 1 + 1 }
-        if (let Some(_v) = p_noStandardDescriptorAccessor) { _x += 1 + 1 }
-        if (let Some(_v) = p_deprecated) { _x += 1 + 1 }
-        if (let Some(_v) = p_mapEntry) { _x += 1 + 1 }
+        if (let Some(_v) <- p_messageSetWireFormat) { _x += 1 + 1 }
+        if (let Some(_v) <- p_noStandardDescriptorAccessor) { _x += 1 + 1 }
+        if (let Some(_v) <- p_deprecated) { _x += 1 + 1 }
+        if (let Some(_v) <- p_mapEntry) { _x += 1 + 1 }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_messageSetWireFormat) { _x.write(_v) }
-        if (let Some(_v) = p_noStandardDescriptorAccessor) { _x.write(_v) }
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
-        if (let Some(_v) = p_mapEntry) { _x.write(_v) }
+        if (let Some(_v) <- p_messageSetWireFormat) { _x.write(_v) }
+        if (let Some(_v) <- p_noStandardDescriptorAccessor) { _x.write(_v) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_mapEntry) { _x.write(_v) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -3002,20 +3002,20 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_messageSetWireFormat) { out.append(8); out.packBool(_v) }
-        if (let Some(_v) = p_noStandardDescriptorAccessor) { out.append(16); out.packBool(_v) }
-        if (let Some(_v) = p_deprecated) { out.append(24); out.packBool(_v) }
-        if (let Some(_v) = p_mapEntry) { out.append(56); out.packBool(_v) }
+        if (let Some(_v) <- p_messageSetWireFormat) { out.append(8); out.packBool(_v) }
+        if (let Some(_v) <- p_noStandardDescriptorAccessor) { out.append(16); out.packBool(_v) }
+        if (let Some(_v) <- p_deprecated) { out.append(24); out.packBool(_v) }
+        if (let Some(_v) <- p_mapEntry) { out.append(56); out.packBool(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_messageSetWireFormat) { _x.append("messageSetWireFormat", _v) }
-        if (let Some(_v) = p_noStandardDescriptorAccessor) { _x.append("noStandardDescriptorAccessor", _v) }
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
-        if (let Some(_v) = p_mapEntry) { _x.append("mapEntry", _v) }
+        if (let Some(_v) <- p_messageSetWireFormat) { _x.append("messageSetWireFormat", _v) }
+        if (let Some(_v) <- p_noStandardDescriptorAccessor) { _x.append("noStandardDescriptorAccessor", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_mapEntry) { _x.append("mapEntry", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -3220,26 +3220,26 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_ctype) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_packed) { _x += 1 + 1 }
-        if (let Some(_v) = p_jstype) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_lazy) { _x += 1 + 1 }
-        if (let Some(_v) = p_unverifiedLazy) { _x += 1 + 1 }
-        if (let Some(_v) = p_deprecated) { _x += 1 + 1 }
-        if (let Some(_v) = p_weak) { _x += 1 + 1 }
+        if (let Some(_v) <- p_ctype) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_packed) { _x += 1 + 1 }
+        if (let Some(_v) <- p_jstype) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_lazy) { _x += 1 + 1 }
+        if (let Some(_v) <- p_unverifiedLazy) { _x += 1 + 1 }
+        if (let Some(_v) <- p_deprecated) { _x += 1 + 1 }
+        if (let Some(_v) <- p_weak) { _x += 1 + 1 }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_ctype) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_packed) { _x.write(_v) }
-        if (let Some(_v) = p_jstype) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_lazy) { _x.write(_v) }
-        if (let Some(_v) = p_unverifiedLazy) { _x.write(_v) }
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
-        if (let Some(_v) = p_weak) { _x.write(_v) }
+        if (let Some(_v) <- p_ctype) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_packed) { _x.write(_v) }
+        if (let Some(_v) <- p_jstype) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_lazy) { _x.write(_v) }
+        if (let Some(_v) <- p_unverifiedLazy) { _x.write(_v) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_weak) { _x.write(_v) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -3308,26 +3308,26 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_ctype) { out.append(8); out.packVarint(_v) }
-        if (let Some(_v) = p_packed) { out.append(16); out.packBool(_v) }
-        if (let Some(_v) = p_jstype) { out.append(48); out.packVarint(_v) }
-        if (let Some(_v) = p_lazy) { out.append(40); out.packBool(_v) }
-        if (let Some(_v) = p_unverifiedLazy) { out.append(120); out.packBool(_v) }
-        if (let Some(_v) = p_deprecated) { out.append(24); out.packBool(_v) }
-        if (let Some(_v) = p_weak) { out.append(80); out.packBool(_v) }
+        if (let Some(_v) <- p_ctype) { out.append(8); out.packVarint(_v) }
+        if (let Some(_v) <- p_packed) { out.append(16); out.packBool(_v) }
+        if (let Some(_v) <- p_jstype) { out.append(48); out.packVarint(_v) }
+        if (let Some(_v) <- p_lazy) { out.append(40); out.packBool(_v) }
+        if (let Some(_v) <- p_unverifiedLazy) { out.append(120); out.packBool(_v) }
+        if (let Some(_v) <- p_deprecated) { out.append(24); out.packBool(_v) }
+        if (let Some(_v) <- p_weak) { out.append(80); out.packBool(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_ctype) { _x.append("ctype", _v) }
-        if (let Some(_v) = p_packed) { _x.append("packed", _v) }
-        if (let Some(_v) = p_jstype) { _x.append("jstype", _v) }
-        if (let Some(_v) = p_lazy) { _x.append("lazy", _v) }
-        if (let Some(_v) = p_unverifiedLazy) { _x.append("unverifiedLazy", _v) }
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
-        if (let Some(_v) = p_weak) { _x.append("weak", _v) }
+        if (let Some(_v) <- p_ctype) { _x.append("ctype", _v) }
+        if (let Some(_v) <- p_packed) { _x.append("packed", _v) }
+        if (let Some(_v) <- p_jstype) { _x.append("jstype", _v) }
+        if (let Some(_v) <- p_lazy) { _x.append("lazy", _v) }
+        if (let Some(_v) <- p_unverifiedLazy) { _x.append("unverifiedLazy", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_weak) { _x.append("weak", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -3505,16 +3505,16 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_allowAlias) { _x += 1 + 1 }
-        if (let Some(_v) = p_deprecated) { _x += 1 + 1 }
+        if (let Some(_v) <- p_allowAlias) { _x += 1 + 1 }
+        if (let Some(_v) <- p_deprecated) { _x += 1 + 1 }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_allowAlias) { _x.write(_v) }
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_allowAlias) { _x.write(_v) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -3566,16 +3566,16 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_allowAlias) { out.append(16); out.packBool(_v) }
-        if (let Some(_v) = p_deprecated) { out.append(24); out.packBool(_v) }
+        if (let Some(_v) <- p_allowAlias) { out.append(16); out.packBool(_v) }
+        if (let Some(_v) <- p_deprecated) { out.append(24); out.packBool(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_allowAlias) { _x.append("allowAlias", _v) }
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_allowAlias) { _x.append("allowAlias", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -3632,14 +3632,14 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_deprecated) { _x += 1 + 1 }
+        if (let Some(_v) <- p_deprecated) { _x += 1 + 1 }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -3687,14 +3687,14 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_deprecated) { out.append(8); out.packBool(_v) }
+        if (let Some(_v) <- p_deprecated) { out.append(8); out.packBool(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -3748,14 +3748,14 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_deprecated) { _x += 2 + 1 }
+        if (let Some(_v) <- p_deprecated) { _x += 2 + 1 }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -3803,14 +3803,14 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_deprecated) { out.packTag(33, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_deprecated) { out.packTag(33, VARINT); out.packBool(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -3919,16 +3919,16 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_deprecated) { _x += 2 + 1 }
-        if (let Some(_v) = p_idempotencyLevel) { _x += 2 + varintSize(_v) }
+        if (let Some(_v) <- p_deprecated) { _x += 2 + 1 }
+        if (let Some(_v) <- p_idempotencyLevel) { _x += 2 + varintSize(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_deprecated) { _x.write(_v) }
-        if (let Some(_v) = p_idempotencyLevel) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_deprecated) { _x.write(_v) }
+        if (let Some(_v) <- p_idempotencyLevel) { _x.write(_v.hashCode()) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
@@ -3980,16 +3980,16 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_deprecated) { out.packTag(33, VARINT); out.packBool(_v) }
-        if (let Some(_v) = p_idempotencyLevel) { out.packTag(34, VARINT); out.packVarint(_v) }
+        if (let Some(_v) <- p_deprecated) { out.packTag(33, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_idempotencyLevel) { out.packTag(34, VARINT); out.packVarint(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (let Some(_v) = p_deprecated) { _x.append("deprecated", _v) }
-        if (let Some(_v) = p_idempotencyLevel) { _x.append("idempotencyLevel", _v) }
+        if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
+        if (let Some(_v) <- p_idempotencyLevel) { _x.append("idempotencyLevel", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -4049,15 +4049,15 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) = p_namePart.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_isExtension) { _x += 1 + 1 }
+        if (let Some(_v) <- p_namePart.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_isExtension) { _x += 1 + 1 }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) = p_namePart.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_isExtension) { _x.write(_v) }
+        if (let Some(_v) <- p_namePart.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_isExtension) { _x.write(_v) }
         return _x.finish()
     }
 
@@ -4106,15 +4106,15 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) = p_namePart.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) = p_isExtension) { out.append(16); out.packBool(_v) }
+        if (let Some(_v) <- p_namePart.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_isExtension) { out.append(16); out.packBool(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
         if (isPresent(p_namePart.data)) { _x.append("namePart", p_namePart.get()) }
-        if (let Some(_v) = p_isExtension) { _x.append("isExtension", _v) }
+        if (let Some(_v) <- p_isExtension) { _x.append("isExtension", _v) }
         return _x.done().toString()
     }
 
@@ -4208,24 +4208,24 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
     protected func m_size(): Int64 {
         var _x = 0
         if (!name.isEmpty()) { for (_i in name) { _x += 1 + binSize(_i) } }
-        if (let Some(_v) = p_identifierValue.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_positiveIntValue) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_negativeIntValue) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_doubleValue) { _x += 1 + 8 }
-        if (let Some(_v) = p_stringValue) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_aggregateValue.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_identifierValue.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_positiveIntValue) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_negativeIntValue) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_doubleValue) { _x += 1 + 8 }
+        if (let Some(_v) <- p_stringValue) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_aggregateValue.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
         if (!name.isEmpty()) { _x.write(name.hashCode()) }
-        if (let Some(_v) = p_identifierValue.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_positiveIntValue) { _x.write(_v) }
-        if (let Some(_v) = p_negativeIntValue) { _x.write(_v) }
-        if (let Some(_v) = p_doubleValue) { _x.write(_v) }
-        if (let Some(_v) = p_stringValue) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_aggregateValue.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_identifierValue.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_positiveIntValue) { _x.write(_v) }
+        if (let Some(_v) <- p_negativeIntValue) { _x.write(_v) }
+        if (let Some(_v) <- p_doubleValue) { _x.write(_v) }
+        if (let Some(_v) <- p_stringValue) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_aggregateValue.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
@@ -4291,12 +4291,12 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
         if (!name.isEmpty()) { for (_i in name) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
-        if (let Some(_v) = p_identifierValue.data) { out.append(26); out.packBin(_v) }
-        if (let Some(_v) = p_positiveIntValue) { out.append(32); out.packVarint(_v) }
-        if (let Some(_v) = p_negativeIntValue) { out.append(40); out.packVarint(_v) }
-        if (let Some(_v) = p_doubleValue) { out.append(49); out.packFixed(_v) }
-        if (let Some(_v) = p_stringValue) { out.append(58); out.packBin(_v) }
-        if (let Some(_v) = p_aggregateValue.data) { out.append(66); out.packBin(_v) }
+        if (let Some(_v) <- p_identifierValue.data) { out.append(26); out.packBin(_v) }
+        if (let Some(_v) <- p_positiveIntValue) { out.append(32); out.packVarint(_v) }
+        if (let Some(_v) <- p_negativeIntValue) { out.append(40); out.packVarint(_v) }
+        if (let Some(_v) <- p_doubleValue) { out.append(49); out.packFixed(_v) }
+        if (let Some(_v) <- p_stringValue) { out.append(58); out.packBin(_v) }
+        if (let Some(_v) <- p_aggregateValue.data) { out.append(66); out.packBin(_v) }
         m_unknown(out)
     }
 
@@ -4304,10 +4304,10 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
         var _x = StructPrinter()
         if (!name.isEmpty()) { _x.append("name", name) }
         if (isPresent(p_identifierValue.data)) { _x.append("identifierValue", p_identifierValue.get()) }
-        if (let Some(_v) = p_positiveIntValue) { _x.append("positiveIntValue", _v) }
-        if (let Some(_v) = p_negativeIntValue) { _x.append("negativeIntValue", _v) }
-        if (let Some(_v) = p_doubleValue) { _x.append("doubleValue", _v) }
-        if (let Some(_v) = p_stringValue) { _x.append("stringValue", _v) }
+        if (let Some(_v) <- p_positiveIntValue) { _x.append("positiveIntValue", _v) }
+        if (let Some(_v) <- p_negativeIntValue) { _x.append("negativeIntValue", _v) }
+        if (let Some(_v) <- p_doubleValue) { _x.append("doubleValue", _v) }
+        if (let Some(_v) <- p_stringValue) { _x.append("stringValue", _v) }
         if (isPresent(p_aggregateValue.data)) { _x.append("aggregateValue", p_aggregateValue.get()) }
         return _x.done().toString()
     }
@@ -4396,8 +4396,8 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         var _x = 0
         if (!path.isEmpty()) { var _s = 0; for (_i in path) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
         if (!span.isEmpty()) { var _s = 0; for (_i in span) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
-        if (let Some(_v) = p_leadingComments.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_trailingComments.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_leadingComments.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_trailingComments.data) { _x += 1 + binSize(_v) }
         if (!leadingDetachedComments.isEmpty()) { _x += s_size(leadingDetachedComments, 1) }
         return _x
     }
@@ -4406,8 +4406,8 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         var _x = DefaultHasher()
         if (!path.isEmpty()) { _x.write(path.hashCode()) }
         if (!span.isEmpty()) { _x.write(span.hashCode()) }
-        if (let Some(_v) = p_leadingComments.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_trailingComments.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_leadingComments.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_trailingComments.data) { _x.write(_v.hashCode()) }
         if (!leadingDetachedComments.isEmpty()) { _x.write(leadingDetachedComments.hashCode()) }
         return _x.finish()
     }
@@ -4469,8 +4469,8 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         check()
         if (!path.isEmpty()) { out.append(10); var _s = 0; for (_i in path) { _s += varintSize(_i) }; out.packVarint(_s); for (_i in path) { out.packVarint(_i) } }
         if (!span.isEmpty()) { out.append(18); var _s = 0; for (_i in span) { _s += varintSize(_i) }; out.packVarint(_s); for (_i in span) { out.packVarint(_i) } }
-        if (let Some(_v) = p_leadingComments.data) { out.append(26); out.packBin(_v) }
-        if (let Some(_v) = p_trailingComments.data) { out.append(34); out.packBin(_v) }
+        if (let Some(_v) <- p_leadingComments.data) { out.append(26); out.packBin(_v) }
+        if (let Some(_v) <- p_trailingComments.data) { out.append(34); out.packBin(_v) }
         if (!leadingDetachedComments.isEmpty()) { s_pack(6, leadingDetachedComments, out) }
         m_unknown(out)
     }
@@ -4658,18 +4658,18 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     protected func m_size(): Int64 {
         var _x = 0
         if (!path.isEmpty()) { var _s = 0; for (_i in path) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
-        if (let Some(_v) = p_sourceFile.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) = p_begin) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) = p_end) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_sourceFile.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_begin) { _x += 1 + varintSize(_v) }
+        if (let Some(_v) <- p_end) { _x += 1 + varintSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
         if (!path.isEmpty()) { _x.write(path.hashCode()) }
-        if (let Some(_v) = p_sourceFile.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) = p_begin) { _x.write(_v) }
-        if (let Some(_v) = p_end) { _x.write(_v) }
+        if (let Some(_v) <- p_sourceFile.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_begin) { _x.write(_v) }
+        if (let Some(_v) <- p_end) { _x.write(_v) }
         return _x.finish()
     }
 
@@ -4723,9 +4723,9 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
         if (!path.isEmpty()) { out.append(10); var _s = 0; for (_i in path) { _s += varintSize(_i) }; out.packVarint(_s); for (_i in path) { out.packVarint(_i) } }
-        if (let Some(_v) = p_sourceFile.data) { out.append(18); out.packBin(_v) }
-        if (let Some(_v) = p_begin) { out.append(24); out.packVarint(_v) }
-        if (let Some(_v) = p_end) { out.append(32); out.packVarint(_v) }
+        if (let Some(_v) <- p_sourceFile.data) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_begin) { out.append(24); out.packVarint(_v) }
+        if (let Some(_v) <- p_end) { out.append(32); out.packVarint(_v) }
         m_unknown(out)
     }
 
@@ -4733,8 +4733,8 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
         var _x = StructPrinter()
         if (!path.isEmpty()) { _x.append("path", path) }
         if (isPresent(p_sourceFile.data)) { _x.append("sourceFile", p_sourceFile.get()) }
-        if (let Some(_v) = p_begin) { _x.append("begin", _v) }
-        if (let Some(_v) = p_end) { _x.append("end", _v) }
+        if (let Some(_v) <- p_begin) { _x.append("begin", _v) }
+        if (let Some(_v) <- p_end) { _x.append("end", _v) }
         return _x.done().toString()
     }
 

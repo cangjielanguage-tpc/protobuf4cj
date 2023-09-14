@@ -198,7 +198,7 @@ struct Parents {
 
     public func markDirty(): Unit {
         var node = header
-        while (let Some(n) = node) {
+        while (let Some(n) <- node) {
             n.data.markDirty()
             node = n.next
         }
@@ -218,7 +218,7 @@ struct Parents {
         if (refEq(node.data, v)) {
             return if (node.count > 1) { node.count-- } else { header = node.next }
         }
-        while (let Some(n) = node.next) {
+        while (let Some(n) <- node.next) {
             if (refEq(n.data, v)) {
                 return if (n.count > 1) { n.count -- } else { node.next = n.next }
             }

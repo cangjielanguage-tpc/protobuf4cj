@@ -49,10 +49,10 @@ func getFieldNoEmptyExpr2(field: FieldDescriptorProto) {
     }
 
     if (field.type_ == TYPE_STRING || field.type_ == TYPE_MESSAGE) {
-        return "let Some(_v) = p_${field.jsonName}.data"
+        return "let Some(_v) <- p_${field.jsonName}.data"
     }
 
-    return "let Some(_v) = p_${field.jsonName}"
+    return "let Some(_v) <- p_${field.jsonName}"
 }
 
 /* field clear expr */
@@ -201,7 +201,7 @@ func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDes
         if (field.label == LABEL_REPEATED) {
             append("        m_init(${getMessagePropName(field.jsonName)})\n")
         } else if (field.type_ == TYPE_MESSAGE) {
-            append("        if (let Some(_v) = p_${field.jsonName}.data) { m_init(_v) }\n")
+            append("        if (let Some(_v) <- p_${field.jsonName}.data) { m_init(_v) }\n")
         }
     }
 

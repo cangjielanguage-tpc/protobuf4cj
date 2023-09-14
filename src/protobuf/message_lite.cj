@@ -190,7 +190,7 @@ public struct PbMessage<M> where M <: MessageLite & TypedMessage<M> {
     public PbMessage(public var data: ?M) { }
 
     public mut func set(parent: MessageLite, that: M): Unit {
-        if (let Some(m) = data) {
+        if (let Some(m) <- data) {
             let am: MessageLite = m
             am.m_parents.remove(parent)
         }
@@ -201,7 +201,7 @@ public struct PbMessage<M> where M <: MessageLite & TypedMessage<M> {
     }
 
     public mut func getOrDefault(parent: MessageLite): M {
-        if (let Some(m) = data) {
+        if (let Some(m) <- data) {
             return m
         }
 
@@ -213,7 +213,7 @@ public struct PbMessage<M> where M <: MessageLite & TypedMessage<M> {
     }
 
     public mut func removeFrom(parent: MessageLite): Unit {
-        if (let Some(m) = data) {
+        if (let Some(m) <- data) {
             let am: MessageLite = m
             am.m_parents.remove(parent)
             data = None

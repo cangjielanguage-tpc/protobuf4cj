@@ -218,7 +218,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
 
     public func put(key: K, value: V): ?V {
         let old = data.put(key, value)
-        if (let Some(m) = old) { unlink(m) }
+        if (let Some(m) <- old) { unlink(m) }
 
         parent?.markDirty()
         link(value)
@@ -227,7 +227,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
 
     public func putAll(elements: Collection<(K, V)>): Unit {
         for ((k, v) in elements) {
-            if (let Some(m) = data.put(k, v)) {
+            if (let Some(m) <- data.put(k, v)) {
                 unlink(m)
             }
 
@@ -238,7 +238,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     }
 
     public func remove(key: K): Option<V> {
-        if (let Some(m) = data.remove(key)) {
+        if (let Some(m) <- data.remove(key)) {
             parent?.markDirty()
             unlink(m)
             return m
@@ -249,7 +249,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
 
     public func removeAll(keys: Collection<K>): Unit {
         for (key in keys) {
-            if (let Some(m) = data.remove(key)) {
+            if (let Some(m) <- data.remove(key)) {
                 unlink(m)
             }
         }
@@ -341,7 +341,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public operator func ==(that: MapMessage<K, V>): Bool { data == that.data }
     public operator func !=(that: MapMessage<K, V>): Bool { data != that.data }
 
-    func putDirty(key: K, value: V): Unit { if (let Some(m) = data.put(key, value)) { unlink(m) }; link(value) }
+    func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.put(key, value)) { unlink(m) }; link(value) }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
 }

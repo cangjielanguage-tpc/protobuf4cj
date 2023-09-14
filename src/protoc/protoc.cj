@@ -120,7 +120,7 @@ class GenCodeHelper {
     func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
         for (dep in desc.dependency) {
-            if (let Some(i) = dep.lastIndexOf('/')) {
+            if (let Some(i) <- dep.lastIndexOf('/')) {
                 let pkg = dep.substring(0, i).replace('/', '.')
                 if (desc.package_ == "protobuf" && pkg != "protobuf") {
                     /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
