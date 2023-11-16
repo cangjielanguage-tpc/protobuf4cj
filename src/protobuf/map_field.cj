@@ -103,13 +103,12 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         parent?.markDirty()
     }
 
-    public func version(): Int64 { data.version() }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func capacity(): Int64 { data.capacity() }
     public func clone(): MapField<K, V> { MapField(this) }
     public func toHashMap(): HashMap<K, V> { data.clone() }
-    public func keys(): Keys<K> { data.keys() }
-    public func values(): Values<V> { data.values() }
+    public func keys(): EquatableCollection<K> { data.keys() }
+    public func values(): Collection<V> { data.values() }
     public func iterator(): HashMapIterator<K, V> { data.iterator() }
     public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
@@ -124,7 +123,7 @@ extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable 
         var res = StructPrinter()
         for ((k, v) in getRawData()) {
             let key = match(k) {
-                case k: String where k.contains(' ') => "\"${k}\""
+                case k: String where k.contains(" ") => "\"${k}\""
                 case _ => k.toString()
             }
             match (v) {
@@ -327,13 +326,12 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         for (e in elements) { let ee: MessageLite = e; ee.m_parents.remove(m) }
     }
 
-    public func version(): Int64 { data.version() }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func capacity(): Int64 { data.capacity() }
     public func toHashMap(): HashMap<K, V> { data.clone() }
     public func clone(): MapField<K, V> { MapField(this) }
-    public func keys(): Keys<K> { data.keys() }
-    public func values(): Values<V> { data.values() }
+    public func keys(): EquatableCollection<K> { data.keys() }
+    public func values(): Collection<V> { data.values() }
     public func iterator(): HashMapIterator<K, V> { data.iterator() }
     public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
@@ -351,7 +349,7 @@ extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K
         var res = StructPrinter()
         for ((k, v) in getRawData()) {
             res.append(match(k) {
-                case k: String where k.contains(' ') => "\"${k}\""
+                case k: String where k.contains(" ") => "\"${k}\""
                 case _ => k.toString()
             }, v)
         }

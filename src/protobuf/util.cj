@@ -8,15 +8,20 @@ public struct StructPrinter <: ToString {
 
     public mut func append(key: String, str: ToString): Unit {
         if (sep) { stb.append(", ") } else { sep = true }
-        stb.append(key).append(": ").append(str)
+        stb.append(key)
+        stb.append(": ")
+        stb.append(str)
     }
 
     public mut func append(key: String, str: String): Unit {
         if (sep) { stb.append(", ") } else { sep = true }
-        stb.append(key).append(": \"").append(str).append('"')
+        stb.append(key)
+        stb.append(": \"")
+        stb.append(str)
+        stb.append('"')
     }
 
-    public mut func clear(): Unit { stb.clear().append('{'); sep = false }
+    public mut func clear(): Unit { stb.reset(); stb.append('{'); sep = false }
     public func done() { stb.append('}'); this }
     public func toString() { stb.toString() }
 }

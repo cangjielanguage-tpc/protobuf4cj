@@ -123,7 +123,7 @@ func getFieldPropVarExpr2(field: FieldDescriptorProto) {
     }
 
     match (field.type_) {
-        case TYPE_DOUBLE | TYPE_FLOAT => if (!field.defaultValue.contains('.')) { field.defaultValue = if (field.defaultValue[0] == '-') { "-.${field.defaultValue.substring(1)}" } else { ".${field.defaultValue}" } }
+        case TYPE_DOUBLE | TYPE_FLOAT => if (!field.defaultValue.contains(".")) { field.defaultValue = if (field.defaultValue[0] == b'-') { "-.${field.defaultValue[1 ..]}" } else { ".${field.defaultValue}" } }
         case TYPE_STRING => ()
         case TYPE_BYTES => throw Exception("NOT SUPPORT BYTES DEFAULT VALUE")
         case _=> ()
@@ -134,7 +134,7 @@ func getFieldPropVarExpr2(field: FieldDescriptorProto) {
 
 /* message class and member variable define */
 func genCodeMessageFieldClass2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("public class ${typeName} <: MessageLite & TypedMessage<${typeName}> {\n")
@@ -150,7 +150,7 @@ func genCodeMessageFieldClass2(typeName: String, fields: RepeatedMessage<FieldDe
 
 /* message init */
 func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     /* init with named params */
     append("\n    public init(")
@@ -215,7 +215,7 @@ func genCodeMessageFieldInit2(typeName: String, fields: RepeatedMessage<FieldDes
 
 /* message props define */
 func genCodeMessageFieldProps2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     // normal field props
     for (field in fields where !field.hasOneofIndex && field.label != LABEL_REPEATED) {
@@ -253,7 +253,7 @@ func genCodeMessageFieldProps2(typeName: String, fields: RepeatedMessage<FieldDe
 
 /* message m_size */
 func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    protected func m_size(): Int64 {\n")
@@ -284,7 +284,7 @@ func genCodeMessageFieldSize2(fields: RepeatedMessage<FieldDescriptorProto>, hel
 
 /* message m_hashCode */
 func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    protected func m_hashCode(): Int64 {\n")
@@ -306,7 +306,7 @@ func genCodeMessageFieldHash2(fields: RepeatedMessage<FieldDescriptorProto>, hel
 
 /* message m_isEmpty */
 func genCodeMessageFieldIsEmpty2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper) {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
 
     append("\n")
@@ -332,7 +332,7 @@ func genCodeMessageFieldIsEmpty2(fields: RepeatedMessage<FieldDescriptorProto>, 
 
 /* message m_clear */
 func genCodeMessageFieldClear2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    protected func m_clear(): Unit {\n")
@@ -352,7 +352,7 @@ func genCodeMessageFieldClear2(fields: RepeatedMessage<FieldDescriptorProto>, he
 
 /* message == != */
 func genCodeMessageFieldEquat2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper) {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
 
     append("\n")
@@ -381,7 +381,7 @@ func genCodeMessageFieldEquat2(typeName: String, fields: RepeatedMessage<FieldDe
 
 /* message copyFrom */
 func genCodeMessageFieldCopyFrom2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    public func copyFrom(src: ${typeName}): ${typeName} {\n")
@@ -412,7 +412,7 @@ func genCodeMessageFieldCopyFrom2(typeName: String, fields: RepeatedMessage<Fiel
 
 /* message unpack */
 func genCodeMessageFieldUnpack2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    public func unpack<T>(src: T): Unit where T <: BytesReader {\n")
@@ -439,7 +439,7 @@ func genCodeMessageFieldUnpack2(typeName: String, fields: RepeatedMessage<FieldD
 
 /* message check */
 func genCodeMessageFieldCheck2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    public func check(): Unit /* throws RequiredFieldNotSetException */ {\n")
@@ -458,7 +458,7 @@ func genCodeMessageFieldCheck2(fields: RepeatedMessage<FieldDescriptorProto>, he
 
 /* message pack */
 func genCodeMessageFieldPack2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    public func pack<T>(out: T): Unit where T <: BytesWriter {\n")
@@ -486,7 +486,7 @@ func genCodeMessageFieldPack2(fields: RepeatedMessage<FieldDescriptorProto>, hel
 
 /* message toString */
 func genCodeMessageFieldToString2(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("    public func toString(): String {\n")
@@ -513,7 +513,7 @@ func genCodeMessageFieldToString2(fields: RepeatedMessage<FieldDescriptorProto>,
 
 /* message builder */
 func genCodeMessageBuilder2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     append("\n")
     append("public class ${typeName}__Builder {\n")
@@ -521,7 +521,7 @@ func genCodeMessageBuilder2(typeName: String, fields: RepeatedMessage<FieldDescr
     for (field in fields where !field.hasOneofIndex) {
         let pName = getMessagePropName(field.jsonName)
         let type_ = match {
-            case field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">") => "Array<(${field.typeName[field.typeName.indexOf('<').getOrThrow() + 1 .. field.typeName.size - 1]})>"
+            case field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">") => "Array<(${field.typeName[field.typeName.indexOf("<").getOrThrow() + 1 .. field.typeName.size - 1]})>"
             case field.label == LABEL_REPEATED && field.type_ == TYPE_BYTES => "Array<Bytes>"
             case field.label == LABEL_REPEATED => "Array<${typeConvert(field)}>"
             case _ => "${typeConvert(field)}"
@@ -543,7 +543,7 @@ func genCodeMessageBuilder2(typeName: String, fields: RepeatedMessage<FieldDescr
 
 /* gen proto2 message codes */
 func genCodeMessageField2(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
 
     // class and member variable define
     genCodeMessageFieldClass2(typeName, fields, helper)

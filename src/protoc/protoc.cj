@@ -46,13 +46,13 @@ public func cj_generator(input: Array<UInt8>): Array<UInt8> {
 
 /* Get file name */
 func getFileName(path: String): String {
-    let sp = path.split('/')
+    let sp = path.split("/")
     sp[sp.size - 1].replace(".proto", ".pb.cj")
 }
 
 /* Get dest path by package name */
 func getDestPath(package_: String): String {
-    if (package_ == "") { "" } else { package_.replace('.', '/') + '/' }
+    if (package_ == "") { "" } else { package_.replace(".", "/") + "/" }
 }
 
 class LineSepOut {
@@ -74,7 +74,8 @@ class LineSepOut {
     func append(s: String) {
         if (first) {
             cn += s.size
-            outbuf.append(ss).append(s)
+            outbuf.append(ss)
+            outbuf.append(s)
             first = false
             return
         }
@@ -84,10 +85,13 @@ class LineSepOut {
         // Judge whether line feed is required
         if (cn + 1 + s.size > ln) {
             cn = sn + s.size
-            outbuf.append('\n').append(ss).append(s)
+            outbuf.append('\n')
+            outbuf.append(ss)
+            outbuf.append(s)
         } else {
             cn += 1 + s.size
-            outbuf.append(' ').append(s)
+            outbuf.append(' ')
+            outbuf.append(s)
         }
     }
 }
@@ -102,9 +106,11 @@ class GenCodeHelper {
         if (nested.isEmpty()) { return name }
         let sb = StringBuilder()
         for (n in nested) {
-            sb.append(n).append('_')
+            sb.append(n)
+            sb.append('_')
         }
-        sb.append(name).toString()
+        sb.append(name)
+        sb.toString()
     }
 
     /* proto file outbuf */
@@ -120,8 +126,8 @@ class GenCodeHelper {
     func getDependencyPackages(desc: FileDescriptorProto) {
         let pkgs = HashSet<String>()
         for (dep in desc.dependency) {
-            if (let Some(i) <- dep.lastIndexOf('/')) {
-                let pkg = dep.substring(0, i).replace('/', '.')
+            if (let Some(i) <- dep.lastIndexOf(b'/')) {
+                let pkg = dep[0 .. i].replace("/", ".")
                 if (desc.package_ == "protobuf" && pkg != "protobuf") {
                     /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
                     throw Exception("CIRCULAR DEPENDENCY")
@@ -149,13 +155,13 @@ class GenCodeHelper {
         }
     }
 
-    private func getTypeName(typeName: String) {
+    public func getTypeName(typeName: String) {
         for (p in packages) {
             if (typeName.startsWith(p)) {
                 if (p == pkgPrefix) {
-                    return String.join(typeName.substring(p.size).split('.'), delimiter: "_")
+                    return String.join(typeName[p.size ..].split("."), delimiter: "_")
                 }
-                return p.substring(1) + String.join(typeName.substring(p.size).split('.'), delimiter: "_")
+                return p[1 ..] + String.join(typeName[p.size ..].split("."), delimiter: "_")
             }
         }
         throw Exception("INVALID TYPE NAME")
@@ -231,13 +237,16 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
 }
 
 func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
     // package
     if (desc.package_ != "") { append("package ${desc.package_}\n\n") }
     // import
     append("from std import collection.*\n")
     if (desc.package_ != "protobuf") {
         append("from protobuf import protobuf.*\n")
+    }
+    if (!desc.service.isEmpty() && desc.package_ != "grpc") {
+        append("from protobuf import grpc.*\n")
     }
     for (pkg in helper.getDependencyPackages(desc)) {
         append("import ${pkg}.*\n")
@@ -294,7 +303,7 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
 func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     let typeName = helper.getNestedTypeName(e.name)
     let values = e.value
-    let append: (String) -> StringBuilder = helper.outbuf.append
+    let append: (String) -> Unit = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " |", sn: 4)
 
     // enum items
@@ -348,7 +357,7 @@ func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
 /* gen oneof group type define (enum) */
 func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
     for ((name, fields) in helper.oneofDecl) {
-        let append: (String) -> StringBuilder = helper.outbuf.append
+        let append: (String) -> Unit = helper.outbuf.append
         let sepOut = LineSepOut(helper.outbuf, sep: " |", sn: 4)
         let groupType = "${typeName}_Oneof_${titleCase(name)}"
 
@@ -612,7 +621,7 @@ let enumRsvdWords = HashSet<String>([
 
 func getEnumItemName(name: String) {
     if (cangjieKeyWords.contains(name) || enumRsvdWords.contains(name)) {
-        return name + '_'
+        return name + "_"
     }
 
     return name
@@ -620,19 +629,19 @@ func getEnumItemName(name: String) {
 
 func getMessagePropName(name: String) {
     if (cangjieKeyWords.contains(name) || messageRsvdWords.contains(name)) {
-        return name + '_'
+        return name + "_"
     }
 
     return name
 }
 
 func titleCase(str: String) {
-    "${str[0].toUpperCase()}${str.substring(1)}"
+    "${Char(str[0]).toUpperCase()}${str[1 ..]}"
 }
 
 /* lower camel case */
 func lowerCamelCase(name: String) {
-    let arr = "${name[0].toLowerCase()}${name.substring(1)}".split('_')
+    let arr = "${Char(name[0]).toLowerCase()}${name[1 ..]}".split("_")
 
     for (i in 1..arr.size) {
         arr[i] = titleCase(arr[i])

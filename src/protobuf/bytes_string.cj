@@ -7,7 +7,7 @@ public enum BytesString <: ToString & Hashable & Equatable<BytesString> & Equata
     public prop size: Int64 { get() {
         match (this) {
             case Bytes(bytes) => bytes.size
-            case String(string) => string.utf8View.size
+            case String(string) => string.size
         }
     } }
 
@@ -21,7 +21,7 @@ public enum BytesString <: ToString & Hashable & Equatable<BytesString> & Equata
     public unsafe func getRawBytes(): protobuf.Bytes {
         match (this) {
             case Bytes(bytes) => bytes.getRawArray()
-            case String(string) => string.utf8View.getRawBytes()
+            case String(string) => string.rawData()
         }
     }
 
@@ -37,7 +37,7 @@ public enum BytesString <: ToString & Hashable & Equatable<BytesString> & Equata
             case Bytes(bytes) => bytes.hashCode()
             case String(string) =>
                 var hasher = DefaultHasher()
-                for (v in unsafe { string.utf8View.getRawBytes() }) {
+                for (v in unsafe { string.rawData() }) {
                     hasher.write(v)
                 }
                 hasher.finish()
@@ -53,11 +53,11 @@ public enum BytesString <: ToString & Hashable & Equatable<BytesString> & Equata
     }
 
     public operator func ==(that: String): Bool {
-        unsafe { getRawBytes() == that.utf8View.getRawBytes() }
+        unsafe { getRawBytes() == that.rawData() }
     }
 
     public operator func !=(that: String): Bool {
-        unsafe { getRawBytes() != that.utf8View.getRawBytes() }
+        unsafe { getRawBytes() != that.rawData() }
     }
 }
 

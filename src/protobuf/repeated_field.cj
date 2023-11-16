@@ -115,7 +115,6 @@ public class RepeatedField<T> <: Collection<T> {
     public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
-    public func version(): Int64 { data.version() }
     public func capacity(): Int64 { data.capacity() }
     public func iterator(): Iterator<T> { data.iterator() }
     public prop size: Int64 { get() { data.size } }
@@ -351,7 +350,6 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
-    public func version(): Int64 { data.version() }
     public func capacity(): Int64 { data.capacity() }
     public func iterator(): Iterator<T> { data.iterator() }
     public prop size: Int64 { get() { data.size } }
@@ -557,7 +555,6 @@ public class RepeatedString <: Collection<String> & Equatable<RepeatedString> & 
     public func sortBy(comparator: (String, String) -> Ordering, stable!: Bool = false): Unit { data.sortBy({ a, b => comparator(a.toString(), b.toString()) }, stable: stable) }
     public func sortBy(comparator: (BytesString, BytesString) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
-    public func version(): Int64 { data.version() }
     public func capacity(): Int64 { data.capacity() }
     public func iterator(): Iterator<String> { RepeatedStringIterator(this) }
     public prop size: Int64 { get() { data.size } }

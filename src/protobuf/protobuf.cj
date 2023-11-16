@@ -156,7 +156,7 @@ public func binSize(val: BytesString) {
 
 @OverflowWrapping
 public func binSize(val: String) {
-    let size = val.utf8View.size
+    let size = val.size
     varintSize(size) + size
 }
 
