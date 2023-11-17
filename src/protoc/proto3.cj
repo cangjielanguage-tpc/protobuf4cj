@@ -8,10 +8,8 @@ func getFieldVarDefine(field: FieldDescriptorProto) {
     match {
         case field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">") => "public let ${name}: ${field.typeName}"
         case field.label == LABEL_REPEATED && field.type_ == TYPE_MESSAGE => "public let ${name}: RepeatedMessage<${field.typeName}>"
-        case field.label == LABEL_REPEATED && field.type_ == TYPE_STRING => "public let ${name}: RepeatedString"
         case field.label == LABEL_REPEATED => "public let ${name}: RepeatedField<${typeConvert(field)}>"
         case field.type_ == TYPE_MESSAGE => "private var p_${field.jsonName}: PbMessage<${field.typeName}>"
-        case field.type_ == TYPE_STRING => "private var p_${field.jsonName}: Pb3String"
         case _ => "private var p_${field.jsonName}: ${typeConvert(field)}"
     }
 }
@@ -33,11 +31,9 @@ func getFieldVarInit(field: FieldDescriptorProto) {
     match {
         case field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">") => "${name} = ${field.typeName}(${name})"
         case field.label == LABEL_REPEATED && field.type_ == TYPE_MESSAGE => "${name} = RepeatedMessage<${field.typeName}>(${name})"
-        case field.label == LABEL_REPEATED && field.type_ == TYPE_STRING => "${name} = RepeatedString(${name})"
         case field.label == LABEL_REPEATED && field.type_ == TYPE_BYTES => "${name} = RepeatedField<BytesSlice>(${name}.size) { _i => BytesSlice(${name}[_i]) }"
         case field.label == LABEL_REPEATED => "${name} = RepeatedField<${typeConvert(field)}>(${name})"
         case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = PbMessage<${field.typeName}>(${name})"
-        case field.type_ == TYPE_STRING => "p_${field.jsonName} = Pb3String(${name})"
         case _ => "p_${field.jsonName} = ${name}"
     }
 }
@@ -48,11 +44,9 @@ func getFieldVarInitSrc(field: FieldDescriptorProto) {
     match {
         case field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">") => "${name} = ${field.typeName}(src.${name})"
         case field.label == LABEL_REPEATED && field.type_ == TYPE_MESSAGE => "${name} = RepeatedMessage<${field.typeName}>(src.${name})"
-        case field.label == LABEL_REPEATED && field.type_ == TYPE_STRING => "${name} = RepeatedString(src.${name})"
         case field.label == LABEL_REPEATED && field.type_ == TYPE_BYTES => "${name} = RepeatedField<BytesSlice>(src.${name}.size) { _i => BytesSlice(src.${name}[_i]) }"
         case field.label == LABEL_REPEATED => "${name} = RepeatedField<${typeConvert(field)}>(src.${name})"
         case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = PbMessage(src.${name})"
-        case field.type_ == TYPE_STRING => "p_${field.jsonName} = Pb3String(src.${name})"
         case _ => "p_${field.jsonName} = src.${name}"
     }
 }
@@ -64,12 +58,8 @@ func getFieldNoEmptyExpr(field: FieldDescriptorProto) {
         return "!${getMessagePropName(field.jsonName)}.isEmpty()"
     }
 
-    if (field.type_ == TYPE_STRING) {
-        return "!p_${field.jsonName}.data.isEmpty()"
-    }
-
     if (field.type_ == TYPE_MESSAGE) {
-        return "let Some(_v) <- p_${field.jsonName}.noEmptyData()"
+        return "let Some(_v) <- p_${field.jsonName}.nonEmptyData()"
     }
 
     /* normal fields */
@@ -91,7 +81,7 @@ func getFieldClearExpr(field: FieldDescriptorProto) {
         case TYPE_BOOL => "${pName} = false"
         case TYPE_ENUM => "${pName} = ${field.typeName}.empty()"
         case TYPE_MESSAGE => "${pName}.removeFrom(this)"
-        case TYPE_STRING => "${pName}.clear()"
+        case TYPE_STRING => "${pName} = \"\""
         case TYPE_BYTES => "${pName} = BytesSlice()"
         case _=> "${pName} = 0"
     }
@@ -113,7 +103,6 @@ func getFieldSizeExpr(field: FieldDescriptorProto) {
     if (field.label != LABEL_REPEATED) {
         return "_x += ${tsize} + " + match (field.type_) {
             case TYPE_MESSAGE => "binSize(_v)"
-            case TYPE_STRING => "binSize(p_${field.jsonName}.data)"
             case _ => namedSize("p_${field.jsonName}", field)
         }
     }
@@ -147,9 +136,8 @@ func getFieldHashExpr(field: FieldDescriptorProto) {
     }
 
     let arg = match (field.type_) {
-        case TYPE_BYTES | TYPE_ENUM => "p_${field.jsonName}.hashCode()"
+        case TYPE_BYTES | TYPE_STRING | TYPE_ENUM => "p_${field.jsonName}.hashCode()"
         case TYPE_MESSAGE => "_v.hashCode()"
-        case TYPE_STRING => "p_${field.jsonName}.data.hashCode()"
         case _ => "p_${field.jsonName}"
     }
 
@@ -171,7 +159,6 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
     if (field.label != LABEL_REPEATED) {
         return match (field.type_) {
             case TYPE_MESSAGE => "${packTagOut(field.number, PREFIXED)}; out.packVarint(_v.size); _v.pack(out)"
-            case TYPE_STRING => "${packTagOut(field.number, PREFIXED)}; out.packBin(p_${field.jsonName}.data)"
             case _ => namedPack("p_${field.jsonName}", field)
         }
     }
@@ -192,8 +179,7 @@ func getFieldPackExpr(field: FieldDescriptorProto) {
         case TYPE_BOOL => "for (_i in ${name}) { ${packTagOut(field.number, VARINT)}; out.packBool(_i) }"
         case TYPE_DOUBLE | TYPE_FIXED64 | TYPE_SFIXED64 => "for (_i in ${name}) { ${packTagOut(field.number, BIT64)}; out.packFixed(_i) }"
         case TYPE_FIXED32 | TYPE_SFIXED32 | TYPE_FLOAT => "for (_i in ${name}) { ${packTagOut(field.number, BIT32)}; out.packFixed(_i) }"
-        case TYPE_BYTES => "for (_i in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packBin(_i) }"
-        case TYPE_STRING => "s_pack(${field.number}, ${name}, out)"
+        case TYPE_STRING | TYPE_BYTES => "for (_i in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packBin(_i) }"
         case TYPE_MESSAGE => "for (_i in ${name}) { ${packTagOut(field.number, PREFIXED)}; out.packVarint(_i.size); _i.pack(out) }" /* for performance */
         case TYPE_SINT32 | TYPE_SINT64 => "for (_i in ${name}) { ${packTagOut(field.number, VARINT)}; out.packSInt(_i) }"
         case _ => "for (_i in ${name}) { ${packTagOut(field.number, VARINT)}; out.packVarint(_i) }"
@@ -225,7 +211,6 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
     if (field.label != LABEL_REPEATED) {
         return match (field.type_) {
             case TYPE_MESSAGE => "p_${field.jsonName}.getOrDefault(this).unpack(subReader(src))"
-            case TYPE_STRING => "p_${field.jsonName}.unpack(src)"
             case _ => namedParseSrc("p_${field.jsonName}", "src", field)
         }
     }
@@ -269,7 +254,7 @@ func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): Str
         case TYPE_UINT32 => "src.parseUInt32()"
         case TYPE_ENUM => "${field.typeName}.parse(src.parseInt32())"
         case TYPE_BOOL => "src.parseBool()"
-        case TYPE_STRING => "src"
+        case TYPE_STRING => "src.parseString()"
         case TYPE_MESSAGE => "src"
         case TYPE_BYTES => "src.parseBytesSlice()"
         case TYPE_FIXED64 => "src.parseFixed64()"
@@ -393,9 +378,7 @@ func genCodeMessageFieldProps(typeName: String, fields: RepeatedMessage<FieldDes
         let pName = "p_${field.jsonName}"
 
         append("\n")
-        if (field.type_ == TYPE_STRING) {
-            append("    public mut prop ${name}: String { get() { ${pName}.get() } set(_v) { ${pName}.set(_v); markDirty() } }\n")
-        } else if (field.type_ == TYPE_MESSAGE) {
+        if (field.type_ == TYPE_MESSAGE) {
             append("    public mut prop ${name}: ${field.typeName} { get() { ${pName}.getOrDefault(this) } set(_v) { ${pName}.set(this, _v); markDirty() } }\n")
         } else {
             append("    public mut prop ${name}: ${typeConvert(field)} { get() { ${pName} } set(_v) { ${pName} = _v; markDirty() } }\n")
@@ -479,8 +462,7 @@ func genCodeMessageFieldIsEmpty(fields: RepeatedMessage<FieldDescriptorProto>, h
             match (field.type_) {
                 case TYPE_DOUBLE | TYPE_FLOAT => "${pName} == .0"
                 case TYPE_BOOL => "${pName} == false"
-                case TYPE_ENUM | TYPE_BYTES => "${pName}.isEmpty()"
-                case TYPE_MESSAGE | TYPE_STRING => "${pName}.isEmpty()"
+                case TYPE_ENUM | TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => "${pName}.isEmpty()"
                 case _ => "${pName} == 0"
             }
         })
@@ -530,7 +512,7 @@ func genCodeMessageFieldEquat(typeName: String, fields: RepeatedMessage<FieldDes
     for (field in fields where !field.hasOneofIndex) {
         sepOut.append(match {
             case field.label == LABEL_REPEATED => "${getMessagePropName(field.jsonName)} == src.${getMessagePropName(field.jsonName)}"
-            case field.type_ == TYPE_STRING || field.type_ == TYPE_MESSAGE => "p_${field.jsonName}.data == src.p_${field.jsonName}.data"
+            case field.type_ == TYPE_MESSAGE => "p_${field.jsonName}.data == src.p_${field.jsonName}.data"
             case _ => "p_${field.jsonName} == src.p_${field.jsonName}"
         })
     }
@@ -647,7 +629,6 @@ func genCodeMessageFieldToString(fields: RepeatedMessage<FieldDescriptorProto>, 
         let str = match {
             case field.label == LABEL_REPEATED => getMessagePropName(field.jsonName)
             case field.type_ == TYPE_MESSAGE => "_v"
-            case field.type_ == TYPE_STRING => "p_${field.jsonName}.get()"
             case _ => "p_${field.jsonName}"
         }
         append("        if (${getFieldNoEmptyExpr(field)}) { _x.append(\"${field.jsonName}\", ${str}) }\n")

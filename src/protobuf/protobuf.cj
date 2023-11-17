@@ -149,12 +149,6 @@ public func binSize(val: BytesSlice) {
 }
 
 @OverflowWrapping
-public func binSize(val: BytesString) {
-    let size = val.size
-    varintSize(size) + size
-}
-
-@OverflowWrapping
 public func binSize(val: String) {
     let size = val.size
     varintSize(size) + size

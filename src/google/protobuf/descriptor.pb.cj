@@ -101,9 +101,9 @@ public class FileDescriptorSet__Builder {
 }
 
 public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorProto> {
-    private var p_name: Pb2String
-    private var p_package: Pb2String
-    public let dependency: RepeatedString
+    private var p_name: ?String
+    private var p_package: ?String
+    public let dependency: RepeatedField<String>
     public let publicDependency: RepeatedField<Int32>
     public let weakDependency: RepeatedField<Int32>
     public let messageType: RepeatedMessage<DescriptorProto>
@@ -112,7 +112,7 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
     public let extension: RepeatedMessage<FieldDescriptorProto>
     private var p_options: PbMessage<FileOptions>
     private var p_sourceCodeInfo: PbMessage<SourceCodeInfo>
-    private var p_syntax: Pb2String
+    private var p_syntax: ?String
 
     public init(
         name!: ?String = None,
@@ -128,9 +128,9 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         sourceCodeInfo!: ?SourceCodeInfo = None,
         syntax!: ?String = None
     ) {
-        this.p_name = Pb2String(name)
-        this.p_package = Pb2String(package_)
-        this.dependency = RepeatedString(dependency)
+        this.p_name = name
+        this.p_package = package_
+        this.dependency = RepeatedField<String>(dependency)
         this.publicDependency = RepeatedField<Int32>(publicDependency)
         this.weakDependency = RepeatedField<Int32>(weakDependency)
         this.messageType = RepeatedMessage<DescriptorProto>(messageType)
@@ -139,14 +139,14 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         this.extension = RepeatedMessage<FieldDescriptorProto>(extension)
         this.p_options = PbMessage<FileOptions>(options)
         this.p_sourceCodeInfo = PbMessage<SourceCodeInfo>(sourceCodeInfo)
-        this.p_syntax = Pb2String(syntax)
+        this.p_syntax = syntax
         m_init()
     }
 
     public init(src: FileDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
-        this.p_package = Pb2String(src.package_)
-        this.dependency = RepeatedString(src.dependency)
+        this.p_name = src.name
+        this.p_package = src.package_
+        this.dependency = RepeatedField<String>(src.dependency)
         this.publicDependency = RepeatedField<Int32>(src.publicDependency)
         this.weakDependency = RepeatedField<Int32>(src.weakDependency)
         this.messageType = RepeatedMessage<DescriptorProto>(src.messageType)
@@ -155,7 +155,7 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         this.extension = RepeatedMessage<FieldDescriptorProto>(src.extension)
         this.p_options = PbMessage<FileOptions>(src.options)
         this.p_sourceCodeInfo = PbMessage<SourceCodeInfo>(src.sourceCodeInfo)
-        this.p_syntax = Pb2String(src.syntax)
+        this.p_syntax = src.syntax
         m_init()
     }
 
@@ -172,13 +172,13 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
-    public func clearPackage() { p_package.clear(); markDirty() }
-    public prop hasPackage: Bool { get() { isPresent(p_package.data) } }
-    public mut prop package_: String { get() { p_package.get() } set(_v) { p_package.set(_v); markDirty() } }
+    public func clearPackage() { p_package = None; markDirty() }
+    public prop hasPackage: Bool { get() { isPresent(p_package) } }
+    public mut prop package_: String { get() { p_package.getOrThrow() } set(_x) { p_package = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -188,15 +188,15 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
     public prop hasSourceCodeInfo: Bool { get() { isPresent(p_sourceCodeInfo.data) } }
     public mut prop sourceCodeInfo: SourceCodeInfo { get() { p_sourceCodeInfo.data.getOrThrow() } set(_v) { p_sourceCodeInfo.set(this, _v); markDirty() } }
 
-    public func clearSyntax() { p_syntax.clear(); markDirty() }
-    public prop hasSyntax: Bool { get() { isPresent(p_syntax.data) } }
-    public mut prop syntax: String { get() { p_syntax.get() } set(_v) { p_syntax.set(_v); markDirty() } }
+    public func clearSyntax() { p_syntax = None; markDirty() }
+    public prop hasSyntax: Bool { get() { isPresent(p_syntax) } }
+    public mut prop syntax: String { get() { p_syntax.getOrThrow() } set(_x) { p_syntax = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_package.data) { _x += 1 + binSize(_v) }
-        if (!dependency.isEmpty()) { _x += s_size(dependency, 1) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_package) { _x += 1 + binSize(_v) }
+        if (!dependency.isEmpty()) { for (_i in dependency) { _x += 1 + binSize(_i) } }
         if (!publicDependency.isEmpty()) { for (_i in publicDependency) { _x += 1 + varintSize(_i) } }
         if (!weakDependency.isEmpty()) { for (_i in weakDependency) { _x += 1 + varintSize(_i) } }
         if (!messageType.isEmpty()) { for (_i in messageType) { _x += 1 + binSize(_i) } }
@@ -205,14 +205,14 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!extension.isEmpty()) { for (_i in extension) { _x += 1 + binSize(_i) } }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_sourceCodeInfo.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_syntax.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_syntax) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_package.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_package) { _x.write(_v.hashCode()) }
         if (!dependency.isEmpty()) { _x.write(dependency.hashCode()) }
         if (!publicDependency.isEmpty()) { _x.write(publicDependency.hashCode()) }
         if (!weakDependency.isEmpty()) { _x.write(weakDependency.hashCode()) }
@@ -222,19 +222,19 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!extension.isEmpty()) { _x.write(extension.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_sourceCodeInfo.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_syntax.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_syntax) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && isNone(p_package.data) && dependency.isEmpty() && publicDependency.isEmpty() &&
+        isNone(p_name) && isNone(p_package) && dependency.isEmpty() && publicDependency.isEmpty() &&
         weakDependency.isEmpty() && messageType.isEmpty() && enumType.isEmpty() && service.isEmpty() &&
-        extension.isEmpty() && isNone(p_options.data) && isNone(p_sourceCodeInfo.data) && isNone(p_syntax.data)
+        extension.isEmpty() && isNone(p_options.data) && isNone(p_sourceCodeInfo.data) && isNone(p_syntax)
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
-        p_package.clear()
+        p_name = None
+        p_package = None
         dependency.clear()
         publicDependency.clear()
         weakDependency.clear()
@@ -244,17 +244,17 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         extension.clear()
         p_options.removeFrom(this)
         p_sourceCodeInfo.removeFrom(this)
-        p_syntax.clear()
+        p_syntax = None
     }
 
     public operator func !=(src: FileDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: FileDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && p_package.data == src.p_package.data && dependency == src.dependency &&
+        p_name == src.p_name && p_package == src.p_package && dependency == src.dependency &&
         publicDependency == src.publicDependency && weakDependency == src.weakDependency &&
         messageType == src.messageType && enumType == src.enumType && service == src.service &&
         extension == src.extension && p_options.data == src.p_options.data &&
-        p_sourceCodeInfo.data == src.p_sourceCodeInfo.data && p_syntax.data == src.p_syntax.data
+        p_sourceCodeInfo.data == src.p_sourceCodeInfo.data && p_syntax == src.p_syntax
     }
 
     public func copyFrom(src: FileDescriptorProto): FileDescriptorProto {
@@ -282,9 +282,9 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
-                case 2 => p_package.unpack(src)
-                case 3 => s_add(dependency, src)
+                case 1 => p_name = src.parseString()
+                case 2 => p_package = src.parseString()
+                case 3 => s_add(dependency, src.parseString())
                 case 10 => s_add(publicDependency, src.parseInt32())
                 case 11 => s_add(weakDependency, src.parseInt32())
                 case 4 => s_add(messageType, src)
@@ -293,7 +293,7 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
                 case 7 => s_add(extension, src)
                 case 8 => p_options.getOrDefault(this).unpack(subReader(src))
                 case 9 => p_sourceCodeInfo.getOrDefault(this).unpack(subReader(src))
-                case 12 => p_syntax.unpack(src)
+                case 12 => p_syntax = src.parseString()
                 case _ => m_unknown(src, _x)
             }
         }
@@ -305,9 +305,9 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) <- p_package.data) { out.append(18); out.packBin(_v) }
-        if (!dependency.isEmpty()) { s_pack(3, dependency, out) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_package) { out.append(18); out.packBin(_v) }
+        if (!dependency.isEmpty()) { for (_i in dependency) { out.append(26); out.packBin(_i) } }
         if (!publicDependency.isEmpty()) { for (_i in publicDependency) { out.append(80); out.packVarint(_i) } }
         if (!weakDependency.isEmpty()) { for (_i in weakDependency) { out.append(88); out.packVarint(_i) } }
         if (!messageType.isEmpty()) { for (_i in messageType) { out.append(34); out.packVarint(_i.size); _i.pack(out) } }
@@ -316,14 +316,14 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!extension.isEmpty()) { for (_i in extension) { out.append(58); out.packVarint(_i.size); _i.pack(out) } }
         if (let Some(_v) <- p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
         if (let Some(_v) <- p_sourceCodeInfo.data) { out.append(74); out.packVarint(_v.size); _v.pack(out) }
-        if (let Some(_v) <- p_syntax.data) { out.append(98); out.packBin(_v) }
+        if (let Some(_v) <- p_syntax) { out.append(98); out.packBin(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
-        if (isPresent(p_package.data)) { _x.append("package", p_package.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
+        if (let Some(_v) <- p_package) { _x.append("package", _v) }
         if (!dependency.isEmpty()) { _x.append("dependency", dependency) }
         if (!publicDependency.isEmpty()) { _x.append("publicDependency", publicDependency) }
         if (!weakDependency.isEmpty()) { _x.append("weakDependency", weakDependency) }
@@ -333,7 +333,7 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         if (!extension.isEmpty()) { _x.append("extension", extension) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (let Some(_v) <- p_sourceCodeInfo.data) { _x.append("sourceCodeInfo", _v) }
-        if (isPresent(p_syntax.data)) { _x.append("syntax", p_syntax.get()) }
+        if (let Some(_v) <- p_syntax) { _x.append("syntax", _v) }
         return _x.done().toString()
     }
 
@@ -644,7 +644,7 @@ public class DescriptorProto_ReservedRange__Builder {
 }
 
 public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
-    private var p_name: Pb2String
+    private var p_name: ?String
     public let field: RepeatedMessage<FieldDescriptorProto>
     public let extension: RepeatedMessage<FieldDescriptorProto>
     public let nestedType: RepeatedMessage<DescriptorProto>
@@ -653,7 +653,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     public let oneofDecl: RepeatedMessage<OneofDescriptorProto>
     private var p_options: PbMessage<MessageOptions>
     public let reservedRange: RepeatedMessage<DescriptorProto_ReservedRange>
-    public let reservedName: RepeatedString
+    public let reservedName: RepeatedField<String>
 
     public init(
         name!: ?String = None,
@@ -667,7 +667,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         reservedRange!: Array<DescriptorProto_ReservedRange> = [],
         reservedName!: Array<String> = []
     ) {
-        this.p_name = Pb2String(name)
+        this.p_name = name
         this.field = RepeatedMessage<FieldDescriptorProto>(field)
         this.extension = RepeatedMessage<FieldDescriptorProto>(extension)
         this.nestedType = RepeatedMessage<DescriptorProto>(nestedType)
@@ -676,12 +676,12 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         this.oneofDecl = RepeatedMessage<OneofDescriptorProto>(oneofDecl)
         this.p_options = PbMessage<MessageOptions>(options)
         this.reservedRange = RepeatedMessage<DescriptorProto_ReservedRange>(reservedRange)
-        this.reservedName = RepeatedString(reservedName)
+        this.reservedName = RepeatedField<String>(reservedName)
         m_init()
     }
 
     public init(src: DescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
+        this.p_name = src.name
         this.field = RepeatedMessage<FieldDescriptorProto>(src.field)
         this.extension = RepeatedMessage<FieldDescriptorProto>(src.extension)
         this.nestedType = RepeatedMessage<DescriptorProto>(src.nestedType)
@@ -690,7 +690,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         this.oneofDecl = RepeatedMessage<OneofDescriptorProto>(src.oneofDecl)
         this.p_options = PbMessage<MessageOptions>(src.options)
         this.reservedRange = RepeatedMessage<DescriptorProto_ReservedRange>(src.reservedRange)
-        this.reservedName = RepeatedString(src.reservedName)
+        this.reservedName = RepeatedField<String>(src.reservedName)
         m_init()
     }
 
@@ -707,9 +707,9 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -717,7 +717,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
         if (!field.isEmpty()) { for (_i in field) { _x += 1 + binSize(_i) } }
         if (!extension.isEmpty()) { for (_i in extension) { _x += 1 + binSize(_i) } }
         if (!nestedType.isEmpty()) { for (_i in nestedType) { _x += 1 + binSize(_i) } }
@@ -726,13 +726,13 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         if (!oneofDecl.isEmpty()) { for (_i in oneofDecl) { _x += 1 + binSize(_i) } }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { _x += 1 + binSize(_i) } }
-        if (!reservedName.isEmpty()) { _x += s_size(reservedName, 1) }
+        if (!reservedName.isEmpty()) { for (_i in reservedName) { _x += 1 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
         if (!field.isEmpty()) { _x.write(field.hashCode()) }
         if (!extension.isEmpty()) { _x.write(extension.hashCode()) }
         if (!nestedType.isEmpty()) { _x.write(nestedType.hashCode()) }
@@ -746,13 +746,13 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && field.isEmpty() && extension.isEmpty() && nestedType.isEmpty() && enumType.isEmpty() &&
+        isNone(p_name) && field.isEmpty() && extension.isEmpty() && nestedType.isEmpty() && enumType.isEmpty() &&
         extensionRange.isEmpty() && oneofDecl.isEmpty() && isNone(p_options.data) && reservedRange.isEmpty() &&
         reservedName.isEmpty()
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
+        p_name = None
         field.clear()
         extension.clear()
         nestedType.clear()
@@ -767,9 +767,9 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     public operator func !=(src: DescriptorProto): Bool { !(this == src) }
     public operator func ==(src: DescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && field == src.field && extension == src.extension &&
-        nestedType == src.nestedType && enumType == src.enumType && extensionRange == src.extensionRange &&
-        oneofDecl == src.oneofDecl && p_options.data == src.p_options.data && reservedRange == src.reservedRange &&
+        p_name == src.p_name && field == src.field && extension == src.extension && nestedType == src.nestedType &&
+        enumType == src.enumType && extensionRange == src.extensionRange && oneofDecl == src.oneofDecl &&
+        p_options.data == src.p_options.data && reservedRange == src.reservedRange &&
         reservedName == src.reservedName
     }
 
@@ -796,7 +796,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
+                case 1 => p_name = src.parseString()
                 case 2 => s_add(field, src)
                 case 6 => s_add(extension, src)
                 case 3 => s_add(nestedType, src)
@@ -805,7 +805,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
                 case 8 => s_add(oneofDecl, src)
                 case 7 => p_options.getOrDefault(this).unpack(subReader(src))
                 case 9 => s_add(reservedRange, src)
-                case 10 => s_add(reservedName, src)
+                case 10 => s_add(reservedName, src.parseString())
                 case _ => m_unknown(src, _x)
             }
         }
@@ -817,7 +817,7 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
         if (!field.isEmpty()) { for (_i in field) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
         if (!extension.isEmpty()) { for (_i in extension) { out.append(50); out.packVarint(_i.size); _i.pack(out) } }
         if (!nestedType.isEmpty()) { for (_i in nestedType) { out.append(26); out.packVarint(_i.size); _i.pack(out) } }
@@ -826,13 +826,13 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         if (!oneofDecl.isEmpty()) { for (_i in oneofDecl) { out.append(66); out.packVarint(_i.size); _i.pack(out) } }
         if (let Some(_v) <- p_options.data) { out.append(58); out.packVarint(_v.size); _v.pack(out) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { out.append(74); out.packVarint(_i.size); _i.pack(out) } }
-        if (!reservedName.isEmpty()) { s_pack(10, reservedName, out) }
+        if (!reservedName.isEmpty()) { for (_i in reservedName) { out.append(82); out.packBin(_i) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
         if (!field.isEmpty()) { _x.append("field", field) }
         if (!extension.isEmpty()) { _x.append("extension", extension) }
         if (!nestedType.isEmpty()) { _x.append("nestedType", nestedType) }
@@ -1158,15 +1158,15 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
 }
 
 public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorProto> {
-    private var p_name: Pb2String
+    private var p_name: ?String
     private var p_number: ?Int32
     private var p_label: ?FieldDescriptorProto_Label
     private var p_type: ?FieldDescriptorProto_Type
-    private var p_typeName: Pb2String
-    private var p_extendee: Pb2String
-    private var p_defaultValue: Pb2String
+    private var p_typeName: ?String
+    private var p_extendee: ?String
+    private var p_defaultValue: ?String
     private var p_oneofIndex: ?Int32
-    private var p_jsonName: Pb2String
+    private var p_jsonName: ?String
     private var p_options: PbMessage<FieldOptions>
     private var p_proto3Optional: ?Bool
     public let mapEntry: RepeatedMessage<FieldDescriptorProto>
@@ -1185,15 +1185,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         proto3Optional!: ?Bool = None,
         mapEntry!: Array<FieldDescriptorProto> = []
     ) {
-        this.p_name = Pb2String(name)
+        this.p_name = name
         this.p_number = number
         this.p_label = label
         this.p_type = type_
-        this.p_typeName = Pb2String(typeName)
-        this.p_extendee = Pb2String(extendee)
-        this.p_defaultValue = Pb2String(defaultValue)
+        this.p_typeName = typeName
+        this.p_extendee = extendee
+        this.p_defaultValue = defaultValue
         this.p_oneofIndex = oneofIndex
-        this.p_jsonName = Pb2String(jsonName)
+        this.p_jsonName = jsonName
         this.p_options = PbMessage<FieldOptions>(options)
         this.p_proto3Optional = proto3Optional
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(mapEntry)
@@ -1201,15 +1201,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     }
 
     public init(src: FieldDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
+        this.p_name = src.name
         this.p_number = src.number
         this.p_label = src.label
         this.p_type = src.type_
-        this.p_typeName = Pb2String(src.typeName)
-        this.p_extendee = Pb2String(src.extendee)
-        this.p_defaultValue = Pb2String(src.defaultValue)
+        this.p_typeName = src.typeName
+        this.p_extendee = src.extendee
+        this.p_defaultValue = src.defaultValue
         this.p_oneofIndex = src.oneofIndex
-        this.p_jsonName = Pb2String(src.jsonName)
+        this.p_jsonName = src.jsonName
         this.p_options = PbMessage<FieldOptions>(src.options)
         this.p_proto3Optional = src.proto3Optional
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(src.mapEntry)
@@ -1222,9 +1222,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
     public func clearNumber() { p_number = None; markDirty() }
     public prop hasNumber: Bool { get() { isPresent(p_number) } }
@@ -1238,25 +1238,25 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     public prop hasType: Bool { get() { isPresent(p_type) } }
     public mut prop type_: FieldDescriptorProto_Type { get() { p_type.getOrThrow() } set(_x) { p_type = _x; markDirty() } }
 
-    public func clearTypeName() { p_typeName.clear(); markDirty() }
-    public prop hasTypeName: Bool { get() { isPresent(p_typeName.data) } }
-    public mut prop typeName: String { get() { p_typeName.get() } set(_v) { p_typeName.set(_v); markDirty() } }
+    public func clearTypeName() { p_typeName = None; markDirty() }
+    public prop hasTypeName: Bool { get() { isPresent(p_typeName) } }
+    public mut prop typeName: String { get() { p_typeName.getOrThrow() } set(_x) { p_typeName = _x; markDirty() } }
 
-    public func clearExtendee() { p_extendee.clear(); markDirty() }
-    public prop hasExtendee: Bool { get() { isPresent(p_extendee.data) } }
-    public mut prop extendee: String { get() { p_extendee.get() } set(_v) { p_extendee.set(_v); markDirty() } }
+    public func clearExtendee() { p_extendee = None; markDirty() }
+    public prop hasExtendee: Bool { get() { isPresent(p_extendee) } }
+    public mut prop extendee: String { get() { p_extendee.getOrThrow() } set(_x) { p_extendee = _x; markDirty() } }
 
-    public func clearDefaultValue() { p_defaultValue.clear(); markDirty() }
-    public prop hasDefaultValue: Bool { get() { isPresent(p_defaultValue.data) } }
-    public mut prop defaultValue: String { get() { p_defaultValue.get() } set(_v) { p_defaultValue.set(_v); markDirty() } }
+    public func clearDefaultValue() { p_defaultValue = None; markDirty() }
+    public prop hasDefaultValue: Bool { get() { isPresent(p_defaultValue) } }
+    public mut prop defaultValue: String { get() { p_defaultValue.getOrThrow() } set(_x) { p_defaultValue = _x; markDirty() } }
 
     public func clearOneofIndex() { p_oneofIndex = None; markDirty() }
     public prop hasOneofIndex: Bool { get() { isPresent(p_oneofIndex) } }
     public mut prop oneofIndex: Int32 { get() { p_oneofIndex.getOrThrow() } set(_x) { p_oneofIndex = _x; markDirty() } }
 
-    public func clearJsonName() { p_jsonName.clear(); markDirty() }
-    public prop hasJsonName: Bool { get() { isPresent(p_jsonName.data) } }
-    public mut prop jsonName: String { get() { p_jsonName.get() } set(_v) { p_jsonName.set(_v); markDirty() } }
+    public func clearJsonName() { p_jsonName = None; markDirty() }
+    public prop hasJsonName: Bool { get() { isPresent(p_jsonName) } }
+    public mut prop jsonName: String { get() { p_jsonName.getOrThrow() } set(_x) { p_jsonName = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -1268,15 +1268,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_number) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_label) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_type) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) <- p_typeName.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_extendee.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_defaultValue.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_typeName) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_extendee) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_defaultValue) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_oneofIndex) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) <- p_jsonName.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_jsonName) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_proto3Optional) { _x += 2 + 1 }
         if (!mapEntry.isEmpty()) { for (_i in mapEntry) { _x += 3 + binSize(_i) } }
@@ -1285,15 +1285,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_number) { _x.write(_v) }
         if (let Some(_v) <- p_label) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_type) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_typeName.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_extendee.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_defaultValue.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_typeName) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_extendee) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_defaultValue) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_oneofIndex) { _x.write(_v) }
-        if (let Some(_v) <- p_jsonName.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_jsonName) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_proto3Optional) { _x.write(_v) }
         if (!mapEntry.isEmpty()) { _x.write(mapEntry.hashCode()) }
@@ -1301,21 +1301,21 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && isNone(p_number) && isNone(p_label) && isNone(p_type) && isNone(p_typeName.data) &&
-        isNone(p_extendee.data) && isNone(p_defaultValue.data) && isNone(p_oneofIndex) && isNone(p_jsonName.data) &&
+        isNone(p_name) && isNone(p_number) && isNone(p_label) && isNone(p_type) && isNone(p_typeName) &&
+        isNone(p_extendee) && isNone(p_defaultValue) && isNone(p_oneofIndex) && isNone(p_jsonName) &&
         isNone(p_options.data) && isNone(p_proto3Optional) && mapEntry.isEmpty()
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
+        p_name = None
         p_number = None
         p_label = None
         p_type = None
-        p_typeName.clear()
-        p_extendee.clear()
-        p_defaultValue.clear()
+        p_typeName = None
+        p_extendee = None
+        p_defaultValue = None
         p_oneofIndex = None
-        p_jsonName.clear()
+        p_jsonName = None
         p_options.removeFrom(this)
         p_proto3Optional = None
         mapEntry.clear()
@@ -1324,10 +1324,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     public operator func !=(src: FieldDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: FieldDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && p_number == src.p_number && p_label == src.p_label && p_type == src.p_type &&
-        p_typeName.data == src.p_typeName.data && p_extendee.data == src.p_extendee.data &&
-        p_defaultValue.data == src.p_defaultValue.data && p_oneofIndex == src.p_oneofIndex &&
-        p_jsonName.data == src.p_jsonName.data && p_options.data == src.p_options.data &&
+        p_name == src.p_name && p_number == src.p_number && p_label == src.p_label && p_type == src.p_type &&
+        p_typeName == src.p_typeName && p_extendee == src.p_extendee && p_defaultValue == src.p_defaultValue &&
+        p_oneofIndex == src.p_oneofIndex && p_jsonName == src.p_jsonName && p_options.data == src.p_options.data &&
         p_proto3Optional == src.p_proto3Optional && mapEntry == src.mapEntry
     }
 
@@ -1356,15 +1355,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
+                case 1 => p_name = src.parseString()
                 case 3 => p_number = src.parseInt32()
                 case 4 => p_label = FieldDescriptorProto_Label.parse(src.parseInt32())
                 case 5 => p_type = FieldDescriptorProto_Type.parse(src.parseInt32())
-                case 6 => p_typeName.unpack(src)
-                case 2 => p_extendee.unpack(src)
-                case 7 => p_defaultValue.unpack(src)
+                case 6 => p_typeName = src.parseString()
+                case 2 => p_extendee = src.parseString()
+                case 7 => p_defaultValue = src.parseString()
                 case 9 => p_oneofIndex = src.parseInt32()
-                case 10 => p_jsonName.unpack(src)
+                case 10 => p_jsonName = src.parseString()
                 case 8 => p_options.getOrDefault(this).unpack(subReader(src))
                 case 17 => p_proto3Optional = src.parseBool()
                 case 9999 => s_add(mapEntry, src)
@@ -1379,15 +1378,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
         if (let Some(_v) <- p_number) { out.append(24); out.packVarint(_v) }
         if (let Some(_v) <- p_label) { out.append(32); out.packVarint(_v) }
         if (let Some(_v) <- p_type) { out.append(40); out.packVarint(_v) }
-        if (let Some(_v) <- p_typeName.data) { out.append(50); out.packBin(_v) }
-        if (let Some(_v) <- p_extendee.data) { out.append(18); out.packBin(_v) }
-        if (let Some(_v) <- p_defaultValue.data) { out.append(58); out.packBin(_v) }
+        if (let Some(_v) <- p_typeName) { out.append(50); out.packBin(_v) }
+        if (let Some(_v) <- p_extendee) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_defaultValue) { out.append(58); out.packBin(_v) }
         if (let Some(_v) <- p_oneofIndex) { out.append(72); out.packVarint(_v) }
-        if (let Some(_v) <- p_jsonName.data) { out.append(82); out.packBin(_v) }
+        if (let Some(_v) <- p_jsonName) { out.append(82); out.packBin(_v) }
         if (let Some(_v) <- p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
         if (let Some(_v) <- p_proto3Optional) { out.packTag(17, VARINT); out.packBool(_v) }
         if (!mapEntry.isEmpty()) { for (_i in mapEntry) { out.packTag(9999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
@@ -1396,15 +1395,15 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
         if (let Some(_v) <- p_number) { _x.append("number", _v) }
         if (let Some(_v) <- p_label) { _x.append("label", _v) }
         if (let Some(_v) <- p_type) { _x.append("type", _v) }
-        if (isPresent(p_typeName.data)) { _x.append("typeName", p_typeName.get()) }
-        if (isPresent(p_extendee.data)) { _x.append("extendee", p_extendee.get()) }
-        if (isPresent(p_defaultValue.data)) { _x.append("defaultValue", p_defaultValue.get()) }
+        if (let Some(_v) <- p_typeName) { _x.append("typeName", _v) }
+        if (let Some(_v) <- p_extendee) { _x.append("extendee", _v) }
+        if (let Some(_v) <- p_defaultValue) { _x.append("defaultValue", _v) }
         if (let Some(_v) <- p_oneofIndex) { _x.append("oneofIndex", _v) }
-        if (isPresent(p_jsonName.data)) { _x.append("jsonName", p_jsonName.get()) }
+        if (let Some(_v) <- p_jsonName) { _x.append("jsonName", _v) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (let Some(_v) <- p_proto3Optional) { _x.append("proto3Optional", _v) }
         if (!mapEntry.isEmpty()) { _x.append("mapEntry", mapEntry) }
@@ -1461,20 +1460,20 @@ public class FieldDescriptorProto__Builder {
 }
 
 public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorProto> {
-    private var p_name: Pb2String
+    private var p_name: ?String
     private var p_options: PbMessage<OneofOptions>
 
     public init(
         name!: ?String = None,
         options!: ?OneofOptions = None
     ) {
-        this.p_name = Pb2String(name)
+        this.p_name = name
         this.p_options = PbMessage<OneofOptions>(options)
         m_init()
     }
 
     public init(src: OneofDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
+        this.p_name = src.name
         this.p_options = PbMessage<OneofOptions>(src.options)
         m_init()
     }
@@ -1484,9 +1483,9 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -1494,31 +1493,31 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && isNone(p_options.data)
+        isNone(p_name) && isNone(p_options.data)
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
+        p_name = None
         p_options.removeFrom(this)
     }
 
     public operator func !=(src: OneofDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: OneofDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && p_options.data == src.p_options.data
+        p_name == src.p_name && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: OneofDescriptorProto): OneofDescriptorProto {
@@ -1536,7 +1535,7 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
+                case 1 => p_name = src.parseString()
                 case 2 => p_options.getOrDefault(this).unpack(subReader(src))
                 case _ => m_unknown(src, _x)
             }
@@ -1549,14 +1548,14 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
         if (let Some(_v) <- p_options.data) { out.append(18); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
     }
@@ -1700,11 +1699,11 @@ public class EnumDescriptorProto_EnumReservedRange__Builder {
 }
 
 public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorProto> {
-    private var p_name: Pb2String
+    private var p_name: ?String
     public let value: RepeatedMessage<EnumValueDescriptorProto>
     private var p_options: PbMessage<EnumOptions>
     public let reservedRange: RepeatedMessage<EnumDescriptorProto_EnumReservedRange>
-    public let reservedName: RepeatedString
+    public let reservedName: RepeatedField<String>
 
     public init(
         name!: ?String = None,
@@ -1713,20 +1712,20 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
         reservedRange!: Array<EnumDescriptorProto_EnumReservedRange> = [],
         reservedName!: Array<String> = []
     ) {
-        this.p_name = Pb2String(name)
+        this.p_name = name
         this.value = RepeatedMessage<EnumValueDescriptorProto>(value)
         this.p_options = PbMessage<EnumOptions>(options)
         this.reservedRange = RepeatedMessage<EnumDescriptorProto_EnumReservedRange>(reservedRange)
-        this.reservedName = RepeatedString(reservedName)
+        this.reservedName = RepeatedField<String>(reservedName)
         m_init()
     }
 
     public init(src: EnumDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
+        this.p_name = src.name
         this.value = RepeatedMessage<EnumValueDescriptorProto>(src.value)
         this.p_options = PbMessage<EnumOptions>(src.options)
         this.reservedRange = RepeatedMessage<EnumDescriptorProto_EnumReservedRange>(src.reservedRange)
-        this.reservedName = RepeatedString(src.reservedName)
+        this.reservedName = RepeatedField<String>(src.reservedName)
         m_init()
     }
 
@@ -1738,9 +1737,9 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -1748,17 +1747,17 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
         if (!value.isEmpty()) { for (_i in value) { _x += 1 + binSize(_i) } }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { _x += 1 + binSize(_i) } }
-        if (!reservedName.isEmpty()) { _x += s_size(reservedName, 1) }
+        if (!reservedName.isEmpty()) { for (_i in reservedName) { _x += 1 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
         if (!value.isEmpty()) { _x.write(value.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (!reservedRange.isEmpty()) { _x.write(reservedRange.hashCode()) }
@@ -1767,12 +1766,12 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && value.isEmpty() && isNone(p_options.data) && reservedRange.isEmpty() &&
+        isNone(p_name) && value.isEmpty() && isNone(p_options.data) && reservedRange.isEmpty() &&
         reservedName.isEmpty()
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
+        p_name = None
         value.clear()
         p_options.removeFrom(this)
         reservedRange.clear()
@@ -1782,7 +1781,7 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
     public operator func !=(src: EnumDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: EnumDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && value == src.value && p_options.data == src.p_options.data &&
+        p_name == src.p_name && value == src.value && p_options.data == src.p_options.data &&
         reservedRange == src.reservedRange && reservedName == src.reservedName
     }
 
@@ -1804,11 +1803,11 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
+                case 1 => p_name = src.parseString()
                 case 2 => s_add(value, src)
                 case 3 => p_options.getOrDefault(this).unpack(subReader(src))
                 case 4 => s_add(reservedRange, src)
-                case 5 => s_add(reservedName, src)
+                case 5 => s_add(reservedName, src.parseString())
                 case _ => m_unknown(src, _x)
             }
         }
@@ -1820,17 +1819,17 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
         if (!value.isEmpty()) { for (_i in value) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
         if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         if (!reservedRange.isEmpty()) { for (_i in reservedRange) { out.append(34); out.packVarint(_i.size); _i.pack(out) } }
-        if (!reservedName.isEmpty()) { s_pack(5, reservedName, out) }
+        if (!reservedName.isEmpty()) { for (_i in reservedName) { out.append(42); out.packBin(_i) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
         if (!value.isEmpty()) { _x.append("value", value) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (!reservedRange.isEmpty()) { _x.append("reservedRange", reservedRange) }
@@ -1867,7 +1866,7 @@ public class EnumDescriptorProto__Builder {
 }
 
 public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDescriptorProto> {
-    private var p_name: Pb2String
+    private var p_name: ?String
     private var p_number: ?Int32
     private var p_options: PbMessage<EnumValueOptions>
 
@@ -1876,14 +1875,14 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
         number!: ?Int32 = None,
         options!: ?EnumValueOptions = None
     ) {
-        this.p_name = Pb2String(name)
+        this.p_name = name
         this.p_number = number
         this.p_options = PbMessage<EnumValueOptions>(options)
         m_init()
     }
 
     public init(src: EnumValueDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
+        this.p_name = src.name
         this.p_number = src.number
         this.p_options = PbMessage<EnumValueOptions>(src.options)
         m_init()
@@ -1894,9 +1893,9 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
     public func clearNumber() { p_number = None; markDirty() }
     public prop hasNumber: Bool { get() { isPresent(p_number) } }
@@ -1908,7 +1907,7 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_number) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
@@ -1916,18 +1915,18 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_number) { _x.write(_v) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && isNone(p_number) && isNone(p_options.data)
+        isNone(p_name) && isNone(p_number) && isNone(p_options.data)
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
+        p_name = None
         p_number = None
         p_options.removeFrom(this)
     }
@@ -1935,7 +1934,7 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
     public operator func !=(src: EnumValueDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: EnumValueDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && p_number == src.p_number && p_options.data == src.p_options.data
+        p_name == src.p_name && p_number == src.p_number && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: EnumValueDescriptorProto): EnumValueDescriptorProto {
@@ -1954,7 +1953,7 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
+                case 1 => p_name = src.parseString()
                 case 2 => p_number = src.parseInt32()
                 case 3 => p_options.getOrDefault(this).unpack(subReader(src))
                 case _ => m_unknown(src, _x)
@@ -1968,7 +1967,7 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
         if (let Some(_v) <- p_number) { out.append(16); out.packVarint(_v) }
         if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
@@ -1976,7 +1975,7 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
         if (let Some(_v) <- p_number) { _x.append("number", _v) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
@@ -2005,7 +2004,7 @@ public class EnumValueDescriptorProto__Builder {
 }
 
 public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescriptorProto> {
-    private var p_name: Pb2String
+    private var p_name: ?String
     public let method: RepeatedMessage<MethodDescriptorProto>
     private var p_options: PbMessage<ServiceOptions>
 
@@ -2014,14 +2013,14 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
         method!: Array<MethodDescriptorProto> = [],
         options!: ?ServiceOptions = None
     ) {
-        this.p_name = Pb2String(name)
+        this.p_name = name
         this.method = RepeatedMessage<MethodDescriptorProto>(method)
         this.p_options = PbMessage<ServiceOptions>(options)
         m_init()
     }
 
     public init(src: ServiceDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
+        this.p_name = src.name
         this.method = RepeatedMessage<MethodDescriptorProto>(src.method)
         this.p_options = PbMessage<ServiceOptions>(src.options)
         m_init()
@@ -2033,9 +2032,9 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -2043,7 +2042,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
         if (!method.isEmpty()) { for (_i in method) { _x += 1 + binSize(_i) } }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         return _x
@@ -2051,18 +2050,18 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
         if (!method.isEmpty()) { _x.write(method.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && method.isEmpty() && isNone(p_options.data)
+        isNone(p_name) && method.isEmpty() && isNone(p_options.data)
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
+        p_name = None
         method.clear()
         p_options.removeFrom(this)
     }
@@ -2070,7 +2069,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
     public operator func !=(src: ServiceDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: ServiceDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && method == src.method && p_options.data == src.p_options.data
+        p_name == src.p_name && method == src.method && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: ServiceDescriptorProto): ServiceDescriptorProto {
@@ -2089,7 +2088,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
+                case 1 => p_name = src.parseString()
                 case 2 => s_add(method, src)
                 case 3 => p_options.getOrDefault(this).unpack(subReader(src))
                 case _ => m_unknown(src, _x)
@@ -2103,7 +2102,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
         if (!method.isEmpty()) { for (_i in method) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
         if (let Some(_v) <- p_options.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
@@ -2111,7 +2110,7 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
         if (!method.isEmpty()) { _x.append("method", method) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         return _x.done().toString()
@@ -2140,13 +2139,13 @@ public class ServiceDescriptorProto__Builder {
 }
 
 public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescriptorProto> {
-    private var p_name: Pb2String
-    private var p_inputType: Pb2String
-    private var p_outputType: Pb2String
+    private var p_name: ?String
+    private var p_inputType: ?String
+    private var p_outputType: ?String
     private var p_options: PbMessage<MethodOptions>
     private var p_clientStreaming: ?Bool
     private var p_serverStreaming: ?Bool
-    private var p_funcName: Pb2String
+    private var p_funcName: ?String
 
     public init(
         name!: ?String = None,
@@ -2157,24 +2156,24 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         serverStreaming!: ?Bool = None,
         funcName!: ?String = None
     ) {
-        this.p_name = Pb2String(name)
-        this.p_inputType = Pb2String(inputType)
-        this.p_outputType = Pb2String(outputType)
+        this.p_name = name
+        this.p_inputType = inputType
+        this.p_outputType = outputType
         this.p_options = PbMessage<MethodOptions>(options)
         this.p_clientStreaming = clientStreaming
         this.p_serverStreaming = serverStreaming
-        this.p_funcName = Pb2String(funcName)
+        this.p_funcName = funcName
         m_init()
     }
 
     public init(src: MethodDescriptorProto__Builder) {
-        this.p_name = Pb2String(src.name)
-        this.p_inputType = Pb2String(src.inputType)
-        this.p_outputType = Pb2String(src.outputType)
+        this.p_name = src.name
+        this.p_inputType = src.inputType
+        this.p_outputType = src.outputType
         this.p_options = PbMessage<MethodOptions>(src.options)
         this.p_clientStreaming = src.clientStreaming
         this.p_serverStreaming = src.serverStreaming
-        this.p_funcName = Pb2String(src.funcName)
+        this.p_funcName = src.funcName
         m_init()
     }
 
@@ -2183,17 +2182,17 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
-    public func clearInputType() { p_inputType.clear(); markDirty() }
-    public prop hasInputType: Bool { get() { isPresent(p_inputType.data) } }
-    public mut prop inputType: String { get() { p_inputType.get() } set(_v) { p_inputType.set(_v); markDirty() } }
+    public func clearInputType() { p_inputType = None; markDirty() }
+    public prop hasInputType: Bool { get() { isPresent(p_inputType) } }
+    public mut prop inputType: String { get() { p_inputType.getOrThrow() } set(_x) { p_inputType = _x; markDirty() } }
 
-    public func clearOutputType() { p_outputType.clear(); markDirty() }
-    public prop hasOutputType: Bool { get() { isPresent(p_outputType.data) } }
-    public mut prop outputType: String { get() { p_outputType.get() } set(_v) { p_outputType.set(_v); markDirty() } }
+    public func clearOutputType() { p_outputType = None; markDirty() }
+    public prop hasOutputType: Bool { get() { isPresent(p_outputType) } }
+    public mut prop outputType: String { get() { p_outputType.getOrThrow() } set(_x) { p_outputType = _x; markDirty() } }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
@@ -2207,56 +2206,55 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
     public prop hasServerStreaming: Bool { get() { isPresent(p_serverStreaming) } }
     public mut prop serverStreaming: Bool { get() { p_serverStreaming ?? false } set(_x) { p_serverStreaming = if (_x == false) { None } else { _x }; markDirty() } }
 
-    public func clearFuncName() { p_funcName.clear(); markDirty() }
-    public prop hasFuncName: Bool { get() { isPresent(p_funcName.data) } }
-    public mut prop funcName: String { get() { p_funcName.get() } set(_v) { p_funcName.set(_v); markDirty() } }
+    public func clearFuncName() { p_funcName = None; markDirty() }
+    public prop hasFuncName: Bool { get() { isPresent(p_funcName) } }
+    public mut prop funcName: String { get() { p_funcName.getOrThrow() } set(_x) { p_funcName = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_inputType.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_outputType.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_inputType) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_outputType) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_clientStreaming) { _x += 1 + 1 }
         if (let Some(_v) <- p_serverStreaming) { _x += 1 + 1 }
-        if (let Some(_v) <- p_funcName.data) { _x += 3 + binSize(_v) }
+        if (let Some(_v) <- p_funcName) { _x += 3 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_inputType.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_outputType.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_inputType) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_outputType) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_clientStreaming) { _x.write(_v) }
         if (let Some(_v) <- p_serverStreaming) { _x.write(_v) }
-        if (let Some(_v) <- p_funcName.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_funcName) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && isNone(p_inputType.data) && isNone(p_outputType.data) && isNone(p_options.data) &&
-        isNone(p_clientStreaming) && isNone(p_serverStreaming) && isNone(p_funcName.data)
+        isNone(p_name) && isNone(p_inputType) && isNone(p_outputType) && isNone(p_options.data) &&
+        isNone(p_clientStreaming) && isNone(p_serverStreaming) && isNone(p_funcName)
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
-        p_inputType.clear()
-        p_outputType.clear()
+        p_name = None
+        p_inputType = None
+        p_outputType = None
         p_options.removeFrom(this)
         p_clientStreaming = None
         p_serverStreaming = None
-        p_funcName.clear()
+        p_funcName = None
     }
 
     public operator func !=(src: MethodDescriptorProto): Bool { !(this == src) }
     public operator func ==(src: MethodDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && p_inputType.data == src.p_inputType.data &&
-        p_outputType.data == src.p_outputType.data && p_options.data == src.p_options.data &&
-        p_clientStreaming == src.p_clientStreaming && p_serverStreaming == src.p_serverStreaming &&
-        p_funcName.data == src.p_funcName.data
+        p_name == src.p_name && p_inputType == src.p_inputType && p_outputType == src.p_outputType &&
+        p_options.data == src.p_options.data && p_clientStreaming == src.p_clientStreaming &&
+        p_serverStreaming == src.p_serverStreaming && p_funcName == src.p_funcName
     }
 
     public func copyFrom(src: MethodDescriptorProto): MethodDescriptorProto {
@@ -2279,13 +2277,13 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
-                case 2 => p_inputType.unpack(src)
-                case 3 => p_outputType.unpack(src)
+                case 1 => p_name = src.parseString()
+                case 2 => p_inputType = src.parseString()
+                case 3 => p_outputType = src.parseString()
                 case 4 => p_options.getOrDefault(this).unpack(subReader(src))
                 case 5 => clientStreaming = src.parseBool()
                 case 6 => serverStreaming = src.parseBool()
-                case 9999 => p_funcName.unpack(src)
+                case 9999 => p_funcName = src.parseString()
                 case _ => m_unknown(src, _x)
             }
         }
@@ -2297,25 +2295,25 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) <- p_inputType.data) { out.append(18); out.packBin(_v) }
-        if (let Some(_v) <- p_outputType.data) { out.append(26); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_inputType) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_outputType) { out.append(26); out.packBin(_v) }
         if (let Some(_v) <- p_options.data) { out.append(34); out.packVarint(_v.size); _v.pack(out) }
         if (let Some(_v) <- p_clientStreaming) { out.append(40); out.packBool(_v) }
         if (let Some(_v) <- p_serverStreaming) { out.append(48); out.packBool(_v) }
-        if (let Some(_v) <- p_funcName.data) { out.packTag(9999, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_funcName) { out.packTag(9999, PREFIXED); out.packBin(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
-        if (isPresent(p_inputType.data)) { _x.append("inputType", p_inputType.get()) }
-        if (isPresent(p_outputType.data)) { _x.append("outputType", p_outputType.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
+        if (let Some(_v) <- p_inputType) { _x.append("inputType", _v) }
+        if (let Some(_v) <- p_outputType) { _x.append("outputType", _v) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (let Some(_v) <- p_clientStreaming) { _x.append("clientStreaming", _v) }
         if (let Some(_v) <- p_serverStreaming) { _x.append("serverStreaming", _v) }
-        if (isPresent(p_funcName.data)) { _x.append("funcName", p_funcName.get()) }
+        if (let Some(_v) <- p_funcName) { _x.append("funcName", _v) }
         return _x.done().toString()
     }
 
@@ -2401,26 +2399,26 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
 }
 
 public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
-    private var p_javaPackage: Pb2String
-    private var p_javaOuterClassname: Pb2String
+    private var p_javaPackage: ?String
+    private var p_javaOuterClassname: ?String
     private var p_javaMultipleFiles: ?Bool
     private var p_javaGenerateEqualsAndHash: ?Bool
     private var p_javaStringCheckUtf8: ?Bool
     private var p_optimizeFor: ?FileOptions_OptimizeMode
-    private var p_goPackage: Pb2String
+    private var p_goPackage: ?String
     private var p_ccGenericServices: ?Bool
     private var p_javaGenericServices: ?Bool
     private var p_pyGenericServices: ?Bool
     private var p_phpGenericServices: ?Bool
     private var p_deprecated: ?Bool
     private var p_ccEnableArenas: ?Bool
-    private var p_objcClassPrefix: Pb2String
-    private var p_csharpNamespace: Pb2String
-    private var p_swiftPrefix: Pb2String
-    private var p_phpClassPrefix: Pb2String
-    private var p_phpNamespace: Pb2String
-    private var p_phpMetadataNamespace: Pb2String
-    private var p_rubyPackage: Pb2String
+    private var p_objcClassPrefix: ?String
+    private var p_csharpNamespace: ?String
+    private var p_swiftPrefix: ?String
+    private var p_phpClassPrefix: ?String
+    private var p_phpNamespace: ?String
+    private var p_phpMetadataNamespace: ?String
+    private var p_rubyPackage: ?String
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
     public init(
@@ -2446,51 +2444,51 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
         rubyPackage!: ?String = None,
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
-        this.p_javaPackage = Pb2String(javaPackage)
-        this.p_javaOuterClassname = Pb2String(javaOuterClassname)
+        this.p_javaPackage = javaPackage
+        this.p_javaOuterClassname = javaOuterClassname
         this.p_javaMultipleFiles = javaMultipleFiles
         this.p_javaGenerateEqualsAndHash = javaGenerateEqualsAndHash
         this.p_javaStringCheckUtf8 = javaStringCheckUtf8
         this.p_optimizeFor = optimizeFor
-        this.p_goPackage = Pb2String(goPackage)
+        this.p_goPackage = goPackage
         this.p_ccGenericServices = ccGenericServices
         this.p_javaGenericServices = javaGenericServices
         this.p_pyGenericServices = pyGenericServices
         this.p_phpGenericServices = phpGenericServices
         this.p_deprecated = deprecated
         this.p_ccEnableArenas = ccEnableArenas
-        this.p_objcClassPrefix = Pb2String(objcClassPrefix)
-        this.p_csharpNamespace = Pb2String(csharpNamespace)
-        this.p_swiftPrefix = Pb2String(swiftPrefix)
-        this.p_phpClassPrefix = Pb2String(phpClassPrefix)
-        this.p_phpNamespace = Pb2String(phpNamespace)
-        this.p_phpMetadataNamespace = Pb2String(phpMetadataNamespace)
-        this.p_rubyPackage = Pb2String(rubyPackage)
+        this.p_objcClassPrefix = objcClassPrefix
+        this.p_csharpNamespace = csharpNamespace
+        this.p_swiftPrefix = swiftPrefix
+        this.p_phpClassPrefix = phpClassPrefix
+        this.p_phpNamespace = phpNamespace
+        this.p_phpMetadataNamespace = phpMetadataNamespace
+        this.p_rubyPackage = rubyPackage
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: FileOptions__Builder) {
-        this.p_javaPackage = Pb2String(src.javaPackage)
-        this.p_javaOuterClassname = Pb2String(src.javaOuterClassname)
+        this.p_javaPackage = src.javaPackage
+        this.p_javaOuterClassname = src.javaOuterClassname
         this.p_javaMultipleFiles = src.javaMultipleFiles
         this.p_javaGenerateEqualsAndHash = src.javaGenerateEqualsAndHash
         this.p_javaStringCheckUtf8 = src.javaStringCheckUtf8
         this.p_optimizeFor = src.optimizeFor
-        this.p_goPackage = Pb2String(src.goPackage)
+        this.p_goPackage = src.goPackage
         this.p_ccGenericServices = src.ccGenericServices
         this.p_javaGenericServices = src.javaGenericServices
         this.p_pyGenericServices = src.pyGenericServices
         this.p_phpGenericServices = src.phpGenericServices
         this.p_deprecated = src.deprecated
         this.p_ccEnableArenas = src.ccEnableArenas
-        this.p_objcClassPrefix = Pb2String(src.objcClassPrefix)
-        this.p_csharpNamespace = Pb2String(src.csharpNamespace)
-        this.p_swiftPrefix = Pb2String(src.swiftPrefix)
-        this.p_phpClassPrefix = Pb2String(src.phpClassPrefix)
-        this.p_phpNamespace = Pb2String(src.phpNamespace)
-        this.p_phpMetadataNamespace = Pb2String(src.phpMetadataNamespace)
-        this.p_rubyPackage = Pb2String(src.rubyPackage)
+        this.p_objcClassPrefix = src.objcClassPrefix
+        this.p_csharpNamespace = src.csharpNamespace
+        this.p_swiftPrefix = src.swiftPrefix
+        this.p_phpClassPrefix = src.phpClassPrefix
+        this.p_phpNamespace = src.phpNamespace
+        this.p_phpMetadataNamespace = src.phpMetadataNamespace
+        this.p_rubyPackage = src.rubyPackage
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
     }
@@ -2500,13 +2498,13 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
         m_innerInit()
     }
 
-    public func clearJavaPackage() { p_javaPackage.clear(); markDirty() }
-    public prop hasJavaPackage: Bool { get() { isPresent(p_javaPackage.data) } }
-    public mut prop javaPackage: String { get() { p_javaPackage.get() } set(_v) { p_javaPackage.set(_v); markDirty() } }
+    public func clearJavaPackage() { p_javaPackage = None; markDirty() }
+    public prop hasJavaPackage: Bool { get() { isPresent(p_javaPackage) } }
+    public mut prop javaPackage: String { get() { p_javaPackage.getOrThrow() } set(_x) { p_javaPackage = _x; markDirty() } }
 
-    public func clearJavaOuterClassname() { p_javaOuterClassname.clear(); markDirty() }
-    public prop hasJavaOuterClassname: Bool { get() { isPresent(p_javaOuterClassname.data) } }
-    public mut prop javaOuterClassname: String { get() { p_javaOuterClassname.get() } set(_v) { p_javaOuterClassname.set(_v); markDirty() } }
+    public func clearJavaOuterClassname() { p_javaOuterClassname = None; markDirty() }
+    public prop hasJavaOuterClassname: Bool { get() { isPresent(p_javaOuterClassname) } }
+    public mut prop javaOuterClassname: String { get() { p_javaOuterClassname.getOrThrow() } set(_x) { p_javaOuterClassname = _x; markDirty() } }
 
     public func clearJavaMultipleFiles() { p_javaMultipleFiles = None; markDirty() }
     public prop hasJavaMultipleFiles: Bool { get() { isPresent(p_javaMultipleFiles) } }
@@ -2524,9 +2522,9 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     public prop hasOptimizeFor: Bool { get() { isPresent(p_optimizeFor) } }
     public mut prop optimizeFor: FileOptions_OptimizeMode { get() { p_optimizeFor ?? SPEED } set(_x) { p_optimizeFor = if (_x == SPEED) { None } else { _x }; markDirty() } }
 
-    public func clearGoPackage() { p_goPackage.clear(); markDirty() }
-    public prop hasGoPackage: Bool { get() { isPresent(p_goPackage.data) } }
-    public mut prop goPackage: String { get() { p_goPackage.get() } set(_v) { p_goPackage.set(_v); markDirty() } }
+    public func clearGoPackage() { p_goPackage = None; markDirty() }
+    public prop hasGoPackage: Bool { get() { isPresent(p_goPackage) } }
+    public mut prop goPackage: String { get() { p_goPackage.getOrThrow() } set(_x) { p_goPackage = _x; markDirty() } }
 
     public func clearCcGenericServices() { p_ccGenericServices = None; markDirty() }
     public prop hasCcGenericServices: Bool { get() { isPresent(p_ccGenericServices) } }
@@ -2552,135 +2550,135 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     public prop hasCcEnableArenas: Bool { get() { isPresent(p_ccEnableArenas) } }
     public mut prop ccEnableArenas: Bool { get() { p_ccEnableArenas ?? true } set(_x) { p_ccEnableArenas = if (_x == true) { None } else { _x }; markDirty() } }
 
-    public func clearObjcClassPrefix() { p_objcClassPrefix.clear(); markDirty() }
-    public prop hasObjcClassPrefix: Bool { get() { isPresent(p_objcClassPrefix.data) } }
-    public mut prop objcClassPrefix: String { get() { p_objcClassPrefix.get() } set(_v) { p_objcClassPrefix.set(_v); markDirty() } }
+    public func clearObjcClassPrefix() { p_objcClassPrefix = None; markDirty() }
+    public prop hasObjcClassPrefix: Bool { get() { isPresent(p_objcClassPrefix) } }
+    public mut prop objcClassPrefix: String { get() { p_objcClassPrefix.getOrThrow() } set(_x) { p_objcClassPrefix = _x; markDirty() } }
 
-    public func clearCsharpNamespace() { p_csharpNamespace.clear(); markDirty() }
-    public prop hasCsharpNamespace: Bool { get() { isPresent(p_csharpNamespace.data) } }
-    public mut prop csharpNamespace: String { get() { p_csharpNamespace.get() } set(_v) { p_csharpNamespace.set(_v); markDirty() } }
+    public func clearCsharpNamespace() { p_csharpNamespace = None; markDirty() }
+    public prop hasCsharpNamespace: Bool { get() { isPresent(p_csharpNamespace) } }
+    public mut prop csharpNamespace: String { get() { p_csharpNamespace.getOrThrow() } set(_x) { p_csharpNamespace = _x; markDirty() } }
 
-    public func clearSwiftPrefix() { p_swiftPrefix.clear(); markDirty() }
-    public prop hasSwiftPrefix: Bool { get() { isPresent(p_swiftPrefix.data) } }
-    public mut prop swiftPrefix: String { get() { p_swiftPrefix.get() } set(_v) { p_swiftPrefix.set(_v); markDirty() } }
+    public func clearSwiftPrefix() { p_swiftPrefix = None; markDirty() }
+    public prop hasSwiftPrefix: Bool { get() { isPresent(p_swiftPrefix) } }
+    public mut prop swiftPrefix: String { get() { p_swiftPrefix.getOrThrow() } set(_x) { p_swiftPrefix = _x; markDirty() } }
 
-    public func clearPhpClassPrefix() { p_phpClassPrefix.clear(); markDirty() }
-    public prop hasPhpClassPrefix: Bool { get() { isPresent(p_phpClassPrefix.data) } }
-    public mut prop phpClassPrefix: String { get() { p_phpClassPrefix.get() } set(_v) { p_phpClassPrefix.set(_v); markDirty() } }
+    public func clearPhpClassPrefix() { p_phpClassPrefix = None; markDirty() }
+    public prop hasPhpClassPrefix: Bool { get() { isPresent(p_phpClassPrefix) } }
+    public mut prop phpClassPrefix: String { get() { p_phpClassPrefix.getOrThrow() } set(_x) { p_phpClassPrefix = _x; markDirty() } }
 
-    public func clearPhpNamespace() { p_phpNamespace.clear(); markDirty() }
-    public prop hasPhpNamespace: Bool { get() { isPresent(p_phpNamespace.data) } }
-    public mut prop phpNamespace: String { get() { p_phpNamespace.get() } set(_v) { p_phpNamespace.set(_v); markDirty() } }
+    public func clearPhpNamespace() { p_phpNamespace = None; markDirty() }
+    public prop hasPhpNamespace: Bool { get() { isPresent(p_phpNamespace) } }
+    public mut prop phpNamespace: String { get() { p_phpNamespace.getOrThrow() } set(_x) { p_phpNamespace = _x; markDirty() } }
 
-    public func clearPhpMetadataNamespace() { p_phpMetadataNamespace.clear(); markDirty() }
-    public prop hasPhpMetadataNamespace: Bool { get() { isPresent(p_phpMetadataNamespace.data) } }
-    public mut prop phpMetadataNamespace: String { get() { p_phpMetadataNamespace.get() } set(_v) { p_phpMetadataNamespace.set(_v); markDirty() } }
+    public func clearPhpMetadataNamespace() { p_phpMetadataNamespace = None; markDirty() }
+    public prop hasPhpMetadataNamespace: Bool { get() { isPresent(p_phpMetadataNamespace) } }
+    public mut prop phpMetadataNamespace: String { get() { p_phpMetadataNamespace.getOrThrow() } set(_x) { p_phpMetadataNamespace = _x; markDirty() } }
 
-    public func clearRubyPackage() { p_rubyPackage.clear(); markDirty() }
-    public prop hasRubyPackage: Bool { get() { isPresent(p_rubyPackage.data) } }
-    public mut prop rubyPackage: String { get() { p_rubyPackage.get() } set(_v) { p_rubyPackage.set(_v); markDirty() } }
+    public func clearRubyPackage() { p_rubyPackage = None; markDirty() }
+    public prop hasRubyPackage: Bool { get() { isPresent(p_rubyPackage) } }
+    public mut prop rubyPackage: String { get() { p_rubyPackage.getOrThrow() } set(_x) { p_rubyPackage = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_javaPackage.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_javaOuterClassname.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_javaPackage) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_javaOuterClassname) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_javaMultipleFiles) { _x += 1 + 1 }
         if (let Some(_v) <- p_javaGenerateEqualsAndHash) { _x += 2 + 1 }
         if (let Some(_v) <- p_javaStringCheckUtf8) { _x += 2 + 1 }
         if (let Some(_v) <- p_optimizeFor) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) <- p_goPackage.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_goPackage) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_ccGenericServices) { _x += 2 + 1 }
         if (let Some(_v) <- p_javaGenericServices) { _x += 2 + 1 }
         if (let Some(_v) <- p_pyGenericServices) { _x += 2 + 1 }
         if (let Some(_v) <- p_phpGenericServices) { _x += 2 + 1 }
         if (let Some(_v) <- p_deprecated) { _x += 2 + 1 }
         if (let Some(_v) <- p_ccEnableArenas) { _x += 2 + 1 }
-        if (let Some(_v) <- p_objcClassPrefix.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) <- p_csharpNamespace.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) <- p_swiftPrefix.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) <- p_phpClassPrefix.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) <- p_phpNamespace.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) <- p_phpMetadataNamespace.data) { _x += 2 + binSize(_v) }
-        if (let Some(_v) <- p_rubyPackage.data) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_objcClassPrefix) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_csharpNamespace) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_swiftPrefix) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_phpClassPrefix) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_phpNamespace) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_phpMetadataNamespace) { _x += 2 + binSize(_v) }
+        if (let Some(_v) <- p_rubyPackage) { _x += 2 + binSize(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_javaPackage.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_javaOuterClassname.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_javaPackage) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_javaOuterClassname) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_javaMultipleFiles) { _x.write(_v) }
         if (let Some(_v) <- p_javaGenerateEqualsAndHash) { _x.write(_v) }
         if (let Some(_v) <- p_javaStringCheckUtf8) { _x.write(_v) }
         if (let Some(_v) <- p_optimizeFor) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_goPackage.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_goPackage) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_ccGenericServices) { _x.write(_v) }
         if (let Some(_v) <- p_javaGenericServices) { _x.write(_v) }
         if (let Some(_v) <- p_pyGenericServices) { _x.write(_v) }
         if (let Some(_v) <- p_phpGenericServices) { _x.write(_v) }
         if (let Some(_v) <- p_deprecated) { _x.write(_v) }
         if (let Some(_v) <- p_ccEnableArenas) { _x.write(_v) }
-        if (let Some(_v) <- p_objcClassPrefix.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_csharpNamespace.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_swiftPrefix.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_phpClassPrefix.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_phpNamespace.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_phpMetadataNamespace.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_rubyPackage.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_objcClassPrefix) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_csharpNamespace) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_swiftPrefix) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_phpClassPrefix) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_phpNamespace) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_phpMetadataNamespace) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_rubyPackage) { _x.write(_v.hashCode()) }
         if (!uninterpretedOption.isEmpty()) { _x.write(uninterpretedOption.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_javaPackage.data) && isNone(p_javaOuterClassname.data) && isNone(p_javaMultipleFiles) &&
+        isNone(p_javaPackage) && isNone(p_javaOuterClassname) && isNone(p_javaMultipleFiles) &&
         isNone(p_javaGenerateEqualsAndHash) && isNone(p_javaStringCheckUtf8) && isNone(p_optimizeFor) &&
-        isNone(p_goPackage.data) && isNone(p_ccGenericServices) && isNone(p_javaGenericServices) &&
+        isNone(p_goPackage) && isNone(p_ccGenericServices) && isNone(p_javaGenericServices) &&
         isNone(p_pyGenericServices) && isNone(p_phpGenericServices) && isNone(p_deprecated) &&
-        isNone(p_ccEnableArenas) && isNone(p_objcClassPrefix.data) && isNone(p_csharpNamespace.data) &&
-        isNone(p_swiftPrefix.data) && isNone(p_phpClassPrefix.data) && isNone(p_phpNamespace.data) &&
-        isNone(p_phpMetadataNamespace.data) && isNone(p_rubyPackage.data) && uninterpretedOption.isEmpty()
+        isNone(p_ccEnableArenas) && isNone(p_objcClassPrefix) && isNone(p_csharpNamespace) && isNone(p_swiftPrefix) &&
+        isNone(p_phpClassPrefix) && isNone(p_phpNamespace) && isNone(p_phpMetadataNamespace) && isNone(p_rubyPackage) &&
+        uninterpretedOption.isEmpty()
     }
 
     protected func m_clear(): Unit {
-        p_javaPackage.clear()
-        p_javaOuterClassname.clear()
+        p_javaPackage = None
+        p_javaOuterClassname = None
         p_javaMultipleFiles = None
         p_javaGenerateEqualsAndHash = None
         p_javaStringCheckUtf8 = None
         p_optimizeFor = None
-        p_goPackage.clear()
+        p_goPackage = None
         p_ccGenericServices = None
         p_javaGenericServices = None
         p_pyGenericServices = None
         p_phpGenericServices = None
         p_deprecated = None
         p_ccEnableArenas = None
-        p_objcClassPrefix.clear()
-        p_csharpNamespace.clear()
-        p_swiftPrefix.clear()
-        p_phpClassPrefix.clear()
-        p_phpNamespace.clear()
-        p_phpMetadataNamespace.clear()
-        p_rubyPackage.clear()
+        p_objcClassPrefix = None
+        p_csharpNamespace = None
+        p_swiftPrefix = None
+        p_phpClassPrefix = None
+        p_phpNamespace = None
+        p_phpMetadataNamespace = None
+        p_rubyPackage = None
         uninterpretedOption.clear()
     }
 
     public operator func !=(src: FileOptions): Bool { !(this == src) }
     public operator func ==(src: FileOptions): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_javaPackage.data == src.p_javaPackage.data && p_javaOuterClassname.data == src.p_javaOuterClassname.data &&
+        p_javaPackage == src.p_javaPackage && p_javaOuterClassname == src.p_javaOuterClassname &&
         p_javaMultipleFiles == src.p_javaMultipleFiles &&
         p_javaGenerateEqualsAndHash == src.p_javaGenerateEqualsAndHash &&
         p_javaStringCheckUtf8 == src.p_javaStringCheckUtf8 && p_optimizeFor == src.p_optimizeFor &&
-        p_goPackage.data == src.p_goPackage.data && p_ccGenericServices == src.p_ccGenericServices &&
+        p_goPackage == src.p_goPackage && p_ccGenericServices == src.p_ccGenericServices &&
         p_javaGenericServices == src.p_javaGenericServices && p_pyGenericServices == src.p_pyGenericServices &&
         p_phpGenericServices == src.p_phpGenericServices && p_deprecated == src.p_deprecated &&
-        p_ccEnableArenas == src.p_ccEnableArenas && p_objcClassPrefix.data == src.p_objcClassPrefix.data &&
-        p_csharpNamespace.data == src.p_csharpNamespace.data && p_swiftPrefix.data == src.p_swiftPrefix.data &&
-        p_phpClassPrefix.data == src.p_phpClassPrefix.data && p_phpNamespace.data == src.p_phpNamespace.data &&
-        p_phpMetadataNamespace.data == src.p_phpMetadataNamespace.data &&
-        p_rubyPackage.data == src.p_rubyPackage.data && uninterpretedOption == src.uninterpretedOption
+        p_ccEnableArenas == src.p_ccEnableArenas && p_objcClassPrefix == src.p_objcClassPrefix &&
+        p_csharpNamespace == src.p_csharpNamespace && p_swiftPrefix == src.p_swiftPrefix &&
+        p_phpClassPrefix == src.p_phpClassPrefix && p_phpNamespace == src.p_phpNamespace &&
+        p_phpMetadataNamespace == src.p_phpMetadataNamespace && p_rubyPackage == src.p_rubyPackage &&
+        uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: FileOptions): FileOptions {
@@ -2717,26 +2715,26 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_javaPackage.unpack(src)
-                case 8 => p_javaOuterClassname.unpack(src)
+                case 1 => p_javaPackage = src.parseString()
+                case 8 => p_javaOuterClassname = src.parseString()
                 case 10 => javaMultipleFiles = src.parseBool()
                 case 20 => p_javaGenerateEqualsAndHash = src.parseBool()
                 case 27 => javaStringCheckUtf8 = src.parseBool()
                 case 9 => optimizeFor = FileOptions_OptimizeMode.parse(src.parseInt32())
-                case 11 => p_goPackage.unpack(src)
+                case 11 => p_goPackage = src.parseString()
                 case 16 => ccGenericServices = src.parseBool()
                 case 17 => javaGenericServices = src.parseBool()
                 case 18 => pyGenericServices = src.parseBool()
                 case 42 => phpGenericServices = src.parseBool()
                 case 23 => deprecated = src.parseBool()
                 case 31 => ccEnableArenas = src.parseBool()
-                case 36 => p_objcClassPrefix.unpack(src)
-                case 37 => p_csharpNamespace.unpack(src)
-                case 39 => p_swiftPrefix.unpack(src)
-                case 40 => p_phpClassPrefix.unpack(src)
-                case 41 => p_phpNamespace.unpack(src)
-                case 44 => p_phpMetadataNamespace.unpack(src)
-                case 45 => p_rubyPackage.unpack(src)
+                case 36 => p_objcClassPrefix = src.parseString()
+                case 37 => p_csharpNamespace = src.parseString()
+                case 39 => p_swiftPrefix = src.parseString()
+                case 40 => p_phpClassPrefix = src.parseString()
+                case 41 => p_phpNamespace = src.parseString()
+                case 44 => p_phpMetadataNamespace = src.parseString()
+                case 45 => p_rubyPackage = src.parseString()
                 case 999 => s_add(uninterpretedOption, src)
                 case _ => m_unknown(src, _x)
             }
@@ -2749,52 +2747,52 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_javaPackage.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) <- p_javaOuterClassname.data) { out.append(66); out.packBin(_v) }
+        if (let Some(_v) <- p_javaPackage) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_javaOuterClassname) { out.append(66); out.packBin(_v) }
         if (let Some(_v) <- p_javaMultipleFiles) { out.append(80); out.packBool(_v) }
         if (let Some(_v) <- p_javaGenerateEqualsAndHash) { out.packTag(20, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_javaStringCheckUtf8) { out.packTag(27, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_optimizeFor) { out.append(72); out.packVarint(_v) }
-        if (let Some(_v) <- p_goPackage.data) { out.append(90); out.packBin(_v) }
+        if (let Some(_v) <- p_goPackage) { out.append(90); out.packBin(_v) }
         if (let Some(_v) <- p_ccGenericServices) { out.packTag(16, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_javaGenericServices) { out.packTag(17, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_pyGenericServices) { out.packTag(18, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_phpGenericServices) { out.packTag(42, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_deprecated) { out.packTag(23, VARINT); out.packBool(_v) }
         if (let Some(_v) <- p_ccEnableArenas) { out.packTag(31, VARINT); out.packBool(_v) }
-        if (let Some(_v) <- p_objcClassPrefix.data) { out.packTag(36, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) <- p_csharpNamespace.data) { out.packTag(37, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) <- p_swiftPrefix.data) { out.packTag(39, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) <- p_phpClassPrefix.data) { out.packTag(40, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) <- p_phpNamespace.data) { out.packTag(41, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) <- p_phpMetadataNamespace.data) { out.packTag(44, PREFIXED); out.packBin(_v) }
-        if (let Some(_v) <- p_rubyPackage.data) { out.packTag(45, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_objcClassPrefix) { out.packTag(36, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_csharpNamespace) { out.packTag(37, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_swiftPrefix) { out.packTag(39, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_phpClassPrefix) { out.packTag(40, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_phpNamespace) { out.packTag(41, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_phpMetadataNamespace) { out.packTag(44, PREFIXED); out.packBin(_v) }
+        if (let Some(_v) <- p_rubyPackage) { out.packTag(45, PREFIXED); out.packBin(_v) }
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { out.packTag(999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_javaPackage.data)) { _x.append("javaPackage", p_javaPackage.get()) }
-        if (isPresent(p_javaOuterClassname.data)) { _x.append("javaOuterClassname", p_javaOuterClassname.get()) }
+        if (let Some(_v) <- p_javaPackage) { _x.append("javaPackage", _v) }
+        if (let Some(_v) <- p_javaOuterClassname) { _x.append("javaOuterClassname", _v) }
         if (let Some(_v) <- p_javaMultipleFiles) { _x.append("javaMultipleFiles", _v) }
         if (let Some(_v) <- p_javaGenerateEqualsAndHash) { _x.append("javaGenerateEqualsAndHash", _v) }
         if (let Some(_v) <- p_javaStringCheckUtf8) { _x.append("javaStringCheckUtf8", _v) }
         if (let Some(_v) <- p_optimizeFor) { _x.append("optimizeFor", _v) }
-        if (isPresent(p_goPackage.data)) { _x.append("goPackage", p_goPackage.get()) }
+        if (let Some(_v) <- p_goPackage) { _x.append("goPackage", _v) }
         if (let Some(_v) <- p_ccGenericServices) { _x.append("ccGenericServices", _v) }
         if (let Some(_v) <- p_javaGenericServices) { _x.append("javaGenericServices", _v) }
         if (let Some(_v) <- p_pyGenericServices) { _x.append("pyGenericServices", _v) }
         if (let Some(_v) <- p_phpGenericServices) { _x.append("phpGenericServices", _v) }
         if (let Some(_v) <- p_deprecated) { _x.append("deprecated", _v) }
         if (let Some(_v) <- p_ccEnableArenas) { _x.append("ccEnableArenas", _v) }
-        if (isPresent(p_objcClassPrefix.data)) { _x.append("objcClassPrefix", p_objcClassPrefix.get()) }
-        if (isPresent(p_csharpNamespace.data)) { _x.append("csharpNamespace", p_csharpNamespace.get()) }
-        if (isPresent(p_swiftPrefix.data)) { _x.append("swiftPrefix", p_swiftPrefix.get()) }
-        if (isPresent(p_phpClassPrefix.data)) { _x.append("phpClassPrefix", p_phpClassPrefix.get()) }
-        if (isPresent(p_phpNamespace.data)) { _x.append("phpNamespace", p_phpNamespace.get()) }
-        if (isPresent(p_phpMetadataNamespace.data)) { _x.append("phpMetadataNamespace", p_phpMetadataNamespace.get()) }
-        if (isPresent(p_rubyPackage.data)) { _x.append("rubyPackage", p_rubyPackage.get()) }
+        if (let Some(_v) <- p_objcClassPrefix) { _x.append("objcClassPrefix", _v) }
+        if (let Some(_v) <- p_csharpNamespace) { _x.append("csharpNamespace", _v) }
+        if (let Some(_v) <- p_swiftPrefix) { _x.append("swiftPrefix", _v) }
+        if (let Some(_v) <- p_phpClassPrefix) { _x.append("phpClassPrefix", _v) }
+        if (let Some(_v) <- p_phpNamespace) { _x.append("phpNamespace", _v) }
+        if (let Some(_v) <- p_phpMetadataNamespace) { _x.append("phpMetadataNamespace", _v) }
+        if (let Some(_v) <- p_rubyPackage) { _x.append("rubyPackage", _v) }
         if (!uninterpretedOption.isEmpty()) { _x.append("uninterpretedOption", uninterpretedOption) }
         return _x.done().toString()
     }
@@ -4017,20 +4015,20 @@ public class MethodOptions__Builder {
 }
 
 public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<UninterpretedOption_NamePart> {
-    private var p_namePart: Pb2String
+    private var p_namePart: ?String
     private var p_isExtension: ?Bool
 
     public init(
         namePart!: ?String = None,
         isExtension!: ?Bool = None
     ) {
-        this.p_namePart = Pb2String(namePart)
+        this.p_namePart = namePart
         this.p_isExtension = isExtension
         m_init()
     }
 
     public init(src: UninterpretedOption_NamePart__Builder) {
-        this.p_namePart = Pb2String(src.namePart)
+        this.p_namePart = src.namePart
         this.p_isExtension = src.isExtension
         m_init()
     }
@@ -4039,9 +4037,9 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
         m_innerInit()
     }
 
-    public func clearNamePart() { p_namePart.clear(); markDirty() }
-    public prop hasNamePart: Bool { get() { isPresent(p_namePart.data) } }
-    public mut prop namePart: String { get() { p_namePart.get() } set(_v) { p_namePart.set(_v); markDirty() } }
+    public func clearNamePart() { p_namePart = None; markDirty() }
+    public prop hasNamePart: Bool { get() { isPresent(p_namePart) } }
+    public mut prop namePart: String { get() { p_namePart.getOrThrow() } set(_x) { p_namePart = _x; markDirty() } }
 
     public func clearIsExtension() { p_isExtension = None; markDirty() }
     public prop hasIsExtension: Bool { get() { isPresent(p_isExtension) } }
@@ -4049,31 +4047,31 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_namePart.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_namePart) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_isExtension) { _x += 1 + 1 }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_namePart.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_namePart) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_isExtension) { _x.write(_v) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_namePart.data) && isNone(p_isExtension)
+        isNone(p_namePart) && isNone(p_isExtension)
     }
 
     protected func m_clear(): Unit {
-        p_namePart.clear()
+        p_namePart = None
         p_isExtension = None
     }
 
     public operator func !=(src: UninterpretedOption_NamePart): Bool { !(this == src) }
     public operator func ==(src: UninterpretedOption_NamePart): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_namePart.data == src.p_namePart.data && p_isExtension == src.p_isExtension
+        p_namePart == src.p_namePart && p_isExtension == src.p_isExtension
     }
 
     public func copyFrom(src: UninterpretedOption_NamePart): UninterpretedOption_NamePart {
@@ -4091,7 +4089,7 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_namePart.unpack(src)
+                case 1 => p_namePart = src.parseString()
                 case 2 => p_isExtension = src.parseBool()
                 case _ => m_unknown(src, _x)
             }
@@ -4100,20 +4098,20 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
     }
 
     public func check(): Unit /* throws RequiredFieldNotSetException */ {
-        if (isNone(p_namePart.data)) { throw RequiredFieldNotSetException("namePart") }
+        if (isNone(p_namePart)) { throw RequiredFieldNotSetException("namePart") }
         if (isNone(p_isExtension)) { throw RequiredFieldNotSetException("isExtension") }
     }
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_namePart.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_namePart) { out.append(10); out.packBin(_v) }
         if (let Some(_v) <- p_isExtension) { out.append(16); out.packBool(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_namePart.data)) { _x.append("namePart", p_namePart.get()) }
+        if (let Some(_v) <- p_namePart) { _x.append("namePart", _v) }
         if (let Some(_v) <- p_isExtension) { _x.append("isExtension", _v) }
         return _x.done().toString()
     }
@@ -4139,12 +4137,12 @@ public class UninterpretedOption_NamePart__Builder {
 
 public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOption> {
     public let name: RepeatedMessage<UninterpretedOption_NamePart>
-    private var p_identifierValue: Pb2String
+    private var p_identifierValue: ?String
     private var p_positiveIntValue: ?UInt64
     private var p_negativeIntValue: ?Int64
     private var p_doubleValue: ?Float64
     private var p_stringValue: ?BytesSlice
-    private var p_aggregateValue: Pb2String
+    private var p_aggregateValue: ?String
 
     public init(
         name!: Array<UninterpretedOption_NamePart> = [],
@@ -4156,23 +4154,23 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
         aggregateValue!: ?String = None
     ) {
         this.name = RepeatedMessage<UninterpretedOption_NamePart>(name)
-        this.p_identifierValue = Pb2String(identifierValue)
+        this.p_identifierValue = identifierValue
         this.p_positiveIntValue = positiveIntValue
         this.p_negativeIntValue = negativeIntValue
         this.p_doubleValue = doubleValue
         this.p_stringValue = stringValue
-        this.p_aggregateValue = Pb2String(aggregateValue)
+        this.p_aggregateValue = aggregateValue
         m_init()
     }
 
     public init(src: UninterpretedOption__Builder) {
         this.name = RepeatedMessage<UninterpretedOption_NamePart>(src.name)
-        this.p_identifierValue = Pb2String(src.identifierValue)
+        this.p_identifierValue = src.identifierValue
         this.p_positiveIntValue = src.positiveIntValue
         this.p_negativeIntValue = src.negativeIntValue
         this.p_doubleValue = src.doubleValue
         this.p_stringValue = src.stringValue
-        this.p_aggregateValue = Pb2String(src.aggregateValue)
+        this.p_aggregateValue = src.aggregateValue
         m_init()
     }
 
@@ -4181,9 +4179,9 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
         m_innerInit()
     }
 
-    public func clearIdentifierValue() { p_identifierValue.clear(); markDirty() }
-    public prop hasIdentifierValue: Bool { get() { isPresent(p_identifierValue.data) } }
-    public mut prop identifierValue: String { get() { p_identifierValue.get() } set(_v) { p_identifierValue.set(_v); markDirty() } }
+    public func clearIdentifierValue() { p_identifierValue = None; markDirty() }
+    public prop hasIdentifierValue: Bool { get() { isPresent(p_identifierValue) } }
+    public mut prop identifierValue: String { get() { p_identifierValue.getOrThrow() } set(_x) { p_identifierValue = _x; markDirty() } }
 
     public func clearPositiveIntValue() { p_positiveIntValue = None; markDirty() }
     public prop hasPositiveIntValue: Bool { get() { isPresent(p_positiveIntValue) } }
@@ -4201,55 +4199,55 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
     public prop hasStringValue: Bool { get() { isPresent(p_stringValue) } }
     public mut prop stringValue: BytesSlice { get() { p_stringValue.getOrThrow() } set(_x) { p_stringValue = _x; markDirty() } }
 
-    public func clearAggregateValue() { p_aggregateValue.clear(); markDirty() }
-    public prop hasAggregateValue: Bool { get() { isPresent(p_aggregateValue.data) } }
-    public mut prop aggregateValue: String { get() { p_aggregateValue.get() } set(_v) { p_aggregateValue.set(_v); markDirty() } }
+    public func clearAggregateValue() { p_aggregateValue = None; markDirty() }
+    public prop hasAggregateValue: Bool { get() { isPresent(p_aggregateValue) } }
+    public mut prop aggregateValue: String { get() { p_aggregateValue.getOrThrow() } set(_x) { p_aggregateValue = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
         if (!name.isEmpty()) { for (_i in name) { _x += 1 + binSize(_i) } }
-        if (let Some(_v) <- p_identifierValue.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_identifierValue) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_positiveIntValue) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_negativeIntValue) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_doubleValue) { _x += 1 + 8 }
         if (let Some(_v) <- p_stringValue) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_aggregateValue.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_aggregateValue) { _x += 1 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
         if (!name.isEmpty()) { _x.write(name.hashCode()) }
-        if (let Some(_v) <- p_identifierValue.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_identifierValue) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_positiveIntValue) { _x.write(_v) }
         if (let Some(_v) <- p_negativeIntValue) { _x.write(_v) }
         if (let Some(_v) <- p_doubleValue) { _x.write(_v) }
         if (let Some(_v) <- p_stringValue) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_aggregateValue.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_aggregateValue) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        name.isEmpty() && isNone(p_identifierValue.data) && isNone(p_positiveIntValue) && isNone(p_negativeIntValue) &&
-        isNone(p_doubleValue) && isNone(p_stringValue) && isNone(p_aggregateValue.data)
+        name.isEmpty() && isNone(p_identifierValue) && isNone(p_positiveIntValue) && isNone(p_negativeIntValue) &&
+        isNone(p_doubleValue) && isNone(p_stringValue) && isNone(p_aggregateValue)
     }
 
     protected func m_clear(): Unit {
         name.clear()
-        p_identifierValue.clear()
+        p_identifierValue = None
         p_positiveIntValue = None
         p_negativeIntValue = None
         p_doubleValue = None
         p_stringValue = None
-        p_aggregateValue.clear()
+        p_aggregateValue = None
     }
 
     public operator func !=(src: UninterpretedOption): Bool { !(this == src) }
     public operator func ==(src: UninterpretedOption): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && name == src.name &&
-        p_identifierValue.data == src.p_identifierValue.data && p_positiveIntValue == src.p_positiveIntValue &&
+        p_identifierValue == src.p_identifierValue && p_positiveIntValue == src.p_positiveIntValue &&
         p_negativeIntValue == src.p_negativeIntValue && p_doubleValue == src.p_doubleValue &&
-        p_stringValue == src.p_stringValue && p_aggregateValue.data == src.p_aggregateValue.data
+        p_stringValue == src.p_stringValue && p_aggregateValue == src.p_aggregateValue
     }
 
     public func copyFrom(src: UninterpretedOption): UninterpretedOption {
@@ -4273,12 +4271,12 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
             let _x = src.parseTag()
             match (_x[0]) {
                 case 2 => s_add(name, src)
-                case 3 => p_identifierValue.unpack(src)
+                case 3 => p_identifierValue = src.parseString()
                 case 4 => p_positiveIntValue = src.parseUInt64()
                 case 5 => p_negativeIntValue = src.parseInt64()
                 case 6 => p_doubleValue = src.parseFloat64()
                 case 7 => p_stringValue = src.parseBytesSlice()
-                case 8 => p_aggregateValue.unpack(src)
+                case 8 => p_aggregateValue = src.parseString()
                 case _ => m_unknown(src, _x)
             }
         }
@@ -4291,24 +4289,24 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
         if (!name.isEmpty()) { for (_i in name) { out.append(18); out.packVarint(_i.size); _i.pack(out) } }
-        if (let Some(_v) <- p_identifierValue.data) { out.append(26); out.packBin(_v) }
+        if (let Some(_v) <- p_identifierValue) { out.append(26); out.packBin(_v) }
         if (let Some(_v) <- p_positiveIntValue) { out.append(32); out.packVarint(_v) }
         if (let Some(_v) <- p_negativeIntValue) { out.append(40); out.packVarint(_v) }
         if (let Some(_v) <- p_doubleValue) { out.append(49); out.packFixed(_v) }
         if (let Some(_v) <- p_stringValue) { out.append(58); out.packBin(_v) }
-        if (let Some(_v) <- p_aggregateValue.data) { out.append(66); out.packBin(_v) }
+        if (let Some(_v) <- p_aggregateValue) { out.append(66); out.packBin(_v) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
         if (!name.isEmpty()) { _x.append("name", name) }
-        if (isPresent(p_identifierValue.data)) { _x.append("identifierValue", p_identifierValue.get()) }
+        if (let Some(_v) <- p_identifierValue) { _x.append("identifierValue", _v) }
         if (let Some(_v) <- p_positiveIntValue) { _x.append("positiveIntValue", _v) }
         if (let Some(_v) <- p_negativeIntValue) { _x.append("negativeIntValue", _v) }
         if (let Some(_v) <- p_doubleValue) { _x.append("doubleValue", _v) }
         if (let Some(_v) <- p_stringValue) { _x.append("stringValue", _v) }
-        if (isPresent(p_aggregateValue.data)) { _x.append("aggregateValue", p_aggregateValue.get()) }
+        if (let Some(_v) <- p_aggregateValue) { _x.append("aggregateValue", _v) }
         return _x.done().toString()
     }
 
@@ -4349,9 +4347,9 @@ public class UninterpretedOption__Builder {
 public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInfo_Location> {
     public let path: RepeatedField<Int32>
     public let span: RepeatedField<Int32>
-    private var p_leadingComments: Pb2String
-    private var p_trailingComments: Pb2String
-    public let leadingDetachedComments: RepeatedString
+    private var p_leadingComments: ?String
+    private var p_trailingComments: ?String
+    public let leadingDetachedComments: RepeatedField<String>
 
     public init(
         path!: Array<Int32> = [],
@@ -4362,18 +4360,18 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
     ) {
         this.path = RepeatedField<Int32>(path)
         this.span = RepeatedField<Int32>(span)
-        this.p_leadingComments = Pb2String(leadingComments)
-        this.p_trailingComments = Pb2String(trailingComments)
-        this.leadingDetachedComments = RepeatedString(leadingDetachedComments)
+        this.p_leadingComments = leadingComments
+        this.p_trailingComments = trailingComments
+        this.leadingDetachedComments = RepeatedField<String>(leadingDetachedComments)
         m_init()
     }
 
     public init(src: SourceCodeInfo_Location__Builder) {
         this.path = RepeatedField<Int32>(src.path)
         this.span = RepeatedField<Int32>(src.span)
-        this.p_leadingComments = Pb2String(src.leadingComments)
-        this.p_trailingComments = Pb2String(src.trailingComments)
-        this.leadingDetachedComments = RepeatedString(src.leadingDetachedComments)
+        this.p_leadingComments = src.leadingComments
+        this.p_trailingComments = src.trailingComments
+        this.leadingDetachedComments = RepeatedField<String>(src.leadingDetachedComments)
         m_init()
     }
 
@@ -4384,21 +4382,21 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         m_innerInit()
     }
 
-    public func clearLeadingComments() { p_leadingComments.clear(); markDirty() }
-    public prop hasLeadingComments: Bool { get() { isPresent(p_leadingComments.data) } }
-    public mut prop leadingComments: String { get() { p_leadingComments.get() } set(_v) { p_leadingComments.set(_v); markDirty() } }
+    public func clearLeadingComments() { p_leadingComments = None; markDirty() }
+    public prop hasLeadingComments: Bool { get() { isPresent(p_leadingComments) } }
+    public mut prop leadingComments: String { get() { p_leadingComments.getOrThrow() } set(_x) { p_leadingComments = _x; markDirty() } }
 
-    public func clearTrailingComments() { p_trailingComments.clear(); markDirty() }
-    public prop hasTrailingComments: Bool { get() { isPresent(p_trailingComments.data) } }
-    public mut prop trailingComments: String { get() { p_trailingComments.get() } set(_v) { p_trailingComments.set(_v); markDirty() } }
+    public func clearTrailingComments() { p_trailingComments = None; markDirty() }
+    public prop hasTrailingComments: Bool { get() { isPresent(p_trailingComments) } }
+    public mut prop trailingComments: String { get() { p_trailingComments.getOrThrow() } set(_x) { p_trailingComments = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
         if (!path.isEmpty()) { var _s = 0; for (_i in path) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
         if (!span.isEmpty()) { var _s = 0; for (_i in span) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
-        if (let Some(_v) <- p_leadingComments.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_trailingComments.data) { _x += 1 + binSize(_v) }
-        if (!leadingDetachedComments.isEmpty()) { _x += s_size(leadingDetachedComments, 1) }
+        if (let Some(_v) <- p_leadingComments) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_trailingComments) { _x += 1 + binSize(_v) }
+        if (!leadingDetachedComments.isEmpty()) { for (_i in leadingDetachedComments) { _x += 1 + binSize(_i) } }
         return _x
     }
 
@@ -4406,31 +4404,30 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         var _x = DefaultHasher()
         if (!path.isEmpty()) { _x.write(path.hashCode()) }
         if (!span.isEmpty()) { _x.write(span.hashCode()) }
-        if (let Some(_v) <- p_leadingComments.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_trailingComments.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_leadingComments) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_trailingComments) { _x.write(_v.hashCode()) }
         if (!leadingDetachedComments.isEmpty()) { _x.write(leadingDetachedComments.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        path.isEmpty() && span.isEmpty() && isNone(p_leadingComments.data) && isNone(p_trailingComments.data) &&
+        path.isEmpty() && span.isEmpty() && isNone(p_leadingComments) && isNone(p_trailingComments) &&
         leadingDetachedComments.isEmpty()
     }
 
     protected func m_clear(): Unit {
         path.clear()
         span.clear()
-        p_leadingComments.clear()
-        p_trailingComments.clear()
+        p_leadingComments = None
+        p_trailingComments = None
         leadingDetachedComments.clear()
     }
 
     public operator func !=(src: SourceCodeInfo_Location): Bool { !(this == src) }
     public operator func ==(src: SourceCodeInfo_Location): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && path == src.path &&
-        span == src.span && p_leadingComments.data == src.p_leadingComments.data &&
-        p_trailingComments.data == src.p_trailingComments.data &&
-        leadingDetachedComments == src.leadingDetachedComments
+        span == src.span && p_leadingComments == src.p_leadingComments &&
+        p_trailingComments == src.p_trailingComments && leadingDetachedComments == src.leadingDetachedComments
     }
 
     public func copyFrom(src: SourceCodeInfo_Location): SourceCodeInfo_Location {
@@ -4453,9 +4450,9 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
             match (_x[0]) {
                 case 1 => let _s = subReader(src); while (!_s.isEmpty()) { s_add(path, _s.parseInt32()) }
                 case 2 => let _s = subReader(src); while (!_s.isEmpty()) { s_add(span, _s.parseInt32()) }
-                case 3 => p_leadingComments.unpack(src)
-                case 4 => p_trailingComments.unpack(src)
-                case 6 => s_add(leadingDetachedComments, src)
+                case 3 => p_leadingComments = src.parseString()
+                case 4 => p_trailingComments = src.parseString()
+                case 6 => s_add(leadingDetachedComments, src.parseString())
                 case _ => m_unknown(src, _x)
             }
         }
@@ -4469,9 +4466,9 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         check()
         if (!path.isEmpty()) { out.append(10); var _s = 0; for (_i in path) { _s += varintSize(_i) }; out.packVarint(_s); for (_i in path) { out.packVarint(_i) } }
         if (!span.isEmpty()) { out.append(18); var _s = 0; for (_i in span) { _s += varintSize(_i) }; out.packVarint(_s); for (_i in span) { out.packVarint(_i) } }
-        if (let Some(_v) <- p_leadingComments.data) { out.append(26); out.packBin(_v) }
-        if (let Some(_v) <- p_trailingComments.data) { out.append(34); out.packBin(_v) }
-        if (!leadingDetachedComments.isEmpty()) { s_pack(6, leadingDetachedComments, out) }
+        if (let Some(_v) <- p_leadingComments) { out.append(26); out.packBin(_v) }
+        if (let Some(_v) <- p_trailingComments) { out.append(34); out.packBin(_v) }
+        if (!leadingDetachedComments.isEmpty()) { for (_i in leadingDetachedComments) { out.append(50); out.packBin(_i) } }
         m_unknown(out)
     }
 
@@ -4479,8 +4476,8 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         var _x = StructPrinter()
         if (!path.isEmpty()) { _x.append("path", path) }
         if (!span.isEmpty()) { _x.append("span", span) }
-        if (isPresent(p_leadingComments.data)) { _x.append("leadingComments", p_leadingComments.get()) }
-        if (isPresent(p_trailingComments.data)) { _x.append("trailingComments", p_trailingComments.get()) }
+        if (let Some(_v) <- p_leadingComments) { _x.append("leadingComments", _v) }
+        if (let Some(_v) <- p_trailingComments) { _x.append("trailingComments", _v) }
         if (!leadingDetachedComments.isEmpty()) { _x.append("leadingDetachedComments", leadingDetachedComments) }
         return _x.done().toString()
     }
@@ -4613,7 +4610,7 @@ public class SourceCodeInfo__Builder {
 
 public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<GeneratedCodeInfo_Annotation> {
     public let path: RepeatedField<Int32>
-    private var p_sourceFile: Pb2String
+    private var p_sourceFile: ?String
     private var p_begin: ?Int32
     private var p_end: ?Int32
 
@@ -4624,7 +4621,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
         end!: ?Int32 = None
     ) {
         this.path = RepeatedField<Int32>(path)
-        this.p_sourceFile = Pb2String(sourceFile)
+        this.p_sourceFile = sourceFile
         this.p_begin = begin
         this.p_end = end
         m_init()
@@ -4632,7 +4629,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
 
     public init(src: GeneratedCodeInfo_Annotation__Builder) {
         this.path = RepeatedField<Int32>(src.path)
-        this.p_sourceFile = Pb2String(src.sourceFile)
+        this.p_sourceFile = src.sourceFile
         this.p_begin = src.begin
         this.p_end = src.end
         m_init()
@@ -4643,9 +4640,9 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
         m_innerInit()
     }
 
-    public func clearSourceFile() { p_sourceFile.clear(); markDirty() }
-    public prop hasSourceFile: Bool { get() { isPresent(p_sourceFile.data) } }
-    public mut prop sourceFile: String { get() { p_sourceFile.get() } set(_v) { p_sourceFile.set(_v); markDirty() } }
+    public func clearSourceFile() { p_sourceFile = None; markDirty() }
+    public prop hasSourceFile: Bool { get() { isPresent(p_sourceFile) } }
+    public mut prop sourceFile: String { get() { p_sourceFile.getOrThrow() } set(_x) { p_sourceFile = _x; markDirty() } }
 
     public func clearBegin() { p_begin = None; markDirty() }
     public prop hasBegin: Bool { get() { isPresent(p_begin) } }
@@ -4658,7 +4655,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     protected func m_size(): Int64 {
         var _x = 0
         if (!path.isEmpty()) { var _s = 0; for (_i in path) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
-        if (let Some(_v) <- p_sourceFile.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_sourceFile) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_begin) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_end) { _x += 1 + varintSize(_v) }
         return _x
@@ -4667,19 +4664,19 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
         if (!path.isEmpty()) { _x.write(path.hashCode()) }
-        if (let Some(_v) <- p_sourceFile.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_sourceFile) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_begin) { _x.write(_v) }
         if (let Some(_v) <- p_end) { _x.write(_v) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        path.isEmpty() && isNone(p_sourceFile.data) && isNone(p_begin) && isNone(p_end)
+        path.isEmpty() && isNone(p_sourceFile) && isNone(p_begin) && isNone(p_end)
     }
 
     protected func m_clear(): Unit {
         path.clear()
-        p_sourceFile.clear()
+        p_sourceFile = None
         p_begin = None
         p_end = None
     }
@@ -4687,7 +4684,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     public operator func !=(src: GeneratedCodeInfo_Annotation): Bool { !(this == src) }
     public operator func ==(src: GeneratedCodeInfo_Annotation): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && path == src.path &&
-        p_sourceFile.data == src.p_sourceFile.data && p_begin == src.p_begin && p_end == src.p_end
+        p_sourceFile == src.p_sourceFile && p_begin == src.p_begin && p_end == src.p_end
     }
 
     public func copyFrom(src: GeneratedCodeInfo_Annotation): GeneratedCodeInfo_Annotation {
@@ -4708,7 +4705,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
             let _x = src.parseTag()
             match (_x[0]) {
                 case 1 => let _s = subReader(src); while (!_s.isEmpty()) { s_add(path, _s.parseInt32()) }
-                case 2 => p_sourceFile.unpack(src)
+                case 2 => p_sourceFile = src.parseString()
                 case 3 => p_begin = src.parseInt32()
                 case 4 => p_end = src.parseInt32()
                 case _ => m_unknown(src, _x)
@@ -4723,7 +4720,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
         if (!path.isEmpty()) { out.append(10); var _s = 0; for (_i in path) { _s += varintSize(_i) }; out.packVarint(_s); for (_i in path) { out.packVarint(_i) } }
-        if (let Some(_v) <- p_sourceFile.data) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_sourceFile) { out.append(18); out.packBin(_v) }
         if (let Some(_v) <- p_begin) { out.append(24); out.packVarint(_v) }
         if (let Some(_v) <- p_end) { out.append(32); out.packVarint(_v) }
         m_unknown(out)
@@ -4732,7 +4729,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     public func toString(): String {
         var _x = StructPrinter()
         if (!path.isEmpty()) { _x.append("path", path) }
-        if (isPresent(p_sourceFile.data)) { _x.append("sourceFile", p_sourceFile.get()) }
+        if (let Some(_v) <- p_sourceFile) { _x.append("sourceFile", _v) }
         if (let Some(_v) <- p_begin) { _x.append("begin", _v) }
         if (let Some(_v) <- p_end) { _x.append("end", _v) }
         return _x.done().toString()

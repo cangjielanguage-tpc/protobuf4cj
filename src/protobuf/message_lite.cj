@@ -140,11 +140,14 @@ public abstract class MessageLite <: ToString & Hashable {
 
     /* unpack to repeated fields */
     protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
-    protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseBytesSlice()) }
     protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: MessageLite & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
     protected static func s_add<K, V>(map: MapField<K, V>, key: K, val: V) where K <: Hashable & Equatable<K> { map.putDirty(key, val) }
     protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Hashable & Equatable<K>, M <: MessageLite & TypedMessage<M> { map.putDirty(key, val) }
 
+    /* @Deprecated */
+    protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseString()) }
+
+    /* @Deprecated */
     /* pack repeated string */
     protected static func s_pack<W>(tag: Tag, fields: RepeatedString, out: W) where W <: BytesWriter {
         if (fields.isEmpty()) { return }
@@ -157,6 +160,7 @@ public abstract class MessageLite <: ToString & Hashable {
         }
     }
 
+    /* @Deprecated */
     /* packed size of fields */
     protected static func s_size(rf: RepeatedString, tagSize: Int64) {
         var sum = tagSize * rf.size
@@ -170,7 +174,6 @@ public abstract class MessageLite <: ToString & Hashable {
 
     /* init member field's parent */
     protected func m_init(rf: MessageLite) { rf.m_parents.insert(this) }
-    protected func m_init(rf: RepeatedString) { rf.setParent(this) }
     protected func m_init<T>(rf: RepeatedField<T>) { rf.setParent(this) }
     protected func m_init<T>(rf: RepeatedMessage<T>) where T <: MessageLite & TypedMessage<T> { rf.setParent(this) }
     protected func m_init<T>(rf: T): T where T <: OneofGroup { rf.mutableData()?.m_parents.insert(this); rf }
@@ -228,5 +231,7 @@ public struct PbMessage<M> where M <: MessageLite & TypedMessage<M> {
     }
 
     public func isEmpty(): Bool { return data?.isEmpty() ?? true }
+    public func nonEmptyData(): ?M { match (data) { case Some(m) where !m.isEmpty() => m case _ => None } }
+    /* @Deprecated */
     public func noEmptyData(): ?M { match (data) { case Some(m) where !m.isEmpty() => m case _ => None } }
 }

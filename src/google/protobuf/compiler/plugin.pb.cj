@@ -8,7 +8,7 @@ public class Version <: MessageLite & TypedMessage<Version> {
     private var p_major: ?Int32
     private var p_minor: ?Int32
     private var p_patch: ?Int32
-    private var p_suffix: Pb2String
+    private var p_suffix: ?String
 
     public init(
         major!: ?Int32 = None,
@@ -19,7 +19,7 @@ public class Version <: MessageLite & TypedMessage<Version> {
         this.p_major = major
         this.p_minor = minor
         this.p_patch = patch
-        this.p_suffix = Pb2String(suffix)
+        this.p_suffix = suffix
         m_init()
     }
 
@@ -27,7 +27,7 @@ public class Version <: MessageLite & TypedMessage<Version> {
         this.p_major = src.major
         this.p_minor = src.minor
         this.p_patch = src.patch
-        this.p_suffix = Pb2String(src.suffix)
+        this.p_suffix = src.suffix
         m_init()
     }
 
@@ -47,16 +47,16 @@ public class Version <: MessageLite & TypedMessage<Version> {
     public prop hasPatch: Bool { get() { isPresent(p_patch) } }
     public mut prop patch: Int32 { get() { p_patch.getOrThrow() } set(_x) { p_patch = _x; markDirty() } }
 
-    public func clearSuffix() { p_suffix.clear(); markDirty() }
-    public prop hasSuffix: Bool { get() { isPresent(p_suffix.data) } }
-    public mut prop suffix: String { get() { p_suffix.get() } set(_v) { p_suffix.set(_v); markDirty() } }
+    public func clearSuffix() { p_suffix = None; markDirty() }
+    public prop hasSuffix: Bool { get() { isPresent(p_suffix) } }
+    public mut prop suffix: String { get() { p_suffix.getOrThrow() } set(_x) { p_suffix = _x; markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_major) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_minor) { _x += 1 + varintSize(_v) }
         if (let Some(_v) <- p_patch) { _x += 1 + varintSize(_v) }
-        if (let Some(_v) <- p_suffix.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_suffix) { _x += 1 + binSize(_v) }
         return _x
     }
 
@@ -65,26 +65,25 @@ public class Version <: MessageLite & TypedMessage<Version> {
         if (let Some(_v) <- p_major) { _x.write(_v) }
         if (let Some(_v) <- p_minor) { _x.write(_v) }
         if (let Some(_v) <- p_patch) { _x.write(_v) }
-        if (let Some(_v) <- p_suffix.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_suffix) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_major) && isNone(p_minor) && isNone(p_patch) && isNone(p_suffix.data)
+        isNone(p_major) && isNone(p_minor) && isNone(p_patch) && isNone(p_suffix)
     }
 
     protected func m_clear(): Unit {
         p_major = None
         p_minor = None
         p_patch = None
-        p_suffix.clear()
+        p_suffix = None
     }
 
     public operator func !=(src: Version): Bool { !(this == src) }
     public operator func ==(src: Version): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_major == src.p_major && p_minor == src.p_minor && p_patch == src.p_patch &&
-        p_suffix.data == src.p_suffix.data
+        p_major == src.p_major && p_minor == src.p_minor && p_patch == src.p_patch && p_suffix == src.p_suffix
     }
 
     public func copyFrom(src: Version): Version {
@@ -107,7 +106,7 @@ public class Version <: MessageLite & TypedMessage<Version> {
                 case 1 => p_major = src.parseInt32()
                 case 2 => p_minor = src.parseInt32()
                 case 3 => p_patch = src.parseInt32()
-                case 4 => p_suffix.unpack(src)
+                case 4 => p_suffix = src.parseString()
                 case _ => m_unknown(src, _x)
             }
         }
@@ -122,7 +121,7 @@ public class Version <: MessageLite & TypedMessage<Version> {
         if (let Some(_v) <- p_major) { out.append(8); out.packVarint(_v) }
         if (let Some(_v) <- p_minor) { out.append(16); out.packVarint(_v) }
         if (let Some(_v) <- p_patch) { out.append(24); out.packVarint(_v) }
-        if (let Some(_v) <- p_suffix.data) { out.append(34); out.packBin(_v) }
+        if (let Some(_v) <- p_suffix) { out.append(34); out.packBin(_v) }
         m_unknown(out)
     }
 
@@ -131,7 +130,7 @@ public class Version <: MessageLite & TypedMessage<Version> {
         if (let Some(_v) <- p_major) { _x.append("major", _v) }
         if (let Some(_v) <- p_minor) { _x.append("minor", _v) }
         if (let Some(_v) <- p_patch) { _x.append("patch", _v) }
-        if (isPresent(p_suffix.data)) { _x.append("suffix", p_suffix.get()) }
+        if (let Some(_v) <- p_suffix) { _x.append("suffix", _v) }
         return _x.done().toString()
     }
 
@@ -161,8 +160,8 @@ public class Version__Builder {
 }
 
 public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorRequest> {
-    public let fileToGenerate: RepeatedString
-    private var p_parameter: Pb2String
+    public let fileToGenerate: RepeatedField<String>
+    private var p_parameter: ?String
     public let protoFile: RepeatedMessage<google.protobuf.FileDescriptorProto>
     private var p_compilerVersion: PbMessage<Version>
 
@@ -172,16 +171,16 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         protoFile!: Array<google.protobuf.FileDescriptorProto> = [],
         compilerVersion!: ?Version = None
     ) {
-        this.fileToGenerate = RepeatedString(fileToGenerate)
-        this.p_parameter = Pb2String(parameter)
+        this.fileToGenerate = RepeatedField<String>(fileToGenerate)
+        this.p_parameter = parameter
         this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(protoFile)
         this.p_compilerVersion = PbMessage<Version>(compilerVersion)
         m_init()
     }
 
     public init(src: CodeGeneratorRequest__Builder) {
-        this.fileToGenerate = RepeatedString(src.fileToGenerate)
-        this.p_parameter = Pb2String(src.parameter)
+        this.fileToGenerate = RepeatedField<String>(src.fileToGenerate)
+        this.p_parameter = src.parameter
         this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(src.protoFile)
         this.p_compilerVersion = PbMessage<Version>(src.compilerVersion)
         m_init()
@@ -194,9 +193,9 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         m_innerInit()
     }
 
-    public func clearParameter() { p_parameter.clear(); markDirty() }
-    public prop hasParameter: Bool { get() { isPresent(p_parameter.data) } }
-    public mut prop parameter: String { get() { p_parameter.get() } set(_v) { p_parameter.set(_v); markDirty() } }
+    public func clearParameter() { p_parameter = None; markDirty() }
+    public prop hasParameter: Bool { get() { isPresent(p_parameter) } }
+    public mut prop parameter: String { get() { p_parameter.getOrThrow() } set(_x) { p_parameter = _x; markDirty() } }
 
     public func clearCompilerVersion() { p_compilerVersion.removeFrom(this); markDirty() }
     public prop hasCompilerVersion: Bool { get() { isPresent(p_compilerVersion.data) } }
@@ -204,8 +203,8 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (!fileToGenerate.isEmpty()) { _x += s_size(fileToGenerate, 1) }
-        if (let Some(_v) <- p_parameter.data) { _x += 1 + binSize(_v) }
+        if (!fileToGenerate.isEmpty()) { for (_i in fileToGenerate) { _x += 1 + binSize(_i) } }
+        if (let Some(_v) <- p_parameter) { _x += 1 + binSize(_v) }
         if (!protoFile.isEmpty()) { for (_i in protoFile) { _x += 1 + binSize(_i) } }
         if (let Some(_v) <- p_compilerVersion.data) { _x += 1 + binSize(_v) }
         return _x
@@ -214,19 +213,19 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
         if (!fileToGenerate.isEmpty()) { _x.write(fileToGenerate.hashCode()) }
-        if (let Some(_v) <- p_parameter.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_parameter) { _x.write(_v.hashCode()) }
         if (!protoFile.isEmpty()) { _x.write(protoFile.hashCode()) }
         if (let Some(_v) <- p_compilerVersion.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        fileToGenerate.isEmpty() && isNone(p_parameter.data) && protoFile.isEmpty() && isNone(p_compilerVersion.data)
+        fileToGenerate.isEmpty() && isNone(p_parameter) && protoFile.isEmpty() && isNone(p_compilerVersion.data)
     }
 
     protected func m_clear(): Unit {
         fileToGenerate.clear()
-        p_parameter.clear()
+        p_parameter = None
         protoFile.clear()
         p_compilerVersion.removeFrom(this)
     }
@@ -234,8 +233,8 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     public operator func !=(src: CodeGeneratorRequest): Bool { !(this == src) }
     public operator func ==(src: CodeGeneratorRequest): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        fileToGenerate == src.fileToGenerate && p_parameter.data == src.p_parameter.data &&
-        protoFile == src.protoFile && p_compilerVersion.data == src.p_compilerVersion.data
+        fileToGenerate == src.fileToGenerate && p_parameter == src.p_parameter && protoFile == src.protoFile &&
+        p_compilerVersion.data == src.p_compilerVersion.data
     }
 
     public func copyFrom(src: CodeGeneratorRequest): CodeGeneratorRequest {
@@ -255,8 +254,8 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => s_add(fileToGenerate, src)
-                case 2 => p_parameter.unpack(src)
+                case 1 => s_add(fileToGenerate, src.parseString())
+                case 2 => p_parameter = src.parseString()
                 case 15 => s_add(protoFile, src)
                 case 3 => p_compilerVersion.getOrDefault(this).unpack(subReader(src))
                 case _ => m_unknown(src, _x)
@@ -270,8 +269,8 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (!fileToGenerate.isEmpty()) { s_pack(1, fileToGenerate, out) }
-        if (let Some(_v) <- p_parameter.data) { out.append(18); out.packBin(_v) }
+        if (!fileToGenerate.isEmpty()) { for (_i in fileToGenerate) { out.append(10); out.packBin(_i) } }
+        if (let Some(_v) <- p_parameter) { out.append(18); out.packBin(_v) }
         if (!protoFile.isEmpty()) { for (_i in protoFile) { out.append(122); out.packVarint(_i.size); _i.pack(out) } }
         if (let Some(_v) <- p_compilerVersion.data) { out.append(26); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
@@ -280,7 +279,7 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     public func toString(): String {
         var _x = StructPrinter()
         if (!fileToGenerate.isEmpty()) { _x.append("fileToGenerate", fileToGenerate) }
-        if (isPresent(p_parameter.data)) { _x.append("parameter", p_parameter.get()) }
+        if (let Some(_v) <- p_parameter) { _x.append("parameter", _v) }
         if (!protoFile.isEmpty()) { _x.append("protoFile", protoFile) }
         if (let Some(_v) <- p_compilerVersion.data) { _x.append("compilerVersion", _v) }
         return _x.done().toString()
@@ -312,9 +311,9 @@ public class CodeGeneratorRequest__Builder {
 }
 
 public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGeneratorResponse_File> {
-    private var p_name: Pb2String
-    private var p_insertionPoint: Pb2String
-    private var p_content: Pb2String
+    private var p_name: ?String
+    private var p_insertionPoint: ?String
+    private var p_content: ?String
     private var p_generatedCodeInfo: PbMessage<google.protobuf.GeneratedCodeInfo>
 
     public init(
@@ -323,17 +322,17 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         content!: ?String = None,
         generatedCodeInfo!: ?google.protobuf.GeneratedCodeInfo = None
     ) {
-        this.p_name = Pb2String(name)
-        this.p_insertionPoint = Pb2String(insertionPoint)
-        this.p_content = Pb2String(content)
+        this.p_name = name
+        this.p_insertionPoint = insertionPoint
+        this.p_content = content
         this.p_generatedCodeInfo = PbMessage<google.protobuf.GeneratedCodeInfo>(generatedCodeInfo)
         m_init()
     }
 
     public init(src: CodeGeneratorResponse_File__Builder) {
-        this.p_name = Pb2String(src.name)
-        this.p_insertionPoint = Pb2String(src.insertionPoint)
-        this.p_content = Pb2String(src.content)
+        this.p_name = src.name
+        this.p_insertionPoint = src.insertionPoint
+        this.p_content = src.content
         this.p_generatedCodeInfo = PbMessage<google.protobuf.GeneratedCodeInfo>(src.generatedCodeInfo)
         m_init()
     }
@@ -343,17 +342,17 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         m_innerInit()
     }
 
-    public func clearName() { p_name.clear(); markDirty() }
-    public prop hasName: Bool { get() { isPresent(p_name.data) } }
-    public mut prop name: String { get() { p_name.get() } set(_v) { p_name.set(_v); markDirty() } }
+    public func clearName() { p_name = None; markDirty() }
+    public prop hasName: Bool { get() { isPresent(p_name) } }
+    public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
 
-    public func clearInsertionPoint() { p_insertionPoint.clear(); markDirty() }
-    public prop hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint.data) } }
-    public mut prop insertionPoint: String { get() { p_insertionPoint.get() } set(_v) { p_insertionPoint.set(_v); markDirty() } }
+    public func clearInsertionPoint() { p_insertionPoint = None; markDirty() }
+    public prop hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint) } }
+    public mut prop insertionPoint: String { get() { p_insertionPoint.getOrThrow() } set(_x) { p_insertionPoint = _x; markDirty() } }
 
-    public func clearContent() { p_content.clear(); markDirty() }
-    public prop hasContent: Bool { get() { isPresent(p_content.data) } }
-    public mut prop content: String { get() { p_content.get() } set(_v) { p_content.set(_v); markDirty() } }
+    public func clearContent() { p_content = None; markDirty() }
+    public prop hasContent: Bool { get() { isPresent(p_content) } }
+    public mut prop content: String { get() { p_content.getOrThrow() } set(_x) { p_content = _x; markDirty() } }
 
     public func clearGeneratedCodeInfo() { p_generatedCodeInfo.removeFrom(this); markDirty() }
     public prop hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
@@ -361,39 +360,38 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_name.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_insertionPoint.data) { _x += 1 + binSize(_v) }
-        if (let Some(_v) <- p_content.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_insertionPoint) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_content) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_generatedCodeInfo.data) { _x += 2 + binSize(_v) }
         return _x
     }
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_name.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_insertionPoint.data) { _x.write(_v.hashCode()) }
-        if (let Some(_v) <- p_content.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_name) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_insertionPoint) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_content) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_generatedCodeInfo.data) { _x.write(_v.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_name.data) && isNone(p_insertionPoint.data) && isNone(p_content.data) &&
-        isNone(p_generatedCodeInfo.data)
+        isNone(p_name) && isNone(p_insertionPoint) && isNone(p_content) && isNone(p_generatedCodeInfo.data)
     }
 
     protected func m_clear(): Unit {
-        p_name.clear()
-        p_insertionPoint.clear()
-        p_content.clear()
+        p_name = None
+        p_insertionPoint = None
+        p_content = None
         p_generatedCodeInfo.removeFrom(this)
     }
 
     public operator func !=(src: CodeGeneratorResponse_File): Bool { !(this == src) }
     public operator func ==(src: CodeGeneratorResponse_File): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name.data == src.p_name.data && p_insertionPoint.data == src.p_insertionPoint.data &&
-        p_content.data == src.p_content.data && p_generatedCodeInfo.data == src.p_generatedCodeInfo.data
+        p_name == src.p_name && p_insertionPoint == src.p_insertionPoint && p_content == src.p_content &&
+        p_generatedCodeInfo.data == src.p_generatedCodeInfo.data
     }
 
     public func copyFrom(src: CodeGeneratorResponse_File): CodeGeneratorResponse_File {
@@ -413,9 +411,9 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_name.unpack(src)
-                case 2 => p_insertionPoint.unpack(src)
-                case 15 => p_content.unpack(src)
+                case 1 => p_name = src.parseString()
+                case 2 => p_insertionPoint = src.parseString()
+                case 15 => p_content = src.parseString()
                 case 16 => p_generatedCodeInfo.getOrDefault(this).unpack(subReader(src))
                 case _ => m_unknown(src, _x)
             }
@@ -428,18 +426,18 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_name.data) { out.append(10); out.packBin(_v) }
-        if (let Some(_v) <- p_insertionPoint.data) { out.append(18); out.packBin(_v) }
-        if (let Some(_v) <- p_content.data) { out.append(122); out.packBin(_v) }
+        if (let Some(_v) <- p_name) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_insertionPoint) { out.append(18); out.packBin(_v) }
+        if (let Some(_v) <- p_content) { out.append(122); out.packBin(_v) }
         if (let Some(_v) <- p_generatedCodeInfo.data) { out.packTag(16, PREFIXED); out.packVarint(_v.size); _v.pack(out) }
         m_unknown(out)
     }
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_name.data)) { _x.append("name", p_name.get()) }
-        if (isPresent(p_insertionPoint.data)) { _x.append("insertionPoint", p_insertionPoint.get()) }
-        if (isPresent(p_content.data)) { _x.append("content", p_content.get()) }
+        if (let Some(_v) <- p_name) { _x.append("name", _v) }
+        if (let Some(_v) <- p_insertionPoint) { _x.append("insertionPoint", _v) }
+        if (let Some(_v) <- p_content) { _x.append("content", _v) }
         if (let Some(_v) <- p_generatedCodeInfo.data) { _x.append("generatedCodeInfo", _v) }
         return _x.done().toString()
     }
@@ -512,7 +510,7 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
 }
 
 public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorResponse> {
-    private var p_error: Pb2String
+    private var p_error: ?String
     private var p_supportedFeatures: ?UInt64
     public let file: RepeatedMessage<CodeGeneratorResponse_File>
 
@@ -521,14 +519,14 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
         supportedFeatures!: ?UInt64 = None,
         file!: Array<CodeGeneratorResponse_File> = []
     ) {
-        this.p_error = Pb2String(error)
+        this.p_error = error
         this.p_supportedFeatures = supportedFeatures
         this.file = RepeatedMessage<CodeGeneratorResponse_File>(file)
         m_init()
     }
 
     public init(src: CodeGeneratorResponse__Builder) {
-        this.p_error = Pb2String(src.error)
+        this.p_error = src.error
         this.p_supportedFeatures = src.supportedFeatures
         this.file = RepeatedMessage<CodeGeneratorResponse_File>(src.file)
         m_init()
@@ -539,9 +537,9 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
         m_innerInit()
     }
 
-    public func clearError() { p_error.clear(); markDirty() }
-    public prop hasError: Bool { get() { isPresent(p_error.data) } }
-    public mut prop error: String { get() { p_error.get() } set(_v) { p_error.set(_v); markDirty() } }
+    public func clearError() { p_error = None; markDirty() }
+    public prop hasError: Bool { get() { isPresent(p_error) } }
+    public mut prop error: String { get() { p_error.getOrThrow() } set(_x) { p_error = _x; markDirty() } }
 
     public func clearSupportedFeatures() { p_supportedFeatures = None; markDirty() }
     public prop hasSupportedFeatures: Bool { get() { isPresent(p_supportedFeatures) } }
@@ -549,7 +547,7 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
 
     protected func m_size(): Int64 {
         var _x = 0
-        if (let Some(_v) <- p_error.data) { _x += 1 + binSize(_v) }
+        if (let Some(_v) <- p_error) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_supportedFeatures) { _x += 1 + varintSize(_v) }
         if (!file.isEmpty()) { for (_i in file) { _x += 1 + binSize(_i) } }
         return _x
@@ -557,18 +555,18 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
 
     protected func m_hashCode(): Int64 {
         var _x = DefaultHasher()
-        if (let Some(_v) <- p_error.data) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_error) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_supportedFeatures) { _x.write(_v) }
         if (!file.isEmpty()) { _x.write(file.hashCode()) }
         return _x.finish()
     }
 
     protected func m_isEmpty(): Bool {
-        isNone(p_error.data) && isNone(p_supportedFeatures) && file.isEmpty()
+        isNone(p_error) && isNone(p_supportedFeatures) && file.isEmpty()
     }
 
     protected func m_clear(): Unit {
-        p_error.clear()
+        p_error = None
         p_supportedFeatures = None
         file.clear()
     }
@@ -576,7 +574,7 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
     public operator func !=(src: CodeGeneratorResponse): Bool { !(this == src) }
     public operator func ==(src: CodeGeneratorResponse): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_error.data == src.p_error.data && p_supportedFeatures == src.p_supportedFeatures && file == src.file
+        p_error == src.p_error && p_supportedFeatures == src.p_supportedFeatures && file == src.file
     }
 
     public func copyFrom(src: CodeGeneratorResponse): CodeGeneratorResponse {
@@ -595,7 +593,7 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => p_error.unpack(src)
+                case 1 => p_error = src.parseString()
                 case 2 => p_supportedFeatures = src.parseUInt64()
                 case 15 => s_add(file, src)
                 case _ => m_unknown(src, _x)
@@ -609,7 +607,7 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
 
     public func pack<T>(out: T): Unit where T <: BytesWriter {
         check()
-        if (let Some(_v) <- p_error.data) { out.append(10); out.packBin(_v) }
+        if (let Some(_v) <- p_error) { out.append(10); out.packBin(_v) }
         if (let Some(_v) <- p_supportedFeatures) { out.append(16); out.packVarint(_v) }
         if (!file.isEmpty()) { for (_i in file) { out.append(122); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
@@ -617,7 +615,7 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
 
     public func toString(): String {
         var _x = StructPrinter()
-        if (isPresent(p_error.data)) { _x.append("error", p_error.get()) }
+        if (let Some(_v) <- p_error) { _x.append("error", _v) }
         if (let Some(_v) <- p_supportedFeatures) { _x.append("supportedFeatures", _v) }
         if (!file.isEmpty()) { _x.append("file", file) }
         return _x.done().toString()
