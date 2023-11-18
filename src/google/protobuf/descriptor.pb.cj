@@ -2160,8 +2160,8 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         this.p_inputType = inputType
         this.p_outputType = outputType
         this.p_options = PbMessage<MethodOptions>(options)
-        this.p_clientStreaming = clientStreaming
-        this.p_serverStreaming = serverStreaming
+        this.p_clientStreaming = if (clientStreaming != false) { clientStreaming } else { None }
+        this.p_serverStreaming = if (serverStreaming != false) { serverStreaming } else { None }
         this.p_funcName = funcName
         m_init()
     }
@@ -2171,8 +2171,8 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         this.p_inputType = src.inputType
         this.p_outputType = src.outputType
         this.p_options = PbMessage<MethodOptions>(src.options)
-        this.p_clientStreaming = src.clientStreaming
-        this.p_serverStreaming = src.serverStreaming
+        this.p_clientStreaming = if (src.clientStreaming != false) { src.clientStreaming } else { None }
+        this.p_serverStreaming = if (src.serverStreaming != false) { src.serverStreaming } else { None }
         this.p_funcName = src.funcName
         m_init()
     }
@@ -2446,17 +2446,17 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     ) {
         this.p_javaPackage = javaPackage
         this.p_javaOuterClassname = javaOuterClassname
-        this.p_javaMultipleFiles = javaMultipleFiles
+        this.p_javaMultipleFiles = if (javaMultipleFiles != false) { javaMultipleFiles } else { None }
         this.p_javaGenerateEqualsAndHash = javaGenerateEqualsAndHash
-        this.p_javaStringCheckUtf8 = javaStringCheckUtf8
-        this.p_optimizeFor = optimizeFor
+        this.p_javaStringCheckUtf8 = if (javaStringCheckUtf8 != false) { javaStringCheckUtf8 } else { None }
+        this.p_optimizeFor = if (optimizeFor != SPEED) { optimizeFor } else { None }
         this.p_goPackage = goPackage
-        this.p_ccGenericServices = ccGenericServices
-        this.p_javaGenericServices = javaGenericServices
-        this.p_pyGenericServices = pyGenericServices
-        this.p_phpGenericServices = phpGenericServices
-        this.p_deprecated = deprecated
-        this.p_ccEnableArenas = ccEnableArenas
+        this.p_ccGenericServices = if (ccGenericServices != false) { ccGenericServices } else { None }
+        this.p_javaGenericServices = if (javaGenericServices != false) { javaGenericServices } else { None }
+        this.p_pyGenericServices = if (pyGenericServices != false) { pyGenericServices } else { None }
+        this.p_phpGenericServices = if (phpGenericServices != false) { phpGenericServices } else { None }
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
+        this.p_ccEnableArenas = if (ccEnableArenas != true) { ccEnableArenas } else { None }
         this.p_objcClassPrefix = objcClassPrefix
         this.p_csharpNamespace = csharpNamespace
         this.p_swiftPrefix = swiftPrefix
@@ -2471,17 +2471,17 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     public init(src: FileOptions__Builder) {
         this.p_javaPackage = src.javaPackage
         this.p_javaOuterClassname = src.javaOuterClassname
-        this.p_javaMultipleFiles = src.javaMultipleFiles
+        this.p_javaMultipleFiles = if (src.javaMultipleFiles != false) { src.javaMultipleFiles } else { None }
         this.p_javaGenerateEqualsAndHash = src.javaGenerateEqualsAndHash
-        this.p_javaStringCheckUtf8 = src.javaStringCheckUtf8
-        this.p_optimizeFor = src.optimizeFor
+        this.p_javaStringCheckUtf8 = if (src.javaStringCheckUtf8 != false) { src.javaStringCheckUtf8 } else { None }
+        this.p_optimizeFor = if (src.optimizeFor != SPEED) { src.optimizeFor } else { None }
         this.p_goPackage = src.goPackage
-        this.p_ccGenericServices = src.ccGenericServices
-        this.p_javaGenericServices = src.javaGenericServices
-        this.p_pyGenericServices = src.pyGenericServices
-        this.p_phpGenericServices = src.phpGenericServices
-        this.p_deprecated = src.deprecated
-        this.p_ccEnableArenas = src.ccEnableArenas
+        this.p_ccGenericServices = if (src.ccGenericServices != false) { src.ccGenericServices } else { None }
+        this.p_javaGenericServices = if (src.javaGenericServices != false) { src.javaGenericServices } else { None }
+        this.p_pyGenericServices = if (src.pyGenericServices != false) { src.pyGenericServices } else { None }
+        this.p_phpGenericServices = if (src.phpGenericServices != false) { src.phpGenericServices } else { None }
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
+        this.p_ccEnableArenas = if (src.ccEnableArenas != true) { src.ccEnableArenas } else { None }
         this.p_objcClassPrefix = src.objcClassPrefix
         this.p_csharpNamespace = src.csharpNamespace
         this.p_swiftPrefix = src.swiftPrefix
@@ -2887,18 +2887,18 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
         mapEntry!: ?Bool = None,
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
-        this.p_messageSetWireFormat = messageSetWireFormat
-        this.p_noStandardDescriptorAccessor = noStandardDescriptorAccessor
-        this.p_deprecated = deprecated
+        this.p_messageSetWireFormat = if (messageSetWireFormat != false) { messageSetWireFormat } else { None }
+        this.p_noStandardDescriptorAccessor = if (noStandardDescriptorAccessor != false) { noStandardDescriptorAccessor } else { None }
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
         this.p_mapEntry = mapEntry
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: MessageOptions__Builder) {
-        this.p_messageSetWireFormat = src.messageSetWireFormat
-        this.p_noStandardDescriptorAccessor = src.noStandardDescriptorAccessor
-        this.p_deprecated = src.deprecated
+        this.p_messageSetWireFormat = if (src.messageSetWireFormat != false) { src.messageSetWireFormat } else { None }
+        this.p_noStandardDescriptorAccessor = if (src.noStandardDescriptorAccessor != false) { src.noStandardDescriptorAccessor } else { None }
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
         this.p_mapEntry = src.mapEntry
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
@@ -3160,25 +3160,25 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
         weak!: ?Bool = None,
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
-        this.p_ctype = ctype
+        this.p_ctype = if (ctype != STRING) { ctype } else { None }
         this.p_packed = packed
-        this.p_jstype = jstype
-        this.p_lazy = lazy
-        this.p_unverifiedLazy = unverifiedLazy
-        this.p_deprecated = deprecated
-        this.p_weak = weak
+        this.p_jstype = if (jstype != JS_NORMAL) { jstype } else { None }
+        this.p_lazy = if (lazy != false) { lazy } else { None }
+        this.p_unverifiedLazy = if (unverifiedLazy != false) { unverifiedLazy } else { None }
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
+        this.p_weak = if (weak != false) { weak } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: FieldOptions__Builder) {
-        this.p_ctype = src.ctype
+        this.p_ctype = if (src.ctype != STRING) { src.ctype } else { None }
         this.p_packed = src.packed
-        this.p_jstype = src.jstype
-        this.p_lazy = src.lazy
-        this.p_unverifiedLazy = src.unverifiedLazy
-        this.p_deprecated = src.deprecated
-        this.p_weak = src.weak
+        this.p_jstype = if (src.jstype != JS_NORMAL) { src.jstype } else { None }
+        this.p_lazy = if (src.lazy != false) { src.lazy } else { None }
+        this.p_unverifiedLazy = if (src.unverifiedLazy != false) { src.unverifiedLazy } else { None }
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
+        this.p_weak = if (src.weak != false) { src.weak } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
     }
@@ -3476,14 +3476,14 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
         this.p_allowAlias = allowAlias
-        this.p_deprecated = deprecated
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: EnumOptions__Builder) {
         this.p_allowAlias = src.allowAlias
-        this.p_deprecated = src.deprecated
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
     }
@@ -3608,13 +3608,13 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
         deprecated!: ?Bool = None,
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
-        this.p_deprecated = deprecated
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: EnumValueOptions__Builder) {
-        this.p_deprecated = src.deprecated
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
     }
@@ -3724,13 +3724,13 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
         deprecated!: ?Bool = None,
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
-        this.p_deprecated = deprecated
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: ServiceOptions__Builder) {
-        this.p_deprecated = src.deprecated
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
     }
@@ -3889,15 +3889,15 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
         idempotencyLevel!: ?MethodOptions_IdempotencyLevel = None,
         uninterpretedOption!: Array<UninterpretedOption> = []
     ) {
-        this.p_deprecated = deprecated
-        this.p_idempotencyLevel = idempotencyLevel
+        this.p_deprecated = if (deprecated != false) { deprecated } else { None }
+        this.p_idempotencyLevel = if (idempotencyLevel != IDEMPOTENCY_UNKNOWN) { idempotencyLevel } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(uninterpretedOption)
         m_init()
     }
 
     public init(src: MethodOptions__Builder) {
-        this.p_deprecated = src.deprecated
-        this.p_idempotencyLevel = src.idempotencyLevel
+        this.p_deprecated = if (src.deprecated != false) { src.deprecated } else { None }
+        this.p_idempotencyLevel = if (src.idempotencyLevel != IDEMPOTENCY_UNKNOWN) { src.idempotencyLevel } else { None }
         this.uninterpretedOption = RepeatedMessage<UninterpretedOption>(src.uninterpretedOption)
         m_init()
     }

@@ -4,6 +4,16 @@ package protoc
 
 /* field variable define */
 func getFieldVarDefine2(field: FieldDescriptorProto) {
+    if (field.hasDefaultValue) {
+        match (field.type_) {
+            case TYPE_DOUBLE | TYPE_FLOAT => if (!field.defaultValue.contains(".")) { field.defaultValue = if (field.defaultValue[0] == b'-') { "-.${field.defaultValue[1 ..]}" } else { ".${field.defaultValue}" } }
+            case TYPE_STRING => field.defaultValue = "\"${field.defaultValue}\""
+            case TYPE_ENUM => field.defaultValue = getEnumItemName(field.defaultValue)
+            case TYPE_BYTES => throw Exception("NOT SUPPORT BYTES DEFAULT VALUE")
+            case _=> ()
+        }
+    }
+
     match {
         case field.label == LABEL_REPEATED => getFieldVarDefine(field)
         case field.type_ == TYPE_MESSAGE => "private var p_${field.jsonName}: PbMessage<${field.typeName}>"
@@ -23,8 +33,8 @@ func getFieldVarDefault2(field: FieldDescriptorProto) {
 func getFieldVarInit2(field: FieldDescriptorProto) {
     match {
         case field.label == LABEL_REPEATED => getFieldVarInit(field)
-        case field.type_ == TYPE_STRING && field.hasDefaultValue => let pn = getMessagePropName(field.jsonName); "p_${field.jsonName} = if (${pn} != \"${field.defaultValue}\") { ${pn} } else { None }"
         case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = PbMessage<${field.typeName}>(${getMessagePropName(field.jsonName)})"
+        case field.hasDefaultValue => let pn = getMessagePropName(field.jsonName); "p_${field.jsonName} = if (${pn} != ${field.defaultValue}) { ${pn} } else { None }"
         case _ => "p_${field.jsonName} = ${getMessagePropName(field.jsonName)}"
     }
 }
@@ -33,8 +43,8 @@ func getFieldVarInit2(field: FieldDescriptorProto) {
 func getFieldVarInitSrc2(field: FieldDescriptorProto) {
     match {
         case field.label == LABEL_REPEATED => getFieldVarInitSrc(field)
-        case field.type_ == TYPE_STRING && field.hasDefaultValue => let pn = getMessagePropName(field.jsonName); "p_${field.jsonName} = if (src.${pn} != \"${field.defaultValue}\") { src.${pn} } else { None }"
         case field.type_ == TYPE_MESSAGE => "p_${field.jsonName} = PbMessage<${field.typeName}>(src.${getMessagePropName(field.jsonName)})"
+        case field.hasDefaultValue => let pn = getMessagePropName(field.jsonName); "p_${field.jsonName} = if (src.${pn} != ${field.defaultValue}) { src.${pn} } else { None }"
         case _ => "p_${field.jsonName} = src.${getMessagePropName(field.jsonName)}"
     }
 }
@@ -109,13 +119,6 @@ func getFieldUnpackExpr2(field: FieldDescriptorProto) {
 func getFieldPropVarExpr2(field: FieldDescriptorProto) {
     if (!field.hasDefaultValue) {
         return "get() { p_${field.jsonName}.getOrThrow() } set(_x) { p_${field.jsonName} = _x; markDirty() }"
-    }
-
-    match (field.type_) {
-        case TYPE_DOUBLE | TYPE_FLOAT => if (!field.defaultValue.contains(".")) { field.defaultValue = if (field.defaultValue[0] == b'-') { "-.${field.defaultValue[1 ..]}" } else { ".${field.defaultValue}" } }
-        case TYPE_STRING => field.defaultValue = "\"${field.defaultValue}\""
-        case TYPE_BYTES => throw Exception("NOT SUPPORT BYTES DEFAULT VALUE")
-        case _=> ()
     }
 
     return "get() { p_${field.jsonName} ?? ${field.defaultValue} } set(_x) { p_${field.jsonName} = if (_x == ${field.defaultValue}) { None } else { _x }; markDirty() }"
