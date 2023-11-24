@@ -141,7 +141,9 @@ extend RepeatedField<T> <: ToString where T <: ToString {
             if (sep) { buffer.append(", ") } else { sep = true }
             buffer.append("\"${s}\"")
         }
-        return buffer.append(']').toString()
+
+        buffer.append(']')
+        return buffer.toString()
     }
 }
 
