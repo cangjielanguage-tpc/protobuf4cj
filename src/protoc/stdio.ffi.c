@@ -43,7 +43,7 @@ Buffer stdin_read()
         unsigned char* new_res = (unsigned char*)malloc(new_size);
         assert(new_res != NULL);
 
-        (void)memset_s(new_res, new_res, 0, new_size);
+        (void)memset_s(new_res, new_size, 0, new_size);
         (void)memcpy_s(new_res, new_size, res, size);
         free(res);
 

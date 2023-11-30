@@ -288,6 +288,15 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         parent?.markDirty()
     }
 
+    public func clone(): MapMessage<K, V> {
+        let new = MapMessage<K, V>(data.size)
+        for ((k, v) in data) {
+            data[k] = v.clone()
+        }
+
+        return new
+    }
+
     public func moveFrom(rf: MapMessage<K, V>): Unit {
         let temp = rf.data
         rf.unlink(rf.data.values())
@@ -329,7 +338,6 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func capacity(): Int64 { data.capacity() }
     public func toHashMap(): HashMap<K, V> { data.clone() }
-    public func clone(): MapField<K, V> { MapField(this) }
     public func keys(): EquatableCollection<K> { data.keys() }
     public func values(): Collection<V> { data.values() }
     public func iterator(): HashMapIterator<K, V> { data.iterator() }
