@@ -29,22 +29,18 @@ protoc-gen-cj: protobuf
 	make -C src/google google OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
 	make -C src/protoc protoc OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
 
-protobuf: json
+protobuf:
 	make -C src/protobuf protobuf OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
-
-json:
-	make -C third_party/json json OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
 
 # 安装
 install:
-	make -C third_party/json install OUTPUT=$(abspath $(OUTPUT)) LIB_DESTDIR=$(LIB_DESTDIR) CANGJIE_DESTDIR=$(CANGJIE_DESTDIR)
 	make -C src/protobuf install OUTPUT=$(abspath $(OUTPUT)) LIB_DESTDIR=$(LIB_DESTDIR) CANGJIE_DESTDIR=$(CANGJIE_DESTDIR)
 	make -C src/protoc install OUTPUT=$(abspath $(OUTPUT)) BIN_DESTDIR=$(BIN_DESTDIR)
 
 clean:
 	-rm -rf $(OUTPUT)
 
-.PHONY: all submodules build protoc-gen-cj protobuf json install clean
+.PHONY: all submodules build protoc-gen-cj protobuf install clean
 
 # 检查环境变量
 env-%:
@@ -56,9 +52,7 @@ env-%:
 # 移除已安装
 purge: env-CANGJIE_DESTDIR
 	-rm -rf $(CANGJIE_PATH)/protobuf
-	-rm -rf $(CANGJIE_PATH)/json
 	-rm -f $(LIB_DESTDIR)/libprotobuf-cj.*
-	-rm -f $(LIB_DESTDIR)/libjson.*
 	-rm -f $(BIN_DESTDIR)/protoc-gen-cj
 
 .PHONY: purge env-CANGJIE_PATH
