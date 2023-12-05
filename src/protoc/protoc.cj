@@ -73,7 +73,7 @@ class LineSepOut {
     LineSepOut (
         let outbuf: StringBuilder,
         let sep!: String = ",",     // Separator
-        let sn!: Int64 = 12,        // Number of spaces automatically added to a new line
+        let sn!: Int64 = 8,         // Number of spaces automatically added to a new line
         let ln!: Int64 = 120 - sep.size    // One line limit characters
     ) {
         ss = " " * sn
@@ -154,54 +154,37 @@ class GenCodeHelper {
     }
 
     /* set enum/message type name */
-    func setFieldsTypeName(fields: RepeatedMessage<FieldDescriptorProto>, nestedType: RepeatedMessage<DescriptorProto>) {
+    func setFieldsTypeName(fields: RepeatedMessage<FieldDescriptorProto>): Unit {
         for (f in fields) {
             match (f.type_) {
                 case TYPE_ENUM => f.typeName = getTypeName(f.typeName)
-                case TYPE_MESSAGE => setMessageTypeName(f, nestedType)
+                case TYPE_MESSAGE => f.typeName = getMessageTypeName(f)
                 case _ => ()
             }
         }
     }
 
     public func getTypeName(typeName: String) {
-        for (p in packages) {
-            if (typeName.startsWith(p)) {
-                if (p == pkgPrefix) {
-                    return String.join(typeName[p.size ..].split("."), delimiter: "_")
-                }
-                return p[1 ..] + String.join(typeName[p.size ..].split("."), delimiter: "_")
+        for (p in packages where typeName.startsWith(p)) {
+            if (p == pkgPrefix) {
+                return String.join(typeName[p.size ..].split("."), delimiter: "_")
             }
+            return p[1 ..] + String.join(typeName[p.size ..].split("."), delimiter: "_")
         }
         throw Exception("INVALID TYPE NAME")
     }
 
     // special process type_ message if it is a map
-    private func setMessageTypeName(f: FieldDescriptorProto, ns: RepeatedMessage<DescriptorProto>) {
-        do {
-            if (f.label != LABEL_REPEATED) { break }
+    private func getMessageTypeName(f: FieldDescriptorProto): String {
+        if (f.mapEntry.isEmpty()) {
+            /* normal message field */
+            return getTypeName(f.typeName)
+        }
 
-            let entryName = "${titleCase(f.jsonName)}Entry"
-            if (!f.typeName.endsWith(entryName)) { break }
+        setFieldsTypeName(f.mapEntry)
 
-            // looking for entry in nestedtype
-            for (n in ns) {
-                // other nested message
-                if (n.field.size != 2 || n.name != entryName) { continue }
-
-                // not map entry
-                if (!n.hasOptions || !n.options.hasMapEntry || !n.options.mapEntry) { break }
-
-                // save map entry's fields
-                f.mapEntry.copyFrom(n.field)
-
-                let mapTypeName = if (n.field[1].type_ == TYPE_MESSAGE) { "MapMessage" } else { "MapField" }
-                f.typeName = "${mapTypeName}<${typeConvert(n.field[0])}, ${typeConvert(n.field[1])}>"
-                return
-            }
-        } while (false)
-        /* normal message field */
-        f.typeName = getTypeName(f.typeName)
+        let mapTypeName = if (f.mapEntry[1].type_ == TYPE_MESSAGE) { "MapMessage" } else { "MapField" }
+        "${mapTypeName}<${typeConvert(f.mapEntry[0])}, ${typeConvert(f.mapEntry[1])}>"
     }
 
     let oneofDecl = ArrayList<(String, RepeatedMessage<FieldDescriptorProto>)>()
@@ -264,18 +247,22 @@ func fileProcess(desc: FileDescriptorProto, deps: HashSet<String>, file: CodeGen
     for (msg in desc.messageType) {
         genCodeMessage(msg, helper)
     }
+
     // all enum
     for (e in desc.enumType) {
         genCodeEnum(e, helper)
     }
+
     // all service
     for (ser in desc.service) {
         genCodeService(ser, helper)
     }
+
     // all extension
     for (ext in desc.extension) {
         genCodeExtension(ext, helper)
     }
+
     // Target file content
     file.content = helper.outbuf.toString()
     file.name = getDestFileName(desc.package_, fileName)
@@ -316,11 +303,14 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     // nested pop
     helper.nestedPop()
 
-    // set enum/message/map type name
-    helper.setFieldsTypeName(fields, msg.nestedType)
+    // pre-process map entry
+    preProcMapEntry(fields, msg.nestedType)
 
     // no generating map code
-    if (fields.size == 2 && msg.hasOptions && msg.options.hasMapEntry && msg.options.mapEntry) { return }
+    if (msg.isMapEntry()) { return }
+
+    // set enum/message/map type name
+    helper.setFieldsTypeName(fields)
 
     // preprocess oneof decl
     helper.calcOneofDecl(msg.oneofDecl, fields)
@@ -685,7 +675,7 @@ func titleCase(str: String) {
 func lowerCamelCase(name: String) {
     let arr = "${Char(name[0]).toLowerCase()}${name[1 ..]}".split("_")
 
-    for (i in 1..arr.size) {
+    for (i in 1..arr.size where !arr[i].isEmpty()) {
         arr[i] = titleCase(arr[i])
     }
 
