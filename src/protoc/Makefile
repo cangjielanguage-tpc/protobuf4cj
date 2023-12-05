@@ -8,7 +8,7 @@ OUTPUT			= ./output
 CJC_FLAGS		= -g -O2
 
 # 链接选项
-LD_FLAGS		= -L$(OUTPUT) -L$(OUTPUT)/protobuf -L$(OUTPUT)/json -lgoogle.protobuf -lgoogle.protobuf.compiler -lprotobuf-cj -ljson
+LD_FLAGS		= -L$(OUTPUT) -L$(OUTPUT)/protobuf -lgoogle.protobuf -lgoogle.protobuf.compiler -lprotobuf-cj
 LD_FLAGS_ADD	=
 
 # ---- 目标

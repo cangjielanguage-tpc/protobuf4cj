@@ -34,25 +34,39 @@ public func cj_generator(input: Array<UInt8>): Array<UInt8> {
     for (path in req.fileToGenerate) {
         genfiles.put(path)
     }
+
+    let filePackage = HashMap<String, String>()
     // Processing files that require code generation
     for (desc in req.protoFile) {
-        if (genfiles.contains(desc.name)) {
-            fileProcess(desc, resp.file.add())
+        if (desc.hasPackage && !desc.package_.isEmpty()) {
+            filePackage[desc.name] = desc.package_
         }
+
+        if (!genfiles.contains(desc.name)) {
+            continue
+        }
+
+        // get dependency
+        let deps = HashSet<String>()
+        for (dep in desc.dependency) {
+            deps.put(filePackage[dep])
+        }
+
+        // generate file
+        fileProcess(desc, deps, resp.file.add())
     }
 
     resp.pack()
 }
 
-/* Get file name */
-func getFileName(path: String): String {
-    let sp = path.split("/")
-    sp[sp.size - 1].replace(".proto", ".pb.cj")
-}
+/* Get dest filename */
+func getDestFileName(package_: String, fileName: String): String {
+    let pbName = fileName.replace(".proto", ".pb.cj")
+    if (package_ == "") {
+        return pbName
+    }
 
-/* Get dest path by package name */
-func getDestPath(package_: String): String {
-    if (package_ == "") { "" } else { package_.replace(".", "/") + "/" }
+    return "${package_.replace(".", "/")}/${pbName}"
 }
 
 class LineSepOut {
@@ -117,31 +131,26 @@ class GenCodeHelper {
     let outbuf = StringBuilder()
     /* package prefix of the proto file */
     let pkgPrefix: String
-    GenCodeHelper (package_: String, let proto2: Bool) {
-        pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
-    }
-
-    /* Get all dependent packages */
+    /* all packages prefix */
     let packages = ArrayList<String>()
-    func getDependencyPackages(desc: FileDescriptorProto) {
-        let pkgs = HashSet<String>()
-        for (dep in desc.dependency) {
-            if (let Some(i) <- dep.lastIndexOf(b'/')) {
-                let pkg = dep[0 .. i].replace("/", ".")
-                if (desc.package_ == "protobuf" && pkg != "protobuf") {
-                    /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
-                    throw Exception("CIRCULAR DEPENDENCY")
-                }
-                if (pkg != desc.package_ && pkg != "protobuf") {
-                    /* Save packages other than `desc` itself and protobuf */
-                    pkgs.put(pkg)
-                }
-            }
+
+    /* file level gencode context. */
+    GenCodeHelper (package_: String, deps: HashSet<String>, fileName: String,
+        let proto2: Bool
+    ) {
+        pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
+
+        /* proc and check deps */
+        deps.remove(package_)
+        deps.remove("protobuf")
+        if (package_ == "protobuf" && !deps.isEmpty()) {
+            /* Dependency on external packages is not allowed in protobuf packages, and circular dependency on packages is not allowed in Cangjie */
+            throw Exception("CIRCULAR DEPENDENCY")
         }
+
         packages.append(pkgPrefix)
-        for (p in pkgs) { packages.append(".${p}.") }
+        for (pkg in deps) { packages.append(".${pkg}.") }
         packages.sortBy { a, b => if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT } }
-        pkgs
     }
 
     /* set enum/message type name */
@@ -208,14 +217,49 @@ class GenCodeHelper {
     }
 }
 
-func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
+extend DescriptorProto {
+    func isMapEntry(): Bool {
+        hasOptions && options.hasMapEntry && options.mapEntry
+    }
+}
+
+func preProcMapEntry(fields: RepeatedMessage<FieldDescriptorProto>, nestedType: RepeatedMessage<DescriptorProto>): Unit {
+    for (field in fields where field.type_ == TYPE_MESSAGE && field.label == LABEL_REPEATED) {
+        let entryName = "${titleCase(field.jsonName)}Entry"
+        if (!field.typeName.endsWith(entryName)) {
+            continue
+        }
+
+        // looking for entry in nestedtype
+        for (n in nestedType) {
+            // other nested message
+            if (n.field.size != 2 || n.name != entryName) {
+                continue
+            }
+
+            // not map entry
+            if (!n.isMapEntry()) {
+                break
+            }
+
+            // save map entry's fields
+            field.mapEntry.copyFrom(n.field)
+        }
+    }
+}
+
+func fileProcess(desc: FileDescriptorProto, deps: HashSet<String>, file: CodeGeneratorResponse_File) {
     // Destination file path
-    if (desc.hasPackage == false) { desc.package_ = "" }
-    file.name = getDestPath(desc.package_) + getFileName(desc.name)
-    let proto2 = if (desc.hasSyntax) { desc.syntax == "proto2" } else { true }
-    let helper = GenCodeHelper(desc.package_, proto2)
+    if (!desc.hasPackage) { desc.package_ = "" }
+    if (!desc.hasSyntax) { desc.syntax = "proto2" }
+
+    let fileName = desc.name[(desc.name.lastIndexOf("/") ?? -1) + 1 .. ]
+    let proto2 = desc.syntax == "proto2"
+    let helper = GenCodeHelper(desc.package_, deps, fileName, proto2)
+
     // Header information
-    genCodeHeader(desc, helper)
+    genCodeHeader(desc, deps, helper)
+
     // all message
     for (msg in desc.messageType) {
         genCodeMessage(msg, helper)
@@ -234,9 +278,10 @@ func fileProcess(desc: FileDescriptorProto, file: CodeGeneratorResponse_File) {
     }
     // Target file content
     file.content = helper.outbuf.toString()
+    file.name = getDestFileName(desc.package_, fileName)
 }
 
-func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
+func genCodeHeader(desc: FileDescriptorProto, deps: HashSet<String>, helper: GenCodeHelper): Unit {
     let append: (String) -> Unit = helper.outbuf.append
     // package
     if (desc.package_ != "") { append("package ${desc.package_}\n\n") }
@@ -245,10 +290,7 @@ func genCodeHeader(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
     if (desc.package_ != "protobuf") {
         append("from protobuf import protobuf.*\n")
     }
-    if (!desc.service.isEmpty() && desc.package_ != "grpc") {
-        append("from protobuf import grpc.*\n")
-    }
-    for (pkg in helper.getDependencyPackages(desc)) {
+    for (pkg in deps) {
         append("import ${pkg}.*\n")
     }
 }
