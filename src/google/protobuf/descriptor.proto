@@ -50,7 +50,7 @@ option cc_enable_arenas = true;
 
 // descriptor.proto must be optimized for speed because reflection-based
 // algorithms don't work during bootstrapping.
-option optimize_for = SPEED;
+option optimize_for = LITE_RUNTIME;
 
 // The protocol compiler can output a FileDescriptorSet containing the .proto
 // files it parses.
@@ -237,6 +237,9 @@ message FieldDescriptorProto {
   optional bool proto3_optional = 17;
 
   // Internal use, added by cangjie protobuf, save map entry field infos
+  optional Type map_key_type = 21;
+  optional Type map_value_type = 22;
+  optional string map_value_type_name = 23;
   repeated FieldDescriptorProto map_entry = 9999;
 }
 

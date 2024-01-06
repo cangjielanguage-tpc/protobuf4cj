@@ -1,8 +1,16 @@
 package protobuf
 
-public class RepeatedField<T> <: Collection<T> {
+public interface Repeated <: Field {
+    prop size: Int64
+    func isEmpty(): Bool
+    func clear(): Unit
+    /* set repeated fields' parent. for internal use by protobuf */
+    func setParent(parent: MessageLite): Unit
+}
+
+public class RepeatedField<T> <: Collection<T> & Repeated where T <: Field {
     private var parent: ?MessageLite
-    private var data: ArrayList<T>
+    var data: ArrayList<T>
 
     public init() {
         parent = None
@@ -111,6 +119,16 @@ public class RepeatedField<T> <: Collection<T> {
         parent?.markDirty()
     }
 
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for (v in data) {
+            hasher.write(v.hashCode())
+        }
+        return hasher.finish()
+    }
+
+    public func toString(): String { data.toString() }
+    public func setParent(parent: MessageLite): Unit { this.parent = this.parent ?? parent }
     public func reverse(): Unit { data.reverse() }
     public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
@@ -124,66 +142,36 @@ public class RepeatedField<T> <: Collection<T> {
     public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty() }
 
     func appendDirty(element: T): Unit { data.append(element) }
-    func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
-}
-
-extend RepeatedField<T> <: ToString where T <: ToString {
-    public func toString(): String {
-        let raw = getRawData()
-        if (raw.isEmpty() || !(raw[0] is String)) {
-            return raw.toString()
-        }
-
-        let buffer = StringBuilder("[")
-        var sep = false
-        for (s in this) {
-            if (sep) { buffer.append(", ") } else { sep = true }
-            buffer.append("\"${s}\"")
-        }
-
-        buffer.append(']')
-        return buffer.toString()
-    }
-}
-
-extend RepeatedField<T> <: Hashable where T <: Hashable {
-    public func hashCode(): Int64 {
-        var hasher = DefaultHasher()
-        for (v in getRawData()) {
-            hasher.write(v.hashCode())
-        }
-        return hasher.finish()
-    }
+    unsafe public func getRawData() { data }
 }
 
 extend RepeatedField<T> <: Equatable<RepeatedField<T>> where T <: Equatable<T> {
     public operator func ==(that: RepeatedField<T>): Bool {
-        getRawData() == that.getRawData()
+        data == that.data
     }
 
     public operator func !=(that: RepeatedField<T>): Bool {
-        getRawData() != that.getRawData()
+        data != that.data
     }
 
     public func contains(element: T): Bool {
-        getRawData().contains(element)
+        data.contains(element)
     }
 }
 
 extend RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
     public operator func ==(that: ArrayList<T>): Bool {
-        getRawData() == that
+        data == that
     }
 
     public operator func !=(that: ArrayList<T>): Bool {
-        getRawData() != that
+        data != that
     }
 }
 
 extend RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
     public operator func ==(that: Bytes): Bool {
-        for (s in getRawData() where s != that) {
+        for (s in data where s != that) {
             return false
         }
 
@@ -195,9 +183,9 @@ extend RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
     }
 }
 
-public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <: MessageLite & TypedMessage<T> {
+public class RepeatedMessage<T> <: Collection<T> & Equatable<RepeatedMessage<T>> & Repeated where T <: MessageLite & TypedMessage<T> {
     private var parent: ?MessageLite
-    private var data: ArrayList<T>
+    var data: ArrayList<T>
 
     public init() {
         parent = None
@@ -359,6 +347,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
         return hasher.finish()
     }
 
+    public func setParent(parent: MessageLite): Unit { this.parent = this.parent ?? parent }
     public func reverse(): Unit { data.reverse() }
     public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
@@ -376,7 +365,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     public operator func !=(that: RepeatedMessage<T>): Bool { data != that.data }
 
     func appendDirty(element: T): Unit { data.append(element); link(element) }
-    func setParent(parent: MessageLite): Unit { this.parent = parent }
+    unsafe public func getRawData() { data }
 }
 
 /* @Deprecated */

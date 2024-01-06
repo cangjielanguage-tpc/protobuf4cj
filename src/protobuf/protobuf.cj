@@ -160,13 +160,20 @@ public func binSize(val: MessageLite) {
     varintSize(size) + size
 }
 
-public interface Int32Enum <: ToString & Hashable {
-    func value(): Int32
-    func hashCode(): Int64 { Int64(value()) }
+public interface Field <: ToString & Hashable {
 }
 
-public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
-    operator func==(e: E): Bool
+public interface Int32Enum <: Field {
+    func value(): Int32
+    func hashCode(): Int64 { Int64(value()) }
+    func getTypeName(): String
+    operator func==(e: Int32Enum): Bool { getTypeName() == e.getTypeName() && value() == e.value() }
+    operator func!=(e: Int32Enum): Bool { !(this == e) }
+}
+
+/* @Deprecated */
+public type Enum<E> = TypedEnum<E>
+public interface TypedEnum<E> <: Equatable<E> where E <: TypedEnum<E> {
     operator func!=(e: E) { !(this == e) }
 
     static func parse(v: Int32): E
@@ -174,6 +181,8 @@ public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
 }
 
 public interface TypedMessage<M> <: Equatable<M> {
+    operator func!=(m: M) { !(this == m) }
+
     func clone(): M
     func copyFrom(that: M): M
     static func empty(): M
@@ -220,3 +229,12 @@ struct Parents {
         }
     }
 }
+
+extend Float64 <: Field { }
+extend Float32 <: Field { }
+extend Int64 <: Field { }
+extend UInt64 <: Field { }
+extend Int32 <: Field { }
+extend UInt32 <: Field { }
+extend Bool <: Field { }
+extend String <: Field { }

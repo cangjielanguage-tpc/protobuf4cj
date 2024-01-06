@@ -23,11 +23,14 @@ submodules:
 	fi
 
 # 构建
-build: protoc-gen-cj
+build: protoc-gen-cj reflection
 
-protoc-gen-cj: protobuf
+protoc-gen-cj: reflection
 	make -C src/google google OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
 	make -C src/protoc protoc OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
+
+reflection: protobuf
+	make -C src/reflection reflection OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
 
 protobuf:
 	make -C src/protobuf protobuf OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)" LIB_TYPE=$(LIB_TYPE)
@@ -40,7 +43,7 @@ install:
 clean:
 	-rm -rf $(OUTPUT)
 
-.PHONY: all submodules build protoc-gen-cj protobuf install clean
+.PHONY: all submodules build protoc-gen-cj protobuf reflection install clean
 
 # 检查环境变量
 env-%:
@@ -66,3 +69,14 @@ gencode: $(proto_files)
 	protoc --cj_out=./src --plugin=$(OUTPUT)/protoc-gen-cj -Isrc $^
 
 .PHONY: gencode
+
+example:
+	make -C src/example OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
+
+example.%:
+	make -C src/example $* OUTPUT=$(abspath $(OUTPUT)) CJC_FLAGS="$(CJC_FLAGS)"
+
+example.gencode:
+	protoc --cj_out=src src/example/*.proto --plugin=$(OUTPUT)/protoc-gen-cj
+
+.PHONY: example example.gencode

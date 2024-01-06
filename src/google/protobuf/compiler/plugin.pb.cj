@@ -4,6 +4,7 @@ from std import collection.*
 from protobuf import protobuf.*
 import google.protobuf.*
 
+const _Version__typeName = "google.protobuf.compiler.Version"
 public class Version <: MessageLite & TypedMessage<Version> {
     private var p_major: ?Int32
     private var p_minor: ?Int32
@@ -38,19 +39,24 @@ public class Version <: MessageLite & TypedMessage<Version> {
     public func clearMajor() { p_major = None; markDirty() }
     public prop hasMajor: Bool { get() { isPresent(p_major) } }
     public mut prop major: Int32 { get() { p_major.getOrThrow() } set(_x) { p_major = _x; markDirty() } }
+    public func tryGetMajor() { p_major }
 
     public func clearMinor() { p_minor = None; markDirty() }
     public prop hasMinor: Bool { get() { isPresent(p_minor) } }
     public mut prop minor: Int32 { get() { p_minor.getOrThrow() } set(_x) { p_minor = _x; markDirty() } }
+    public func tryGetMinor() { p_minor }
 
     public func clearPatch() { p_patch = None; markDirty() }
     public prop hasPatch: Bool { get() { isPresent(p_patch) } }
     public mut prop patch: Int32 { get() { p_patch.getOrThrow() } set(_x) { p_patch = _x; markDirty() } }
+    public func tryGetPatch() { p_patch }
 
     public func clearSuffix() { p_suffix = None; markDirty() }
     public prop hasSuffix: Bool { get() { isPresent(p_suffix) } }
     public mut prop suffix: String { get() { p_suffix.getOrThrow() } set(_x) { p_suffix = _x; markDirty() } }
+    public func tryGetSuffix() { p_suffix }
 
+    public func getTypeName(): String { _Version__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_major) { _x += 1 + varintSize(_v) }
@@ -80,10 +86,10 @@ public class Version <: MessageLite & TypedMessage<Version> {
         p_suffix = None
     }
 
-    public operator func !=(src: Version): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as Version == this }
     public operator func ==(src: Version): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_major == src.p_major && p_minor == src.p_minor && p_patch == src.p_patch && p_suffix == src.p_suffix
+        m_innerEquals(src) && p_major == src.p_major && p_minor == src.p_minor && p_patch == src.p_patch &&
+        p_suffix == src.p_suffix
     }
 
     public func copyFrom(src: Version): Version {
@@ -159,6 +165,7 @@ public class Version__Builder {
     public func build() { Version(this) }
 }
 
+const _CodeGeneratorRequest__typeName = "google.protobuf.compiler.CodeGeneratorRequest"
 public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorRequest> {
     public let fileToGenerate: RepeatedField<String>
     private var p_parameter: ?String
@@ -196,11 +203,14 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     public func clearParameter() { p_parameter = None; markDirty() }
     public prop hasParameter: Bool { get() { isPresent(p_parameter) } }
     public mut prop parameter: String { get() { p_parameter.getOrThrow() } set(_x) { p_parameter = _x; markDirty() } }
+    public func tryGetParameter() { p_parameter }
 
     public func clearCompilerVersion() { p_compilerVersion.removeFrom(this); markDirty() }
     public prop hasCompilerVersion: Bool { get() { isPresent(p_compilerVersion.data) } }
     public mut prop compilerVersion: Version { get() { p_compilerVersion.data.getOrThrow() } set(_v) { p_compilerVersion.set(this, _v); markDirty() } }
+    public func tryGetCompilerVersion() { p_compilerVersion.data }
 
+    public func getTypeName(): String { _CodeGeneratorRequest__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!fileToGenerate.isEmpty()) { for (_i in fileToGenerate) { _x += 1 + binSize(_i) } }
@@ -230,11 +240,10 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         p_compilerVersion.removeFrom(this)
     }
 
-    public operator func !=(src: CodeGeneratorRequest): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as CodeGeneratorRequest == this }
     public operator func ==(src: CodeGeneratorRequest): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        fileToGenerate == src.fileToGenerate && p_parameter == src.p_parameter && protoFile == src.protoFile &&
-        p_compilerVersion.data == src.p_compilerVersion.data
+        m_innerEquals(src) && fileToGenerate == src.fileToGenerate && p_parameter == src.p_parameter &&
+        protoFile == src.protoFile && p_compilerVersion.data == src.p_compilerVersion.data
     }
 
     public func copyFrom(src: CodeGeneratorRequest): CodeGeneratorRequest {
@@ -310,6 +319,7 @@ public class CodeGeneratorRequest__Builder {
     public func build() { CodeGeneratorRequest(this) }
 }
 
+const _CodeGeneratorResponse_File__typeName = "google.protobuf.compiler.CodeGeneratorResponse.File"
 public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGeneratorResponse_File> {
     private var p_name: ?String
     private var p_insertionPoint: ?String
@@ -345,19 +355,24 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearInsertionPoint() { p_insertionPoint = None; markDirty() }
     public prop hasInsertionPoint: Bool { get() { isPresent(p_insertionPoint) } }
     public mut prop insertionPoint: String { get() { p_insertionPoint.getOrThrow() } set(_x) { p_insertionPoint = _x; markDirty() } }
+    public func tryGetInsertionPoint() { p_insertionPoint }
 
     public func clearContent() { p_content = None; markDirty() }
     public prop hasContent: Bool { get() { isPresent(p_content) } }
     public mut prop content: String { get() { p_content.getOrThrow() } set(_x) { p_content = _x; markDirty() } }
+    public func tryGetContent() { p_content }
 
     public func clearGeneratedCodeInfo() { p_generatedCodeInfo.removeFrom(this); markDirty() }
     public prop hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
     public mut prop generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(_v) { p_generatedCodeInfo.set(this, _v); markDirty() } }
+    public func tryGetGeneratedCodeInfo() { p_generatedCodeInfo.data }
 
+    public func getTypeName(): String { _CodeGeneratorResponse_File__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -387,11 +402,10 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         p_generatedCodeInfo.removeFrom(this)
     }
 
-    public operator func !=(src: CodeGeneratorResponse_File): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as CodeGeneratorResponse_File == this }
     public operator func ==(src: CodeGeneratorResponse_File): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && p_insertionPoint == src.p_insertionPoint && p_content == src.p_content &&
-        p_generatedCodeInfo.data == src.p_generatedCodeInfo.data
+        m_innerEquals(src) && p_name == src.p_name && p_insertionPoint == src.p_insertionPoint &&
+        p_content == src.p_content && p_generatedCodeInfo.data == src.p_generatedCodeInfo.data
     }
 
     public func copyFrom(src: CodeGeneratorResponse_File): CodeGeneratorResponse_File {
@@ -467,7 +481,7 @@ public class CodeGeneratorResponse_File__Builder {
     public func build() { CodeGeneratorResponse_File(this) }
 }
 
-public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature> {
+public enum CodeGeneratorResponse_Feature <: Int32Enum & TypedEnum<CodeGeneratorResponse_Feature> {
     FEATURE_NONE | FEATURE_PROTO3_OPTIONAL
 
     public func value(): Int32 {
@@ -507,8 +521,11 @@ public enum CodeGeneratorResponse_Feature <: Enum<CodeGeneratorResponse_Feature>
             case _ => throw UnmatchedEnumStringException("CodeGeneratorResponse_Feature", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.compiler.CodeGeneratorResponse.Feature" }
 }
 
+const _CodeGeneratorResponse__typeName = "google.protobuf.compiler.CodeGeneratorResponse"
 public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorResponse> {
     private var p_error: ?String
     private var p_supportedFeatures: ?UInt64
@@ -540,11 +557,14 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
     public func clearError() { p_error = None; markDirty() }
     public prop hasError: Bool { get() { isPresent(p_error) } }
     public mut prop error: String { get() { p_error.getOrThrow() } set(_x) { p_error = _x; markDirty() } }
+    public func tryGetError() { p_error }
 
     public func clearSupportedFeatures() { p_supportedFeatures = None; markDirty() }
     public prop hasSupportedFeatures: Bool { get() { isPresent(p_supportedFeatures) } }
     public mut prop supportedFeatures: UInt64 { get() { p_supportedFeatures.getOrThrow() } set(_x) { p_supportedFeatures = _x; markDirty() } }
+    public func tryGetSupportedFeatures() { p_supportedFeatures }
 
+    public func getTypeName(): String { _CodeGeneratorResponse__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_error) { _x += 1 + binSize(_v) }
@@ -571,10 +591,10 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
         file.clear()
     }
 
-    public operator func !=(src: CodeGeneratorResponse): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as CodeGeneratorResponse == this }
     public operator func ==(src: CodeGeneratorResponse): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_error == src.p_error && p_supportedFeatures == src.p_supportedFeatures && file == src.file
+        m_innerEquals(src) && p_error == src.p_error && p_supportedFeatures == src.p_supportedFeatures &&
+        file == src.file
     }
 
     public func copyFrom(src: CodeGeneratorResponse): CodeGeneratorResponse {

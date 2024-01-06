@@ -1,8 +1,8 @@
 package protobuf
 
-public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
+public class MapField<K, V> <: Map<K, V> & Repeated where K <: Field & Equatable<K>, V <: Field {
     private var parent: ?MessageLite
-    private var data: HashMap<K, V>
+    var data: HashMap<K, V>
 
     public init() {
         parent = None
@@ -103,25 +103,9 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         parent?.markDirty()
     }
 
-    public func reserve(additional: Int64): Unit { data.reserve(additional) }
-    public func capacity(): Int64 { data.capacity() }
-    public func clone(): MapField<K, V> { MapField(this) }
-    public func toHashMap(): HashMap<K, V> { data.clone() }
-    public func keys(): EquatableCollection<K> { data.keys() }
-    public func values(): Collection<V> { data.values() }
-    public func iterator(): HashMapIterator<K, V> { data.iterator() }
-    public prop size: Int64 { get() { data.size } }
-    public func isEmpty(): Bool { data.isEmpty() }
-
-    func putDirty(key: K, value: V): Unit { data[key] = value }
-    func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
-}
-
-extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
     public func toString(): String {
         var res = StructPrinter()
-        for ((k, v) in getRawData()) {
+        for ((k, v) in data) {
             let key = match(k) {
                 case k: String where k.contains(" ") => "\"${k}\""
                 case _ => k.toString()
@@ -133,42 +117,54 @@ extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable 
         }
         res.done().toString()
     }
-}
 
-extend MapField<K, V> <: Hashable where V <: Hashable {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
-        for ((k,v) in getRawData()) {
+        for ((k,v) in data) {
             hasher.write(k.hashCode())
             hasher.write(v.hashCode())
         }
         return hasher.finish()
     }
+
+    public func setParent(parent: MessageLite): Unit { this.parent = this.parent ?? parent }
+    public func reserve(additional: Int64): Unit { data.reserve(additional) }
+    public func capacity(): Int64 { data.capacity() }
+    public func clone(): MapField<K, V> { MapField(this) }
+    public func toHashMap(): HashMap<K, V> { data.clone() }
+    public func keys(): EquatableCollection<K> { data.keys() }
+    public func values(): Collection<V> { data.values() }
+    public func iterator(): HashMapIterator<K, V> { data.iterator() }
+    public prop size: Int64 { get() { data.size } }
+    public func isEmpty(): Bool { data.isEmpty() }
+
+    func putDirty(key: K, value: V): Unit { data[key] = value }
+    unsafe public func getRawData() { data }
 }
 
 extend MapField<K, V> <: Equatable<MapField<K, V>> where V <: Equatable<V> {
     public operator func ==(that: MapField<K, V>): Bool {
-        getRawData() == that.getRawData()
+        data == that.data
     }
 
     public operator func !=(that: MapField<K, V>): Bool {
-        getRawData() != that.getRawData()
+        data != that.data
     }
 }
 
 extend MapField<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     public operator func ==(that: HashMap<K, V>): Bool {
-        getRawData() == that
+        data == that
     }
 
     public operator func !=(that: HashMap<K, V>): Bool {
-        getRawData() != that
+        data != that
     }
 }
 
-public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V <: MessageLite & TypedMessage<V> {
+public class MapMessage<K, V> <: Map<K, V> & Repeated where K <: Field & Equatable<K>, V <: MessageLite & TypedMessage<V> {
     private var parent: ?MessageLite
-    private var data: HashMap<K, V>
+    var data: HashMap<K, V>
 
     public init() {
         parent = None
@@ -335,6 +331,27 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         for (e in elements) { let ee: MessageLite = e; ee.m_parents.remove(m) }
     }
 
+    public func toString(): String {
+        var res = StructPrinter()
+        for ((k, v) in data) {
+            res.append(match(k) {
+                case k: String where k.contains(" ") => "\"${k}\""
+                case _ => k.toString()
+            }, v)
+        }
+        res.done().toString()
+    }
+
+    public func hashCode(): Int64 {
+        var hasher = DefaultHasher()
+        for ((k,v) in data) {
+            hasher.write(k.hashCode())
+            hasher.write(v.hashCode())
+        }
+        return hasher.finish()
+    }
+
+    public func setParent(parent: MessageLite): Unit { this.parent = this.parent ?? parent }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func capacity(): Int64 { data.capacity() }
     public func toHashMap(): HashMap<K, V> { data.clone() }
@@ -348,30 +365,5 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public operator func !=(that: MapMessage<K, V>): Bool { data != that.data }
 
     func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.put(key, value)) { unlink(m) }; link(value) }
-    func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
-}
-
-extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
-    public func toString(): String {
-        var res = StructPrinter()
-        for ((k, v) in getRawData()) {
-            res.append(match(k) {
-                case k: String where k.contains(" ") => "\"${k}\""
-                case _ => k.toString()
-            }, v)
-        }
-        res.done().toString()
-    }
-}
-
-extend MapMessage<K, V> <: Hashable {
-    public func hashCode(): Int64 {
-        var hasher = DefaultHasher()
-        for ((k,v) in getRawData()) {
-            hasher.write(k.hashCode())
-            hasher.write(v.hashCode())
-        }
-        return hasher.finish()
-    }
+    unsafe public func getRawData() { data }
 }

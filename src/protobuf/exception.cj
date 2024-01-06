@@ -92,7 +92,7 @@ public class InsufficientSpaceException <: ProtobufException {
     }
 }
 
-class PBInternalException <: ProtobufException{
+class PBInternalException <: ProtobufException {
     public prop message: String {
         get() { "Protobuf Internal exception" }
     }

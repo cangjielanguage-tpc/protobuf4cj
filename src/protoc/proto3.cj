@@ -289,9 +289,10 @@ func getFieldOneofPropSetExpr(typeName: String, name: String, field: FieldDescri
 /* message class and member variable define */
 func genCodeMessageFieldClass(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> Unit = helper.outbuf.append
+    let cname = if (helper.lite) { "MessageLite" } else { "Message" }
 
     append("\n")
-    append("public class ${typeName} <: MessageLite & TypedMessage<${typeName}> {\n")
+    append("public class ${typeName} <: ${cname} & TypedMessage<${typeName}> {\n")
 
     for (field in fields where !field.hasOneofIndex) {
         append("    ${getFieldVarDefine(field)}\n")
@@ -394,6 +395,75 @@ func genCodeMessageFieldProps(typeName: String, fields: RepeatedMessage<FieldDes
             append("    public mut prop ${field.propName}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
         }
     }
+}
+
+// message descriptor
+func genCodeMessageDescriptor(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    let append: (String) -> Unit = helper.outbuf.append
+    append("\n")
+
+    if (helper.lite) {
+        append("    public func getTypeName(): String { _${typeName}__typeName }")
+        return
+    }
+
+    // descriptor
+    append("    public static func descriptor(): MessageDescriptor { _${typeName}__descriptor.get() }\n")
+    append("    public func getDescriptor(): MessageDescriptor { descriptor() }\n")
+}
+
+// m_get, m_set
+func genCodeMessageGetterSetter(fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    if (helper.lite) { return }
+
+    let append: (String) -> Unit = helper.outbuf.append
+
+    // m_get
+    append("\n")
+    append("    protected func m_get(_t: Tag): Option<Field> {\n")
+    append("        match (_t) {\n")
+    for (field in fields where !field.hasOneofIndex) {
+        append("            case ${field.number} => ${field.propName}\n")
+    }
+    for ((name, ofields) in helper.oneofDecl) {
+        for (field in ofields) {
+            append("            case ${field.number} where has${titleCase(field.name)} => ${field.propName}\n")
+        }
+    }
+    append("            case _ => None\n")
+    append("        }\n")
+    append("    }\n")
+
+    // m_set
+    append("\n")
+    append("    protected func m_set(_t: Tag, _v: Field): Unit { /* throws */\n")
+    append("        match (_t) {\n")
+    for (field in fields where !field.hasOneofIndex && field.label != LABEL_REPEATED) {
+        append("            case ${field.number} => ${field.propName} = typecast(_v)\n")
+    }
+    for ((name, ofields) in helper.oneofDecl) {
+        for (field in ofields) {
+            append("            case ${field.number} => ${field.propName} = typecast(_v)\n")
+        }
+    }
+    append("            case _ => throw InvalidOperationException()\n")
+    append("        }\n")
+    append("    }\n")
+
+    // m_reset
+    append("\n")
+    append("    protected func m_reset(_t: Tag): Unit {\n")
+    append("        match (_t) {\n")
+    for (field in fields where !field.hasOneofIndex) {
+        append("            case ${field.number} => ${getFieldClearExpr(field)}\n")
+    }
+    for ((name, ofields) in helper.oneofDecl) {
+        append("            case ${String.join(Array<String>(ofields.size) { i => ofields[i].number.toString() }, delimiter: " | ")} => m_assign(p_${name}); p_${name} = None\n")
+    }
+    append("            case _ => return\n")
+    append("        }\n")
+    append("        markDirty()\n")
+    append("    }\n")
 }
 
 /* message m_size */
@@ -502,10 +572,10 @@ func genCodeMessageFieldEquat(typeName: String, fields: RepeatedMessage<FieldDes
     let sepOut = LineSepOut(helper.outbuf, sep: " &&", sn: 8)
 
     append("\n")
-    append("    public operator func !=(src: ${typeName}): Bool { !(this == src) }\n")
+    append("    public operator func ==(src: MessageLite): Bool { src as ${typeName} == this }\n")
     append("    public operator func ==(src: ${typeName}): Bool {\n")
     /* common pre compare */
-    sepOut.append("hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields")
+    sepOut.append("m_innerEquals(src)")
 
     /* normal fields */
     for (field in fields where !field.hasOneofIndex) {
@@ -683,6 +753,12 @@ func genCodeMessageField(typeName: String, fields: RepeatedMessage<FieldDescript
 
     // props define
     genCodeMessageFieldProps(typeName, fields, helper)
+
+    // message descriptor
+    genCodeMessageDescriptor(typeName, fields, helper)
+
+    // getter setter
+    genCodeMessageGetterSetter(fields, helper)
 
     // func m_size
     genCodeMessageFieldSize(fields, helper)

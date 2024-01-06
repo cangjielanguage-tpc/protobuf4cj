@@ -108,6 +108,8 @@ class LineSepOut {
             outbuf.append(s)
         }
     }
+
+    func reset() { cn = sn; first = true }
 }
 
 /* save or process context of every proto file */
@@ -129,14 +131,16 @@ class GenCodeHelper {
 
     /* proto file outbuf */
     let outbuf = StringBuilder()
+    /* file's fn variable name */
+    let fdVarName: String
     /* package prefix of the proto file */
     let pkgPrefix: String
     /* all packages prefix */
     let packages = ArrayList<String>()
 
     /* file level gencode context. */
-    GenCodeHelper (package_: String, deps: HashSet<String>, fileName: String,
-        let proto2: Bool
+    GenCodeHelper (package_: String, deps: HashSet<String>,
+        let fileName: String, let proto2: Bool, let lite: Bool
     ) {
         pkgPrefix = if (package_ == "") { "." } else { ".${package_}." }
 
@@ -151,6 +155,25 @@ class GenCodeHelper {
         packages.append(pkgPrefix)
         for (pkg in deps) { packages.append(".${pkg}.") }
         packages.sortBy { a, b => if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT } }
+
+        /* proc fn */
+        let fnBuilder = LiteralsBuilder()
+        fnBuilder.append(b'_')
+        for (c in fileName) {
+            fnBuilder.append(if (c >= b'0' && c <= b'9' || c >= b'A' && c <= b'Z' || c >= b'a' && c <= b'z') { c } else { b'_' })
+        }
+        fnBuilder.append(b"__descriptor")
+        fdVarName = fnBuilder.toString()
+
+        setLite(lite)
+    }
+
+    func getFileFullName(): String {
+        pkgPrefix + fileName
+    }
+
+    func getTypeFullName(name: String): String {
+        pkgPrefix + if (nested.isEmpty()) { name } else { String.join(nested.toArray(), delimiter: ".") + "." + name }
     }
 
     /* set enum/message type name */
@@ -207,6 +230,16 @@ extend DescriptorProto {
     }
 }
 
+func preProcMessage(msg: DescriptorProto): Unit {
+    // proc nested message
+    for (m in msg.nestedType) {
+        preProcMessage(m)
+    }
+
+    // proc map entry
+    preProcMapEntry(msg.field, msg.nestedType)
+}
+
 func preProcMapEntry(fields: RepeatedMessage<FieldDescriptorProto>, nestedType: RepeatedMessage<DescriptorProto>): Unit {
     for (field in fields where field.type_ == TYPE_MESSAGE && field.label == LABEL_REPEATED) {
         let entryName = "${titleCase(lowerCamelCase(field.name))}Entry"
@@ -228,6 +261,9 @@ func preProcMapEntry(fields: RepeatedMessage<FieldDescriptorProto>, nestedType: 
 
             // save map entry's fields
             field.mapEntry.copyFrom(n.field)
+            field.mapKeyType = field.mapEntry[0].type_
+            field.mapValueType = field.mapEntry[1].type_
+            field.mapValueTypeName = field.mapEntry[1].tryGetTypeName() ?? ""
         }
     }
 }
@@ -236,13 +272,23 @@ func fileProcess(desc: FileDescriptorProto, deps: HashSet<String>, file: CodeGen
     // Destination file path
     if (!desc.hasPackage) { desc.package_ = "" }
     if (!desc.hasSyntax) { desc.syntax = "proto2" }
+    desc.name = desc.name[(desc.name.lastIndexOf(b'/') ?? -1) + 1 .. ]
 
-    let fileName = desc.name[(desc.name.lastIndexOf("/") ?? -1) + 1 .. ]
+    let fileName = desc.name
     let proto2 = desc.syntax == "proto2"
-    let helper = GenCodeHelper(desc.package_, deps, fileName, proto2)
+    let lite = desc.hasOptions && desc.options.hasOptimizeFor && desc.options.optimizeFor == LITE_RUNTIME
+    let helper = GenCodeHelper(desc.package_, deps, fileName, proto2, lite)
 
     // Header information
     genCodeHeader(desc, deps, helper)
+
+    // pre-process message
+    for (msg in desc.messageType) {
+        preProcMessage(msg)
+    }
+
+    // file descriptor
+    genCodeFileDescriptor(desc, helper)
 
     // all message
     for (msg in desc.messageType) {
@@ -278,6 +324,9 @@ func genCodeHeader(desc: FileDescriptorProto, deps: HashSet<String>, helper: Gen
     if (desc.package_ != "protobuf") {
         append("from protobuf import protobuf.*\n")
     }
+    if (!helper.lite) {
+        append("from protobuf import reflection.*\n")
+    }
     for (pkg in deps) {
         append("import ${pkg}.*\n")
     }
@@ -304,11 +353,11 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
     // nested pop
     helper.nestedPop()
 
-    // pre-process map entry
-    preProcMapEntry(fields, msg.nestedType)
-
     // no generating map code
     if (msg.isMapEntry()) { return }
+
+    // message descriptors
+    genCodeDescriptor(typeName, msg, helper)
 
     // set enum/message/map type name
     helper.setFieldsTypeName(fields)
@@ -318,7 +367,7 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
 
     // fields
     match {
-        case fields.isEmpty() => helper.outbuf.append(getImplEmptyMessage(typeName))
+        case fields.isEmpty() && helper.lite => helper.outbuf.append(getImplEmptyMessage(typeName))
         case helper.proto2 => genCodeMessageField2(typeName, fields, helper)
         case _ => genCodeMessageField(typeName, fields, helper)
     }
@@ -338,9 +387,13 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     let values = e.value
     let append: (String) -> Unit = helper.outbuf.append
     let sepOut = LineSepOut(helper.outbuf, sep: " |", sn: 4)
+    let iname = if (helper.lite) { "Int32Enum" } else { "EnumValue" }
+
+    // descriptor
+    genCodeEnumDescriptor(typeName, e, helper)
 
     // enum items
-    append("\npublic enum ${typeName} <: Enum<${typeName}> {\n")
+    append("\npublic enum ${typeName} <: ${iname} & TypedEnum<${typeName}> {\n")
     for (v in values) { sepOut.append("${getEnumItemName(v.name)}") }
     append("\n\n")
 
@@ -375,6 +428,12 @@ func genCodeEnum(e: EnumDescriptorProto, helper: GenCodeHelper): Unit {
     for (v in values) { append("            case \"${v.name}\" => ${getEnumItemName(v.name)}\n") }
     append("            case _ => throw UnmatchedEnumStringException(\"${typeName}\", value)\n        }\n    }\n")
 
+    if (helper.lite) {
+        append("\n    public func getTypeName(): String { \"${helper.getTypeFullName(e.name)[1 .. ]}\" }\n")
+    } else {
+        append("\n    public static func descriptor(): EnumDescriptor { _${typeName}__descriptor.get() }\n")
+    }
+
     // done
     append("}\n")
 }
@@ -385,6 +444,49 @@ func genCodeService(ser: ServiceDescriptorProto, helper: GenCodeHelper): Unit {
 
 func genCodeExtension(ext: FieldDescriptorProto, helper: GenCodeHelper): Unit {
     // todo
+}
+
+/* enum descriptor */
+func genCodeEnumDescriptor(typeName: String, desc: EnumDescriptorProto, helper: GenCodeHelper): Unit {
+    if (helper.lite) {
+        return
+    }
+
+    let append: (String) -> Unit = helper.outbuf.append
+    let fullName = helper.getTypeFullName(desc.name)
+
+    append("\nlet _${typeName}__descriptor = _internalAddGeneratedEnum<${typeName}>(\"${fullName}\", ${helper.fdVarName})\n")
+}
+
+/* file descriptor */
+func genCodeDescriptor(typeName: String, desc: DescriptorProto, helper: GenCodeHelper): Unit {
+    if (desc.isMapEntry()) {
+        return
+    }
+
+    let append: (String) -> Unit = helper.outbuf.append
+    let fullName = helper.getTypeFullName(desc.name)
+
+    append("\n")
+    if (helper.lite) {
+        append("const _${typeName}__typeName = \"${fullName[1 .. ]}\"")
+        return
+    }
+
+    append("let _${typeName}__descriptor = _internalAddGeneratedMessage<${typeName}>(\"${fullName}\", ${helper.fdVarName})\n")
+}
+
+/* file descriptor */
+func genCodeFileDescriptor(desc: FileDescriptorProto, helper: GenCodeHelper): Unit {
+    if (helper.lite) {
+        return
+    }
+
+    let append: (String) -> Unit = helper.outbuf.append
+    let fullName = helper.getFileFullName()
+    let metadata = buildFileDescriptor(desc, helper)
+
+    append("\nlet ${helper.fdVarName} = _internalAddGeneratedFile(\"${fullName}\",\n    ${encodeLiterals(metadata)}\n)\n")
 }
 
 /* gen oneof group type define (enum) */
@@ -614,7 +716,8 @@ public class ${typeName} <: MessageLite & TypedMessage<${typeName}> {
     protected func m_hashCode(): Int64 { 0 }
     protected func m_isEmpty(): Bool { true }
     protected func m_clear(): Unit { }
-    public operator func !=(src: ${typeName}): Bool { !(this == src) }
+    public func getTypeName(): String { _${typeName}__typeName }
+    public operator func ==(src: MessageLite): Bool { src as ${typeName} == this }
     public operator func ==(src: ${typeName}): Bool { hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields }
     public func copyFrom(src: ${typeName}): ${typeName} { m_innerCopyFrom(src); return this }
     public func clone(): ${typeName} { return ${typeName}().copyFrom(this) }
@@ -648,9 +751,20 @@ let messageRsvdWords = HashSet<String>([
     "size", "clear", "clone", "unpack", "pack", "check", "packi", "unpacki",
     "fromBytes", "fromJson", "src", "out"
 ])
-let enumRsvdWords = HashSet<String>([
+let enumRsvdWordsLite = HashSet<String>([
     "value", "parse"
 ])
+let enumRsvdWordsEx = HashSet<String>([
+    "value", "parse", "NONE", "OPTIONAL", "REQUIRED", "REPEATED", "INVALID", "DOUBLE",
+    "FLOAT", "INT64", "UINT64", "INT32", "FIXED64", "FIXED32", "BOOL", "STRING",
+    "GROUP", "MESSAGE", "BYTES", "UINT32", "ENUM", "SFIXED32", "SFIXED64", "SINT32",
+    "SINT64"
+])
+var enumRsvdWords = enumRsvdWordsLite
+
+func setLite(lite: Bool) {
+    enumRsvdWords = if (lite) { enumRsvdWordsLite } else { enumRsvdWordsEx }
+}
 
 func getEnumItemName(name: String) {
     if (cangjieKeyWords.contains(name) || enumRsvdWords.contains(name)) {

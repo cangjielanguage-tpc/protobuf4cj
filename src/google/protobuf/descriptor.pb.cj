@@ -3,6 +3,7 @@ package google.protobuf
 from std import collection.*
 from protobuf import protobuf.*
 
+const _FileDescriptorSet__typeName = "google.protobuf.FileDescriptorSet"
 public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> {
     public let file: RepeatedMessage<FileDescriptorProto>
 
@@ -23,6 +24,7 @@ public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> 
         m_innerInit()
     }
 
+    public func getTypeName(): String { _FileDescriptorSet__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!file.isEmpty()) { for (_i in file) { _x += 1 + binSize(_i) } }
@@ -43,9 +45,9 @@ public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> 
         file.clear()
     }
 
-    public operator func !=(src: FileDescriptorSet): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as FileDescriptorSet == this }
     public operator func ==(src: FileDescriptorSet): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && file == src.file
+        m_innerEquals(src) && file == src.file
     }
 
     public func copyFrom(src: FileDescriptorSet): FileDescriptorSet {
@@ -100,6 +102,7 @@ public class FileDescriptorSet__Builder {
     public func build() { FileDescriptorSet(this) }
 }
 
+const _FileDescriptorProto__typeName = "google.protobuf.FileDescriptorProto"
 public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorProto> {
     private var p_name: ?String
     private var p_package: ?String
@@ -175,23 +178,29 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearPackage() { p_package = None; markDirty() }
     public prop hasPackage: Bool { get() { isPresent(p_package) } }
     public mut prop package_: String { get() { p_package.getOrThrow() } set(_x) { p_package = _x; markDirty() } }
+    public func tryGetPackage() { p_package }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: FileOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
     public func clearSourceCodeInfo() { p_sourceCodeInfo.removeFrom(this); markDirty() }
     public prop hasSourceCodeInfo: Bool { get() { isPresent(p_sourceCodeInfo.data) } }
     public mut prop sourceCodeInfo: SourceCodeInfo { get() { p_sourceCodeInfo.data.getOrThrow() } set(_v) { p_sourceCodeInfo.set(this, _v); markDirty() } }
+    public func tryGetSourceCodeInfo() { p_sourceCodeInfo.data }
 
     public func clearSyntax() { p_syntax = None; markDirty() }
     public prop hasSyntax: Bool { get() { isPresent(p_syntax) } }
     public mut prop syntax: String { get() { p_syntax.getOrThrow() } set(_x) { p_syntax = _x; markDirty() } }
+    public func tryGetSyntax() { p_syntax }
 
+    public func getTypeName(): String { _FileDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -247,10 +256,9 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         p_syntax = None
     }
 
-    public operator func !=(src: FileDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as FileDescriptorProto == this }
     public operator func ==(src: FileDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && p_package == src.p_package && dependency == src.dependency &&
+        m_innerEquals(src) && p_name == src.p_name && p_package == src.p_package && dependency == src.dependency &&
         publicDependency == src.publicDependency && weakDependency == src.weakDependency &&
         messageType == src.messageType && enumType == src.enumType && service == src.service &&
         extension == src.extension && p_options.data == src.p_options.data &&
@@ -386,6 +394,7 @@ public class FileDescriptorProto__Builder {
     public func build() { FileDescriptorProto(this) }
 }
 
+const _DescriptorProto_ExtensionRange__typeName = "google.protobuf.DescriptorProto.ExtensionRange"
 public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<DescriptorProto_ExtensionRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
@@ -417,15 +426,19 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
     public func clearStart() { p_start = None; markDirty() }
     public prop hasStart: Bool { get() { isPresent(p_start) } }
     public mut prop start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
+    public func tryGetStart() { p_start }
 
     public func clearEnd() { p_end = None; markDirty() }
     public prop hasEnd: Bool { get() { isPresent(p_end) } }
     public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public func tryGetEnd() { p_end }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: ExtensionRangeOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
+    public func getTypeName(): String { _DescriptorProto_ExtensionRange__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_start) { _x += 1 + varintSize(_v) }
@@ -452,10 +465,9 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
         p_options.removeFrom(this)
     }
 
-    public operator func !=(src: DescriptorProto_ExtensionRange): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as DescriptorProto_ExtensionRange == this }
     public operator func ==(src: DescriptorProto_ExtensionRange): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_start == src.p_start && p_end == src.p_end && p_options.data == src.p_options.data
+        m_innerEquals(src) && p_start == src.p_start && p_end == src.p_end && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: DescriptorProto_ExtensionRange): DescriptorProto_ExtensionRange {
@@ -524,6 +536,7 @@ public class DescriptorProto_ExtensionRange__Builder {
     public func build() { DescriptorProto_ExtensionRange(this) }
 }
 
+const _DescriptorProto_ReservedRange__typeName = "google.protobuf.DescriptorProto.ReservedRange"
 public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<DescriptorProto_ReservedRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
@@ -550,11 +563,14 @@ public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<Descrip
     public func clearStart() { p_start = None; markDirty() }
     public prop hasStart: Bool { get() { isPresent(p_start) } }
     public mut prop start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
+    public func tryGetStart() { p_start }
 
     public func clearEnd() { p_end = None; markDirty() }
     public prop hasEnd: Bool { get() { isPresent(p_end) } }
     public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public func tryGetEnd() { p_end }
 
+    public func getTypeName(): String { _DescriptorProto_ReservedRange__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_start) { _x += 1 + varintSize(_v) }
@@ -578,10 +594,9 @@ public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<Descrip
         p_end = None
     }
 
-    public operator func !=(src: DescriptorProto_ReservedRange): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as DescriptorProto_ReservedRange == this }
     public operator func ==(src: DescriptorProto_ReservedRange): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_start == src.p_start && p_end == src.p_end
+        m_innerEquals(src) && p_start == src.p_start && p_end == src.p_end
     }
 
     public func copyFrom(src: DescriptorProto_ReservedRange): DescriptorProto_ReservedRange {
@@ -643,6 +658,7 @@ public class DescriptorProto_ReservedRange__Builder {
     public func build() { DescriptorProto_ReservedRange(this) }
 }
 
+const _DescriptorProto__typeName = "google.protobuf.DescriptorProto"
 public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     private var p_name: ?String
     public let field: RepeatedMessage<FieldDescriptorProto>
@@ -710,11 +726,14 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: MessageOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
+    public func getTypeName(): String { _DescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -764,12 +783,11 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         reservedName.clear()
     }
 
-    public operator func !=(src: DescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as DescriptorProto == this }
     public operator func ==(src: DescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && field == src.field && extension == src.extension && nestedType == src.nestedType &&
-        enumType == src.enumType && extensionRange == src.extensionRange && oneofDecl == src.oneofDecl &&
-        p_options.data == src.p_options.data && reservedRange == src.reservedRange &&
+        m_innerEquals(src) && p_name == src.p_name && field == src.field && extension == src.extension &&
+        nestedType == src.nestedType && enumType == src.enumType && extensionRange == src.extensionRange &&
+        oneofDecl == src.oneofDecl && p_options.data == src.p_options.data && reservedRange == src.reservedRange &&
         reservedName == src.reservedName
     }
 
@@ -888,6 +906,7 @@ public class DescriptorProto__Builder {
     public func build() { DescriptorProto(this) }
 }
 
+const _ExtensionRangeOptions__typeName = "google.protobuf.ExtensionRangeOptions"
 public class ExtensionRangeOptions <: MessageLite & TypedMessage<ExtensionRangeOptions> {
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
@@ -908,6 +927,7 @@ public class ExtensionRangeOptions <: MessageLite & TypedMessage<ExtensionRangeO
         m_innerInit()
     }
 
+    public func getTypeName(): String { _ExtensionRangeOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
@@ -928,10 +948,9 @@ public class ExtensionRangeOptions <: MessageLite & TypedMessage<ExtensionRangeO
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: ExtensionRangeOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as ExtensionRangeOptions == this }
     public operator func ==(src: ExtensionRangeOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        uninterpretedOption == src.uninterpretedOption
+        m_innerEquals(src) && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: ExtensionRangeOptions): ExtensionRangeOptions {
@@ -986,7 +1005,7 @@ public class ExtensionRangeOptions__Builder {
     public func build() { ExtensionRangeOptions(this) }
 }
 
-public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
+public enum FieldDescriptorProto_Type <: Int32Enum & TypedEnum<FieldDescriptorProto_Type> {
     TYPE_DOUBLE | TYPE_FLOAT | TYPE_INT64 | TYPE_UINT64 | TYPE_INT32 | TYPE_FIXED64 | TYPE_FIXED32 | TYPE_BOOL |
     TYPE_STRING | TYPE_GROUP | TYPE_MESSAGE | TYPE_BYTES | TYPE_UINT32 | TYPE_ENUM | TYPE_SFIXED32 | TYPE_SFIXED64 |
     TYPE_SINT32 | TYPE_SINT64
@@ -1108,9 +1127,11 @@ public enum FieldDescriptorProto_Type <: Enum<FieldDescriptorProto_Type> {
             case _ => throw UnmatchedEnumStringException("FieldDescriptorProto_Type", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.FieldDescriptorProto.Type" }
 }
 
-public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
+public enum FieldDescriptorProto_Label <: Int32Enum & TypedEnum<FieldDescriptorProto_Label> {
     LABEL_OPTIONAL | LABEL_REQUIRED | LABEL_REPEATED
 
     public func value(): Int32 {
@@ -1155,8 +1176,11 @@ public enum FieldDescriptorProto_Label <: Enum<FieldDescriptorProto_Label> {
             case _ => throw UnmatchedEnumStringException("FieldDescriptorProto_Label", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.FieldDescriptorProto.Label" }
 }
 
+const _FieldDescriptorProto__typeName = "google.protobuf.FieldDescriptorProto"
 public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorProto> {
     private var p_name: ?String
     private var p_number: ?Int32
@@ -1169,6 +1193,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     private var p_jsonName: ?String
     private var p_options: PbMessage<FieldOptions>
     private var p_proto3Optional: ?Bool
+    private var p_mapKeyType: ?FieldDescriptorProto_Type
+    private var p_mapValueType: ?FieldDescriptorProto_Type
+    private var p_mapValueTypeName: ?String
     public let mapEntry: RepeatedMessage<FieldDescriptorProto>
 
     public init(
@@ -1183,6 +1210,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         jsonName!: ?String = None,
         options!: ?FieldOptions = None,
         proto3Optional!: ?Bool = None,
+        mapKeyType!: ?FieldDescriptorProto_Type = None,
+        mapValueType!: ?FieldDescriptorProto_Type = None,
+        mapValueTypeName!: ?String = None,
         mapEntry!: Array<FieldDescriptorProto> = []
     ) {
         this.p_name = name
@@ -1196,6 +1226,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         this.p_jsonName = jsonName
         this.p_options = PbMessage<FieldOptions>(options)
         this.p_proto3Optional = proto3Optional
+        this.p_mapKeyType = mapKeyType
+        this.p_mapValueType = mapValueType
+        this.p_mapValueTypeName = mapValueTypeName
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(mapEntry)
         m_init()
     }
@@ -1212,6 +1245,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         this.p_jsonName = src.jsonName
         this.p_options = PbMessage<FieldOptions>(src.options)
         this.p_proto3Optional = src.proto3Optional
+        this.p_mapKeyType = src.mapKeyType
+        this.p_mapValueType = src.mapValueType
+        this.p_mapValueTypeName = src.mapValueTypeName
         this.mapEntry = RepeatedMessage<FieldDescriptorProto>(src.mapEntry)
         m_init()
     }
@@ -1225,47 +1261,74 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearNumber() { p_number = None; markDirty() }
     public prop hasNumber: Bool { get() { isPresent(p_number) } }
     public mut prop number: Int32 { get() { p_number.getOrThrow() } set(_x) { p_number = _x; markDirty() } }
+    public func tryGetNumber() { p_number }
 
     public func clearLabel() { p_label = None; markDirty() }
     public prop hasLabel: Bool { get() { isPresent(p_label) } }
     public mut prop label: FieldDescriptorProto_Label { get() { p_label.getOrThrow() } set(_x) { p_label = _x; markDirty() } }
+    public func tryGetLabel() { p_label }
 
     public func clearType() { p_type = None; markDirty() }
     public prop hasType: Bool { get() { isPresent(p_type) } }
     public mut prop type_: FieldDescriptorProto_Type { get() { p_type.getOrThrow() } set(_x) { p_type = _x; markDirty() } }
+    public func tryGetType() { p_type }
 
     public func clearTypeName() { p_typeName = None; markDirty() }
     public prop hasTypeName: Bool { get() { isPresent(p_typeName) } }
     public mut prop typeName: String { get() { p_typeName.getOrThrow() } set(_x) { p_typeName = _x; markDirty() } }
+    public func tryGetTypeName() { p_typeName }
 
     public func clearExtendee() { p_extendee = None; markDirty() }
     public prop hasExtendee: Bool { get() { isPresent(p_extendee) } }
     public mut prop extendee: String { get() { p_extendee.getOrThrow() } set(_x) { p_extendee = _x; markDirty() } }
+    public func tryGetExtendee() { p_extendee }
 
     public func clearDefaultValue() { p_defaultValue = None; markDirty() }
     public prop hasDefaultValue: Bool { get() { isPresent(p_defaultValue) } }
     public mut prop defaultValue: String { get() { p_defaultValue.getOrThrow() } set(_x) { p_defaultValue = _x; markDirty() } }
+    public func tryGetDefaultValue() { p_defaultValue }
 
     public func clearOneofIndex() { p_oneofIndex = None; markDirty() }
     public prop hasOneofIndex: Bool { get() { isPresent(p_oneofIndex) } }
     public mut prop oneofIndex: Int32 { get() { p_oneofIndex.getOrThrow() } set(_x) { p_oneofIndex = _x; markDirty() } }
+    public func tryGetOneofIndex() { p_oneofIndex }
 
     public func clearJsonName() { p_jsonName = None; markDirty() }
     public prop hasJsonName: Bool { get() { isPresent(p_jsonName) } }
     public mut prop jsonName: String { get() { p_jsonName.getOrThrow() } set(_x) { p_jsonName = _x; markDirty() } }
+    public func tryGetJsonName() { p_jsonName }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: FieldOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
     public func clearProto3Optional() { p_proto3Optional = None; markDirty() }
     public prop hasProto3Optional: Bool { get() { isPresent(p_proto3Optional) } }
     public mut prop proto3Optional: Bool { get() { p_proto3Optional.getOrThrow() } set(_x) { p_proto3Optional = _x; markDirty() } }
+    public func tryGetProto3Optional() { p_proto3Optional }
 
+    public func clearMapKeyType() { p_mapKeyType = None; markDirty() }
+    public prop hasMapKeyType: Bool { get() { isPresent(p_mapKeyType) } }
+    public mut prop mapKeyType: FieldDescriptorProto_Type { get() { p_mapKeyType.getOrThrow() } set(_x) { p_mapKeyType = _x; markDirty() } }
+    public func tryGetMapKeyType() { p_mapKeyType }
+
+    public func clearMapValueType() { p_mapValueType = None; markDirty() }
+    public prop hasMapValueType: Bool { get() { isPresent(p_mapValueType) } }
+    public mut prop mapValueType: FieldDescriptorProto_Type { get() { p_mapValueType.getOrThrow() } set(_x) { p_mapValueType = _x; markDirty() } }
+    public func tryGetMapValueType() { p_mapValueType }
+
+    public func clearMapValueTypeName() { p_mapValueTypeName = None; markDirty() }
+    public prop hasMapValueTypeName: Bool { get() { isPresent(p_mapValueTypeName) } }
+    public mut prop mapValueTypeName: String { get() { p_mapValueTypeName.getOrThrow() } set(_x) { p_mapValueTypeName = _x; markDirty() } }
+    public func tryGetMapValueTypeName() { p_mapValueTypeName }
+
+    public func getTypeName(): String { _FieldDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -1279,6 +1342,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         if (let Some(_v) <- p_jsonName) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_options.data) { _x += 1 + binSize(_v) }
         if (let Some(_v) <- p_proto3Optional) { _x += 2 + 1 }
+        if (let Some(_v) <- p_mapKeyType) { _x += 2 + varintSize(_v) }
+        if (let Some(_v) <- p_mapValueType) { _x += 2 + varintSize(_v) }
+        if (let Some(_v) <- p_mapValueTypeName) { _x += 2 + binSize(_v) }
         if (!mapEntry.isEmpty()) { for (_i in mapEntry) { _x += 3 + binSize(_i) } }
         return _x
     }
@@ -1296,6 +1362,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         if (let Some(_v) <- p_jsonName) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_options.data) { _x.write(_v.hashCode()) }
         if (let Some(_v) <- p_proto3Optional) { _x.write(_v) }
+        if (let Some(_v) <- p_mapKeyType) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_mapValueType) { _x.write(_v.hashCode()) }
+        if (let Some(_v) <- p_mapValueTypeName) { _x.write(_v.hashCode()) }
         if (!mapEntry.isEmpty()) { _x.write(mapEntry.hashCode()) }
         return _x.finish()
     }
@@ -1303,7 +1372,8 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
     protected func m_isEmpty(): Bool {
         isNone(p_name) && isNone(p_number) && isNone(p_label) && isNone(p_type) && isNone(p_typeName) &&
         isNone(p_extendee) && isNone(p_defaultValue) && isNone(p_oneofIndex) && isNone(p_jsonName) &&
-        isNone(p_options.data) && isNone(p_proto3Optional) && mapEntry.isEmpty()
+        isNone(p_options.data) && isNone(p_proto3Optional) && isNone(p_mapKeyType) && isNone(p_mapValueType) &&
+        isNone(p_mapValueTypeName) && mapEntry.isEmpty()
     }
 
     protected func m_clear(): Unit {
@@ -1318,16 +1388,20 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         p_jsonName = None
         p_options.removeFrom(this)
         p_proto3Optional = None
+        p_mapKeyType = None
+        p_mapValueType = None
+        p_mapValueTypeName = None
         mapEntry.clear()
     }
 
-    public operator func !=(src: FieldDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as FieldDescriptorProto == this }
     public operator func ==(src: FieldDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && p_number == src.p_number && p_label == src.p_label && p_type == src.p_type &&
-        p_typeName == src.p_typeName && p_extendee == src.p_extendee && p_defaultValue == src.p_defaultValue &&
-        p_oneofIndex == src.p_oneofIndex && p_jsonName == src.p_jsonName && p_options.data == src.p_options.data &&
-        p_proto3Optional == src.p_proto3Optional && mapEntry == src.mapEntry
+        m_innerEquals(src) && p_name == src.p_name && p_number == src.p_number && p_label == src.p_label &&
+        p_type == src.p_type && p_typeName == src.p_typeName && p_extendee == src.p_extendee &&
+        p_defaultValue == src.p_defaultValue && p_oneofIndex == src.p_oneofIndex && p_jsonName == src.p_jsonName &&
+        p_options.data == src.p_options.data && p_proto3Optional == src.p_proto3Optional &&
+        p_mapKeyType == src.p_mapKeyType && p_mapValueType == src.p_mapValueType &&
+        p_mapValueTypeName == src.p_mapValueTypeName && mapEntry == src.mapEntry
     }
 
     public func copyFrom(src: FieldDescriptorProto): FieldDescriptorProto {
@@ -1342,6 +1416,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         p_jsonName = src.p_jsonName
         p_options.copyFrom(this, src.p_options.data)
         p_proto3Optional = src.p_proto3Optional
+        p_mapKeyType = src.p_mapKeyType
+        p_mapValueType = src.p_mapValueType
+        p_mapValueTypeName = src.p_mapValueTypeName
         mapEntry.copyFrom(src.mapEntry)
         m_innerCopyFrom(src)
         return this
@@ -1366,6 +1443,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
                 case 10 => p_jsonName = src.parseString()
                 case 8 => p_options.getOrDefault(this).unpack(subReader(src))
                 case 17 => p_proto3Optional = src.parseBool()
+                case 21 => p_mapKeyType = FieldDescriptorProto_Type.parse(src.parseInt32())
+                case 22 => p_mapValueType = FieldDescriptorProto_Type.parse(src.parseInt32())
+                case 23 => p_mapValueTypeName = src.parseString()
                 case 9999 => s_add(mapEntry, src)
                 case _ => m_unknown(src, _x)
             }
@@ -1389,6 +1469,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         if (let Some(_v) <- p_jsonName) { out.append(82); out.packBin(_v) }
         if (let Some(_v) <- p_options.data) { out.append(66); out.packVarint(_v.size); _v.pack(out) }
         if (let Some(_v) <- p_proto3Optional) { out.packTag(17, VARINT); out.packBool(_v) }
+        if (let Some(_v) <- p_mapKeyType) { out.packTag(21, VARINT); out.packVarint(_v) }
+        if (let Some(_v) <- p_mapValueType) { out.packTag(22, VARINT); out.packVarint(_v) }
+        if (let Some(_v) <- p_mapValueTypeName) { out.packTag(23, PREFIXED); out.packBin(_v) }
         if (!mapEntry.isEmpty()) { for (_i in mapEntry) { out.packTag(9999, PREFIXED); out.packVarint(_i.size); _i.pack(out) } }
         m_unknown(out)
     }
@@ -1406,6 +1489,9 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         if (let Some(_v) <- p_jsonName) { _x.append("jsonName", _v) }
         if (let Some(_v) <- p_options.data) { _x.append("options", _v) }
         if (let Some(_v) <- p_proto3Optional) { _x.append("proto3Optional", _v) }
+        if (let Some(_v) <- p_mapKeyType) { _x.append("mapKeyType", _v) }
+        if (let Some(_v) <- p_mapValueType) { _x.append("mapValueType", _v) }
+        if (let Some(_v) <- p_mapValueTypeName) { _x.append("mapValueTypeName", _v) }
         if (!mapEntry.isEmpty()) { _x.append("mapEntry", mapEntry) }
         return _x.done().toString()
     }
@@ -1453,12 +1539,22 @@ public class FieldDescriptorProto__Builder {
     public var proto3Optional: ?Bool = None
     public func setProto3Optional(proto3Optional: Bool) { this.proto3Optional = proto3Optional; return this }
 
+    public var mapKeyType: ?FieldDescriptorProto_Type = None
+    public func setMapKeyType(mapKeyType: FieldDescriptorProto_Type) { this.mapKeyType = mapKeyType; return this }
+
+    public var mapValueType: ?FieldDescriptorProto_Type = None
+    public func setMapValueType(mapValueType: FieldDescriptorProto_Type) { this.mapValueType = mapValueType; return this }
+
+    public var mapValueTypeName: ?String = None
+    public func setMapValueTypeName(mapValueTypeName: String) { this.mapValueTypeName = mapValueTypeName; return this }
+
     public var mapEntry: Array<FieldDescriptorProto> = []
     public func setMapEntry(mapEntry: Array<FieldDescriptorProto>) { this.mapEntry = mapEntry; return this }
 
     public func build() { FieldDescriptorProto(this) }
 }
 
+const _OneofDescriptorProto__typeName = "google.protobuf.OneofDescriptorProto"
 public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorProto> {
     private var p_name: ?String
     private var p_options: PbMessage<OneofOptions>
@@ -1486,11 +1582,14 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: OneofOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
+    public func getTypeName(): String { _OneofDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -1514,10 +1613,9 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
         p_options.removeFrom(this)
     }
 
-    public operator func !=(src: OneofDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as OneofDescriptorProto == this }
     public operator func ==(src: OneofDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && p_options.data == src.p_options.data
+        m_innerEquals(src) && p_name == src.p_name && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: OneofDescriptorProto): OneofDescriptorProto {
@@ -1579,6 +1677,7 @@ public class OneofDescriptorProto__Builder {
     public func build() { OneofDescriptorProto(this) }
 }
 
+const _EnumDescriptorProto_EnumReservedRange__typeName = "google.protobuf.EnumDescriptorProto.EnumReservedRange"
 public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage<EnumDescriptorProto_EnumReservedRange> {
     private var p_start: ?Int32
     private var p_end: ?Int32
@@ -1605,11 +1704,14 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage
     public func clearStart() { p_start = None; markDirty() }
     public prop hasStart: Bool { get() { isPresent(p_start) } }
     public mut prop start: Int32 { get() { p_start.getOrThrow() } set(_x) { p_start = _x; markDirty() } }
+    public func tryGetStart() { p_start }
 
     public func clearEnd() { p_end = None; markDirty() }
     public prop hasEnd: Bool { get() { isPresent(p_end) } }
     public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public func tryGetEnd() { p_end }
 
+    public func getTypeName(): String { _EnumDescriptorProto_EnumReservedRange__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_start) { _x += 1 + varintSize(_v) }
@@ -1633,10 +1735,9 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage
         p_end = None
     }
 
-    public operator func !=(src: EnumDescriptorProto_EnumReservedRange): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as EnumDescriptorProto_EnumReservedRange == this }
     public operator func ==(src: EnumDescriptorProto_EnumReservedRange): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_start == src.p_start && p_end == src.p_end
+        m_innerEquals(src) && p_start == src.p_start && p_end == src.p_end
     }
 
     public func copyFrom(src: EnumDescriptorProto_EnumReservedRange): EnumDescriptorProto_EnumReservedRange {
@@ -1698,6 +1799,7 @@ public class EnumDescriptorProto_EnumReservedRange__Builder {
     public func build() { EnumDescriptorProto_EnumReservedRange(this) }
 }
 
+const _EnumDescriptorProto__typeName = "google.protobuf.EnumDescriptorProto"
 public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorProto> {
     private var p_name: ?String
     public let value: RepeatedMessage<EnumValueDescriptorProto>
@@ -1740,11 +1842,14 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: EnumOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
+    public func getTypeName(): String { _EnumDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -1778,10 +1883,9 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
         reservedName.clear()
     }
 
-    public operator func !=(src: EnumDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as EnumDescriptorProto == this }
     public operator func ==(src: EnumDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && value == src.value && p_options.data == src.p_options.data &&
+        m_innerEquals(src) && p_name == src.p_name && value == src.value && p_options.data == src.p_options.data &&
         reservedRange == src.reservedRange && reservedName == src.reservedName
     }
 
@@ -1865,6 +1969,7 @@ public class EnumDescriptorProto__Builder {
     public func build() { EnumDescriptorProto(this) }
 }
 
+const _EnumValueDescriptorProto__typeName = "google.protobuf.EnumValueDescriptorProto"
 public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDescriptorProto> {
     private var p_name: ?String
     private var p_number: ?Int32
@@ -1896,15 +2001,19 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearNumber() { p_number = None; markDirty() }
     public prop hasNumber: Bool { get() { isPresent(p_number) } }
     public mut prop number: Int32 { get() { p_number.getOrThrow() } set(_x) { p_number = _x; markDirty() } }
+    public func tryGetNumber() { p_number }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: EnumValueOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
+    public func getTypeName(): String { _EnumValueDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -1931,10 +2040,10 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
         p_options.removeFrom(this)
     }
 
-    public operator func !=(src: EnumValueDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as EnumValueDescriptorProto == this }
     public operator func ==(src: EnumValueDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && p_number == src.p_number && p_options.data == src.p_options.data
+        m_innerEquals(src) && p_name == src.p_name && p_number == src.p_number &&
+        p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: EnumValueDescriptorProto): EnumValueDescriptorProto {
@@ -2003,6 +2112,7 @@ public class EnumValueDescriptorProto__Builder {
     public func build() { EnumValueDescriptorProto(this) }
 }
 
+const _ServiceDescriptorProto__typeName = "google.protobuf.ServiceDescriptorProto"
 public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescriptorProto> {
     private var p_name: ?String
     public let method: RepeatedMessage<MethodDescriptorProto>
@@ -2035,11 +2145,14 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: ServiceOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
+    public func getTypeName(): String { _ServiceDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -2066,10 +2179,9 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
         p_options.removeFrom(this)
     }
 
-    public operator func !=(src: ServiceDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as ServiceDescriptorProto == this }
     public operator func ==(src: ServiceDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && method == src.method && p_options.data == src.p_options.data
+        m_innerEquals(src) && p_name == src.p_name && method == src.method && p_options.data == src.p_options.data
     }
 
     public func copyFrom(src: ServiceDescriptorProto): ServiceDescriptorProto {
@@ -2138,6 +2250,7 @@ public class ServiceDescriptorProto__Builder {
     public func build() { ServiceDescriptorProto(this) }
 }
 
+const _MethodDescriptorProto__typeName = "google.protobuf.MethodDescriptorProto"
 public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescriptorProto> {
     private var p_name: ?String
     private var p_inputType: ?String
@@ -2185,31 +2298,39 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
     public func clearName() { p_name = None; markDirty() }
     public prop hasName: Bool { get() { isPresent(p_name) } }
     public mut prop name: String { get() { p_name.getOrThrow() } set(_x) { p_name = _x; markDirty() } }
+    public func tryGetName() { p_name }
 
     public func clearInputType() { p_inputType = None; markDirty() }
     public prop hasInputType: Bool { get() { isPresent(p_inputType) } }
     public mut prop inputType: String { get() { p_inputType.getOrThrow() } set(_x) { p_inputType = _x; markDirty() } }
+    public func tryGetInputType() { p_inputType }
 
     public func clearOutputType() { p_outputType = None; markDirty() }
     public prop hasOutputType: Bool { get() { isPresent(p_outputType) } }
     public mut prop outputType: String { get() { p_outputType.getOrThrow() } set(_x) { p_outputType = _x; markDirty() } }
+    public func tryGetOutputType() { p_outputType }
 
     public func clearOptions() { p_options.removeFrom(this); markDirty() }
     public prop hasOptions: Bool { get() { isPresent(p_options.data) } }
     public mut prop options: MethodOptions { get() { p_options.data.getOrThrow() } set(_v) { p_options.set(this, _v); markDirty() } }
+    public func tryGetOptions() { p_options.data }
 
     public func clearClientStreaming() { p_clientStreaming = None; markDirty() }
     public prop hasClientStreaming: Bool { get() { isPresent(p_clientStreaming) } }
     public mut prop clientStreaming: Bool { get() { p_clientStreaming ?? false } set(_x) { p_clientStreaming = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetClientStreaming() { p_clientStreaming }
 
     public func clearServerStreaming() { p_serverStreaming = None; markDirty() }
     public prop hasServerStreaming: Bool { get() { isPresent(p_serverStreaming) } }
     public mut prop serverStreaming: Bool { get() { p_serverStreaming ?? false } set(_x) { p_serverStreaming = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetServerStreaming() { p_serverStreaming }
 
     public func clearFuncName() { p_funcName = None; markDirty() }
     public prop hasFuncName: Bool { get() { isPresent(p_funcName) } }
     public mut prop funcName: String { get() { p_funcName.getOrThrow() } set(_x) { p_funcName = _x; markDirty() } }
+    public func tryGetFuncName() { p_funcName }
 
+    public func getTypeName(): String { _MethodDescriptorProto__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_name) { _x += 1 + binSize(_v) }
@@ -2249,12 +2370,12 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         p_funcName = None
     }
 
-    public operator func !=(src: MethodDescriptorProto): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as MethodDescriptorProto == this }
     public operator func ==(src: MethodDescriptorProto): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_name == src.p_name && p_inputType == src.p_inputType && p_outputType == src.p_outputType &&
-        p_options.data == src.p_options.data && p_clientStreaming == src.p_clientStreaming &&
-        p_serverStreaming == src.p_serverStreaming && p_funcName == src.p_funcName
+        m_innerEquals(src) && p_name == src.p_name && p_inputType == src.p_inputType &&
+        p_outputType == src.p_outputType && p_options.data == src.p_options.data &&
+        p_clientStreaming == src.p_clientStreaming && p_serverStreaming == src.p_serverStreaming &&
+        p_funcName == src.p_funcName
     }
 
     public func copyFrom(src: MethodDescriptorProto): MethodDescriptorProto {
@@ -2351,7 +2472,7 @@ public class MethodDescriptorProto__Builder {
     public func build() { MethodDescriptorProto(this) }
 }
 
-public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
+public enum FileOptions_OptimizeMode <: Int32Enum & TypedEnum<FileOptions_OptimizeMode> {
     SPEED | CODE_SIZE | LITE_RUNTIME
 
     public func value(): Int32 {
@@ -2396,8 +2517,11 @@ public enum FileOptions_OptimizeMode <: Enum<FileOptions_OptimizeMode> {
             case _ => throw UnmatchedEnumStringException("FileOptions_OptimizeMode", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.FileOptions.OptimizeMode" }
 }
 
+const _FileOptions__typeName = "google.protobuf.FileOptions"
 public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     private var p_javaPackage: ?String
     private var p_javaOuterClassname: ?String
@@ -2501,83 +2625,104 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
     public func clearJavaPackage() { p_javaPackage = None; markDirty() }
     public prop hasJavaPackage: Bool { get() { isPresent(p_javaPackage) } }
     public mut prop javaPackage: String { get() { p_javaPackage.getOrThrow() } set(_x) { p_javaPackage = _x; markDirty() } }
+    public func tryGetJavaPackage() { p_javaPackage }
 
     public func clearJavaOuterClassname() { p_javaOuterClassname = None; markDirty() }
     public prop hasJavaOuterClassname: Bool { get() { isPresent(p_javaOuterClassname) } }
     public mut prop javaOuterClassname: String { get() { p_javaOuterClassname.getOrThrow() } set(_x) { p_javaOuterClassname = _x; markDirty() } }
+    public func tryGetJavaOuterClassname() { p_javaOuterClassname }
 
     public func clearJavaMultipleFiles() { p_javaMultipleFiles = None; markDirty() }
     public prop hasJavaMultipleFiles: Bool { get() { isPresent(p_javaMultipleFiles) } }
     public mut prop javaMultipleFiles: Bool { get() { p_javaMultipleFiles ?? false } set(_x) { p_javaMultipleFiles = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetJavaMultipleFiles() { p_javaMultipleFiles }
 
     public func clearJavaGenerateEqualsAndHash() { p_javaGenerateEqualsAndHash = None; markDirty() }
     public prop hasJavaGenerateEqualsAndHash: Bool { get() { isPresent(p_javaGenerateEqualsAndHash) } }
     public mut prop javaGenerateEqualsAndHash: Bool { get() { p_javaGenerateEqualsAndHash.getOrThrow() } set(_x) { p_javaGenerateEqualsAndHash = _x; markDirty() } }
+    public func tryGetJavaGenerateEqualsAndHash() { p_javaGenerateEqualsAndHash }
 
     public func clearJavaStringCheckUtf8() { p_javaStringCheckUtf8 = None; markDirty() }
     public prop hasJavaStringCheckUtf8: Bool { get() { isPresent(p_javaStringCheckUtf8) } }
     public mut prop javaStringCheckUtf8: Bool { get() { p_javaStringCheckUtf8 ?? false } set(_x) { p_javaStringCheckUtf8 = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetJavaStringCheckUtf8() { p_javaStringCheckUtf8 }
 
     public func clearOptimizeFor() { p_optimizeFor = None; markDirty() }
     public prop hasOptimizeFor: Bool { get() { isPresent(p_optimizeFor) } }
     public mut prop optimizeFor: FileOptions_OptimizeMode { get() { p_optimizeFor ?? SPEED } set(_x) { p_optimizeFor = if (_x == SPEED) { None } else { _x }; markDirty() } }
+    public func tryGetOptimizeFor() { p_optimizeFor }
 
     public func clearGoPackage() { p_goPackage = None; markDirty() }
     public prop hasGoPackage: Bool { get() { isPresent(p_goPackage) } }
     public mut prop goPackage: String { get() { p_goPackage.getOrThrow() } set(_x) { p_goPackage = _x; markDirty() } }
+    public func tryGetGoPackage() { p_goPackage }
 
     public func clearCcGenericServices() { p_ccGenericServices = None; markDirty() }
     public prop hasCcGenericServices: Bool { get() { isPresent(p_ccGenericServices) } }
     public mut prop ccGenericServices: Bool { get() { p_ccGenericServices ?? false } set(_x) { p_ccGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetCcGenericServices() { p_ccGenericServices }
 
     public func clearJavaGenericServices() { p_javaGenericServices = None; markDirty() }
     public prop hasJavaGenericServices: Bool { get() { isPresent(p_javaGenericServices) } }
     public mut prop javaGenericServices: Bool { get() { p_javaGenericServices ?? false } set(_x) { p_javaGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetJavaGenericServices() { p_javaGenericServices }
 
     public func clearPyGenericServices() { p_pyGenericServices = None; markDirty() }
     public prop hasPyGenericServices: Bool { get() { isPresent(p_pyGenericServices) } }
     public mut prop pyGenericServices: Bool { get() { p_pyGenericServices ?? false } set(_x) { p_pyGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetPyGenericServices() { p_pyGenericServices }
 
     public func clearPhpGenericServices() { p_phpGenericServices = None; markDirty() }
     public prop hasPhpGenericServices: Bool { get() { isPresent(p_phpGenericServices) } }
     public mut prop phpGenericServices: Bool { get() { p_phpGenericServices ?? false } set(_x) { p_phpGenericServices = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetPhpGenericServices() { p_phpGenericServices }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
     public func clearCcEnableArenas() { p_ccEnableArenas = None; markDirty() }
     public prop hasCcEnableArenas: Bool { get() { isPresent(p_ccEnableArenas) } }
     public mut prop ccEnableArenas: Bool { get() { p_ccEnableArenas ?? true } set(_x) { p_ccEnableArenas = if (_x == true) { None } else { _x }; markDirty() } }
+    public func tryGetCcEnableArenas() { p_ccEnableArenas }
 
     public func clearObjcClassPrefix() { p_objcClassPrefix = None; markDirty() }
     public prop hasObjcClassPrefix: Bool { get() { isPresent(p_objcClassPrefix) } }
     public mut prop objcClassPrefix: String { get() { p_objcClassPrefix.getOrThrow() } set(_x) { p_objcClassPrefix = _x; markDirty() } }
+    public func tryGetObjcClassPrefix() { p_objcClassPrefix }
 
     public func clearCsharpNamespace() { p_csharpNamespace = None; markDirty() }
     public prop hasCsharpNamespace: Bool { get() { isPresent(p_csharpNamespace) } }
     public mut prop csharpNamespace: String { get() { p_csharpNamespace.getOrThrow() } set(_x) { p_csharpNamespace = _x; markDirty() } }
+    public func tryGetCsharpNamespace() { p_csharpNamespace }
 
     public func clearSwiftPrefix() { p_swiftPrefix = None; markDirty() }
     public prop hasSwiftPrefix: Bool { get() { isPresent(p_swiftPrefix) } }
     public mut prop swiftPrefix: String { get() { p_swiftPrefix.getOrThrow() } set(_x) { p_swiftPrefix = _x; markDirty() } }
+    public func tryGetSwiftPrefix() { p_swiftPrefix }
 
     public func clearPhpClassPrefix() { p_phpClassPrefix = None; markDirty() }
     public prop hasPhpClassPrefix: Bool { get() { isPresent(p_phpClassPrefix) } }
     public mut prop phpClassPrefix: String { get() { p_phpClassPrefix.getOrThrow() } set(_x) { p_phpClassPrefix = _x; markDirty() } }
+    public func tryGetPhpClassPrefix() { p_phpClassPrefix }
 
     public func clearPhpNamespace() { p_phpNamespace = None; markDirty() }
     public prop hasPhpNamespace: Bool { get() { isPresent(p_phpNamespace) } }
     public mut prop phpNamespace: String { get() { p_phpNamespace.getOrThrow() } set(_x) { p_phpNamespace = _x; markDirty() } }
+    public func tryGetPhpNamespace() { p_phpNamespace }
 
     public func clearPhpMetadataNamespace() { p_phpMetadataNamespace = None; markDirty() }
     public prop hasPhpMetadataNamespace: Bool { get() { isPresent(p_phpMetadataNamespace) } }
     public mut prop phpMetadataNamespace: String { get() { p_phpMetadataNamespace.getOrThrow() } set(_x) { p_phpMetadataNamespace = _x; markDirty() } }
+    public func tryGetPhpMetadataNamespace() { p_phpMetadataNamespace }
 
     public func clearRubyPackage() { p_rubyPackage = None; markDirty() }
     public prop hasRubyPackage: Bool { get() { isPresent(p_rubyPackage) } }
     public mut prop rubyPackage: String { get() { p_rubyPackage.getOrThrow() } set(_x) { p_rubyPackage = _x; markDirty() } }
+    public func tryGetRubyPackage() { p_rubyPackage }
 
+    public func getTypeName(): String { _FileOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_javaPackage) { _x += 1 + binSize(_v) }
@@ -2664,10 +2809,9 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: FileOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as FileOptions == this }
     public operator func ==(src: FileOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_javaPackage == src.p_javaPackage && p_javaOuterClassname == src.p_javaOuterClassname &&
+        m_innerEquals(src) && p_javaPackage == src.p_javaPackage && p_javaOuterClassname == src.p_javaOuterClassname &&
         p_javaMultipleFiles == src.p_javaMultipleFiles &&
         p_javaGenerateEqualsAndHash == src.p_javaGenerateEqualsAndHash &&
         p_javaStringCheckUtf8 == src.p_javaStringCheckUtf8 && p_optimizeFor == src.p_optimizeFor &&
@@ -2873,6 +3017,7 @@ public class FileOptions__Builder {
     public func build() { FileOptions(this) }
 }
 
+const _MessageOptions__typeName = "google.protobuf.MessageOptions"
 public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
     private var p_messageSetWireFormat: ?Bool
     private var p_noStandardDescriptorAccessor: ?Bool
@@ -2912,19 +3057,24 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
     public func clearMessageSetWireFormat() { p_messageSetWireFormat = None; markDirty() }
     public prop hasMessageSetWireFormat: Bool { get() { isPresent(p_messageSetWireFormat) } }
     public mut prop messageSetWireFormat: Bool { get() { p_messageSetWireFormat ?? false } set(_x) { p_messageSetWireFormat = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetMessageSetWireFormat() { p_messageSetWireFormat }
 
     public func clearNoStandardDescriptorAccessor() { p_noStandardDescriptorAccessor = None; markDirty() }
     public prop hasNoStandardDescriptorAccessor: Bool { get() { isPresent(p_noStandardDescriptorAccessor) } }
     public mut prop noStandardDescriptorAccessor: Bool { get() { p_noStandardDescriptorAccessor ?? false } set(_x) { p_noStandardDescriptorAccessor = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetNoStandardDescriptorAccessor() { p_noStandardDescriptorAccessor }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
     public func clearMapEntry() { p_mapEntry = None; markDirty() }
     public prop hasMapEntry: Bool { get() { isPresent(p_mapEntry) } }
     public mut prop mapEntry: Bool { get() { p_mapEntry.getOrThrow() } set(_x) { p_mapEntry = _x; markDirty() } }
+    public func tryGetMapEntry() { p_mapEntry }
 
+    public func getTypeName(): String { _MessageOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_messageSetWireFormat) { _x += 1 + 1 }
@@ -2958,10 +3108,9 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: MessageOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as MessageOptions == this }
     public operator func ==(src: MessageOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_messageSetWireFormat == src.p_messageSetWireFormat &&
+        m_innerEquals(src) && p_messageSetWireFormat == src.p_messageSetWireFormat &&
         p_noStandardDescriptorAccessor == src.p_noStandardDescriptorAccessor && p_deprecated == src.p_deprecated &&
         p_mapEntry == src.p_mapEntry && uninterpretedOption == src.uninterpretedOption
     }
@@ -3046,7 +3195,7 @@ public class MessageOptions__Builder {
     public func build() { MessageOptions(this) }
 }
 
-public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
+public enum FieldOptions_CType <: Int32Enum & TypedEnum<FieldOptions_CType> {
     STRING | CORD | STRING_PIECE
 
     public func value(): Int32 {
@@ -3091,9 +3240,11 @@ public enum FieldOptions_CType <: Enum<FieldOptions_CType> {
             case _ => throw UnmatchedEnumStringException("FieldOptions_CType", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.FieldOptions.CType" }
 }
 
-public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
+public enum FieldOptions_JSType <: Int32Enum & TypedEnum<FieldOptions_JSType> {
     JS_NORMAL | JS_STRING | JS_NUMBER
 
     public func value(): Int32 {
@@ -3138,8 +3289,11 @@ public enum FieldOptions_JSType <: Enum<FieldOptions_JSType> {
             case _ => throw UnmatchedEnumStringException("FieldOptions_JSType", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.FieldOptions.JSType" }
 }
 
+const _FieldOptions__typeName = "google.protobuf.FieldOptions"
 public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
     private var p_ctype: ?FieldOptions_CType
     private var p_packed: ?Bool
@@ -3191,31 +3345,39 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
     public func clearCtype() { p_ctype = None; markDirty() }
     public prop hasCtype: Bool { get() { isPresent(p_ctype) } }
     public mut prop ctype: FieldOptions_CType { get() { p_ctype ?? STRING } set(_x) { p_ctype = if (_x == STRING) { None } else { _x }; markDirty() } }
+    public func tryGetCtype() { p_ctype }
 
     public func clearPacked() { p_packed = None; markDirty() }
     public prop hasPacked: Bool { get() { isPresent(p_packed) } }
     public mut prop packed: Bool { get() { p_packed.getOrThrow() } set(_x) { p_packed = _x; markDirty() } }
+    public func tryGetPacked() { p_packed }
 
     public func clearJstype() { p_jstype = None; markDirty() }
     public prop hasJstype: Bool { get() { isPresent(p_jstype) } }
     public mut prop jstype: FieldOptions_JSType { get() { p_jstype ?? JS_NORMAL } set(_x) { p_jstype = if (_x == JS_NORMAL) { None } else { _x }; markDirty() } }
+    public func tryGetJstype() { p_jstype }
 
     public func clearLazy() { p_lazy = None; markDirty() }
     public prop hasLazy: Bool { get() { isPresent(p_lazy) } }
     public mut prop lazy: Bool { get() { p_lazy ?? false } set(_x) { p_lazy = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetLazy() { p_lazy }
 
     public func clearUnverifiedLazy() { p_unverifiedLazy = None; markDirty() }
     public prop hasUnverifiedLazy: Bool { get() { isPresent(p_unverifiedLazy) } }
     public mut prop unverifiedLazy: Bool { get() { p_unverifiedLazy ?? false } set(_x) { p_unverifiedLazy = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetUnverifiedLazy() { p_unverifiedLazy }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
     public func clearWeak() { p_weak = None; markDirty() }
     public prop hasWeak: Bool { get() { isPresent(p_weak) } }
     public mut prop weak: Bool { get() { p_weak ?? false } set(_x) { p_weak = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetWeak() { p_weak }
 
+    public func getTypeName(): String { _FieldOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_ctype) { _x += 1 + varintSize(_v) }
@@ -3258,12 +3420,11 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: FieldOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as FieldOptions == this }
     public operator func ==(src: FieldOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_ctype == src.p_ctype && p_packed == src.p_packed && p_jstype == src.p_jstype && p_lazy == src.p_lazy &&
-        p_unverifiedLazy == src.p_unverifiedLazy && p_deprecated == src.p_deprecated && p_weak == src.p_weak &&
-        uninterpretedOption == src.uninterpretedOption
+        m_innerEquals(src) && p_ctype == src.p_ctype && p_packed == src.p_packed && p_jstype == src.p_jstype &&
+        p_lazy == src.p_lazy && p_unverifiedLazy == src.p_unverifiedLazy && p_deprecated == src.p_deprecated &&
+        p_weak == src.p_weak && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: FieldOptions): FieldOptions {
@@ -3367,6 +3528,7 @@ public class FieldOptions__Builder {
     public func build() { FieldOptions(this) }
 }
 
+const _OneofOptions__typeName = "google.protobuf.OneofOptions"
 public class OneofOptions <: MessageLite & TypedMessage<OneofOptions> {
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
 
@@ -3387,6 +3549,7 @@ public class OneofOptions <: MessageLite & TypedMessage<OneofOptions> {
         m_innerInit()
     }
 
+    public func getTypeName(): String { _OneofOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!uninterpretedOption.isEmpty()) { for (_i in uninterpretedOption) { _x += 2 + binSize(_i) } }
@@ -3407,10 +3570,9 @@ public class OneofOptions <: MessageLite & TypedMessage<OneofOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: OneofOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as OneofOptions == this }
     public operator func ==(src: OneofOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        uninterpretedOption == src.uninterpretedOption
+        m_innerEquals(src) && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: OneofOptions): OneofOptions {
@@ -3465,6 +3627,7 @@ public class OneofOptions__Builder {
     public func build() { OneofOptions(this) }
 }
 
+const _EnumOptions__typeName = "google.protobuf.EnumOptions"
 public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
     private var p_allowAlias: ?Bool
     private var p_deprecated: ?Bool
@@ -3496,11 +3659,14 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
     public func clearAllowAlias() { p_allowAlias = None; markDirty() }
     public prop hasAllowAlias: Bool { get() { isPresent(p_allowAlias) } }
     public mut prop allowAlias: Bool { get() { p_allowAlias.getOrThrow() } set(_x) { p_allowAlias = _x; markDirty() } }
+    public func tryGetAllowAlias() { p_allowAlias }
 
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
+    public func getTypeName(): String { _EnumOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_allowAlias) { _x += 1 + 1 }
@@ -3527,10 +3693,9 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: EnumOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as EnumOptions == this }
     public operator func ==(src: EnumOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_allowAlias == src.p_allowAlias && p_deprecated == src.p_deprecated &&
+        m_innerEquals(src) && p_allowAlias == src.p_allowAlias && p_deprecated == src.p_deprecated &&
         uninterpretedOption == src.uninterpretedOption
     }
 
@@ -3600,6 +3765,7 @@ public class EnumOptions__Builder {
     public func build() { EnumOptions(this) }
 }
 
+const _EnumValueOptions__typeName = "google.protobuf.EnumValueOptions"
 public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
     private var p_deprecated: ?Bool
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
@@ -3627,7 +3793,9 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
+    public func getTypeName(): String { _EnumValueOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_deprecated) { _x += 1 + 1 }
@@ -3651,10 +3819,9 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: EnumValueOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as EnumValueOptions == this }
     public operator func ==(src: EnumValueOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
+        m_innerEquals(src) && p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: EnumValueOptions): EnumValueOptions {
@@ -3716,6 +3883,7 @@ public class EnumValueOptions__Builder {
     public func build() { EnumValueOptions(this) }
 }
 
+const _ServiceOptions__typeName = "google.protobuf.ServiceOptions"
 public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
     private var p_deprecated: ?Bool
     public let uninterpretedOption: RepeatedMessage<UninterpretedOption>
@@ -3743,7 +3911,9 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
+    public func getTypeName(): String { _ServiceOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_deprecated) { _x += 2 + 1 }
@@ -3767,10 +3937,9 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: ServiceOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as ServiceOptions == this }
     public operator func ==(src: ServiceOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
+        m_innerEquals(src) && p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
     }
 
     public func copyFrom(src: ServiceOptions): ServiceOptions {
@@ -3832,7 +4001,7 @@ public class ServiceOptions__Builder {
     public func build() { ServiceOptions(this) }
 }
 
-public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLevel> {
+public enum MethodOptions_IdempotencyLevel <: Int32Enum & TypedEnum<MethodOptions_IdempotencyLevel> {
     IDEMPOTENCY_UNKNOWN | NO_SIDE_EFFECTS | IDEMPOTENT
 
     public func value(): Int32 {
@@ -3877,8 +4046,11 @@ public enum MethodOptions_IdempotencyLevel <: Enum<MethodOptions_IdempotencyLeve
             case _ => throw UnmatchedEnumStringException("MethodOptions_IdempotencyLevel", value)
         }
     }
+
+    public func getTypeName(): String { "google.protobuf.MethodOptions.IdempotencyLevel" }
 }
 
+const _MethodOptions__typeName = "google.protobuf.MethodOptions"
 public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
     private var p_deprecated: ?Bool
     private var p_idempotencyLevel: ?MethodOptions_IdempotencyLevel
@@ -3910,11 +4082,14 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
     public func clearDeprecated() { p_deprecated = None; markDirty() }
     public prop hasDeprecated: Bool { get() { isPresent(p_deprecated) } }
     public mut prop deprecated: Bool { get() { p_deprecated ?? false } set(_x) { p_deprecated = if (_x == false) { None } else { _x }; markDirty() } }
+    public func tryGetDeprecated() { p_deprecated }
 
     public func clearIdempotencyLevel() { p_idempotencyLevel = None; markDirty() }
     public prop hasIdempotencyLevel: Bool { get() { isPresent(p_idempotencyLevel) } }
     public mut prop idempotencyLevel: MethodOptions_IdempotencyLevel { get() { p_idempotencyLevel ?? IDEMPOTENCY_UNKNOWN } set(_x) { p_idempotencyLevel = if (_x == IDEMPOTENCY_UNKNOWN) { None } else { _x }; markDirty() } }
+    public func tryGetIdempotencyLevel() { p_idempotencyLevel }
 
+    public func getTypeName(): String { _MethodOptions__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_deprecated) { _x += 2 + 1 }
@@ -3941,10 +4116,9 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
         uninterpretedOption.clear()
     }
 
-    public operator func !=(src: MethodOptions): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as MethodOptions == this }
     public operator func ==(src: MethodOptions): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_deprecated == src.p_deprecated && p_idempotencyLevel == src.p_idempotencyLevel &&
+        m_innerEquals(src) && p_deprecated == src.p_deprecated && p_idempotencyLevel == src.p_idempotencyLevel &&
         uninterpretedOption == src.uninterpretedOption
     }
 
@@ -4014,6 +4188,7 @@ public class MethodOptions__Builder {
     public func build() { MethodOptions(this) }
 }
 
+const _UninterpretedOption_NamePart__typeName = "google.protobuf.UninterpretedOption.NamePart"
 public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<UninterpretedOption_NamePart> {
     private var p_namePart: ?String
     private var p_isExtension: ?Bool
@@ -4040,11 +4215,14 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
     public func clearNamePart() { p_namePart = None; markDirty() }
     public prop hasNamePart: Bool { get() { isPresent(p_namePart) } }
     public mut prop namePart: String { get() { p_namePart.getOrThrow() } set(_x) { p_namePart = _x; markDirty() } }
+    public func tryGetNamePart() { p_namePart }
 
     public func clearIsExtension() { p_isExtension = None; markDirty() }
     public prop hasIsExtension: Bool { get() { isPresent(p_isExtension) } }
     public mut prop isExtension: Bool { get() { p_isExtension.getOrThrow() } set(_x) { p_isExtension = _x; markDirty() } }
+    public func tryGetIsExtension() { p_isExtension }
 
+    public func getTypeName(): String { _UninterpretedOption_NamePart__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (let Some(_v) <- p_namePart) { _x += 1 + binSize(_v) }
@@ -4068,10 +4246,9 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
         p_isExtension = None
     }
 
-    public operator func !=(src: UninterpretedOption_NamePart): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as UninterpretedOption_NamePart == this }
     public operator func ==(src: UninterpretedOption_NamePart): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        p_namePart == src.p_namePart && p_isExtension == src.p_isExtension
+        m_innerEquals(src) && p_namePart == src.p_namePart && p_isExtension == src.p_isExtension
     }
 
     public func copyFrom(src: UninterpretedOption_NamePart): UninterpretedOption_NamePart {
@@ -4135,6 +4312,7 @@ public class UninterpretedOption_NamePart__Builder {
     public func build() { UninterpretedOption_NamePart(this) }
 }
 
+const _UninterpretedOption__typeName = "google.protobuf.UninterpretedOption"
 public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOption> {
     public let name: RepeatedMessage<UninterpretedOption_NamePart>
     private var p_identifierValue: ?String
@@ -4182,27 +4360,34 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
     public func clearIdentifierValue() { p_identifierValue = None; markDirty() }
     public prop hasIdentifierValue: Bool { get() { isPresent(p_identifierValue) } }
     public mut prop identifierValue: String { get() { p_identifierValue.getOrThrow() } set(_x) { p_identifierValue = _x; markDirty() } }
+    public func tryGetIdentifierValue() { p_identifierValue }
 
     public func clearPositiveIntValue() { p_positiveIntValue = None; markDirty() }
     public prop hasPositiveIntValue: Bool { get() { isPresent(p_positiveIntValue) } }
     public mut prop positiveIntValue: UInt64 { get() { p_positiveIntValue.getOrThrow() } set(_x) { p_positiveIntValue = _x; markDirty() } }
+    public func tryGetPositiveIntValue() { p_positiveIntValue }
 
     public func clearNegativeIntValue() { p_negativeIntValue = None; markDirty() }
     public prop hasNegativeIntValue: Bool { get() { isPresent(p_negativeIntValue) } }
     public mut prop negativeIntValue: Int64 { get() { p_negativeIntValue.getOrThrow() } set(_x) { p_negativeIntValue = _x; markDirty() } }
+    public func tryGetNegativeIntValue() { p_negativeIntValue }
 
     public func clearDoubleValue() { p_doubleValue = None; markDirty() }
     public prop hasDoubleValue: Bool { get() { isPresent(p_doubleValue) } }
     public mut prop doubleValue: Float64 { get() { p_doubleValue.getOrThrow() } set(_x) { p_doubleValue = _x; markDirty() } }
+    public func tryGetDoubleValue() { p_doubleValue }
 
     public func clearStringValue() { p_stringValue = None; markDirty() }
     public prop hasStringValue: Bool { get() { isPresent(p_stringValue) } }
     public mut prop stringValue: BytesSlice { get() { p_stringValue.getOrThrow() } set(_x) { p_stringValue = _x; markDirty() } }
+    public func tryGetStringValue() { p_stringValue }
 
     public func clearAggregateValue() { p_aggregateValue = None; markDirty() }
     public prop hasAggregateValue: Bool { get() { isPresent(p_aggregateValue) } }
     public mut prop aggregateValue: String { get() { p_aggregateValue.getOrThrow() } set(_x) { p_aggregateValue = _x; markDirty() } }
+    public func tryGetAggregateValue() { p_aggregateValue }
 
+    public func getTypeName(): String { _UninterpretedOption__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!name.isEmpty()) { for (_i in name) { _x += 1 + binSize(_i) } }
@@ -4242,12 +4427,12 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
         p_aggregateValue = None
     }
 
-    public operator func !=(src: UninterpretedOption): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as UninterpretedOption == this }
     public operator func ==(src: UninterpretedOption): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && name == src.name &&
-        p_identifierValue == src.p_identifierValue && p_positiveIntValue == src.p_positiveIntValue &&
-        p_negativeIntValue == src.p_negativeIntValue && p_doubleValue == src.p_doubleValue &&
-        p_stringValue == src.p_stringValue && p_aggregateValue == src.p_aggregateValue
+        m_innerEquals(src) && name == src.name && p_identifierValue == src.p_identifierValue &&
+        p_positiveIntValue == src.p_positiveIntValue && p_negativeIntValue == src.p_negativeIntValue &&
+        p_doubleValue == src.p_doubleValue && p_stringValue == src.p_stringValue &&
+        p_aggregateValue == src.p_aggregateValue
     }
 
     public func copyFrom(src: UninterpretedOption): UninterpretedOption {
@@ -4344,6 +4529,7 @@ public class UninterpretedOption__Builder {
     public func build() { UninterpretedOption(this) }
 }
 
+const _SourceCodeInfo_Location__typeName = "google.protobuf.SourceCodeInfo.Location"
 public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInfo_Location> {
     public let path: RepeatedField<Int32>
     public let span: RepeatedField<Int32>
@@ -4385,11 +4571,14 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
     public func clearLeadingComments() { p_leadingComments = None; markDirty() }
     public prop hasLeadingComments: Bool { get() { isPresent(p_leadingComments) } }
     public mut prop leadingComments: String { get() { p_leadingComments.getOrThrow() } set(_x) { p_leadingComments = _x; markDirty() } }
+    public func tryGetLeadingComments() { p_leadingComments }
 
     public func clearTrailingComments() { p_trailingComments = None; markDirty() }
     public prop hasTrailingComments: Bool { get() { isPresent(p_trailingComments) } }
     public mut prop trailingComments: String { get() { p_trailingComments.getOrThrow() } set(_x) { p_trailingComments = _x; markDirty() } }
+    public func tryGetTrailingComments() { p_trailingComments }
 
+    public func getTypeName(): String { _SourceCodeInfo_Location__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!path.isEmpty()) { var _s = 0; for (_i in path) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
@@ -4423,10 +4612,9 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         leadingDetachedComments.clear()
     }
 
-    public operator func !=(src: SourceCodeInfo_Location): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as SourceCodeInfo_Location == this }
     public operator func ==(src: SourceCodeInfo_Location): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && path == src.path &&
-        span == src.span && p_leadingComments == src.p_leadingComments &&
+        m_innerEquals(src) && path == src.path && span == src.span && p_leadingComments == src.p_leadingComments &&
         p_trailingComments == src.p_trailingComments && leadingDetachedComments == src.leadingDetachedComments
     }
 
@@ -4510,6 +4698,7 @@ public class SourceCodeInfo_Location__Builder {
     public func build() { SourceCodeInfo_Location(this) }
 }
 
+const _SourceCodeInfo__typeName = "google.protobuf.SourceCodeInfo"
 public class SourceCodeInfo <: MessageLite & TypedMessage<SourceCodeInfo> {
     public let location: RepeatedMessage<SourceCodeInfo_Location>
 
@@ -4530,6 +4719,7 @@ public class SourceCodeInfo <: MessageLite & TypedMessage<SourceCodeInfo> {
         m_innerInit()
     }
 
+    public func getTypeName(): String { _SourceCodeInfo__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!location.isEmpty()) { for (_i in location) { _x += 1 + binSize(_i) } }
@@ -4550,10 +4740,9 @@ public class SourceCodeInfo <: MessageLite & TypedMessage<SourceCodeInfo> {
         location.clear()
     }
 
-    public operator func !=(src: SourceCodeInfo): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as SourceCodeInfo == this }
     public operator func ==(src: SourceCodeInfo): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        location == src.location
+        m_innerEquals(src) && location == src.location
     }
 
     public func copyFrom(src: SourceCodeInfo): SourceCodeInfo {
@@ -4608,6 +4797,7 @@ public class SourceCodeInfo__Builder {
     public func build() { SourceCodeInfo(this) }
 }
 
+const _GeneratedCodeInfo_Annotation__typeName = "google.protobuf.GeneratedCodeInfo.Annotation"
 public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<GeneratedCodeInfo_Annotation> {
     public let path: RepeatedField<Int32>
     private var p_sourceFile: ?String
@@ -4643,15 +4833,19 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
     public func clearSourceFile() { p_sourceFile = None; markDirty() }
     public prop hasSourceFile: Bool { get() { isPresent(p_sourceFile) } }
     public mut prop sourceFile: String { get() { p_sourceFile.getOrThrow() } set(_x) { p_sourceFile = _x; markDirty() } }
+    public func tryGetSourceFile() { p_sourceFile }
 
     public func clearBegin() { p_begin = None; markDirty() }
     public prop hasBegin: Bool { get() { isPresent(p_begin) } }
     public mut prop begin: Int32 { get() { p_begin.getOrThrow() } set(_x) { p_begin = _x; markDirty() } }
+    public func tryGetBegin() { p_begin }
 
     public func clearEnd() { p_end = None; markDirty() }
     public prop hasEnd: Bool { get() { isPresent(p_end) } }
     public mut prop end: Int32 { get() { p_end.getOrThrow() } set(_x) { p_end = _x; markDirty() } }
+    public func tryGetEnd() { p_end }
 
+    public func getTypeName(): String { _GeneratedCodeInfo_Annotation__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!path.isEmpty()) { var _s = 0; for (_i in path) { _s += varintSize(_i) }; _x += 1 + varintSize(_s) + _s }
@@ -4681,10 +4875,10 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
         p_end = None
     }
 
-    public operator func !=(src: GeneratedCodeInfo_Annotation): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as GeneratedCodeInfo_Annotation == this }
     public operator func ==(src: GeneratedCodeInfo_Annotation): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && path == src.path &&
-        p_sourceFile == src.p_sourceFile && p_begin == src.p_begin && p_end == src.p_end
+        m_innerEquals(src) && path == src.path && p_sourceFile == src.p_sourceFile && p_begin == src.p_begin &&
+        p_end == src.p_end
     }
 
     public func copyFrom(src: GeneratedCodeInfo_Annotation): GeneratedCodeInfo_Annotation {
@@ -4760,6 +4954,7 @@ public class GeneratedCodeInfo_Annotation__Builder {
     public func build() { GeneratedCodeInfo_Annotation(this) }
 }
 
+const _GeneratedCodeInfo__typeName = "google.protobuf.GeneratedCodeInfo"
 public class GeneratedCodeInfo <: MessageLite & TypedMessage<GeneratedCodeInfo> {
     public let annotation: RepeatedMessage<GeneratedCodeInfo_Annotation>
 
@@ -4780,6 +4975,7 @@ public class GeneratedCodeInfo <: MessageLite & TypedMessage<GeneratedCodeInfo> 
         m_innerInit()
     }
 
+    public func getTypeName(): String { _GeneratedCodeInfo__typeName }
     protected func m_size(): Int64 {
         var _x = 0
         if (!annotation.isEmpty()) { for (_i in annotation) { _x += 1 + binSize(_i) } }
@@ -4800,10 +4996,9 @@ public class GeneratedCodeInfo <: MessageLite & TypedMessage<GeneratedCodeInfo> 
         annotation.clear()
     }
 
-    public operator func !=(src: GeneratedCodeInfo): Bool { !(this == src) }
+    public operator func ==(src: MessageLite): Bool { src as GeneratedCodeInfo == this }
     public operator func ==(src: GeneratedCodeInfo): Bool {
-        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
-        annotation == src.annotation
+        m_innerEquals(src) && annotation == src.annotation
     }
 
     public func copyFrom(src: GeneratedCodeInfo): GeneratedCodeInfo {

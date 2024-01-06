@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package example;
+
+message Person {
+    enum Gender {
+        Male = 1;
+        Female = 2;
+    }
+
+    required int32 id = 1;
+    required string name = 2;
+    optional string email = 3;
+    optional Gender gender = 4;
+
+    enum Hobby {
+        Sleep = 2;
+        Study = 3;
+        Work = 8;
+        Game = 9;
+    }
+    repeated Hobby hobby = 14;
+}
+
+message Class {
+    map<int32, Person> person = 1;
+    map<int32, string> name = 2;
+
+    repeated Person teacher = 4;
+}

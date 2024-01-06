@@ -98,7 +98,7 @@ extend RoArray<T> <: ToString where T <: ToString {
     }
 }
 
-extend RoArray<T> <: Hashable where T <: Byte {
+extend RoArray<T> <: Field where T <: Byte {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         for (v in data) {

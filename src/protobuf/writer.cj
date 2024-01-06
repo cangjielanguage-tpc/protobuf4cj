@@ -162,6 +162,11 @@ public interface BytesWriter {
         packVarint(val.size)
         appendBytes(unsafe { val.rawData() })
     }
+
+    func packBin(val: MessageLite) {
+        packVarint(val.size)
+        val.packi(this)
+    }
 }
 
 public class SimpleWriter <: BytesWriter {

@@ -1,7 +1,7 @@
 package protobuf
 
 /* interface of oneof groups */
-public interface OneofGroup <: ToString & Hashable {
+public interface OneofGroup <: Field {
     /* get which case name of oneof group, returns "" if `None`. */
     func which(): String
 

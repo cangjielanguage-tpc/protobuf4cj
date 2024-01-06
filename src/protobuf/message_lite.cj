@@ -1,7 +1,7 @@
 package protobuf
 
 /* abstract class of all the protobuf message. */
-public abstract class MessageLite <: ToString & Hashable {
+public abstract class MessageLite <: Field {
     var m_parents = Parents()
 
     private var m_cachedSize = -1
@@ -20,7 +20,7 @@ public abstract class MessageLite <: ToString & Hashable {
     public prop size: Int64 { get() {
         if (m_cachedSize == -1) {
             var sum = m_size()
-            for (u in unknownFields.getRawData()) {
+            for (u in unknownFields.data) {
                 sum += u.packSize()
             }
 
@@ -76,7 +76,7 @@ public abstract class MessageLite <: ToString & Hashable {
         }
 
         m_clear()
-        unknownFields.getRawData().clear()
+        unknownFields.data.clear()
         m_cachedSize = 0
         m_cachedHash = 0
         m_parents.markDirty()
@@ -95,6 +95,14 @@ public abstract class MessageLite <: ToString & Hashable {
     protected func m_innerInit() {
         unknownFields.setParent(this)
     }
+
+    protected func m_innerEquals(src: MessageLite): Bool {
+        hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields
+    }
+
+    public open func getTypeName(): String
+    public open operator func==(src: MessageLite): Bool
+    public open operator func!=(src: MessageLite): Bool { !(this == src) }
 
     /* unpack from bytes reader interface */
     public func unpacki(src: BytesReader): Unit
@@ -135,14 +143,14 @@ public abstract class MessageLite <: ToString & Hashable {
 
     /* pack unknownFields */
     protected func m_unknown<W>(out: W) where W <: BytesWriter {
-        for (field in unknownFields.getRawData()) { field.pack(out) }
+        for (field in unknownFields.data) { field.pack(out) }
     }
 
     /* unpack to repeated fields */
-    protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
+    protected static func s_add<T>(fields: RepeatedField<T>, val: T) where T <: Field { fields.appendDirty(val) }
     protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: MessageLite & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
-    protected static func s_add<K, V>(map: MapField<K, V>, key: K, val: V) where K <: Hashable & Equatable<K> { map.putDirty(key, val) }
-    protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Hashable & Equatable<K>, M <: MessageLite & TypedMessage<M> { map.putDirty(key, val) }
+    protected static func s_add<K, V>(map: MapField<K, V>, key: K, val: V) where K <: Field & Equatable<K>, V <: Field { map.putDirty(key, val) }
+    protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Field & Equatable<K>, M <: MessageLite & TypedMessage<M> { map.putDirty(key, val) }
 
     /* @Deprecated */
     protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseString()) }
@@ -154,7 +162,7 @@ public abstract class MessageLite <: ToString & Hashable {
 
         let app: UInt8 = if (tag <= 15) { UInt8(tag) << 3 | PREFIXED } else { 0 }
 
-        for (s in fields.getRawData()) {
+        for (s in fields.data) {
             if (app > 0) { out.append(app) } else { out.packTag(tag, PREFIXED) }
             out.packBin(s)
         }
@@ -165,7 +173,7 @@ public abstract class MessageLite <: ToString & Hashable {
     protected static func s_size(rf: RepeatedString, tagSize: Int64) {
         var sum = tagSize * rf.size
 
-        for (bs in rf.getRawData()) {
+        for (bs in rf.data) {
             sum += binSize(bs)
         }
 
@@ -174,11 +182,8 @@ public abstract class MessageLite <: ToString & Hashable {
 
     /* init member field's parent */
     protected func m_init(rf: MessageLite) { rf.m_parents.insert(this) }
-    protected func m_init<T>(rf: RepeatedField<T>) { rf.setParent(this) }
-    protected func m_init<T>(rf: RepeatedMessage<T>) where T <: MessageLite & TypedMessage<T> { rf.setParent(this) }
+    protected func m_init(rf: Repeated) { rf.setParent(this) }
     protected func m_init<T>(rf: T): T where T <: OneofGroup { rf.mutableData()?.m_parents.insert(this); rf }
-    protected func m_init<K, V>(rf: MapField<K, V>) where K <: Hashable & Equatable<K> { rf.setParent(this) }
-    protected func m_init<K, V>(rf: MapMessage<K, V>) where K <: Hashable & Equatable<K>, V <: MessageLite & TypedMessage<V> { rf.setParent(this) }
 
     /* assign member old to new, reset their parent */
     protected func m_assign(old: MessageLite, new: MessageLite) { old.m_parents.remove(this); new.m_parents.insert(this) }

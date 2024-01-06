@@ -4,7 +4,7 @@
 
 package protobuf
 
-public class MessageUnknownField <: ToString & Hashable & Equatable<MessageUnknownField> {
+public class MessageUnknownField <: Field & Equatable<MessageUnknownField> {
     public MessageUnknownField(
         /** The tag number. */
         public let tag: Tag,
