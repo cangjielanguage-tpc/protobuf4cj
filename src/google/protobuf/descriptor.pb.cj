@@ -48,6 +48,12 @@ public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> 
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields && file == src.file
     }
 
+    public func mergeFrom(src: FileDescriptorSet): Unit {
+        if (!src.file.isEmpty()) { file.appendAll(src.file) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: FileDescriptorSet): FileDescriptorSet {
         file.copyFrom(src.file)
         m_innerCopyFrom(src)
@@ -257,6 +263,23 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
         p_sourceCodeInfo.data == src.p_sourceCodeInfo.data && p_syntax == src.p_syntax
     }
 
+    public func mergeFrom(src: FileDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (let Some(_v) <- src.p_package) { p_package = _v }
+        if (!src.dependency.isEmpty()) { dependency.appendAll(src.dependency) }
+        if (!src.publicDependency.isEmpty()) { publicDependency.appendAll(src.publicDependency) }
+        if (!src.weakDependency.isEmpty()) { weakDependency.appendAll(src.weakDependency) }
+        if (!src.messageType.isEmpty()) { messageType.appendAll(src.messageType) }
+        if (!src.enumType.isEmpty()) { enumType.appendAll(src.enumType) }
+        if (!src.service.isEmpty()) { service.appendAll(src.service) }
+        if (!src.extension.isEmpty()) { extension.appendAll(src.extension) }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (let Some(_v) <- src.p_sourceCodeInfo.data) { p_sourceCodeInfo.getOrDefault(this).mergeFrom(_v) }
+        if (let Some(_v) <- src.p_syntax) { p_syntax = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: FileDescriptorProto): FileDescriptorProto {
         p_name = src.p_name
         p_package = src.p_package
@@ -458,6 +481,14 @@ public class DescriptorProto_ExtensionRange <: MessageLite & TypedMessage<Descri
         p_start == src.p_start && p_end == src.p_end && p_options.data == src.p_options.data
     }
 
+    public func mergeFrom(src: DescriptorProto_ExtensionRange): Unit {
+        if (let Some(_v) <- src.p_start) { p_start = _v }
+        if (let Some(_v) <- src.p_end) { p_end = _v }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: DescriptorProto_ExtensionRange): DescriptorProto_ExtensionRange {
         p_start = src.p_start
         p_end = src.p_end
@@ -582,6 +613,13 @@ public class DescriptorProto_ReservedRange <: MessageLite & TypedMessage<Descrip
     public operator func ==(src: DescriptorProto_ReservedRange): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_start == src.p_start && p_end == src.p_end
+    }
+
+    public func mergeFrom(src: DescriptorProto_ReservedRange): Unit {
+        if (let Some(_v) <- src.p_start) { p_start = _v }
+        if (let Some(_v) <- src.p_end) { p_end = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: DescriptorProto_ReservedRange): DescriptorProto_ReservedRange {
@@ -773,6 +811,21 @@ public class DescriptorProto <: MessageLite & TypedMessage<DescriptorProto> {
         reservedName == src.reservedName
     }
 
+    public func mergeFrom(src: DescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (!src.field.isEmpty()) { field.appendAll(src.field) }
+        if (!src.extension.isEmpty()) { extension.appendAll(src.extension) }
+        if (!src.nestedType.isEmpty()) { nestedType.appendAll(src.nestedType) }
+        if (!src.enumType.isEmpty()) { enumType.appendAll(src.enumType) }
+        if (!src.extensionRange.isEmpty()) { extensionRange.appendAll(src.extensionRange) }
+        if (!src.oneofDecl.isEmpty()) { oneofDecl.appendAll(src.oneofDecl) }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (!src.reservedRange.isEmpty()) { reservedRange.appendAll(src.reservedRange) }
+        if (!src.reservedName.isEmpty()) { reservedName.appendAll(src.reservedName) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: DescriptorProto): DescriptorProto {
         p_name = src.p_name
         field.copyFrom(src.field)
@@ -932,6 +985,12 @@ public class ExtensionRangeOptions <: MessageLite & TypedMessage<ExtensionRangeO
     public operator func ==(src: ExtensionRangeOptions): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         uninterpretedOption == src.uninterpretedOption
+    }
+
+    public func mergeFrom(src: ExtensionRangeOptions): Unit {
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: ExtensionRangeOptions): ExtensionRangeOptions {
@@ -1330,6 +1389,23 @@ public class FieldDescriptorProto <: MessageLite & TypedMessage<FieldDescriptorP
         p_proto3Optional == src.p_proto3Optional && mapEntry == src.mapEntry
     }
 
+    public func mergeFrom(src: FieldDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (let Some(_v) <- src.p_number) { p_number = _v }
+        if (let Some(_v) <- src.p_label) { p_label = _v }
+        if (let Some(_v) <- src.p_type) { p_type = _v }
+        if (let Some(_v) <- src.p_typeName) { p_typeName = _v }
+        if (let Some(_v) <- src.p_extendee) { p_extendee = _v }
+        if (let Some(_v) <- src.p_defaultValue) { p_defaultValue = _v }
+        if (let Some(_v) <- src.p_oneofIndex) { p_oneofIndex = _v }
+        if (let Some(_v) <- src.p_jsonName) { p_jsonName = _v }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (let Some(_v) <- src.p_proto3Optional) { p_proto3Optional = _v }
+        if (!src.mapEntry.isEmpty()) { mapEntry.appendAll(src.mapEntry) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: FieldDescriptorProto): FieldDescriptorProto {
         p_name = src.p_name
         p_number = src.p_number
@@ -1520,6 +1596,13 @@ public class OneofDescriptorProto <: MessageLite & TypedMessage<OneofDescriptorP
         p_name == src.p_name && p_options.data == src.p_options.data
     }
 
+    public func mergeFrom(src: OneofDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: OneofDescriptorProto): OneofDescriptorProto {
         p_name = src.p_name
         p_options.copyFrom(this, src.p_options.data)
@@ -1637,6 +1720,13 @@ public class EnumDescriptorProto_EnumReservedRange <: MessageLite & TypedMessage
     public operator func ==(src: EnumDescriptorProto_EnumReservedRange): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_start == src.p_start && p_end == src.p_end
+    }
+
+    public func mergeFrom(src: EnumDescriptorProto_EnumReservedRange): Unit {
+        if (let Some(_v) <- src.p_start) { p_start = _v }
+        if (let Some(_v) <- src.p_end) { p_end = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: EnumDescriptorProto_EnumReservedRange): EnumDescriptorProto_EnumReservedRange {
@@ -1783,6 +1873,16 @@ public class EnumDescriptorProto <: MessageLite & TypedMessage<EnumDescriptorPro
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_name == src.p_name && value == src.value && p_options.data == src.p_options.data &&
         reservedRange == src.reservedRange && reservedName == src.reservedName
+    }
+
+    public func mergeFrom(src: EnumDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (!src.value.isEmpty()) { value.appendAll(src.value) }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (!src.reservedRange.isEmpty()) { reservedRange.appendAll(src.reservedRange) }
+        if (!src.reservedName.isEmpty()) { reservedName.appendAll(src.reservedName) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: EnumDescriptorProto): EnumDescriptorProto {
@@ -1937,6 +2037,14 @@ public class EnumValueDescriptorProto <: MessageLite & TypedMessage<EnumValueDes
         p_name == src.p_name && p_number == src.p_number && p_options.data == src.p_options.data
     }
 
+    public func mergeFrom(src: EnumValueDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (let Some(_v) <- src.p_number) { p_number = _v }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: EnumValueDescriptorProto): EnumValueDescriptorProto {
         p_name = src.p_name
         p_number = src.p_number
@@ -2070,6 +2178,14 @@ public class ServiceDescriptorProto <: MessageLite & TypedMessage<ServiceDescrip
     public operator func ==(src: ServiceDescriptorProto): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_name == src.p_name && method == src.method && p_options.data == src.p_options.data
+    }
+
+    public func mergeFrom(src: ServiceDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (!src.method.isEmpty()) { method.appendAll(src.method) }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: ServiceDescriptorProto): ServiceDescriptorProto {
@@ -2255,6 +2371,18 @@ public class MethodDescriptorProto <: MessageLite & TypedMessage<MethodDescripto
         p_name == src.p_name && p_inputType == src.p_inputType && p_outputType == src.p_outputType &&
         p_options.data == src.p_options.data && p_clientStreaming == src.p_clientStreaming &&
         p_serverStreaming == src.p_serverStreaming && p_funcName == src.p_funcName
+    }
+
+    public func mergeFrom(src: MethodDescriptorProto): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (let Some(_v) <- src.p_inputType) { p_inputType = _v }
+        if (let Some(_v) <- src.p_outputType) { p_outputType = _v }
+        if (let Some(_v) <- src.p_options.data) { p_options.getOrDefault(this).mergeFrom(_v) }
+        if (let Some(_v) <- src.p_clientStreaming) { p_clientStreaming = _v }
+        if (let Some(_v) <- src.p_serverStreaming) { p_serverStreaming = _v }
+        if (let Some(_v) <- src.p_funcName) { p_funcName = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: MethodDescriptorProto): MethodDescriptorProto {
@@ -2681,6 +2809,32 @@ public class FileOptions <: MessageLite & TypedMessage<FileOptions> {
         uninterpretedOption == src.uninterpretedOption
     }
 
+    public func mergeFrom(src: FileOptions): Unit {
+        if (let Some(_v) <- src.p_javaPackage) { p_javaPackage = _v }
+        if (let Some(_v) <- src.p_javaOuterClassname) { p_javaOuterClassname = _v }
+        if (let Some(_v) <- src.p_javaMultipleFiles) { p_javaMultipleFiles = _v }
+        if (let Some(_v) <- src.p_javaGenerateEqualsAndHash) { p_javaGenerateEqualsAndHash = _v }
+        if (let Some(_v) <- src.p_javaStringCheckUtf8) { p_javaStringCheckUtf8 = _v }
+        if (let Some(_v) <- src.p_optimizeFor) { p_optimizeFor = _v }
+        if (let Some(_v) <- src.p_goPackage) { p_goPackage = _v }
+        if (let Some(_v) <- src.p_ccGenericServices) { p_ccGenericServices = _v }
+        if (let Some(_v) <- src.p_javaGenericServices) { p_javaGenericServices = _v }
+        if (let Some(_v) <- src.p_pyGenericServices) { p_pyGenericServices = _v }
+        if (let Some(_v) <- src.p_phpGenericServices) { p_phpGenericServices = _v }
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (let Some(_v) <- src.p_ccEnableArenas) { p_ccEnableArenas = _v }
+        if (let Some(_v) <- src.p_objcClassPrefix) { p_objcClassPrefix = _v }
+        if (let Some(_v) <- src.p_csharpNamespace) { p_csharpNamespace = _v }
+        if (let Some(_v) <- src.p_swiftPrefix) { p_swiftPrefix = _v }
+        if (let Some(_v) <- src.p_phpClassPrefix) { p_phpClassPrefix = _v }
+        if (let Some(_v) <- src.p_phpNamespace) { p_phpNamespace = _v }
+        if (let Some(_v) <- src.p_phpMetadataNamespace) { p_phpMetadataNamespace = _v }
+        if (let Some(_v) <- src.p_rubyPackage) { p_rubyPackage = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: FileOptions): FileOptions {
         p_javaPackage = src.p_javaPackage
         p_javaOuterClassname = src.p_javaOuterClassname
@@ -2964,6 +3118,16 @@ public class MessageOptions <: MessageLite & TypedMessage<MessageOptions> {
         p_messageSetWireFormat == src.p_messageSetWireFormat &&
         p_noStandardDescriptorAccessor == src.p_noStandardDescriptorAccessor && p_deprecated == src.p_deprecated &&
         p_mapEntry == src.p_mapEntry && uninterpretedOption == src.uninterpretedOption
+    }
+
+    public func mergeFrom(src: MessageOptions): Unit {
+        if (let Some(_v) <- src.p_messageSetWireFormat) { p_messageSetWireFormat = _v }
+        if (let Some(_v) <- src.p_noStandardDescriptorAccessor) { p_noStandardDescriptorAccessor = _v }
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (let Some(_v) <- src.p_mapEntry) { p_mapEntry = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: MessageOptions): MessageOptions {
@@ -3266,6 +3430,19 @@ public class FieldOptions <: MessageLite & TypedMessage<FieldOptions> {
         uninterpretedOption == src.uninterpretedOption
     }
 
+    public func mergeFrom(src: FieldOptions): Unit {
+        if (let Some(_v) <- src.p_ctype) { p_ctype = _v }
+        if (let Some(_v) <- src.p_packed) { p_packed = _v }
+        if (let Some(_v) <- src.p_jstype) { p_jstype = _v }
+        if (let Some(_v) <- src.p_lazy) { p_lazy = _v }
+        if (let Some(_v) <- src.p_unverifiedLazy) { p_unverifiedLazy = _v }
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (let Some(_v) <- src.p_weak) { p_weak = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: FieldOptions): FieldOptions {
         p_ctype = src.p_ctype
         p_packed = src.p_packed
@@ -3413,6 +3590,12 @@ public class OneofOptions <: MessageLite & TypedMessage<OneofOptions> {
         uninterpretedOption == src.uninterpretedOption
     }
 
+    public func mergeFrom(src: OneofOptions): Unit {
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: OneofOptions): OneofOptions {
         uninterpretedOption.copyFrom(src.uninterpretedOption)
         m_innerCopyFrom(src)
@@ -3532,6 +3715,14 @@ public class EnumOptions <: MessageLite & TypedMessage<EnumOptions> {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_allowAlias == src.p_allowAlias && p_deprecated == src.p_deprecated &&
         uninterpretedOption == src.uninterpretedOption
+    }
+
+    public func mergeFrom(src: EnumOptions): Unit {
+        if (let Some(_v) <- src.p_allowAlias) { p_allowAlias = _v }
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: EnumOptions): EnumOptions {
@@ -3657,6 +3848,13 @@ public class EnumValueOptions <: MessageLite & TypedMessage<EnumValueOptions> {
         p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
     }
 
+    public func mergeFrom(src: EnumValueOptions): Unit {
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: EnumValueOptions): EnumValueOptions {
         p_deprecated = src.p_deprecated
         uninterpretedOption.copyFrom(src.uninterpretedOption)
@@ -3771,6 +3969,13 @@ public class ServiceOptions <: MessageLite & TypedMessage<ServiceOptions> {
     public operator func ==(src: ServiceOptions): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_deprecated == src.p_deprecated && uninterpretedOption == src.uninterpretedOption
+    }
+
+    public func mergeFrom(src: ServiceOptions): Unit {
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: ServiceOptions): ServiceOptions {
@@ -3948,6 +4153,14 @@ public class MethodOptions <: MessageLite & TypedMessage<MethodOptions> {
         uninterpretedOption == src.uninterpretedOption
     }
 
+    public func mergeFrom(src: MethodOptions): Unit {
+        if (let Some(_v) <- src.p_deprecated) { p_deprecated = _v }
+        if (let Some(_v) <- src.p_idempotencyLevel) { p_idempotencyLevel = _v }
+        if (!src.uninterpretedOption.isEmpty()) { uninterpretedOption.appendAll(src.uninterpretedOption) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: MethodOptions): MethodOptions {
         p_deprecated = src.p_deprecated
         p_idempotencyLevel = src.p_idempotencyLevel
@@ -4072,6 +4285,13 @@ public class UninterpretedOption_NamePart <: MessageLite & TypedMessage<Uninterp
     public operator func ==(src: UninterpretedOption_NamePart): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_namePart == src.p_namePart && p_isExtension == src.p_isExtension
+    }
+
+    public func mergeFrom(src: UninterpretedOption_NamePart): Unit {
+        if (let Some(_v) <- src.p_namePart) { p_namePart = _v }
+        if (let Some(_v) <- src.p_isExtension) { p_isExtension = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: UninterpretedOption_NamePart): UninterpretedOption_NamePart {
@@ -4248,6 +4468,18 @@ public class UninterpretedOption <: MessageLite & TypedMessage<UninterpretedOpti
         p_identifierValue == src.p_identifierValue && p_positiveIntValue == src.p_positiveIntValue &&
         p_negativeIntValue == src.p_negativeIntValue && p_doubleValue == src.p_doubleValue &&
         p_stringValue == src.p_stringValue && p_aggregateValue == src.p_aggregateValue
+    }
+
+    public func mergeFrom(src: UninterpretedOption): Unit {
+        if (!src.name.isEmpty()) { name.appendAll(src.name) }
+        if (let Some(_v) <- src.p_identifierValue) { p_identifierValue = _v }
+        if (let Some(_v) <- src.p_positiveIntValue) { p_positiveIntValue = _v }
+        if (let Some(_v) <- src.p_negativeIntValue) { p_negativeIntValue = _v }
+        if (let Some(_v) <- src.p_doubleValue) { p_doubleValue = _v }
+        if (let Some(_v) <- src.p_stringValue) { p_stringValue = _v }
+        if (let Some(_v) <- src.p_aggregateValue) { p_aggregateValue = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: UninterpretedOption): UninterpretedOption {
@@ -4430,6 +4662,16 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         p_trailingComments == src.p_trailingComments && leadingDetachedComments == src.leadingDetachedComments
     }
 
+    public func mergeFrom(src: SourceCodeInfo_Location): Unit {
+        if (!src.path.isEmpty()) { path.appendAll(src.path) }
+        if (!src.span.isEmpty()) { span.appendAll(src.span) }
+        if (let Some(_v) <- src.p_leadingComments) { p_leadingComments = _v }
+        if (let Some(_v) <- src.p_trailingComments) { p_trailingComments = _v }
+        if (!src.leadingDetachedComments.isEmpty()) { leadingDetachedComments.appendAll(src.leadingDetachedComments) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: SourceCodeInfo_Location): SourceCodeInfo_Location {
         path.copyFrom(src.path)
         span.copyFrom(src.span)
@@ -4554,6 +4796,12 @@ public class SourceCodeInfo <: MessageLite & TypedMessage<SourceCodeInfo> {
     public operator func ==(src: SourceCodeInfo): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         location == src.location
+    }
+
+    public func mergeFrom(src: SourceCodeInfo): Unit {
+        if (!src.location.isEmpty()) { location.appendAll(src.location) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: SourceCodeInfo): SourceCodeInfo {
@@ -4687,6 +4935,15 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
         p_sourceFile == src.p_sourceFile && p_begin == src.p_begin && p_end == src.p_end
     }
 
+    public func mergeFrom(src: GeneratedCodeInfo_Annotation): Unit {
+        if (!src.path.isEmpty()) { path.appendAll(src.path) }
+        if (let Some(_v) <- src.p_sourceFile) { p_sourceFile = _v }
+        if (let Some(_v) <- src.p_begin) { p_begin = _v }
+        if (let Some(_v) <- src.p_end) { p_end = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: GeneratedCodeInfo_Annotation): GeneratedCodeInfo_Annotation {
         path.copyFrom(src.path)
         p_sourceFile = src.p_sourceFile
@@ -4804,6 +5061,12 @@ public class GeneratedCodeInfo <: MessageLite & TypedMessage<GeneratedCodeInfo> 
     public operator func ==(src: GeneratedCodeInfo): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         annotation == src.annotation
+    }
+
+    public func mergeFrom(src: GeneratedCodeInfo): Unit {
+        if (!src.annotation.isEmpty()) { annotation.appendAll(src.annotation) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: GeneratedCodeInfo): GeneratedCodeInfo {

@@ -525,6 +525,36 @@ func genCodeMessageFieldEquat(typeName: String, fields: RepeatedMessage<FieldDes
     append("    }\n")
 }
 
+/* message mergeFrom */
+func genCodeMessageFieldMergeFrom(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
+    let append: (String) -> Unit = helper.outbuf.append
+
+    append("\n")
+    append("    public func mergeFrom(src: ${typeName}): Unit {\n")
+
+    /* normal fields hashCode */
+    for (field in fields where !field.hasOneofIndex) {
+        if (field.label == LABEL_REPEATED) {
+            let name = field.propName
+            let mergeFunc = if (field.type_ == TYPE_MESSAGE && field.typeName.endsWith(">")) { "putAll" } else { "appendAll" }
+            append("        if (!src.${name}.isEmpty()) { ${name}.${mergeFunc}(src.${name}) }\n")
+        } else if (field.type_ == TYPE_MESSAGE) {
+            append("        if (let Some(_v) <- src.p_${field.name}.data) { p_${field.name}.getOrDefault(this).mergeFrom(_v) }\n")
+        } else {
+            append("        if (${namedNoEmpty("src.p_${field.name}", field)}) { p_${field.name} = src.p_${field.name} }\n")
+        }
+    }
+
+    /* oneof fields hashCode */
+    for ((name, ofields) in helper.oneofDecl) {
+        append("        if (!src.p_${name}.isEmpty()) { ${getMessagePropName(name)} = src.p_${name}.clone() }\n")
+    }
+
+    append("        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }\n")
+    append("        markDirty()\n")
+    append("    }\n")
+}
+
 /* message copyFrom */
 func genCodeMessageFieldCopyFrom(typeName: String, fields: RepeatedMessage<FieldDescriptorProto>, helper: GenCodeHelper): Unit {
     let append: (String) -> Unit = helper.outbuf.append
@@ -698,6 +728,9 @@ func genCodeMessageField(typeName: String, fields: RepeatedMessage<FieldDescript
 
     // operator == !=
     genCodeMessageFieldEquat(typeName, fields, helper)
+
+    // func mergeFrom
+    genCodeMessageFieldMergeFrom(typeName, fields, helper)
 
     // func copyFrom
     genCodeMessageFieldCopyFrom(typeName, fields, helper)

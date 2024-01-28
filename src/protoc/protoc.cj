@@ -616,6 +616,7 @@ public class ${typeName} <: MessageLite & TypedMessage<${typeName}> {
     protected func m_clear(): Unit { }
     public operator func !=(src: ${typeName}): Bool { !(this == src) }
     public operator func ==(src: ${typeName}): Bool { hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields }
+    public func mergeFrom(src: ${typeName}): Unit { if(!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) } }
     public func copyFrom(src: ${typeName}): ${typeName} { m_innerCopyFrom(src); return this }
     public func clone(): ${typeName} { return ${typeName}().copyFrom(this) }
     public func unpack<T>(src: T): Unit where T <: BytesReader { while (!src.isEmpty()) { m_unknown(src, src.parseTag()) }; markDirty() }

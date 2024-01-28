@@ -176,6 +176,7 @@ public interface Enum<E> <: Int32Enum & Equatable<E> where E <: Enum<E> {
 public interface TypedMessage<M> <: Equatable<M> {
     func clone(): M
     func copyFrom(that: M): M
+    func mergeFrom(that: M): Unit
     static func empty(): M
     static func fromBytes(src: Collection<Byte>): M
     static func fromBytes(src: BytesReader): M

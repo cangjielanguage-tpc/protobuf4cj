@@ -86,6 +86,15 @@ public class Version <: MessageLite & TypedMessage<Version> {
         p_major == src.p_major && p_minor == src.p_minor && p_patch == src.p_patch && p_suffix == src.p_suffix
     }
 
+    public func mergeFrom(src: Version): Unit {
+        if (let Some(_v) <- src.p_major) { p_major = _v }
+        if (let Some(_v) <- src.p_minor) { p_minor = _v }
+        if (let Some(_v) <- src.p_patch) { p_patch = _v }
+        if (let Some(_v) <- src.p_suffix) { p_suffix = _v }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
+    }
+
     public func copyFrom(src: Version): Version {
         p_major = src.p_major
         p_minor = src.p_minor
@@ -235,6 +244,15 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         fileToGenerate == src.fileToGenerate && p_parameter == src.p_parameter && protoFile == src.protoFile &&
         p_compilerVersion.data == src.p_compilerVersion.data
+    }
+
+    public func mergeFrom(src: CodeGeneratorRequest): Unit {
+        if (!src.fileToGenerate.isEmpty()) { fileToGenerate.appendAll(src.fileToGenerate) }
+        if (let Some(_v) <- src.p_parameter) { p_parameter = _v }
+        if (!src.protoFile.isEmpty()) { protoFile.appendAll(src.protoFile) }
+        if (let Some(_v) <- src.p_compilerVersion.data) { p_compilerVersion.getOrDefault(this).mergeFrom(_v) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: CodeGeneratorRequest): CodeGeneratorRequest {
@@ -392,6 +410,15 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_name == src.p_name && p_insertionPoint == src.p_insertionPoint && p_content == src.p_content &&
         p_generatedCodeInfo.data == src.p_generatedCodeInfo.data
+    }
+
+    public func mergeFrom(src: CodeGeneratorResponse_File): Unit {
+        if (let Some(_v) <- src.p_name) { p_name = _v }
+        if (let Some(_v) <- src.p_insertionPoint) { p_insertionPoint = _v }
+        if (let Some(_v) <- src.p_content) { p_content = _v }
+        if (let Some(_v) <- src.p_generatedCodeInfo.data) { p_generatedCodeInfo.getOrDefault(this).mergeFrom(_v) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: CodeGeneratorResponse_File): CodeGeneratorResponse_File {
@@ -575,6 +602,14 @@ public class CodeGeneratorResponse <: MessageLite & TypedMessage<CodeGeneratorRe
     public operator func ==(src: CodeGeneratorResponse): Bool {
         hashCode() == src.hashCode() && size == src.size && unknownFields == src.unknownFields &&
         p_error == src.p_error && p_supportedFeatures == src.p_supportedFeatures && file == src.file
+    }
+
+    public func mergeFrom(src: CodeGeneratorResponse): Unit {
+        if (let Some(_v) <- src.p_error) { p_error = _v }
+        if (let Some(_v) <- src.p_supportedFeatures) { p_supportedFeatures = _v }
+        if (!src.file.isEmpty()) { file.appendAll(src.file) }
+        if (!src.unknownFields.isEmpty()) { unknownFields.appendAll(src.unknownFields) }
+        markDirty()
     }
 
     public func copyFrom(src: CodeGeneratorResponse): CodeGeneratorResponse {
