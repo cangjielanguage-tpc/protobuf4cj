@@ -1,6 +1,8 @@
 .git/
 .gitee/
 .vscode/
+.cache/
+.cached/
 output/
 *.o
 *.bc
@@ -9,4 +11,6 @@ output/
 *.a
 *.gcda
 *.gcno
+*.bchir
+*.macrocall
 src/example
