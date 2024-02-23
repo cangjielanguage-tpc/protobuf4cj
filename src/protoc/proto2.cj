@@ -10,7 +10,7 @@ func getFieldVarDefine2(field: FieldDescriptorProto) {
             case TYPE_STRING => field.defaultValue = "\"${field.defaultValue}\""
             case TYPE_ENUM => field.defaultValue = getEnumItemName(field.defaultValue)
             case TYPE_BYTES => throw Exception("NOT SUPPORT BYTES DEFAULT VALUE")
-            case _=> ()
+            case _ => ()
         }
     }
 

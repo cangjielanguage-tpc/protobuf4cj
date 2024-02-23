@@ -82,7 +82,7 @@ func getFieldClearExpr(field: FieldDescriptorProto) {
         case TYPE_MESSAGE => "${pName}.removeFrom(this)"
         case TYPE_STRING => "${pName} = \"\""
         case TYPE_BYTES => "${pName} = BytesSlice()"
-        case _=> "${pName} = 0"
+        case _ => "${pName} = 0"
     }
 }
 
@@ -237,7 +237,7 @@ func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): Str
             case TYPE_SFIXED64 => "_s.parseSFixed64()"
             case TYPE_SINT32 => "_s.parseSInt32()"
             case TYPE_SINT64 => "_s.parseSInt64()"
-            case _=> throw Exception("UNSUPPORTED TYPE")
+            case _ => throw Exception("UNSUPPORTED TYPE")
         } +
         ") }"
     }
@@ -262,7 +262,7 @@ func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): Str
         case TYPE_SFIXED64 => "src.parseSFixed64()"
         case TYPE_SINT32 => "src.parseSInt32()"
         case TYPE_SINT64 => "src.parseSInt64()"
-        case _=> throw Exception("UNSUPPORTED TYPE")
+        case _ => throw Exception("UNSUPPORTED TYPE")
     } +
     ")"
 }

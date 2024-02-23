@@ -508,7 +508,7 @@ func typeConvert(field: FieldDescriptorProto) {
         case TYPE_SFIXED64 => "Int64"
         case TYPE_SINT32 => "Int32"
         case TYPE_SINT64 => "Int64"
-        case _=> throw Exception("UNSUPPORTED TYPE")
+        case _ => throw Exception("UNSUPPORTED TYPE")
     }
 }
 
@@ -532,7 +532,7 @@ func initValue(field: FieldDescriptorProto) {
         case TYPE_SFIXED64 => "0"
         case TYPE_SINT32 => "Int32(0)"
         case TYPE_SINT64 => "0"
-        case _=> throw Exception("UNSUPPORTED TYPE")
+        case _ => throw Exception("UNSUPPORTED TYPE")
     }
 }
 
