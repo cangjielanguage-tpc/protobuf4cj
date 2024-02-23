@@ -165,6 +165,29 @@ class GenCodeHelper {
         }
     }
 
+    /* set options */
+    func setFieldsOptions(fields: RepeatedMessage<FieldDescriptorProto>): Unit {
+        if (proto2) {
+            return
+        }
+
+        for (f in fields where f.label == LABEL_REPEATED) {
+            match (f.type_) {
+                case TYPE_BYTES | TYPE_MESSAGE | TYPE_STRING | TYPE_GROUP => continue
+                case _ => ()
+            }
+
+            if (!f.hasOptions) {
+                f.options = FieldOptions(packed: true)
+                continue
+            }
+
+            if (!f.options.hasPacked) {
+                f.options.packed = true
+            }
+        }
+    }
+
     public func getTypeName(typeName: String) {
         for (p in packages where typeName.startsWith(p)) {
             if (p == pkgPrefix) {
@@ -312,6 +335,9 @@ func genCodeMessage(msg: DescriptorProto, helper: GenCodeHelper): Unit {
 
     // set enum/message/map type name
     helper.setFieldsTypeName(fields)
+
+    // set options
+    helper.setFieldsOptions(fields)
 
     // preprocess oneof decl
     helper.calcOneofDecl(msg.oneofDecl, fields)

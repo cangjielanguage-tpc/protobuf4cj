@@ -308,8 +308,8 @@ public class FileDescriptorProto <: MessageLite & TypedMessage<FileDescriptorPro
                 case 1 => p_name = src.parseString()
                 case 2 => p_package = src.parseString()
                 case 3 => s_add(dependency, src.parseString())
-                case 10 => s_add(publicDependency, src.parseInt32())
-                case 11 => s_add(weakDependency, src.parseInt32())
+                case 10 => if (_x[1] == PREFIXED) { let _s = subReader(src); while (!_s.isEmpty()) { s_add(publicDependency, _s.parseInt32()) } } else { s_add(publicDependency, src.parseInt32()) }
+                case 11 => if (_x[1] == PREFIXED) { let _s = subReader(src); while (!_s.isEmpty()) { s_add(weakDependency, _s.parseInt32()) } } else { s_add(weakDependency, src.parseInt32()) }
                 case 4 => s_add(messageType, src)
                 case 5 => s_add(enumType, src)
                 case 6 => s_add(service, src)
@@ -4690,8 +4690,8 @@ public class SourceCodeInfo_Location <: MessageLite & TypedMessage<SourceCodeInf
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => let _s = subReader(src); while (!_s.isEmpty()) { s_add(path, _s.parseInt32()) }
-                case 2 => let _s = subReader(src); while (!_s.isEmpty()) { s_add(span, _s.parseInt32()) }
+                case 1 => if (_x[1] == PREFIXED) { let _s = subReader(src); while (!_s.isEmpty()) { s_add(path, _s.parseInt32()) } } else { s_add(path, src.parseInt32()) }
+                case 2 => if (_x[1] == PREFIXED) { let _s = subReader(src); while (!_s.isEmpty()) { s_add(span, _s.parseInt32()) } } else { s_add(span, src.parseInt32()) }
                 case 3 => p_leadingComments = src.parseString()
                 case 4 => p_trailingComments = src.parseString()
                 case 6 => s_add(leadingDetachedComments, src.parseString())
@@ -4961,7 +4961,7 @@ public class GeneratedCodeInfo_Annotation <: MessageLite & TypedMessage<Generate
         while (!src.isEmpty()) {
             let _x = src.parseTag()
             match (_x[0]) {
-                case 1 => let _s = subReader(src); while (!_s.isEmpty()) { s_add(path, _s.parseInt32()) }
+                case 1 => if (_x[1] == PREFIXED) { let _s = subReader(src); while (!_s.isEmpty()) { s_add(path, _s.parseInt32()) } } else { s_add(path, src.parseInt32()) }
                 case 2 => p_sourceFile = src.parseString()
                 case 3 => p_begin = src.parseInt32()
                 case 4 => p_end = src.parseInt32()

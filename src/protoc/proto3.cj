@@ -214,36 +214,40 @@ func getFieldUnpackExpr(field: FieldDescriptorProto) {
         }
     }
 
-    /* packed repeated fields */
-    return getRepeatedFieldsUnpackExpr(field, name)
+    /* repeated fields */
+    return match (field.type_) {
+        case TYPE_MESSAGE => "s_add(${name}, src)"
+        case TYPE_STRING => "s_add(${name}, src.parseString())"
+        case TYPE_BYTES => "s_add(${name}, src.parseBytesSlice())"
+        /* packable repeated fields */
+        case _ => getRepeatedFieldsUnpackExpr(field, name)
+    }
 }
 
-/* packed repeated fields */
+/* packable repeated fields */
 func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): String {
-    if (field.hasOptions && field.options.hasPacked && field.options.packed) {
-        return "let _s = subReader(src); while (!_s.isEmpty()) { s_add(${name}, " +
-        match (field.type_) {
-            case TYPE_DOUBLE => "_s.parseFloat64()"
-            case TYPE_FLOAT => "_s.parseFloat32()"
-            case TYPE_INT64 => "_s.parseInt64()"
-            case TYPE_UINT64 => "_s.parseUInt64()"
-            case TYPE_INT32 => "_s.parseInt32()"
-            case TYPE_UINT32 => "_s.parseUInt32()"
-            case TYPE_ENUM => "${field.typeName}.parse(_s.parseInt32())"
-            case TYPE_BOOL => "_s.parseBool()"
-            case TYPE_FIXED64 => "_s.parseFixed64()"
-            case TYPE_FIXED32 => "_s.parseFixed32()"
-            case TYPE_SFIXED32 => "_s.parseSFixed32()"
-            case TYPE_SFIXED64 => "_s.parseSFixed64()"
-            case TYPE_SINT32 => "_s.parseSInt32()"
-            case TYPE_SINT64 => "_s.parseSInt64()"
-            case _ => throw Exception("UNSUPPORTED TYPE")
-        } +
-        ") }"
-    }
+    /* packed repeated fields */
+    let packed = "let _s = subReader(src); while (!_s.isEmpty()) { s_add(${name}, " +
+    match (field.type_) {
+        case TYPE_DOUBLE => "_s.parseFloat64()"
+        case TYPE_FLOAT => "_s.parseFloat32()"
+        case TYPE_INT64 => "_s.parseInt64()"
+        case TYPE_UINT64 => "_s.parseUInt64()"
+        case TYPE_INT32 => "_s.parseInt32()"
+        case TYPE_UINT32 => "_s.parseUInt32()"
+        case TYPE_ENUM => "${field.typeName}.parse(_s.parseInt32())"
+        case TYPE_BOOL => "_s.parseBool()"
+        case TYPE_FIXED64 => "_s.parseFixed64()"
+        case TYPE_FIXED32 => "_s.parseFixed32()"
+        case TYPE_SFIXED32 => "_s.parseSFixed32()"
+        case TYPE_SFIXED64 => "_s.parseSFixed64()"
+        case TYPE_SINT32 => "_s.parseSInt32()"
+        case TYPE_SINT64 => "_s.parseSInt64()"
+        case _ => throw Exception("UNSUPPORTED TYPE")
+    } + ") }"
 
     /* repeated fields */
-    return "s_add(${name}, " +
+    let repeated = "s_add(${name}, " +
     match (field.type_) {
         case TYPE_DOUBLE => "src.parseFloat64()"
         case TYPE_FLOAT => "src.parseFloat32()"
@@ -253,9 +257,6 @@ func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): Str
         case TYPE_UINT32 => "src.parseUInt32()"
         case TYPE_ENUM => "${field.typeName}.parse(src.parseInt32())"
         case TYPE_BOOL => "src.parseBool()"
-        case TYPE_STRING => "src.parseString()"
-        case TYPE_MESSAGE => "src"
-        case TYPE_BYTES => "src.parseBytesSlice()"
         case TYPE_FIXED64 => "src.parseFixed64()"
         case TYPE_FIXED32 => "src.parseFixed32()"
         case TYPE_SFIXED32 => "src.parseSFixed32()"
@@ -263,8 +264,9 @@ func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): Str
         case TYPE_SINT32 => "src.parseSInt32()"
         case TYPE_SINT64 => "src.parseSInt64()"
         case _ => throw Exception("UNSUPPORTED TYPE")
-    } +
-    ")"
+    } + ")"
+
+    return "if (_x[1] == PREFIXED) { ${packed} } else { ${repeated} }"
 }
 
 /* oneof field prop get expr */
