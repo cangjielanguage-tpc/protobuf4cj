@@ -1,0 +1,8 @@
+syntax = "proto3";
+package base;
+
+// 基础类型的验证
+message ByteData {
+	bytes byteData01 = 1;
+	repeated bytes byteData02 = 2;
+}

@@ -112,7 +112,7 @@ public class RepeatedField<T> <: Collection<T> {
     }
 
     public func reverse(): Unit { data.reverse() }
-    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
+    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(stable: stable, comparator: comparator) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
     public func capacity(): Int64 { data.capacity() }
@@ -360,7 +360,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     }
 
     public func reverse(): Unit { data.reverse() }
-    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(comparator, stable: stable) }
+    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(stable: stable, comparator: comparator) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
     public func capacity(): Int64 { data.capacity() }

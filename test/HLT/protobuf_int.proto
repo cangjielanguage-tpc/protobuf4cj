@@ -1,0 +1,31 @@
+syntax = "proto3";
+package base;
+
+// 基础类型的验证
+message IntData {
+	
+	int32 intData01 = 1;
+	repeated int32 intData02 = 2;
+	int64 intData03 = 3;
+	repeated int64 intData04 = 4;
+	
+	uint32 uIntData01 = 5;
+	repeated uint32 uIntData02 = 6;
+	uint64 uIntData03 = 7;
+	repeated uint64 uIntData04 = 8;
+	
+	sint32 sIntData01 = 10;
+	repeated sint32 sIntData02 = 11;
+	sint64 sIntData03 = 12;
+	repeated sint64 sIntData04 = 13;
+	
+	fixed32 fixedData01 = 14;
+	repeated fixed32 fixedData02 = 15;
+	fixed64 fixedData03 = 16;
+	repeated fixed64 fixedData04 = 17;
+	
+	sfixed32 sFixedData01 = 18;
+	repeated sfixed32 sFixedData02 = 19;
+	sfixed64 sFixedData03 = 20;
+	repeated sfixed64 sFixedData04 = 21;
+}

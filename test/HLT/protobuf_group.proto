@@ -1,0 +1,49 @@
+syntax = "proto3";
+package grouptest;
+
+// 复杂结构组合测试
+
+message Person {
+	
+	message Teacher {
+		string name = 1;
+		int32 age = 2;
+		Gender gender = 3;
+		Subject subject = 4;
+	}
+
+	message Student {
+		string name = 1;
+		int32 age = 2;
+		Gender gender = 3;
+		repeated TestRecord records = 4;
+		
+		message TestRecord {
+			Subject subject = 1;
+			int32 score = 2;
+		}
+	}
+	
+	enum Gender {
+		MAN = 0;
+		FEMALE = 1;
+	}
+
+	enum Subject {
+		LANGUAGE = 0;
+		MATH = 1;
+		HISTORY = 2;
+	}
+}
+
+	
+message School {
+	repeated Person.Teacher teacherArray = 1;
+	repeated Person.Student studentArray = 2;
+	
+	oneof test_oneof {
+		string id = 3;
+		string number = 4;
+		string nikename = 5;
+	}
+}

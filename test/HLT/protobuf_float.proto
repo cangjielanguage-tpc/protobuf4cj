@@ -1,0 +1,9 @@
+syntax = "proto3";
+package base;
+
+// 基础类型的验证
+message FloatData {
+	
+	float floatData01 = 1;
+	repeated float floatData02 = 2;
+}
