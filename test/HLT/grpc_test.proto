@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package grpctest;
+
+message Text {
+    string text = 1;
+};
+
+service Echo {
+    rpc echo (Text) returns (Text);
+    rpc echo_server_stream (Text) returns (stream Text);
+    rpc echo_client_stream (stream Text) returns (Text);
+    rpc echo_double_stream (stream Text) returns (stream Text);
+}

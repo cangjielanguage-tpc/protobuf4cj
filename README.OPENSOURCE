@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "protobuf",
+        "License": "Copyright 2008 Google Inc",
+        "License File": "LICENSE",
+        "Version Number": "v21.5",
+        "Owner": "Google"
+        "Upstream URL": "https://github.com/protocolbuffers/protobuf",
+        "Description": "Protocol Buffers - Google's data interchange format"
+    }
+]
