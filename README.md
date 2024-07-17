@@ -127,6 +127,16 @@ main() {
 
 **若依赖库拉取失败，需要将依赖库手动拷贝到对应目录下，`git submodule`可以查看所有依赖库**
 
+## 约束与限制
+
+1.支持的标量数值类型double、float、int32、int64、uint32、uint64、sint32、sint64、fixed32、fixed64、sfixed32、sfixed64、bool、string、bytes。
+
+2.当前版本基于 Google Protocol Buffers V21.5 版本开发，需要符合对应版本协议的proto书写规范
+
+## 开源协议
+
+[LICENSE](/LICENSE)
+
 ## <img alt="" src="./doc/assets/readme-icon-contribute.png" style="display: inline-block;" width=3%/>参与贡献
 
 主要写参与贡献的人以及个人主页链接
