@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2024. All rights resvered.
+ */
 package protobuf
 
 public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
