@@ -135,7 +135,7 @@ main() {
 
 ## 开源协议
 
-[LICENSE](/LICENSE)
+本项目基于 [Copyright 2008 Google Inc](./LICENSE) ，请自由的享受和参与开源。
 
 ## <img alt="" src="./doc/assets/readme-icon-contribute.png" style="display: inline-block;" width=3%/>参与贡献
 
