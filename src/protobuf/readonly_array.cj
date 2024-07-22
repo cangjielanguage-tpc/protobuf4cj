@@ -69,7 +69,7 @@ public struct RoArray<T> {
     }
 }
 
-extend RoArray<T> <: Collection<T> {
+extend<T> RoArray<T> <: Collection<T> {
     /** Returns an iterator over the elements in this Array in proper sequence. */
     public func iterator(): Iterator<T> {
         data.iterator()
@@ -95,13 +95,13 @@ extend RoArray<T> <: Collection<T> {
     }
 }
 
-extend RoArray<T> <: ToString where T <: ToString {
+extend<T> RoArray<T> <: ToString where T <: ToString {
     public func toString(): String {
         data.toString()
     }
 }
 
-extend RoArray<T> <: Hashable where T <: Byte {
+extend<T> RoArray<T> <: Hashable where T <: Byte {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         for (v in data) {
@@ -111,7 +111,7 @@ extend RoArray<T> <: Hashable where T <: Byte {
     }
 }
 
-extend RoArray<T> <: Equatable<RoArray<T>> where T <: Equatable<T> {
+extend<T> RoArray<T> <: Equatable<RoArray<T>> where T <: Equatable<T> {
     public operator func ==(that: RoArray<T>): Bool {
         this.data == that.data
     }
@@ -125,7 +125,7 @@ extend RoArray<T> <: Equatable<RoArray<T>> where T <: Equatable<T> {
     }
 }
 
-extend RoArray<T> <: Equatable<Array<T>> where T <: Equatable<T> {
+extend<T> RoArray<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     public operator func ==(that: Array<T>): Bool {
         this.data == that
     }

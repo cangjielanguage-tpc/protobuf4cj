@@ -3,7 +3,7 @@
  */
 package protobuf
 
-from encoding import base64.*
+import encoding.base64.*
 
 public struct StructPrinter <: ToString {
     private let stb = StringBuilder("{")

@@ -131,7 +131,7 @@ public class RepeatedField<T> <: Collection<T> {
     func getRawData() { data }
 }
 
-extend RepeatedField<T> <: ToString where T <: ToString {
+extend<T> RepeatedField<T> <: ToString where T <: ToString {
     public func toString(): String {
         let raw = getRawData()
         if (raw.isEmpty() || !(raw[0] is String)) {
@@ -150,7 +150,7 @@ extend RepeatedField<T> <: ToString where T <: ToString {
     }
 }
 
-extend RepeatedField<T> <: Hashable where T <: Hashable {
+extend<T> RepeatedField<T> <: Hashable where T <: Hashable {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         for (v in getRawData()) {
@@ -160,7 +160,7 @@ extend RepeatedField<T> <: Hashable where T <: Hashable {
     }
 }
 
-extend RepeatedField<T> <: Equatable<RepeatedField<T>> where T <: Equatable<T> {
+extend<T> RepeatedField<T> <: Equatable<RepeatedField<T>> where T <: Equatable<T> {
     public operator func ==(that: RepeatedField<T>): Bool {
         getRawData() == that.getRawData()
     }
@@ -174,7 +174,7 @@ extend RepeatedField<T> <: Equatable<RepeatedField<T>> where T <: Equatable<T> {
     }
 }
 
-extend RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
+extend<T> RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
     public operator func ==(that: ArrayList<T>): Bool {
         getRawData() == that
     }
@@ -184,7 +184,7 @@ extend RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
     }
 }
 
-extend RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
+extend<T> RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
     public operator func ==(that: Bytes): Bool {
         for (s in getRawData() where s != that) {
             return false
