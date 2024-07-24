@@ -1,9 +1,0 @@
-syntax = "proto3";
-package base;
-
-// 基础类型的验证
-message DoubleData {
-	
-	double doubleData01 = 1; // 普通数据
-	repeated double doubleData02 = 2; // 数组
-}

@@ -1,9 +1,0 @@
-syntax = "proto3";
-package base;
-
-// 基础类型的验证
-message BoolData {
-	
-	bool boolData01 = 1;
-	repeated bool boolData02 = 2;
-}
