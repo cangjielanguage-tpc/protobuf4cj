@@ -3,9 +3,9 @@
  */
 package google.protobuf.compiler
 
-from std import collection.*
-from protobuf import protobuf.*
-import google.protobuf.*
+internal import std.collection.*
+internal import protobuf.*
+internal import google.protobuf.*
 
 public class Version <: MessageLite & TypedMessage<Version> {
     private var p_major: ?Int32
@@ -174,18 +174,18 @@ public class Version__Builder {
 public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorRequest> {
     public let fileToGenerate: RepeatedField<String>
     private var p_parameter: ?String
-    public let protoFile: RepeatedMessage<google.protobuf.FileDescriptorProto>
+    public let protoFile: RepeatedMessage<FileDescriptorProto>
     private var p_compilerVersion: PbMessage<Version>
 
     public init(
         fileToGenerate!: Array<String> = [],
         parameter!: ?String = None,
-        protoFile!: Array<google.protobuf.FileDescriptorProto> = [],
+        protoFile!: Array<FileDescriptorProto> = [],
         compilerVersion!: ?Version = None
     ) {
         this.fileToGenerate = RepeatedField<String>(fileToGenerate)
         this.p_parameter = parameter
-        this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(protoFile)
+        this.protoFile = RepeatedMessage<FileDescriptorProto>(protoFile)
         this.p_compilerVersion = PbMessage<Version>(compilerVersion)
         m_init()
     }
@@ -193,7 +193,7 @@ public class CodeGeneratorRequest <: MessageLite & TypedMessage<CodeGeneratorReq
     public init(src: CodeGeneratorRequest__Builder) {
         this.fileToGenerate = RepeatedField<String>(src.fileToGenerate)
         this.p_parameter = src.parameter
-        this.protoFile = RepeatedMessage<google.protobuf.FileDescriptorProto>(src.protoFile)
+        this.protoFile = RepeatedMessage<FileDescriptorProto>(src.protoFile)
         this.p_compilerVersion = PbMessage<Version>(src.compilerVersion)
         m_init()
     }
@@ -322,8 +322,8 @@ public class CodeGeneratorRequest__Builder {
     public var parameter: ?String = None
     public func setParameter(parameter: String) { this.parameter = parameter; return this }
 
-    public var protoFile: Array<google.protobuf.FileDescriptorProto> = []
-    public func setProtoFile(protoFile: Array<google.protobuf.FileDescriptorProto>) { this.protoFile = protoFile; return this }
+    public var protoFile: Array<FileDescriptorProto> = []
+    public func setProtoFile(protoFile: Array<FileDescriptorProto>) { this.protoFile = protoFile; return this }
 
     public var compilerVersion: ?Version = None
     public func setCompilerVersion(compilerVersion: Version) { this.compilerVersion = compilerVersion; return this }
@@ -335,18 +335,18 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
     private var p_name: ?String
     private var p_insertionPoint: ?String
     private var p_content: ?String
-    private var p_generatedCodeInfo: PbMessage<google.protobuf.GeneratedCodeInfo>
+    private var p_generatedCodeInfo: PbMessage<GeneratedCodeInfo>
 
     public init(
         name!: ?String = None,
         insertionPoint!: ?String = None,
         content!: ?String = None,
-        generatedCodeInfo!: ?google.protobuf.GeneratedCodeInfo = None
+        generatedCodeInfo!: ?GeneratedCodeInfo = None
     ) {
         this.p_name = name
         this.p_insertionPoint = insertionPoint
         this.p_content = content
-        this.p_generatedCodeInfo = PbMessage<google.protobuf.GeneratedCodeInfo>(generatedCodeInfo)
+        this.p_generatedCodeInfo = PbMessage<GeneratedCodeInfo>(generatedCodeInfo)
         m_init()
     }
 
@@ -354,7 +354,7 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
         this.p_name = src.name
         this.p_insertionPoint = src.insertionPoint
         this.p_content = src.content
-        this.p_generatedCodeInfo = PbMessage<google.protobuf.GeneratedCodeInfo>(src.generatedCodeInfo)
+        this.p_generatedCodeInfo = PbMessage<GeneratedCodeInfo>(src.generatedCodeInfo)
         m_init()
     }
 
@@ -377,7 +377,7 @@ public class CodeGeneratorResponse_File <: MessageLite & TypedMessage<CodeGenera
 
     public func clearGeneratedCodeInfo() { p_generatedCodeInfo.removeFrom(this); markDirty() }
     public prop hasGeneratedCodeInfo: Bool { get() { isPresent(p_generatedCodeInfo.data) } }
-    public mut prop generatedCodeInfo: google.protobuf.GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(_v) { p_generatedCodeInfo.set(this, _v); markDirty() } }
+    public mut prop generatedCodeInfo: GeneratedCodeInfo { get() { p_generatedCodeInfo.data.getOrThrow() } set(_v) { p_generatedCodeInfo.set(this, _v); markDirty() } }
 
     protected func m_size(): Int64 {
         var _x = 0
@@ -491,8 +491,8 @@ public class CodeGeneratorResponse_File__Builder {
     public var content: ?String = None
     public func setContent(content: String) { this.content = content; return this }
 
-    public var generatedCodeInfo: ?google.protobuf.GeneratedCodeInfo = None
-    public func setGeneratedCodeInfo(generatedCodeInfo: google.protobuf.GeneratedCodeInfo) { this.generatedCodeInfo = generatedCodeInfo; return this }
+    public var generatedCodeInfo: ?GeneratedCodeInfo = None
+    public func setGeneratedCodeInfo(generatedCodeInfo: GeneratedCodeInfo) { this.generatedCodeInfo = generatedCodeInfo; return this }
 
     public func build() { CodeGeneratorResponse_File(this) }
 }

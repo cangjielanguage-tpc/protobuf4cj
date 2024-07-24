@@ -121,7 +121,7 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     func getRawData() { data }
 }
 
-extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
+extend<K, V> MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
     public func toString(): String {
         var res = StructPrinter()
         for ((k, v) in getRawData()) {
@@ -138,7 +138,7 @@ extend MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable 
     }
 }
 
-extend MapField<K, V> <: Hashable where V <: Hashable {
+extend<K, V> MapField<K, V> <: Hashable where V <: Hashable {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         for ((k,v) in getRawData()) {
@@ -149,7 +149,7 @@ extend MapField<K, V> <: Hashable where V <: Hashable {
     }
 }
 
-extend MapField<K, V> <: Equatable<MapField<K, V>> where V <: Equatable<V> {
+extend<K, V> MapField<K, V> <: Equatable<MapField<K, V>> where V <: Equatable<V> {
     public operator func ==(that: MapField<K, V>): Bool {
         getRawData() == that.getRawData()
     }
@@ -159,7 +159,7 @@ extend MapField<K, V> <: Equatable<MapField<K, V>> where V <: Equatable<V> {
     }
 }
 
-extend MapField<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
+extend<K, V> MapField<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     public operator func ==(that: HashMap<K, V>): Bool {
         getRawData() == that
     }
@@ -355,7 +355,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     func getRawData() { data }
 }
 
-extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
+extend<K, V> MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
     public func toString(): String {
         var res = StructPrinter()
         for ((k, v) in getRawData()) {
@@ -368,7 +368,7 @@ extend MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K
     }
 }
 
-extend MapMessage<K, V> <: Hashable {
+extend<K, V> MapMessage<K, V> <: Hashable {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         for ((k,v) in getRawData()) {

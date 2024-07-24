@@ -3,8 +3,8 @@
  */
 package google.protobuf
 
-from std import collection.*
-from protobuf import protobuf.*
+import std.collection.*
+import protobuf.*
 
 public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> {
     public let file: RepeatedMessage<FileDescriptorProto>

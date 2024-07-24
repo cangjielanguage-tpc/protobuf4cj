@@ -4,7 +4,7 @@
 
 package protobuf
 
-from std import collection.*
+internal import std.collection.*
 
 public type Tag = UInt32
 public type WireNum = UInt8

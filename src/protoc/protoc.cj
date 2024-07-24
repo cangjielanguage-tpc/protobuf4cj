@@ -8,11 +8,11 @@
  */
 package protoc
 
-import google.protobuf.*
-import google.protobuf.compiler.*
-from protobuf import protobuf.*
-from std import collection.*
-from std import unicode.*
+internal import google.protobuf.*
+internal import google.protobuf.compiler.*
+internal import protobuf.*
+internal import std.collection.*
+internal import std.unicode.*
 
 /**
  * The Function is cj_generator
@@ -297,9 +297,9 @@ func genCodeHeader(desc: FileDescriptorProto, deps: HashSet<String>, helper: Gen
     // package
     if (desc.package_ != "") { append("package ${desc.package_}\n\n") }
     // import
-    append("from std import collection.*\n")
+    append("import std.collection.*\n")
     if (desc.package_ != "protobuf") {
-        append("from protobuf import protobuf.*\n")
+        append("import protobuf.*\n")
     }
     for (pkg in deps) {
         append("import ${pkg}.*\n")
@@ -696,12 +696,12 @@ func getMessagePropName(name: String) {
 }
 
 func titleCase(str: String) {
-    "${Char(str[0]).toUpperCase()}${str[1 ..]}"
+    "${Rune(str[0]).toUpperCase()}${str[1 ..]}"
 }
 
 /* lower camel case */
 func lowerCamelCase(name: String) {
-    let arr = "${Char(name[0]).toLowerCase()}${name[1 ..]}".split("_")
+    let arr = "${Rune(name[0]).toLowerCase()}${name[1 ..]}".split("_")
 
     for (i in 1..arr.size where !arr[i].isEmpty()) {
         arr[i] = titleCase(arr[i])
