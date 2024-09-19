@@ -13,7 +13,7 @@ public struct RoArray<T> {
     }
 
     public init(size:Int64, item!:T) {
-        data = Array(size, item: item)
+        data = Array(size, repeat: item)
     }
 
     /* constuct ro-array from the copy of collection */

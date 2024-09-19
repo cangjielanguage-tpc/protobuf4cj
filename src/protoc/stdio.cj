@@ -24,7 +24,7 @@ func stdin(): Array<UInt8> {
             throw Exception()
         }
 
-        let array = Array<UInt8>(Int64(buffer.size), item: 0)
+        let array = Array<UInt8>(Int64(buffer.size), repeat: 0)
         let rawData = acquireArrayRawData(array)
         let err = memcpy_s(rawData.pointer, buffer.size, buffer.data, buffer.size)
         releaseArrayRawData(rawData)
