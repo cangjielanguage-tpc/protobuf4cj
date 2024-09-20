@@ -176,7 +176,7 @@ public class SimpleWriter <: BytesWriter {
     }
 
     public init(size: Int64) {
-        this(Bytes(size, item: 0))
+        this(Bytes(size, repeat: 0))
     }
 
     /* reset offset to `0` */
