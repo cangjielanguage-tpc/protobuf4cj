@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2024. All rights resvered.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2024. All rights resveved.
  */
 package protobuf
 
@@ -184,7 +184,7 @@ extend<T> RepeatedField<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
     }
 }
 
-extend<T> RepeatedField<T> <: Equatable<Bytes> where T <: BytesSlice {
+extend RepeatedField<BytesSlice> <: Equatable<Bytes> {
     public operator func ==(that: Bytes): Bool {
         for (s in getRawData() where s != that) {
             return false

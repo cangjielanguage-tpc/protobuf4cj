@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2024. All rights resvered.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2024. All rights resveved.
  */
 package protobuf
 
@@ -101,7 +101,7 @@ extend<T> RoArray<T> <: ToString where T <: ToString {
     }
 }
 
-extend<T> RoArray<T> <: Hashable where T <: Byte {
+extend RoArray<Byte> <: Hashable {
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         for (v in data) {
