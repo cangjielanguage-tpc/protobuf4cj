@@ -32,7 +32,7 @@ public func cj_generator(input: Array<UInt8>): Array<UInt8> {
     // A collection of files that need to generate code
     let genfiles = HashSet<String>()
     for (path in req.fileToGenerate) {
-        genfiles.put(path)
+        genfiles.add(path)
     }
 
     let filePackage = HashMap<String, String>()
@@ -49,7 +49,7 @@ public func cj_generator(input: Array<UInt8>): Array<UInt8> {
         // get dependency
         let deps = HashSet<String>()
         for (dep in desc.dependency) {
-            deps.put(filePackage[dep])
+            deps.add(filePackage[dep])
         }
 
         // generate file
@@ -114,8 +114,8 @@ class LineSepOut {
 class GenCodeHelper {
     /* Get type name based on nesting level */
     let nested = ArrayList<String>()
-    func nestedPush(name: String) { nested.append(name) }
-    func nestedPop() { nested.remove(nested.size - 1) }
+    func nestedPush(name: String) { nested.add(name) }
+    func nestedPop() { nested.remove(at: nested.size - 1) }
     func getNestedTypeName(name: String) {
         if (nested.isEmpty()) { return name }
         let sb = StringBuilder()
@@ -148,8 +148,8 @@ class GenCodeHelper {
             throw Exception("CIRCULAR DEPENDENCY")
         }
 
-        packages.append(pkgPrefix)
-        for (pkg in deps) { packages.append(".${pkg}.") }
+        packages.add(pkgPrefix)
+        for (pkg in deps) { packages.add(".${pkg}.") }
         packages.sortBy { a, b => if (a == b) { Ordering.EQ } else if (a < b) { Ordering.GT } else { Ordering.LT } }
     }
 
@@ -216,7 +216,7 @@ class GenCodeHelper {
         oneofDecl.clear()
         for (decl in decls) {
             decl.name = lowerCamelCase(decl.name)
-            oneofDecl.append((decl.name, RepeatedMessage<FieldDescriptorProto>()))
+            oneofDecl.add((decl.name, RepeatedMessage<FieldDescriptorProto>()))
         }
         for (field in fields where field.hasOneofIndex) {
             oneofDecl[Int64(field.oneofIndex)][1].append(field)

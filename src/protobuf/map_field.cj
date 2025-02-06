@@ -44,8 +44,12 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         data.contains(key)
     }
 
-    public func containsAll(keys: Collection<K>): Bool {
-        data.containsAll(keys)
+    public func contains(all!: Collection<K>): Bool {
+        data.contains(all: all)
+    }
+
+    public func entryView(key: K): MapEntryView<K, V> {
+        data.entryView(key)
     }
 
     public operator func [](key: K, value!: V): Unit {
@@ -53,13 +57,13 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         parent?.markDirty()
     }
 
-    public func put(key: K, value: V): ?V {
+    public func add(key: K, value: V): ?V {
         parent?.markDirty()
-        data.put(key, value)
+        data.add(key, value)
     }
 
-    public func putAll(elements: Collection<(K, V)>): Unit {
-        data.putAll(elements)
+    public func add(all!: Collection<(K, V)>): Unit {
+        data.add(all: all)
         parent?.markDirty()
     }
 
@@ -68,8 +72,8 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         data.remove(key)
     }
 
-    public func removeAll(keys: Collection<K>): Unit {
-        data.removeAll(keys)
+    public func remove(all!: Collection<K>): Unit {
+        data.remove(all: all)
         parent?.markDirty()
     }
 
@@ -107,7 +111,7 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     }
 
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
-    public func capacity(): Int64 { data.capacity() }
+    public func capacity(): Int64 { data.capacity }
     public func clone(): MapField<K, V> { MapField(this) }
     public func toHashMap(): HashMap<K, V> { data.clone() }
     public func keys(): EquatableCollection<K> { data.keys() }
@@ -210,16 +214,20 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         data.contains(key)
     }
 
-    public func containsAll(keys: Collection<K>): Bool {
-        data.containsAll(keys)
+    public func contains(all!: Collection<K>): Bool {
+        data.contains(all: all)
+    }
+
+    public func entryView(key: K): MapEntryView<K, V> {
+        data.entryView(key)
     }
 
     public operator func [](key: K, value!: V): Unit {
-        put(key, value)
+        add(key, value)
     }
 
-    public func put(key: K, value: V): ?V {
-        let old = data.put(key, value)
+    public func add(key: K, value: V): ?V {
+        let old = data.add(key, value)
         if (let Some(m) <- old) { unlink(m) }
 
         parent?.markDirty()
@@ -227,9 +235,9 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         return old
     }
 
-    public func putAll(elements: Collection<(K, V)>): Unit {
-        for ((k, v) in elements) {
-            if (let Some(m) <- data.put(k, v)) {
+    public func add(all!: Collection<(K, V)>): Unit {
+        for ((k, v) in all) {
+            if (let Some(m) <- data.add(k, v)) {
                 unlink(m)
             }
 
@@ -249,8 +257,8 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         return None
     }
 
-    public func removeAll(keys: Collection<K>): Unit {
-        for (key in keys) {
+    public func remove(all!: Collection<K>): Unit {
+        for (key in all) {
             if (let Some(m) <- data.remove(key)) {
                 unlink(m)
             }
@@ -339,7 +347,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     }
 
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
-    public func capacity(): Int64 { data.capacity() }
+    public func capacity(): Int64 { data.capacity }
     public func toHashMap(): HashMap<K, V> { data.clone() }
     public func keys(): EquatableCollection<K> { data.keys() }
     public func values(): Collection<V> { data.values() }
@@ -350,7 +358,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public operator func ==(that: MapMessage<K, V>): Bool { data == that.data }
     public operator func !=(that: MapMessage<K, V>): Bool { data != that.data }
 
-    func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.put(key, value)) { unlink(m) }; link(value) }
+    func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.add(key, value)) { unlink(m) }; link(value) }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
 }
