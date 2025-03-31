@@ -17,3 +17,8 @@ src/example
 test/log
 test/report
 test/tmp
+test_temp
+cjpm.lock
+target
+*.out
+ci_test
