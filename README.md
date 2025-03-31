@@ -3,7 +3,7 @@
 </div>
 
 <p align="center">
-<img alt="" src="https://img.shields.io/badge/release-v0.0.1-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/release-v1.0.0-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/build-pass-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjc-v0.53.13-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjcov-NA-brightgreen" style="display: inline-block;" />
@@ -24,9 +24,9 @@
 
 软件目前主要分为 protobuf, protoc 两个部分
 
-- `protobuf` 提供 `libprotobuf-cj.a`, 在仓颉中使用 Google Protocol Buffers 需要链接该静态库
+- `protobuf` 提供 Protocol Buffers 核心解析功能
 
-- `protoc` 提供 `protoc-gen-cj`, 一个 google protoc 的 plugin, 用于将.proto 文件编译为仓颉代码
+- `protoc` 提供 `protoc-gen-cj`, 一个 google protoc 的 plugin, 用于使用protoc命令将`.proto`文件编译为仓颉代码
 
 ```text
  protobuf:
@@ -43,22 +43,17 @@
 .
 ├── README.md
 ├── doc
-│   ├── assets
 │   ├── design.md
 │   ├── feature_api.md
-├── ci_test
 ├── src
-│   ├── google
-│   ├── protobuf
-│   ├── protoc
+│   ├── protobuf # protobuf核心功能
+│   ├── google   # protoc依赖项
+│   ├── protoc   # protoc-gen-cj插件
 └── test
-    ├── HLT
-    ├── LLT
-    └── UT
 ```
 
-- `doc` 存放库的设计文档、提案、库的使用文档、LLT 用例覆盖报告(此项目不支持 cpm build 编译，而覆盖率需要 cpm build --coverage,所以未能输出覆盖报告)
-- `ci_test` 是python源码目录
+- `.` cjpm工作空间 用于管理子项目
+- `doc` 存放库的设计文档、提案、库的使用文档、LLT 用例覆盖报告
 - `src` 是库源码目录
 - `test` 存放测试用例，包括 HLT 用例、LLT 用例和 UT 用例
 
@@ -67,6 +62,20 @@
 主要是核心类和成员函数说明见 [API](./doc/feature_api.md)<!--待更新-->
 
 ## <img alt="" src="./doc/assets/readme-icon-compile.png" style="display: inline-block;" width=3%/> 编译执行
+
+```bash
+# 编译
+cjpm build
+
+# protoc-gen-cj不能直接作为protoc的输出名称 手动拷贝
+cp target/release/bin/protoc target/release/bin/protoc-gen-cj
+
+# 使用cjpm安装protoc-gen-cj 或 将protoc-gen-cj移到任何PATH路径
+cd src/protoc && cjpm install --name protoc-gen-cj
+
+# 使用protoc将proto文件编译为cj源码
+protoc --cj_out . xxx.proto
+```
 
 ### 示例
 

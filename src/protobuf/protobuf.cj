@@ -11,11 +11,19 @@ public type WireNum = UInt8
 public type Bytes = Array<Byte>
 public type BytesSlice = RoArray<Byte>
 
-/* ffi, typecast by bits */
-foreign func itof(v: UInt32): Float32
-foreign func ltod(v: UInt64): Float64
-foreign func ftoi(v: Float32): UInt32
-foreign func dtol(v: Float64): UInt64
+/* typecast by bits */
+func itof(v: UInt32): Float32{
+    Float32.fromBits(v)
+}
+func ltod(v: UInt64): Float64{
+    Float64.fromBits(v)
+}
+func ftoi(v: Float32): UInt32{
+    v.toBits()
+}
+func dtol(v: Float64): UInt64{
+    v.toBits()
+}
 
 public let VARINT: WireNum = 0
 public let BIT64: WireNum = 1
