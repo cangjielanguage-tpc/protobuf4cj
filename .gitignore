@@ -22,3 +22,5 @@ cjpm.lock
 target
 *.out
 ci_test
+test
+build-script-cache

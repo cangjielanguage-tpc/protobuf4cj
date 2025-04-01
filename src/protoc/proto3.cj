@@ -275,14 +275,14 @@ func getRepeatedFieldsUnpackExpr(field: FieldDescriptorProto, name: String): Str
 /* oneof field prop get expr */
 func getFieldOneofPropGetExpr(name: String, field: FieldDescriptorProto) {
     "match (p_${name}) { " +
-        "case ${titleCase(field.name)}(_v) => _v " +
+        "case ${enumCase(field.name)}(_v) => _v " +
         "case _ => throw UnexpectedOneofException() " +
     "}"
 }
 
 /* oneof field prop set expr */
 func getFieldOneofPropSetExpr(typeName: String, name: String, field: FieldDescriptorProto) {
-    let set = "p_${name} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.name)}(_v)"
+    let set = "p_${name} = ${typeName}_Oneof_${titleCase(name)}.${enumCase(field.name)}(_v)"
 
     if (field.type_ == TYPE_MESSAGE) {
         return "m_assign(p_${name}, _v); ${set}; markDirty()"
@@ -395,7 +395,7 @@ func genCodeMessageFieldProps(typeName: String, fields: RepeatedMessage<FieldDes
         append("    public mut prop ${getMessagePropName(name)}: ${typeName}_Oneof_${titleCase(name)} { get() { p_${name} } set(_v) { m_assign(p_${name}, _v); p_${name} = _v; markDirty() } }\n")
         for (field in ofields) {
             append("\n")
-            append("    public prop has${titleCase(field.name)}: Bool { get() { match(p_${name}) { case ${titleCase(field.name)}(_) => true case _ => false } } }\n")
+            append("    public prop has${titleCase(field.name)}: Bool { get() { match(p_${name}) { case ${enumCase(field.name)}(_) => true case _ => false } } }\n")
             append("    public mut prop ${field.propName}: ${typeConvert(field)} { get() { ${getFieldOneofPropGetExpr(name, field)} } set(_v) { ${getFieldOneofPropSetExpr(typeName, name, field)} } }\n")
         }
     }
@@ -418,7 +418,7 @@ func genCodeMessageFieldSize(fields: RepeatedMessage<FieldDescriptorProto>, help
     for ((name, ofields) in helper.oneofDecl) {
         append("        match (p_${name}) {\n")
         for (field in ofields) {
-            append("            case ${titleCase(field.name)}(_v) => _x += ${tagSize(UInt32(field.number))} + ${namedSize("_v", field)}\n")
+            append("            case ${enumCase(field.name)}(_v) => _x += ${tagSize(UInt32(field.number))} + ${namedSize("_v", field)}\n")
         }
         append("            case _ => ()\n        }\n")
     }
@@ -642,7 +642,7 @@ func genCodeMessageFieldPack(fields: RepeatedMessage<FieldDescriptorProto>, help
     for ((name, ofields) in helper.oneofDecl) {
         append("        match (p_${name}) {\n")
         for (field in ofields) {
-            append("            case ${titleCase(field.name)}(_v) => ${namedPack("_v", field)}\n")
+            append("            case ${enumCase(field.name)}(_v) => ${namedPack("_v", field)}\n")
         }
         append("            case _ => ()\n")
         append("        }\n")

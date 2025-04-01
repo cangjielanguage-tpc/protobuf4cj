@@ -15,6 +15,7 @@
 ### 特性
 
 - 🚀 支持 Google Protocol Buffers
+- 🚀 无外部依赖
 
 ##  <img alt="" src="./doc/assets/readme-icon-framework.png" style="display: inline-block;" width=3%/> 软件架构
 
@@ -65,11 +66,8 @@
 # 编译
 cjpm build
 
-# protoc-gen-cj不能直接作为protoc的输出名称 手动拷贝
-cp target/release/bin/protoc target/release/bin/protoc-gen-cj
-
 # 使用cjpm安装protoc-gen-cj 或 将protoc-gen-cj移到任何PATH路径
-cd src/protoc && cjpm install --name protoc-gen-cj
+cd src/protoc && cjpm install --skip-build --name protoc-gen-cj && cd -
 
 # 使用protoc将proto文件编译为cj源码
 protoc --cj_out . xxx.proto
@@ -118,20 +116,23 @@ main() {
 #### 安装教程
 
 1. 安装对应版本cangjie
-2. 设置CANGJIE_PATH为合法目录，作为`.cjo`文件的安装目录
-3. 安装[google protobuf compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)
-4. 编译&安装`protobuf-cj`库、`protoc-gen-cj`插件(见使用说明1-4)
+1. 安装[google protobuf compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)
+1. 编译&安装`protobuf4cj`
+
+#### 适配deveco工程
+
+deveco的cangjie插件当前不适配`workspace`模式的cangjie工程
+
+开发者需要将`src/protobuf`作为源码依赖加入到deveco模块中
+
+在模块的`cjpm.toml`中通过`dependencies`管理`protobuf`依赖
 
 #### 使用说明
 
-1. `cd protobuf-cj`
-2. `git submodule update --init --recursive` 拉取依赖库
-3. `make` 编译*.a、*.cjo、protoc-gen-cj
-4. `make install` 安装*.a、*.cjo、protoc-gen-cj
-5. `protoc --cj_out=src/ -Isrc/ $(proto_files)` 编译`proto_files`生成*.pb.cj文件
-6. 在项目中使用protobuf messages, 使用时导入*.pb.cj所在包, 编译时添加`-lprotobuf-cj`选项
-
-**若依赖库拉取失败，需要将依赖库手动拷贝到对应目录下，`git submodule`可以查看所有依赖库**
+1. 安装`protoc-gen-cj`插件
+1. `protoc --cj_out=src/ -Isrc/ $(proto_files)` 编译`proto_files`生成*.pb.cj文件
+1. 在项目中使用protobuf messages, 使用时导入*.pb.cj所在包, 编译时添加`-lprotobuf`选项
+1. 如需其他格式的序列化操作 参考[protobuf-format-cj](https://gitcode.com/Cangjie-TPC/protobuf-format-cj/)
 
 ## 约束与限制
 
