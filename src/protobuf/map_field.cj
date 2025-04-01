@@ -116,9 +116,9 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
 
-    func putDirty(key: K, value: V): Unit { data[key] = value }
+    public func putDirty(key: K, value: V): Unit { data[key] = value }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
+    public func getRawData() { data }
 }
 
 extend<K, V> MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
@@ -352,7 +352,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
 
     func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.put(key, value)) { unlink(m) }; link(value) }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
+    public func getRawData() { data }
 }
 
 extend<K, V> MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {

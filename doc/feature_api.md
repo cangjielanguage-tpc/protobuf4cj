@@ -653,10 +653,10 @@ public func shutdown(): Unit
 package grpc.examples.example
 
 import grpc.examples.*
-from protobuf import grpc.*
+import grpc.*
 
-from std import sync.*
-from std import time.*
+import std.sync.*
+import std.time.*
 
 main() {
     let addr = Address("http://0.0.0.0:8088") // addr of server

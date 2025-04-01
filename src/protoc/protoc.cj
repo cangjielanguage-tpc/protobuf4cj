@@ -421,17 +421,17 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         let groupType = "${typeName}_Oneof_${titleCase(name)}"
 
         append("\npublic enum ${groupType} <: OneofGroup & Equatable<${groupType}> {\n")
-        for (f in fields) { sepOut.append("${titleCase(f.name)}(${typeConvert(f)})") }
+        for (f in fields) { sepOut.append("${enumCase(f.name)}(${typeConvert(f)})") }
         sepOut.append("None\n\n")
 
         // gen clone()
         append("    public func clone(): ${groupType} {\n        match (this) {\n")
-        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.name)}(v) => ${groupType}.${titleCase(field.name)}(v.clone())\n") }
+        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${enumCase(field.name)}(v) => ${groupType}.${enumCase(field.name)}(v.clone())\n") }
         append("            case _ => this\n        }\n    }\n\n")
 
         // gen mutableData()
         append("    public func mutableData(): ?MessageLite {\n        match (this) {\n")
-        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${titleCase(field.name)}(v) => v\n") }
+        for (field in fields where field.type_ == TYPE_MESSAGE) { append("            case ${enumCase(field.name)}(v) => v\n") }
         append("            case _ => Option<MessageLite>.None\n        }\n    }\n\n")
 
         // gen isEmpty()
@@ -440,22 +440,22 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
         // operator == !=
         append("    public operator func !=(that: ${groupType}): Bool { !(this == that) }\n")
         append("    public operator func ==(that: ${groupType}): Bool {\n        match ((this, that)) {\n")
-        for (field in fields) { append("            case (${titleCase(field.name)}(v1), ${titleCase(field.name)}(v2)) => v1 == v2\n") }
+        for (field in fields) { append("            case (${enumCase(field.name)}(v1), ${enumCase(field.name)}(v2)) => v1 == v2\n") }
         append("            case (None, None) => true\n            case _ => false\n        }\n    }\n\n")
 
         // gen toString()
         append("    public func toString() {\n        match (this) {\n")
-        for (field in fields) { append("            case ${titleCase(field.name)}(v) => ${if (field.type_ == TYPE_STRING) { "\"\\\"\${v}\\\"\"" } else { "v.toString()" }}\n") }
+        for (field in fields) { append("            case ${enumCase(field.name)}(v) => ${if (field.type_ == TYPE_STRING) { "\"\\\"\${v}\\\"\"" } else { "v.toString()" }}\n") }
         append("            case None => \"\"\n        }\n    }\n\n")
 
         // gen hashCode()
         append("    public func hashCode(): Int64 {\n        match (this) {\n")
-        for (field in fields) { append("            case ${titleCase(field.name)}(v) => v.hashCode()\n") }
+        for (field in fields) { append("            case ${enumCase(field.name)}(v) => v.hashCode()\n") }
         append("            case None => 0\n        }\n    }\n\n")
 
         // gen which()
         append("    public func which() {\n        match (this) {\n")
-        for (field in fields) { append("            case ${titleCase(field.name)}(_) => \"${field.name}\"\n") }
+        for (field in fields) { append("            case ${enumCase(field.name)}(_) => \"${field.name}\"\n") }
         append("            case None => \"\"\n        }\n    }\n")
 
         // done
@@ -465,7 +465,7 @@ func genCodeOneofGroup(typeName: String, helper: GenCodeHelper): Unit {
 
 /* oneof unpack expr */
 func getOneofFieldUnapckExpr(typeName: String, name: String, field: FieldDescriptorProto) {
-    "${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${titleCase(field.name)}(" + match (field.type_) {
+    "${getMessagePropName(name)} = ${typeName}_Oneof_${titleCase(name)}.${enumCase(field.name)}(" + match (field.type_) {
         case TYPE_DOUBLE => "src.parseFloat64()"
         case TYPE_FLOAT => "src.parseFloat32()"
         case TYPE_INT64 => "src.parseInt64()"
@@ -697,6 +697,10 @@ func getMessagePropName(name: String) {
 
 func titleCase(str: String) {
     "${Rune(str[0]).toUpperCase()}${str[1 ..]}"
+}
+
+func enumCase(str: String) {
+    str.toAsciiUpper()
 }
 
 /* lower camel case */
