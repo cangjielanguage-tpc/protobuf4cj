@@ -5,12 +5,19 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
 #include <assert.h>
 
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
+#endif
+
+#ifdef __APPLE__
+  // macOS 系统
+  #include <stdlib.h>
+#else
+  // 其他平台 (Windows)
+  #include <malloc.h>
 #endif
 
 typedef struct {
@@ -44,7 +51,14 @@ Buffer stdin_read()
         assert(new_res != NULL);
 
         (void)memset_s(new_res, new_size, 0, new_size);
-        (void)memcpy_s(new_res, new_size, res, size);
+        #ifdef __APPLE__
+            // macOS 系统
+            (void)memcpy(new_res, new_size, size);
+        #else
+            // 其他平台 (Windows)
+            (void)memcpy_s(new_res, new_size, res, size);
+        #endif
+        
         free(res);
 
         res = new_res;
