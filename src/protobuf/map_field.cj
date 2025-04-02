@@ -44,6 +44,7 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         data.contains(key)
     }
 
+    public func containsAll(all: Collection<K>): Bool {contains(all:all)}
     public func contains(all!: Collection<K>): Bool {
         data.contains(all: all)
     }
@@ -57,11 +58,17 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         parent?.markDirty()
     }
 
+    public func put(key: K, value: V): ?V {
+        add(key, value)
+    }
     public func add(key: K, value: V): ?V {
         parent?.markDirty()
         data.add(key, value)
     }
 
+    public func putAll(elements: Collection<(K, V)>): Unit {
+        add(all: elements)
+    }
     public func add(all!: Collection<(K, V)>): Unit {
         data.add(all: all)
         parent?.markDirty()
@@ -72,6 +79,7 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         data.remove(key)
     }
 
+    public func removeAll(all: Collection<K>): Unit {remove(all:all)}
     public func remove(all!: Collection<K>): Unit {
         data.remove(all: all)
         parent?.markDirty()
@@ -120,9 +128,9 @@ public class MapField<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
 
-    func putDirty(key: K, value: V): Unit { data[key] = value }
+    public func putDirty(key: K, value: V): Unit { data[key] = value }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
+    public func getRawData() { data }
 }
 
 extend<K, V> MapField<K, V> <: ToString where V <: ToString, K <: ToString & Hashable & Equatable<K> {
@@ -214,6 +222,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         data.contains(key)
     }
 
+    public func containsAll(all: Collection<K>): Bool {contains(all:all)}
     public func contains(all!: Collection<K>): Bool {
         data.contains(all: all)
     }
@@ -226,6 +235,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         add(key, value)
     }
 
+    public func put(key: K, value: V): ?V {add(key,value)}
     public func add(key: K, value: V): ?V {
         let old = data.add(key, value)
         if (let Some(m) <- old) { unlink(m) }
@@ -235,6 +245,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         return old
     }
 
+    public func putAll(all: Collection<(K, V)>): Unit {add(all:all)}
     public func add(all!: Collection<(K, V)>): Unit {
         for ((k, v) in all) {
             if (let Some(m) <- data.add(k, v)) {
@@ -257,6 +268,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         return None
     }
 
+    public func removeAll(all: Collection<K>): Unit {remove(all:all)}
     public func remove(all!: Collection<K>): Unit {
         for (key in all) {
             if (let Some(m) <- data.remove(key)) {
@@ -358,9 +370,9 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public operator func ==(that: MapMessage<K, V>): Bool { data == that.data }
     public operator func !=(that: MapMessage<K, V>): Bool { data != that.data }
 
-    func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.add(key, value)) { unlink(m) }; link(value) }
+    public func putDirty(key: K, value: V): Unit { if (let Some(m) <- data.add(key, value)) { unlink(m) }; link(value) }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
-    func getRawData() { data }
+    public func getRawData() { data }
 }
 
 extend<K, V> MapMessage<K, V> <: ToString where K <: ToString & Hashable & Equatable<K> {
