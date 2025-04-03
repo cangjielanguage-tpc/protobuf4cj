@@ -3,7 +3,7 @@
  */
 package protoc
 
-import std.env.*
+import std.os.process.*
 
 @When[os == "Windows"]
 foreign func _setmode(fd: IntNative, mode: IntNative): IntNative
@@ -17,17 +17,17 @@ main() {
         _setmode(0, 0x8000) //设置windows标准输入为二进制模式
     }
     let input = ArrayList<Byte>()
-    let buffer = Array<Byte>(1024, repeat: 0)
-    let stdIn = getStdIn()
+    let buffer = Array<Byte>(1024, item: 0)
+    let stdIn = Process.current.stdIn
     var len = stdIn.read(buffer)
     while (len > 0) {
-        input.add(all: buffer[..len])
+        input.appendAll(buffer[..len])
         len = stdIn.read(buffer)
     }
     
     let output = cj_generator(unsafe { input.getRawArray()[..input.size] })
 
-    let stdOut = getStdOut()
+    let stdOut = Process.current.stdOut
     stdOut.write(output)
     stdOut.flush()
 }
