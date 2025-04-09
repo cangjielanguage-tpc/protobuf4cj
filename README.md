@@ -5,7 +5,7 @@
 <p align="center">
 <img alt="" src="https://img.shields.io/badge/release-v1.0.0-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/build-pass-brightgreen" style="display: inline-block;" />
-<img alt="" src="https://img.shields.io/badge/cjc-v0.59.6-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/cjc-v0.60.5-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjcov-NA-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/project-open-brightgreen" style="display: inline-block;" />
 </p>
@@ -23,7 +23,7 @@
 
 软件目前主要分为 protobuf, protoc 两个部分
 
-- `protobuf` 提供 Protocol Buffers 核心解析功能
+- `protobuf` 提供 Protocol Buffers 编解码能力
 
 - `protoc` 提供 `protoc-gen-cj`, 一个 google protoc 的 plugin, 用于使用protoc命令将`.proto`文件编译为仓颉代码
 

@@ -132,11 +132,13 @@ public abstract class MessageLite <: ToString & Hashable {
     public let unknownFields = RepeatedField<MessageUnknownField>()
 
     /* unpack unknownFields */
+    @Frozen
     protected func m_unknown<R>(src: R, tag: (Tag, WireNum)) where R <: BytesReader {
         unknownFields.appendDirty(MessageUnknownField.unpack(tag[0], tag[1], src))
     }
 
     /* pack unknownFields */
+    @Frozen
     protected func m_unknown<W>(out: W) where W <: BytesWriter {
         for (field in unknownFields.getRawData()) { field.pack(out) }
     }

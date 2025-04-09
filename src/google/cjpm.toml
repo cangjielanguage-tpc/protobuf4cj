@@ -1,7 +1,7 @@
 [dependencies]
   protobuf = { path = "../protobuf"}
 [package]
-  cjc-version = "0.59.6"
+  cjc-version = "0.60.5"
   compile-option = ""
   description = "google.protobuf cj translation"
   link-option = ""
