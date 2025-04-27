@@ -24,10 +24,37 @@ main() {
         input.add(all: buffer[..len])
         len = stdIn.read(buffer)
     }
-    
     let output = cj_generator(unsafe { input.getRawArray()[..input.size] })
 
     let stdOut = getStdOut()
     stdOut.write(output)
     stdOut.flush()
+}
+
+extend FieldDescriptorProto {
+    prop shortTypeName: String {
+        get() {
+            let fullname = this.typeName
+            let arr = fullname.split(".")
+            if (arr.size == 1) {
+                return fullname
+            }
+            if (arr.size == 2) {
+                return "pkg_${arr[0]}.${arr[1]}"
+            }
+            let pkg = arr[..arr.size - 1] |> collectString(delimiter: "_")
+            return "pkg_${pkg}.${arr[arr.size - 1]}"
+        }
+    }
+}
+
+func shortTypeName(fullname: String): String {
+    let arr = fullname.split(".")
+    if (arr.size == 1) {
+        return fullname
+    }
+    if (arr.size == 2) {
+        return fullname
+    }
+    return "${arr[arr.size - 2]}.${arr[arr.size - 1]}"
 }
