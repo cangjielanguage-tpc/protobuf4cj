@@ -119,6 +119,7 @@ public class RepeatedField<T> <: Collection<T> {
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
     public func capacity(): Int64 { data.capacity }
+    @Frozen
     public func iterator(): Iterator<T> { data.iterator() }
     public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }
@@ -367,6 +368,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
     public func capacity(): Int64 { data.capacity }
+    @Frozen
     public func iterator(): Iterator<T> { data.iterator() }
     public prop size: Int64 { get() { data.size } }
     public func isEmpty(): Bool { data.isEmpty() }

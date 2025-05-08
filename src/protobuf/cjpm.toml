@@ -1,9 +1,9 @@
 [dependencies]
 
 [package]
-  cjc-version = "0.59.6"
+  cjc-version = "0.60.5"
   compile-option = ""
-  description = "protobuf cj translator"
+  description = "protobuf cj toolkit"
   link-option = ""
   name = "protobuf"
   output-type = "static"

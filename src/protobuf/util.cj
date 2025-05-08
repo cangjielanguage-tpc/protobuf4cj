@@ -3,8 +3,6 @@
  */
 package protobuf
 
-import encoding.base64.*
-
 public struct StructPrinter <: ToString {
     private let stb = StringBuilder("{")
     private var sep = false
