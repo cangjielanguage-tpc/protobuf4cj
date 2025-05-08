@@ -38,9 +38,10 @@ public func cj_generator(input: Array<UInt8>): Array<UInt8> {
     let filePackage = HashMap<String, String>()
     // Processing files that require code generation
     for (desc in req.protoFile) {
-        if (desc.hasPackage && !desc.package_.isEmpty()) {
-            filePackage[desc.name] = desc.package_
+        if(!desc.hasPackage){
+            desc.package_ = "default"
         }
+        filePackage[desc.name] = desc.package_
 
         if (!genfiles.contains(desc.name)) {
             continue
