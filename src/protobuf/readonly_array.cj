@@ -12,7 +12,7 @@ public struct RoArray<T> {
         data = Array()
     }
 
-    public init(size:Int64, item!:T) {
+    public init(size: Int64, item!: T) {
         data = Array(size, repeat: item)
     }
 
@@ -21,7 +21,7 @@ public struct RoArray<T> {
         this.data = data.toArray()
     }
 
-    public init(size: Int64, initElement: (Int64)->T) {
+    public init(size: Int64, initElement: (Int64) -> T) {
         data = Array(size, initElement)
     }
 
@@ -40,6 +40,7 @@ public struct RoArray<T> {
         data
     }
 
+    @Frozen
     public func get(index: Int64) {
         data.get(index)
     }
@@ -48,22 +49,27 @@ public struct RoArray<T> {
      * @throws IndexOutOfBoundsException if `index` is negative or
      *         greater than or equal to the size of array.
      */
+    @Frozen
     public operator func [](index: Int64) {
         data[index]
     }
 
+    @Frozen
     public operator func [](range: Range<Int64>) {
         RoArray(data[range])
     }
 
+    @Frozen
     public func slice(start: Int64, len: Int64) {
         RoArray(data.slice(start, len))
     }
 
+    @Frozen
     public func copyTo(dst: Array<T>, dstStart: Int64) {
         data.copyTo(dst, 0, dstStart, data.size)
     }
 
+    @Frozen
     public func clone(): RoArray<T> {
         RoArray(data.clone())
     }
@@ -71,6 +77,7 @@ public struct RoArray<T> {
 
 extend<T> RoArray<T> <: Collection<T> {
     /** Returns an iterator over the elements in this Array in proper sequence. */
+    @Frozen
     public func iterator(): Iterator<T> {
         data.iterator()
     }
@@ -79,6 +86,7 @@ extend<T> RoArray<T> <: Collection<T> {
      * Call 'size' on array type variable will be processed by compiler.
      * Only call based on 'Collection' type will use this function.
      */
+    @Frozen
     public prop size: Int64 {
         get() {
             data.size
@@ -86,16 +94,19 @@ extend<T> RoArray<T> <: Collection<T> {
     }
 
     /** Returns true if this Array contains no elements. */
+    @Frozen
     public func isEmpty(): Bool {
         data.isEmpty()
     }
 
+    @Frozen
     public func toArray(): Array<T> {
         data.toArray()
     }
 }
 
 extend<T> RoArray<T> <: ToString where T <: ToString {
+    @Frozen
     public func toString(): String {
         data.toString()
     }
@@ -112,24 +123,29 @@ extend RoArray<Byte> <: Hashable {
 }
 
 extend<T> RoArray<T> <: Equatable<RoArray<T>> where T <: Equatable<T> {
+    @Frozen
     public operator func ==(that: RoArray<T>): Bool {
         this.data == that.data
     }
 
+    @Frozen
     public operator func !=(that: RoArray<T>): Bool {
         this.data != that.data
     }
 
+    @Frozen
     public func contains(element: T): Bool {
         data.contains(element)
     }
 }
 
 extend<T> RoArray<T> <: Equatable<Array<T>> where T <: Equatable<T> {
+    @Frozen
     public operator func ==(that: Array<T>): Bool {
         this.data == that
     }
 
+    @Frozen
     public operator func !=(that: Array<T>): Bool {
         this.data != that
     }
