@@ -73,6 +73,7 @@ public abstract class MessageLite <: ToString & Hashable {
 
     /* message clear */
     protected func m_clear(): Unit
+    @Frozen
     public func clear() {
         if (m_cachedSize == 0) {
             return
@@ -144,12 +145,17 @@ public abstract class MessageLite <: ToString & Hashable {
     }
 
     /* unpack to repeated fields */
+    @Frozen
     protected static func s_add<T>(fields: RepeatedField<T>, val: T) { fields.appendDirty(val) }
+    @Frozen
     protected static func s_add<T, R>(fields: RepeatedMessage<T>, src: R) where T <: MessageLite & TypedMessage<T>, R <: BytesReader { fields.appendDirty(T.fromBytes(subReader(src))) }
+    @Frozen
     protected static func s_add<K, V>(map: MapField<K, V>, key: K, val: V) where K <: Hashable & Equatable<K> { map.putDirty(key, val) }
+    @Frozen
     protected static func s_add<K, M>(map: MapMessage<K, M>, key: K, val: M) where K <: Hashable & Equatable<K>, M <: MessageLite & TypedMessage<M> { map.putDirty(key, val) }
 
     /* @Deprecated */
+    @Frozen
     protected static func s_add<R>(fields: RepeatedString, src: R) where R <: BytesReader { fields.appendDirty(src.parseString()) }
 
     /* @Deprecated */

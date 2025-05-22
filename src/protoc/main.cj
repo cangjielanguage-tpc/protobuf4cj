@@ -47,14 +47,3 @@ extend FieldDescriptorProto {
         }
     }
 }
-
-func shortTypeName(fullname: String): String {
-    let arr = fullname.split(".")
-    if (arr.size == 1) {
-        return fullname
-    }
-    if (arr.size == 2) {
-        return fullname
-    }
-    return "${arr[arr.size - 2]}.${arr[arr.size - 1]}"
-}

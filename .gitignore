@@ -24,3 +24,4 @@ target
 ci_test
 test
 build-script-cache
+tmp/
