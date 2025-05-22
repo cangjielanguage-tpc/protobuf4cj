@@ -7,26 +7,31 @@ public class RepeatedField<T> <: Collection<T> {
     private var parent: ?MessageLite
     private var data: ArrayList<T>
 
+    @Frozen
     public init() {
         parent = None
         data = ArrayList()
     }
 
+    @Frozen
     public init(capacity: Int64) {
         parent = None
         data = ArrayList(capacity)
     }
 
+    @Frozen
     public init(size: Int64, initElement: (Int64) -> T) {
         parent = None
         data = ArrayList(size, initElement)
     }
 
+    @Frozen
     public init(elements: Array<T>) {
         parent = None
         data = ArrayList(elements)
     }
 
+    @Frozen
     public init(elements: Collection<T>) {
         parent = None
         data = ArrayList(elements)
@@ -127,6 +132,7 @@ public class RepeatedField<T> <: Collection<T> {
     public operator func [](index: Int64): T { data[index] }
     public operator func [](index: Int64, value!: T): Unit { data[index] = value; parent?.markDirty() }
 
+    @Frozen
     func appendDirty(element: T): Unit { data.add(element) }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
     func getRawData() { data }
@@ -203,26 +209,31 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     private var parent: ?MessageLite
     private var data: ArrayList<T>
 
+    @Frozen
     public init() {
         parent = None
         data = ArrayList()
     }
 
+    @Frozen
     public init(capacity: Int64) {
         parent = None
         data = ArrayList(capacity)
     }
 
+    @Frozen
     public init(size: Int64, initElement: (Int64) -> T) {
         parent = None
         data = ArrayList(size, initElement)
     }
 
+    @Frozen
     public init(elements: Array<T>) {
         parent = None
         data = ArrayList(elements)
     }
 
+    @Frozen
     public init(elements: Collection<T>) {
         parent = None
         data = ArrayList(elements)
@@ -300,6 +311,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
         parent?.markDirty()
     }
 
+    @Frozen
     public func clear(): Unit {
         unlink(data)
         data.clear()
@@ -350,7 +362,13 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
         for (e in elements) { let ee: MessageLite = e; ee.m_parents.insert(m) }
     }
 
+    @Frozen
     private func unlink(elements: Collection<T>) {
+        let m = parent ?? return ()
+        for (e in elements) { let ee: MessageLite = e; ee.m_parents.remove(m) }
+    }
+    @Frozen
+    private func unlink(elements: ArrayList<T>) {
         let m = parent ?? return ()
         for (e in elements) { let ee: MessageLite = e; ee.m_parents.remove(m) }
     }
@@ -380,6 +398,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     public operator func ==(that: RepeatedMessage<T>): Bool { data == that.data }
     public operator func !=(that: RepeatedMessage<T>): Bool { data != that.data }
 
+    @Frozen
     func appendDirty(element: T): Unit { data.add(element); link(element) }
     func setParent(parent: MessageLite): Unit { this.parent = parent }
 }
