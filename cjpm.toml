@@ -23,7 +23,7 @@
   name = "protobuf"
   output-type = "dynamic"
   override-compile-option = "-O2 --int-overflow=wrapping"
-  src-dir = "."
+  src-dir = "src"
   target-dir = ""
   version = "1.0.0"
   package-configuration = {}
