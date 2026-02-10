@@ -2,7 +2,7 @@
   protobuf = { path = "../protobuf"}
   google = { path = "../google"}
 [package]
-  cjc-version = "1.0.0"
+  cjc-version = "1.1.0"
   description = "protobuf cj plugin"
   link-option = ""
   name = "protoc"
@@ -11,5 +11,14 @@
   override-compile-option = "-O2"
   src-dir = ""
   target-dir = "../../target"
-  version = "1.0.2"
+  version = "1.0.3"
   package-configuration = {}
+
+[profile]
+  [profile.build]
+    incremental = true
+    lto = ""
+  [profile.customized-option]
+    debug = "-g -Woff unused --error-count-limit all "
+    release = "--fast-math -O2 -Woff all"
+  [profile.test]
