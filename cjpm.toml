@@ -8,3 +8,12 @@
   override-compile-option = "-O2 --int-overflow=wrapping" # 应用于所有工作空间成员模块的额外全局编译命令选项，非必需
   link-option = "" # 应用于所有工作空间成员模块的链接器透传选项，非必需
   target-dir = "" # 指定产物存放路径，非必需
+
+[profile]
+  [profile.build]
+    incremental = true
+    lto = ""
+  [profile.customized-option]
+    debug = "-g -Woff unused --error-count-limit all "
+    release = "--fast-math -O2 -Woff all"
+  [profile.test]
