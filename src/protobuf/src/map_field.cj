@@ -314,7 +314,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
     public func clone(): MapMessage<K, V> {
         let new = MapMessage<K, V>(data.size)
         for ((k, v) in data) {
-            data[k] = v.clone()
+            new[k] = v.clone()
         }
 
         return new
@@ -327,7 +327,7 @@ public class MapMessage<K, V> <: Map<K, V> where K <: Hashable & Equatable<K>, V
         rf.parent?.markDirty()
 
         unlink(data.values())
-        link(rf.data.values())
+        link(temp.values())
         data = temp
         parent?.markDirty()
     }
