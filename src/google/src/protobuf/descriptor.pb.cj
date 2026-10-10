@@ -3,7 +3,6 @@
  */
 package google.protobuf
 
-import std.collection.*
 import protobuf.*
 
 public class FileDescriptorSet <: MessageLite & TypedMessage<FileDescriptorSet> {

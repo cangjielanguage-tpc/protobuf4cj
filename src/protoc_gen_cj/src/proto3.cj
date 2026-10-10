@@ -3,7 +3,7 @@
  */
 // gencode for proto3
 
-package protoc
+package protoc_gen_cj
 
 /* field variable define */
 func getFieldVarDefine(field: FieldDescriptorProto) {

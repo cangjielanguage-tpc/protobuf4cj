@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2022-2025. All rights reserved.
  */
-package protoc
+package protoc_gen_cj
 
 import std.env.*
 

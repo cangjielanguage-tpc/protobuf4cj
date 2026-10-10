@@ -1,16 +1,17 @@
-[dependencies]
-  protobuf = { path = "../protobuf"}
-  google = { path = "../google"}
+[dependencies] # 依赖../protobuf/src和../google/src(第二级static), 不配置进workspace, 避免模块冲突
+  protobuf = { path = "../protobuf/src"}
+  google = { path = "../google/src"}
+
 [package]
   cjc-version = "1.1.0"
-  description = "protobuf cj plugin"
+  description = "protobuf compiler cangjie plugin"
   link-option = ""
-  name = "protoc"
+  name = "protoc_gen_cj"
   output-type = "executable"
   compile-option = ""
   override-compile-option = "-O2"
-  src-dir = ""
-  target-dir = "../../target"
+  src-dir = "src"
+  target-dir = ""
   version = "1.0.3"
   package-configuration = {}
 

@@ -3,6 +3,8 @@
  */
 package protobuf
 
+internal import std.sort.*
+
 public class RepeatedField<T> <: Collection<T> {
     private var parent: ?MessageLite
     private var data: ArrayList<T>
@@ -120,7 +122,7 @@ public class RepeatedField<T> <: Collection<T> {
     }
 
     public func reverse(): Unit { data.reverse() }
-    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(stable: stable, comparator: comparator) }
+    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { sort(data, by: comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
     public func capacity(): Int64 { data.capacity }
@@ -382,7 +384,7 @@ public class RepeatedMessage<T> <: Collection<T> & ToString & Hashable where T <
     }
 
     public func reverse(): Unit { data.reverse() }
-    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { data.sortBy(stable: stable, comparator: comparator) }
+    public func sortBy(comparator: (T, T) -> Ordering, stable!: Bool = false): Unit { sort(data, by: comparator, stable: stable) }
     public func reserve(additional: Int64): Unit { data.reserve(additional) }
     public func toArray(): Array<T> { data.toArray() }
     public func capacity(): Int64 { data.capacity }

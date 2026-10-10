@@ -1,0 +1,24 @@
+[dependencies]
+  protobuf = { path = "../../protobuf/src"}
+
+[package] # 第二级: static构建, src目录指向`.`, 用于protoc_gen_cj构建
+  cjc-version = "1.1.0"
+  description = "google.protobuf cj translation"
+  link-option = ""
+  name = "google"
+  output-type = "static"
+  compile-option = ""
+  override-compile-option = "-O2"
+  src-dir = "."
+  target-dir = ""
+  version = "1.0.3"
+  package-configuration = {}
+
+[profile]
+  [profile.build]
+    incremental = true
+    lto = ""
+  [profile.customized-option]
+    debug = "-g -Woff unused --error-count-limit all "
+    release = "--fast-math -O2 -Woff all"
+  [profile.test]

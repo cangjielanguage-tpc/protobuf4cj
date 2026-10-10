@@ -6,7 +6,7 @@
  * @file
  * This file about: protoc
  */
-package protoc
+package protoc_gen_cj
 
 internal import google.protobuf.*
 internal import google.protobuf.compiler.*
@@ -296,7 +296,6 @@ func genCodeHeader(desc: FileDescriptorProto, deps: HashSet<String>, helper: Gen
     // package
     if (desc.package_ != "") { append("package ${desc.package_}\n\n") }
     // import
-    append("import std.collection.*\n")
     if (desc.package_ != "protobuf") {
         append("import protobuf.*\n")
     }

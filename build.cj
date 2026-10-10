@@ -1,30 +1,45 @@
 import std.env.*
+import std.process.*
 import std.fs.*
 
+// Windows文件系统大小写不敏感需小写归一化, POSIX大小写敏感保留原样
 @When[os == "Windows"]
-let ext = ".exe"
-@When[os != "Windows"]
-let ext = ""
+func normPath(p: String): String {
+    p.replace("\\", "/").toAsciiLower()
+}
 
-func stagePostBuild(): Int64 {
-    try {
-        // protoc-gen-cj无法直接作为编译输出名称 手动拷贝
-        copy("target/release/bin/protoc${ext}", to: "target/release/bin/protoc-gen-cj${ext}", overwrite: true)
-    } catch (e: Exception) {
-        println(e)
+@When[os != "Windows"]
+func normPath(p: String): String {
+    p.replace("\\", "/")
+}
+
+// 本包作为依赖被构建时, 脚本exe位于消费方目录而非本包内;
+// 仅当exe位于cwd下且首段路径为build-script-cache(即本包是本次构建的根)时才编排
+func isRootBuild(): Bool {
+    let exe = normPath(getCommandLine()[0])
+    let cwd = normPath(getWorkingDirectory().toString())
+    if (cwd.endsWith("/")) {
+        return false
     }
-    0
+    return exe.startsWith("${cwd}/build-script-cache/")
+}
+
+// post-build: 仅负责触发protoc_gen_cj的独立构建(依赖../protobuf/src与../google/src的static第二级,
+// 不在workspace依赖树内, 避免与dynamic成员同名冲突);
+// 产物重命名与拷贝由protoc_gen_cj自己的build.cj负责, 本脚本不感知产物
+func triggerStaticPluginBuild(): Int64 {
+    let pluginDir = Path("src/protoc_gen_cj")
+    let code = execute("cjpm", ["build"], workingDirectory: pluginDir)
+    if (code != 0) {
+        eprintln("Error: static build of protoc-gen-cj failed, exit code ${code}")
+    }
+    code
 }
 
 main(): Int64 {
-    match (getCommandLine()[1]) {
-        // Add operation here with format: "pre-"/"post-" + optionName
-        // case "pre-install" => stagePreInstall()
-        // case "post-install" => stagePreInstall()
-        // case "pre-build" => stagePreBuild()
-        case "post-build" => stagePostBuild()
-        // case "pre-clean" => stagePreClean()
-        // case "post-clean" => stagePostClean()
-        case _ => 0
+    let args = getCommandLine()
+    if (args.size < 2 || args[1] != "post-build" || !isRootBuild()) {
+        return 0
     }
+    triggerStaticPluginBuild()
 }
