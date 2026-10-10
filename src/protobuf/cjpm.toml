@@ -1,14 +1,14 @@
 [dependencies]
 
-[package]
+[package] # 第一级: dynamic构建, 配置到workspace中, 供下游引用
   cjc-version = "1.1.0"
-  compile-option = ""
   description = "protobuf cj toolkit"
   link-option = ""
   name = "protobuf"
-  output-type = "static"
+  output-type = "dynamic"
+  compile-option = ""
   override-compile-option = "-O2 --int-overflow=wrapping"
-  src-dir = ""
+  src-dir = "src"
   target-dir = "../../target"
   version = "1.0.3"
   package-configuration = {}

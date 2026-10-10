@@ -3,7 +3,6 @@
  */
 package google.protobuf.compiler
 
-internal import std.collection.*
 internal import protobuf.*
 internal import google.protobuf.*
 

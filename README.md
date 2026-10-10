@@ -47,7 +47,7 @@
 ├── src
 │   ├── protobuf # protobuf核心功能
 │   ├── google   # protoc依赖项
-│   ├── protoc   # protoc-gen-cj插件
+│   ├── protoc_gen_cj   # protoc-gen-cj插件
 └── test
 ```
 
@@ -110,17 +110,28 @@ main() {
 
 ### 使用说明
 
-- `src/protoc`模块会生成一个二进制`protoc` 此exe实际名称应为`protoc-gen-cj` 但`protoc-gen-cj`不能作为输出名称
-- `protoc-gen-cj`是[google protobuf compiler](https://github.com/protocolbuffers/protobuf)的插件
-- `google protobuf compiler`提供了一个命令行工具`protoc` 用以将`proto`文件转换为各种语言的源码
-- 只需将`protoc-gen-cj`放置在任何`PATH`路径 `protoc`即可调用cj能力
+#### protoc 与 protoc-gen-cj 的关系
 
-1. 安装[google protobuf compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)
-1. 安装`protoc-gen-cj`插件
-   - 由于各种环境下对编译输出路径的重定向 此处只说明手动安装方式
-   - 将编译生成的`protoc`手动重命名为`protoc-gen-cj` (windows保留exe后缀名)
-   - 将`protoc-gen-cj`放置到任何`PATH`路径下
-1. 使用`protoc`命令将`proto`文件编译为`*.pb.cj`文件: `protoc --cj_out . xxx.proto` (其他选项参考`protoc`帮助)
+`protoc`是[google protobuf compiler](https://github.com/protocolbuffers/protobuf)的命令行工具 通过插件机制生成各语言代码 插件按`protoc-gen-<name>`命名 由`protoc --<name>_out`触发 本项目提供cangjie插件`protoc-gen-cj`
+
+#### 1. 安装protoc
+
+安装[google protobuf compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)后 执行`protoc --version`确认可用
+
+#### 2. 安装protoc-gen-cj
+
+```shell
+cjpm install --path src/protoc_gen_cj --name protoc-gen-cj
+```
+
+#### 3. 使用protoc-gen-cj
+
+```shell
+protoc --cj_out=. xxx.proto
+```
+
+生成代码后:
+
 1. 在你的项目中导入`*.pb.cj`文件 并引用`protobuf`库
 1. 如需其他格式的序列化操作 参考[protobuf-format-cj](https://gitcode.com/Cangjie-TPC/protobuf-format-cj/)
 
